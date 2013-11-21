@@ -1,0 +1,123 @@
+<include target="header.html" />
+
+<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
+<div class="table even">
+	<form class="form">
+		<table width="100%" border="1" cellspacing="0">
+			<caption>
+				Total: {number_format($total_count)}, Page: {number_format($page)}/{number_format($total_page)}
+				<span class="side">
+					<span class="btn"><a href="{getUrl('act','dispBoardAdminInsertBoard','module_srl','')}">{$lang->cmd_create_board}...</a></span>
+					<span class="btn"><a href="#manageSelectedModule" class="modalAnchor">{$lang->cmd_manage_selected_board}...</a></span>
+				</span>
+			</caption>
+			<thead>
+				<tr>
+					<th scope="col" class="nowr">{$lang->no}</th>
+					<th scope="col" class="nowr">{$lang->module_category}</th>
+					<th scope="col" class="nowr">{$lang->mid}</th>
+					<th scope="col" class="title">{$lang->browser_title}</th>
+					<th scope="col" class="nowr">{$lang->regdate}</th>
+					<th scope="col" class="nowr">{$lang->cmd_setup}</th>
+					<th scope="col" class="nowr">{$lang->cmd_copy}</th>
+					<th scope="col" class="nowr">{$lang->cmd_delete}</th>
+					<th scope="col"><input type="checkbox" data-name="cart" title="Check All" /></th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr>
+					<th scope="col" class="nowr">{$lang->no}</th>
+					<th scope="col" class="nowr">{$lang->module_category}</th>
+					<th scope="col" class="nowr">{$lang->mid}</th>
+					<th scope="col" class="title">{$lang->browser_title}</th>
+					<th scope="col" class="nowr">{$lang->regdate}</th>
+					<th scope="col" class="nowr">{$lang->cmd_setup}</th>
+					<th scope="col" class="nowr">{$lang->cmd_copy}</th>
+					<th scope="col" class="nowr">{$lang->cmd_delete}</th>
+					<th scope="col"><input type="checkbox" data-name="cart" title="Check All" /></th>
+				</tr>
+			</tfoot>
+			<tbody>
+				<tr loop="$board_list => $no,$val">
+					<td class="nowr">{$no}</td>
+					<td class="nowr">
+						<block cond="!$val->module_category_srl">
+							<block cond="$val->site_srl">{$lang->virtual_site}</block>
+							<block cond="!$val->site_srl">{$lang->not_exists}</block>
+						</block>
+						<block cond="$val->module_category_srl">{$module_category[$val->module_category_srl]->title}</block>
+					</td>
+					<td class="nowr">{$val->mid}</td>
+					<td class="title"><a href="{getSiteUrl($val->domain,'','mid',$val->mid)}" target="_blank">{$val->browser_title}</a></td>
+					<td class="nowr">{zdate($val->regdate,"Y-m-d")}</td>
+					<td class="nowr"><a href="{getUrl('act','dispBoardAdminBoardInfo','module_srl',$val->module_srl)}" title="{$lang->cmd_setup}">{$lang->cmd_setup}</a></td>
+					<td class="nowr"><a href="{getUrl('','module','module','act','dispModuleAdminCopyModule','module_srl',$val->module_srl)}" onclick="popopen(this.href);return false;" title="{$lang->cmd_copy}">{$lang->cmd_copy}</a></td>
+					<td class="nowr"><a href="{getUrl('act','dispBoardAdminDeleteBoard','module_srl', $val->module_srl)}" title="{$lang->cmd_delete}">{$lang->cmd_delete}</a></td>
+					<td><input type="checkbox" name="cart" value="{$val->module_srl}" class="selectedModule" data-mid="{$val->mid}" data-browser_title="{$val->browser_title}" /></td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+</div>
+
+<div class="btnArea">
+	<span class="btn"><a href="{getUrl('act','dispBoardAdminInsertBoard','module_srl','')}">{$lang->cmd_create_board}...</a></span>
+	<span class="btn"><a href="#manageSelectedModule" class="modalAnchor">{$lang->cmd_manage_selected_board}...</a></span>
+</div>
+
+<div class="search">
+
+	<form action="" class="pagination">
+		<input type="hidden" name="error_return_url" value="" />
+		<input type="hidden" name="module" value="{$module}" />
+		<input type="hidden" name="act" value="{$act}" />
+		<input cond="$search_keyword" type="hidden" name="search_keyword" value="{$search_keyword}" />
+		<input cond="$search_target" type="hidden" name="search_target" value="{$search_target}" />
+
+		<a href="{getUrl('page', '')}" class="direction">&laquo; FIRST</a>
+		<block cond="$page_navigation->first_page + $page_navigation->page_count > $page_navigation->last_page && $page_navigation->page_count != $page_navigation->total_page">
+			{@$isGoTo = true}
+			<a href="{getUrl('page', '')}">1</a>
+			<a href="#goTo" class="tgAnchor" title="{$lang->cmd_go_to_page}">...</a>
+		</block>
+		<!--@while($page_no = $page_navigation->getNextPage())-->
+			{@$last_page = $page_no}
+			<strong cond="$page_no == $page">{$page_no}</strong>
+			<a cond="$page_no != $page" href="{getUrl('page', $page_no)}">{$page_no}</a>
+		<!--@end-->
+		<block cond="$last_page != $page_navigation->last_page">
+			{@$isGoTo = true}
+			<a href="#goTo" class="tgAnchor" title="{$lang->cmd_go_to_page}">...</a>
+			<a href="{getUrl('page', $page_navigation->last_page)}">{$page_navigation->last_page}</a>
+		</block>
+		<a href="{getUrl('page', $page_navigation->last_page)}" class="direction">LAST &raquo;</a>
+		<span cond="$isGoTo" id="goTo" class="tgContent">
+			<input name="page" title="{$lang->cmd_go_to_page}" />
+			<button type="submit">Go</button>
+		</span>
+	</form>
+
+	<form action="./" method="get" class="adminSearch" onsubmit="return checkSearch(this)" no-error-return-url="true">
+	<input type="hidden" name="module" value="{$module}" />
+	<input type="hidden" name="act" value="{$act}" />
+	<input type="hidden" name="error_return_url" value="" />
+		<select  cond="count($module_category)"name="module_category_srl">
+			<option value="">{$lang->module_category}</option>
+			<option value="0" selected="selected"|cond="$module_category_srl==='0'">{$lang->not_exists}</option>
+			<option value="{$key}" loop="$module_category => $key,$val"  selected="selected"|cond="$module_category==$key">{$val->title}</option>
+		</select>
+		<select name="search_target">
+			<option value="">{$lang->search_target}</option>
+			<option value="mid" selected="selected"|cond="$search_target=='mid'">{$lang->mid}</option>
+			<option value="browser_title" selected="selected"|cond="$search_target=='browser_title'">{$lang->browser_title}</option>
+		</select>
+		<input type="text" name="search_keyword" value="{htmlspecialchars($search_keyword)}" />
+		<input type="submit" value="{$lang->cmd_search}" />
+		<a href="{getUrl('', 'module', $module, 'act', $act)}">{$lang->cmd_cancel}</a>
+	</form>
+</div>
+
+<include target="../../module/tpl/include.manage_selected.html" />
