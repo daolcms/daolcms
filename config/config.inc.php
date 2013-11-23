@@ -47,6 +47,7 @@
 		/**
 		 * Location site
 		 */
+		define('_DAOL_LOCATION_SITE_', 'http://www.daolcms.org/');
 		define('_XE_LOCATION_SITE_','http://www.xpressengine.org/');
 
 		/**
