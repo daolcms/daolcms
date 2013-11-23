@@ -2,6 +2,7 @@
     /**
      * @class DBSqlite3_pdo
      * @author NHN (developers@xpressengine.com)
+     * @Adaptor DAOL Project (developer@daolcms.org)
      * @brief class to use SQLite3 with PDO
      * @version 0.1
      **/
@@ -12,7 +13,7 @@
          * DB information
          **/
         var $database = NULL; ///< database
-        var $prefix   = 'xe'; // /< prefix of a tablename (many XEs can be installed in a single DB)
+        var $prefix   = 'daol'; // /< prefix of a tablename (many XEs can be installed in a single DB)
 		var $comment_syntax = '/* %s */';
 
         /**

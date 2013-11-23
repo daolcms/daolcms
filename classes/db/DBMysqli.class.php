@@ -8,6 +8,7 @@
 	 * Does not use prepared statements, since mysql driver does not support them
 	 *
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @package /classes/db
 	 * @version 0.1
 	 **/

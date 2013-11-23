@@ -3,9 +3,10 @@
     /**
      * - DBMSSQL
      * - Modified to use MSSQL driver by sol (sol@ngleader.com)
-	 *
+     *
      * @author NHN (developers@xpressengine.com)
-	 * @package /classes/db
+     * @Adaptor DAOL Project (developer@daolcms.org)
+     * @package /classes/db
      * @version 0.1
      **/
     class DBMssql extends DB {
@@ -14,7 +15,7 @@
 		 * prefix of XE tables(One more XE can be installed on a single DB)
 		 * @var string
          */
-        var $prefix		= 'xe';
+        var $prefix		= 'daol';
         var $param		= array();
         var $comment_syntax = '/* %s */';
 

@@ -5,6 +5,7 @@
 	 * - Works with CUBRID up to 8.4.1
 	 *
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @package /classes/db
 	 * @version 0.1
 	 */
@@ -15,7 +16,7 @@
 		 * prefix of XE tables(One more XE can be installed on a single DB)
 		 * @var string
 		 */
-		var $prefix = 'xe_';
+		var $prefix = 'daol_';
 		/**
 		 * max size of constant in CUBRID(if string is larger than this, '...'+'...' should be used)
 		 * @var int

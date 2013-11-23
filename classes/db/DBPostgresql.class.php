@@ -2,6 +2,7 @@
 /**
  * @class DBPostgreSQL
  * @author ioseph (ioseph@postgresql.kr) updated by yoonjong.joh@gmail.com
+ * @Adaptor DAOL Project (developer@daolcms.org)
  * @brief Class to use PostgreSQL DBMS
  * @version 0.2
  *
@@ -18,7 +19,7 @@ class DBPostgresql extends DB
     /**
      * @brief Connection information for PostgreSQL DB
      **/
-    var $prefix = 'xe'; // / <prefix of a tablename (One or more XEs can be installed in a single DB)
+    var $prefix = 'daol'; // / <prefix of a tablename (One or more XEs can be installed in a single DB)
     var $comment_syntax = '/* %s */';
 
     /**
