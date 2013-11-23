@@ -1,11 +1,11 @@
 <?php
     /**
      * set the include of the class file and other environment configurations
-	 *
-	 * @file   config/config.inc.php
-	 * @author NHN (developers@xpressengine.com)
-	 * @Adaptor DAOL Project (developer@daolcms.org)
-	 **/
+     *
+     * @file   config/config.inc.php
+     * @Original_author NHN
+     * @Adaptor DAOL Project (developer@daolcms.org)
+     */
 
     @error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
 
