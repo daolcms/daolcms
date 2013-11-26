@@ -85,7 +85,7 @@
 	$oDocumentController = &getController('document');
 
 	$obj->module_srl = $module_srl;
-	Context::set('version', __ZBXE_VERSION__);
+	Context::set('version', __DAOL_VERSION__);
 	$obj->title = 'Welcome DAOL CMS';
 
 	$obj->content = $oTemplateHandler->compile('./modules/install/script/welcome_content', 'welcome_content_'.$lang);
