@@ -1,7 +1,8 @@
 <?php
     /**
      * @class DBFirebird
-     * @author Kim Hyun Sik (dev.hyuns @ gmail.com)
+     * @author Kim Hyun Sik (dev.hyuns@gmail.com)
+     * @Adaptor DAOL Project (developer@daolcms.org)
      * @brief class to use Firebird DBMS
      * @version 0.3
      *
@@ -13,7 +14,7 @@
         /**
          * @brief connection to Firebird DB
          **/
-        var $prefix   = 'xe_'; // / <prefix of XE tables(One more XE can be installed on a single DB)
+        var $prefix   = 'daol_'; // / <prefix of XE tables(One more XE can be installed on a single DB)
         var $idx_no = 0; // counter for creating an index
 	var $comment_syntax = '/* %s */';
 

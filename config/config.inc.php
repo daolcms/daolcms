@@ -1,24 +1,28 @@
 <?php
     /**
      * set the include of the class file and other environment configurations
-	 *
+     *
      * @file   config/config.inc.php
-     * @author NHN (developers@xpressengine.com)
-     **/
+     * @Original_author NHN
+     * @Adaptor DAOL Project (developer@daolcms.org)
+     */
 
     @error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
 
     if(!defined('__ZBXE__')) exit();
 
     /**
-     * Display XE's full version
-     * Even The file should be revised when releasing altough no change is made
+     * Display the version info of DAOL CMS.
      */
-	define('__XE_VERSION__', '1.5.4.7');
+    define('__DAOL_VERSION__', '1.0.0.0');
+    /**
+     * Display XE's full version.
+     */
+    define('__XE_VERSION__', '1.5.4.7');
 
-	/**
-	 * @deprecated __ZBXE_VERSION__ will be removed. Use __XE_VERSION__ instead.
-	 */
+    /**
+     * @deprecated __ZBXE_VERSION__ will be removed. Use __XE_VERSION__ instead.
+     */
     define('__ZBXE_VERSION__', __XE_VERSION__);
 
     /**
@@ -47,6 +51,7 @@
 		/**
 		 * Location site
 		 */
+		define('_DAOL_LOCATION_SITE_', 'http://www.daolcms.org/');
 		define('_XE_LOCATION_SITE_','http://www.xpressengine.org/');
 
 		/**

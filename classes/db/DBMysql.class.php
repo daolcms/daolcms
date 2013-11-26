@@ -6,6 +6,7 @@
  * Does not use prepared statements, since mysql driver does not support them
  *
  * @author NHN (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  * @package /classes/db
  * @version 0.1
  */
@@ -15,7 +16,7 @@ class DBMysql extends DB {
 	 * prefix of a tablename (One or more XEs can be installed in a single DB)
 	 * @var string
      */
-    var $prefix   = 'xe_'; // / <
+    var $prefix   = 'daol_'; // / <
     var $comment_syntax = '/* %s */';
 
     /**

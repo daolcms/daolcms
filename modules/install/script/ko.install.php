@@ -86,7 +86,7 @@
 
 	$obj->module_srl = $module_srl;
 	Context::set('version', __ZBXE_VERSION__);
-	$obj->title = 'Welcome XE';
+	$obj->title = 'Welcome DAOL CMS';
 
 	$obj->content = $oTemplateHandler->compile('./modules/install/script/welcome_content', 'welcome_content_'.$lang);
 

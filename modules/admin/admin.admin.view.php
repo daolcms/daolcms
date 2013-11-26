@@ -156,7 +156,7 @@
 
 			// Admin logo, title setup
 			$objConfig = $oModuleModel->getModuleConfig('admin');
-			$gnbTitleInfo->adminTitle = $objConfig->adminTitle ? $objConfig->adminTitle:'XDT EX Admin';
+			$gnbTitleInfo->adminTitle = $objConfig->adminTitle ? $objConfig->adminTitle:'DAOL CMS Admin';
 			$gnbTitleInfo->adminLogo  = $objConfig->adminLogo ? $objConfig->adminLogo:'modules/admin/tpl/img/xe.h1.png';
 
 			$browserTitle = ($subMenuTitle ? $subMenuTitle : 'Dashboard').' - '.$gnbTitleInfo->adminTitle;
