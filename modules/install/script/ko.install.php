@@ -39,9 +39,8 @@
 
 	// create Layout
 		//extra_vars init
-	$extra_vars->banner = 'Y';
-	$extra_vars->body_style = 'sub';
-	$extra_vars->colorset = 'default';
+	$extra_vars->banner = 'y';
+	$extra_vars->body_style = 'home';
 	$extra_vars->main_menu = $menu_srl;
 	$extra_vars->bottom_menu = $menu_srl;
 	$extra_vars->menu_name_list = array();
@@ -49,7 +48,7 @@
 
 	$args->site_srl = 0;
 	$layout_srl = $args->layout_srl = getNextSequence();
-	$args->layout = 'xdt_whitesquare';
+	$args->layout = 'daol_official';
 	$args->title = 'welcome_layout';
 
 	$oLayoutAdminController = &getAdminController('layout');
