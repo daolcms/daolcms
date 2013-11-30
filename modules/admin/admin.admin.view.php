@@ -305,12 +305,6 @@
 			$oSecurity = new Security();
 			$oSecurity->encodeHTML('module_list..', 'module_list..author..', 'newVersionList..');
 
-			// gathering enviroment check
-			$mainVersion = join('.', array_slice(explode('.', __ZBXE_VERSION__), 0, 2));
-			$path = FileHandler::getRealPath('./files/env/'.$mainVersion);
-			$isEnviromentGatheringAgreement = false;
-			if(file_exists($path)) $isEnviromentGatheringAgreement = true;
-			Context::set('isEnviromentGatheringAgreement', $isEnviromentGatheringAgreement);
             Context::set('layout','none');
 
             $this->setTemplateFile('index');
