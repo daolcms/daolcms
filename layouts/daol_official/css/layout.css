@@ -1,0 +1,104 @@
+/* @author 범진혁 (beom@xdt.kr), DAOL Project (developer@daolcms.org) */
+body,p,ul,li,h3{ margin:0; padding:0; }
+html{ margin:0; }
+
+body{ background:#ffffff; font-family:'나눔고딕',NanumGothic,Malgun Gothic,AppleSDGothicNeo,Apple Gothic,dotum,Tahoma,Geneva,Helvetica,sans-serif; }
+a{ text-decoration:none; color:#404040; }
+
+#doc{width:960px; margin:0 auto;}
+.header { width:100%; }
+
+/*haeder login*/
+.header .header_login { width:100%; }
+.header .header_login .top_login { width:960px; margin:0 auto; }
+.header .header_login .top_login .login { float:right; height:31px; list-style-type:none; }
+.header .header_login .top_login .login li { list-style-type:none; float:left; line-height:31px; color:#444; margin:0 0 0 10px; }
+.header .header_login .top_login .login li a { color:#444; }
+.header .header_login .top_login .login li button { cursor:pointer; background:transparent; border:0; color:#444; position:relative; top:-2px \0/IE8+9; }
+
+/*haeder logo*/
+.header .header_logo { width:960px; height:75px; margin:0 auto; }
+.header .header_logo .logo { width:200px; height:75px; float:left; }
+
+/*haeder menu*/
+.header .header_menu { width:100%; background:#4E4E4E;; }
+.header .header_menu .menu { width:960px; height:45px; margin:0 auto; }
+.header .header_menu .menu #gnb_menu { height:45px; float:left; }
+.header .header_menu .menu #gnb_menu ul { list-style:none; padding:0; margin:0; }
+.header .header_menu .menu #gnb_menu .gnb_ul>li { position:relative; float:left; white-space:nowrap; }
+.header .header_menu .menu #gnb_menu .gnb_ul>li>a { font-size:15px; color:#fafafa;display:block; height: 45px; line-height: 45px; padding:0 18px;}
+.header .header_menu .menu #gnb_menu .gnb_ul>li>a:hover { color:#B8E0FF; }
+.header .header_menu .menu #gnb_menu .gnb_ul>li.active>a {  background:#353535; color:#B8E0FF; }
+.header .header_menu .menu #gnb_menu .sub { display:none; position:absolute; top:45px; left:50%; min-width:90px; background:url('./../img/blackglass.png'); padding:10px; z-index:10; text-align:center; }
+.header .header_menu .menu #gnb_menu .sub>li { height:20px; line-height:20px; margin-bottom: 2px; }
+.header .header_menu .menu #gnb_menu .sub>li>a { color:#fff; }
+
+/*banner*/
+#slides { background:url(../img/bgBanner.png) repeat-x 0 0; float:left; width:960px; height:250px; margin-top:10px; padding:0; position:relative; }
+.doc_banner {width:100%; height:262px; background: #f7f7f7; }
+.doc_banner .doc_slide { width:960px; margin:0 auto; }
+.doc_banner .doc_slide .slide { width:960px; height:250px; margin:0 auto; }
+
+/*banner button*/
+.xdt_pagination { margin:0; position:relative; top:-20px; right:5px; float:right; list-style: none; z-index:1000; }
+.xdt_pagination li { float: left; margin: 0 1px; } 
+.xdt_pagination li a { display: block; width: 13px;height: 0; padding-top: 13px; background-image: url(../img/pagination.png); background-position: 0 0; float: left;overflow: hidden; }
+.xdt_pagination li.current a, 
+.xdt_pagination li.current a:hover { background-position: 0 -13px }
+.xdt_pagination li a:hover { background-position: 0 -26px }
+
+/*main page*/
+.xdt_page { width:960px; float:left; margin-top:10px; background-color:#fff; }
+.xdt_page .page1 { width:940px; margin:10px 10px 10px 10px; float:left; }
+
+/*sub page*/
+.xdt_page2 { width:960px; float:left; margin-top:10px; background-color:#fff; }
+.xdt_page2 .page2 { width:750px; margin:10px 10px 10px 0px; float:left; }
+.xdt_page2 .xdt_sub { width:180px; float:left; padding:10px 10px 0 10px ; font-size:12px; color:#666; background-color:#fff; }
+.xdt_page2 .xdt_sub .xdt_sub_top { font-size: 20px; font-weight: bold; padding-bottom:5px; border-bottom: 2px solid #000; }
+.xdt_page2 .xdt_sub .nav { list-style:none; }
+.xdt_page2 .xdt_sub .nav li a{ padding:8px 5px 8px 5px; display:block; border-bottom:1px solid #ccc; }
+.xdt_page2 .xdt_sub .nav li.active a{ font-weight:bold; }
+
+/*footer*/
+.footer { width:100%; background: #f7f7f7; height: 100px; clear: both; }
+.footer .footer_content { width:960px; padding:10px 0 20px 0; margin:0 auto; font-size:11px; color:#606060;}
+.footer .footer_content .menu { float:right; margin:10px 0 0 0; }
+.footer .footer_content .menu li { list-style-type:none; padding:0 0 0 10px; float:left; }
+.footer .footer_content .menu li:first-child { border:0; }
+.footer .footer_content .menu li a:hover { text-decoration:underline; }
+.footer .footer_content .copy { width:380px; float:left; margin:10px 0 30px 0; text-align:left;}
+
+/* Popup Login */
+.loginWindow{ display:none; position:fixed; left:0; top:0; _position:absolute; width:100%; height:100%; z-index:100;} 
+.loginWindow.open{ display:block;}
+.loginWindow .modalWindow{ display:block; position:fixed; border:0; left:0; top:0; _position:absolute; width:100%; height:100%; background:#000; opacity:.3; filter:alpha(opacity:30);}
+.loginWindow .loginLayer form{ display:none; *zoom:1; margin:0;}
+.loginWindow .loginLayer form:after{ content:""; display:block; clear:both;}
+.loginWindow .loginLayer form legend{ position:absolute; width:0; height:0; overflow:hidden; font-size:0; line-height:0; visibility:hidden;}
+.loginWindow .loginLayer fieldset{ border:0; margin:0; padding:0;}
+.loginWindow .loginLayer.loginTypeA form.typeA,
+.loginWindow .loginLayer.loginTypeB form.typeB{ display:block; margin-bottom:25px;}
+.loginWindow .loginLayer dl{ margin:0; padding: 30px 40px 0 40px;}
+.loginWindow .loginLayer dt{ font-size:13px; font-family:'Segoe UI','나눔고딕',NanumGothic,Malgun Gothic,AppleSDGothicNeo,Apple Gothic,dotum,Tahoma,Geneva,Helvetica,sans-serif; font-weight:bold; color:#868d95; margin:0 0 10px 0;}
+.loginWindow .loginLayer dd{ margin:0 0 15px 0;}
+.loginWindow .loginLayer .inputuid{ width:320px; height:40px; padding:6px 9px 0 9px; border-top:1px solid #ccc; border-left:1px solid #ddd; border-right:1px solid #ddd; border-bottom:1px solid #ddd; font:20px; font-family:'Segoe UI','나눔고딕',NanumGothic,Malgun Gothic,AppleSDGothicNeo,Apple Gothic,dotum,Tahoma,Geneva,Helvetica,sans-serif; color:#333;}
+.loginWindow .loginLayer .inputuid:focus{ border:1px solid #94a9ce; border-radius:5px; background:#fff;}
+.loginWindow .loginLayer .inputupw{ width:175px; height:40px; padding:6px 9px 0 9px; border-top:1px solid #ccc; border-left:1px solid #ddd; border-right:1px solid #ddd; border-bottom:1px solid #ddd; font:20px; font-family:'Segoe UI','나눔고딕',NanumGothic,Malgun Gothic,AppleSDGothicNeo,Apple Gothic,dotum,Tahoma,Geneva,Helvetica,sans-serif; color:#333;}
+.loginWindow .loginLayer .inputupw:focus{ border:1px solid #94a9ce; border-radius:5px; background:#fff;}
+.loginWindow .loginLayer .inputCheck{ margin:0 3px 0 0; width:13px; height:13px; vertical-align:middle;}
+.loginWindow .loginLayer.loginTypeA .inputText{ background-image:url(../img/bgLoginText.gif)undefined; background-repeat:no-repeat; background-position:right top;}
+.loginWindow .loginLayer.loginTypeB .inputText{ background-image:url(../img/bgOpenidText.gif)undefined; background-repeat:no-repeat; background-position:right top; padding:6px 9px 0 35px; width:243px;}
+.loginWindow .loginLayer .keep{ margin:0; float:left; font-size:11px; line-height:normal; white-space:nowrap; margin-left: 40px;}
+.loginWindow .loginLayer .keep label{ color:#555; font-family:'Segoe UI','나눔고딕',NanumGothic,Malgun Gothic,AppleSDGothicNeo,Apple Gothic,dotum,Tahoma,Geneva,Helvetica,sans-serif; }
+.loginWindow .loginLayer .loginButton,
+.loginWindow .loginLayer .loginButton input{ position:relative; border:0; color:#fff; font-family:'Segoe UI','나눔고딕',NanumGothic,Malgun Gothic,AppleSDGothicNeo,Apple Gothic,dotum,Tahoma,Geneva,Helvetica,sans-serif; font-size:12px; font-weight:bold; border-radius:5px; display:inline-block; height:48px; line-height:48px; background-color:#424549; overflow:hidden;}
+.loginWindow .loginLayer .loginButton{ width:130px; float:right; background-position:0 0;}
+.loginWindow .loginLayer .loginButton input{ left:11px; background-position:right 0; padding:0 35px 0 35px; cursor:pointer;}
+.loginWindow .loginLayer .close{ position:absolute; cursor:pointer; border:0; padding:0; top:10px; right:10px; width:27px; height:27px; background:transparent url(../img/close.png) no-repeat center -20px;}
+.loginWindow .loginLayer .help { width:100%; height:43px; background:#F0F0F0;}
+.loginWindow .loginLayer .help li { list-style-type:none; float:left; font-family:'Segoe UI','나눔고딕',NanumGothic,Malgun Gothic,AppleSDGothicNeo,Apple Gothic,dotum,Tahoma,Geneva,Helvetica,sans-serif; margin:14px 5px 5px 0; padding:0 6px 0 0; }
+.loginWindow .loginLayer .help p { float:left; font-family:'Segoe UI','나눔고딕',NanumGothic,Malgun Gothic,AppleSDGothicNeo,Apple Gothic,dotum,Tahoma,Geneva,Helvetica,sans-serif; margin:14px 0 0 0; padding: 0 6px 0 0; color:#404040; }
+.loginWindow .loginLayer .close span{ position:absolute; font-size:0; line-height:0; width:0; height:.; overflow:hidden; visibility:hidden;}
+
+.loginWindow .loginLayer{ position:absolute; width:425px; top:20%; left:50%; border:2px solid #797979; margin:0 0 0 -220px; background:#fff;}

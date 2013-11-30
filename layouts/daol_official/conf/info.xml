@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.2">
+    <title xml:lang="ko">DAOL 공식 레이아웃</title>
+    <title xml:lang="en">DAOL Official Layout</title>
+    <description xml:lang="ko">다올 CMS 공식 레이아웃</description>
+    <version>1.0</version>
+    <date>2013-11-30</date>
+
+    <author email_address="support@xdt.kr" link="http://xdt.kr">
+        <name xml:lang="ko">범진혁</name>
+		<name xml:lang="en">Beom Jinhyeok</name>
+    </author>
+	<author email_address="developer@daolcms.org" link="http://www.daolcms.org">
+        <name xml:lang="ko">다올 Project</name>
+		<name xml:lang="en">DAOL Project</name>
+    </author>
+    <menus>
+		<menu name="main_menu" maxdepth="1" default="true">
+            <title xml:lang="ko">메뉴</title>
+			<title xml:lang="en">menu</title>
+        </menu>
+		<menu name="footer_menu" maxdepth="1" default="true">
+            <title xml:lang="ko">하단 메뉴</title>
+			<title xml:lang="en">footer menu</title>
+        </menu>
+    </menus>
+	<extra_vars>
+	    <var name="body_style" type="select">
+			<title xml:lang="ko">본문 스타일</title>
+			<description xml:lang="ko">본문 스타일을 선택하세요.</description>
+			<options value="main">
+				<title xml:lang="ko">1단 메인페이지</title>
+				<value>home</value>
+				</options>	
+			<options value="sub">
+				<title xml:lang="ko">2단 서브페이지</title>
+				<value>sub</value>
+			</options>
+		</var>
+		<var name="header_logo_image" type="image">
+			<title xml:lang="ko">헤더 로고 이미지</title>
+			<description xml:lang="ko">헤더에 출력될 로고 이미지입니다. 가로 200px, 세로 69px를 권장합니다.</description>
+		</var>
+		<var name="header_logo_url" type="text">
+			<title xml:lang="ko">헤더 로고 주소</title>
+			<description xml:lang="ko">이미지 로고를 클릭하면 이동될 주소입니다.</description>
+		</var>
+        <var name="footer_copy" type="text">
+			<title xml:lang="ko">푸터 저작권</title>
+			<description xml:lang="ko">푸터에 들어갈 회사, 싸이트명을 입력해 주세요.</description>
+		</var>
+		<var name="banner_style" type="select">
+            <title xml:lang="ko">베너 출력</title>
+            <description xml:lang="ko">베너 출력 여부를 선택하세요.</description>
+            <options value="y">
+                <title xml:lang="ko">예 출력합니다</title>
+                <value>y</value>
+            </options>
+			<options value="n">
+                <title xml:lang="ko">아니오 출력하지 않습니다</title>
+                <value>n</value>
+            </options>
+        </var>
+		<var name="banner_image_1" type="image">
+			<title xml:lang="ko">베너 이미지 1</title>
+			<description xml:lang="ko">베너 1번 슬라이드에 출력될 이미지 입니다. 958*250 크기의 이미지를 권장합니다.</description>
+		</var>
+		<var name="banner_url_1" type="text">
+			<title xml:lang="ko">베너 주소 1</title>
+			<description xml:lang="ko">베너 1번 슬라이드를 클릭하면 이동될 주소입니다.</description>
+		</var>
+		<var name="banner_image_2" type="image">
+			<title xml:lang="ko">베너 이미지 2</title>
+			<description xml:lang="ko">베너 2번 슬라이드에 출력될 이미지 입니다. 958*250 크기의 이미지를 권장합니다.</description>
+		</var>
+		<var name="banner_url_2" type="text">
+			<title xml:lang="ko">베너 주소 2</title>
+			<description xml:lang="ko">베너 2번 슬라이드를 클릭하면 이동될 주소입니다.</description>
+		</var>
+		<var name="banner_image_3" type="image">
+			<title xml:lang="ko">베너 이미지 3</title>
+			<description xml:lang="ko">베너 3번 슬라이드에 출력될 이미지 입니다. 958*250 크기의 이미지를 권장합니다.</description>
+		</var>
+		<var name="banner_url_3" type="text">
+			<title xml:lang="ko">베너 주소 3</title>
+			<description xml:lang="ko">베너 3번 슬라이드를 클릭하면 이동될 주소입니다.</description>
+		</var>
+		<var name="banner_image_4" type="image">
+			<title xml:lang="ko">베너 이미지 4</title>
+			<description xml:lang="ko">베너 4번 슬라이드에 출력될 이미지 입니다. 958*250 크기의 이미지를 권장합니다.</description>
+		</var>
+		<var name="banner_url_4" type="text">
+			<title xml:lang="ko">베너 주소 4</title>
+			<description xml:lang="ko">베너 4번 슬라이드를 클릭하면 이동될 주소입니다.</description>
+		</var>
+	</extra_vars>
+</layout>

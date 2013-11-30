@@ -1,0 +1,159 @@
+<!--%import("css/layout.css")--> 
+<!--%import("js/layout.js")-->
+<!--@if($layout_info->banner_style=="y")-->
+<!--%import("js/slides.js")-->
+<!--%import("js/banner.js")-->
+<!--@end-->
+<div class="header">
+    <div class="header_login">
+        <div class="top_login">
+		<div class="login">
+		<!--@if(!$is_logged)-->
+			<li>방문자님, 환영합니다!</li>
+			<li><a href="#" onclick="jQuery('#loginWindow').css('display','block');" accesskey="L">로그인</a></li>
+			<li><a href="{getUrl('act','dispMemberSignUpForm')}">회원가입</a></li>
+		<!--@else-->
+			<li>{$logged_info->nick_name}님, 환영합니다!</li>
+			<li cond="$grant->manager"><a href="{getUrl('','module','admin')}">관리</a></li>
+			<li><a href="{getUrl('act','dispMemberInfo')}">회원정보</a></li>
+			<li><a href="{getUrl('act','dispMemberLogout')}">로그아웃</a></li>
+		<!--@end-->
+		</div>
+		</div>
+	</div>
+	<div class="header_logo">
+		<div class="logo">
+			<!--@if($layout_info->header_logo_url)-->
+				<a href="{$layout_info->header_logo_url}">
+			<!--@else-->
+				<a href="/">
+			<!--@end-->
+			<!--@if($layout_info->header_logo_image)-->
+				<img src="{$layout_info->header_logo_image}" alt="{$layout_info->header_logo_url}" class="iePngFix" /></a>
+			<!--@else-->
+				<img src="img/nologo.png" class="iePngFix" /></a>
+			<!--@end-->
+		</div>
+	</div>
+	<div class="header_menu">
+	   <div class="menu">
+	      <div id="gnb_menu">
+			<ul class="gnb_ul">
+				<li loop="$main_menu->list=>$key1,$val1" class="active"|cond="$val1['selected']">
+					<a href="{$val1['href']}" target="_blank"|cond="$val1['open_window']=='Y'">{$val1['link']}</a>
+					<ul class="sub" cond="$val1['list']">
+						<li loop="$val1['list']=>$key2,$val2" class="active"|cond="$val2['selected']">
+							<a href="{$val2['href']}" target="_blank"|cond="$val2['open_window']=='Y'">{$val2['link']}</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		</div>
+	</div>
+</div>
+<!--@if($layout_info->banner_style=="y")-->
+<div class="doc_banner">
+    <div class="doc_slide">
+		<div id="slides">
+		   <div class="slides_container">
+				<div class="slide">
+				<a href="{$layout_info->banner_url_1}"><img src="{$layout_info->banner_image_1}" alt="sllde1" /></a>			
+			    </div>
+			    <div class="slide">
+			    <a href="{$layout_info->banner_url_2}"><img src="{$layout_info->banner_image_2}" alt="slide2" /></a>			
+			    </div>
+			    <div class="slide">
+			    <a href="{$layout_info->banner_url_3}"><img src="{$layout_info->banner_image_3}" alt="slide3" /></a>			
+			    </div>
+			    <div class="slide">
+			    <a href="{$layout_info->banner_url_4}"><img src="{$layout_info->banner_image_4}" alt="slide4" /></a>			
+			    </div>
+		    </div>
+	    </div>
+	</div>
+</div>
+<!--@end-->
+<div id="doc">
+	<!--@if($layout_info->body_style=="sub")-->
+	<div class="xdt_page2">
+		<div class="xdt_sub">
+			<div loop="$main_menu->list=>$key1,$val1" class="xdt_sub_top" cond="$val1['selected']">
+				<a href="{$val1['href']}" target="_blank"|cond="$val1['open_window']=='Y'">{$val1['link']}</a>
+			</div>
+			<ul class="nav" loop="$main_menu->list=>$key1,$val1" cond="$val1['selected'] && $val1['list']">
+				<li loop="$val1['list']=>$key2,$val2" class="active"|cond="$val2['selected']"><a href="{$val2['href']}" target="_blank"|cond="$val2['open_window']=='Y'">{$val2['link']}</a>
+					<ul cond="$val2['list']">
+						<li loop="$val2['list']=>$key3,$val3" class="active"|cond="$val3['selected']"><a href="{$val3['href']}" target="_blank"|cond="$val3['open_window']=='Y'">{$val3['link']}</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div class="page2">
+		{$content}
+		</div>
+	</div>
+    <!--@elseif($layout_info->body_style=="main")-->
+	<div class="xdt_page">
+		<div class="page1">
+		{$content}
+		</div>
+	</div>
+	<!--@end-->
+</div>
+<div class="footer">
+   <div class="footer_content">
+    <p class="copy">
+    Copyrights © {$layout_info->footer_copy} 	
+    </p>
+    <ul class="menu">
+	   <li loop="$footer_menu->list=>$key1,$val1" class="active"|cond="$val1['selected']">
+	     <a href="{$val1['href']}" target="_blank"|cond="$val1['open_window']=='Y'">{$val1['link']}</a>
+	   </li>
+    </ul>
+	</div>
+</div>
+<!--@if(!$is_logged)-->
+    {@ $member_config = MemberModel::getMemberConfig(); }
+    <!--%import("./filter/login.xml")-->
+    <!--@if($member_config->enable_openid=='Y')--><!--%import("./filter/openid_login.xml")--><!--@end-->
+    <!-- loginWindow -->
+    <div id="loginWindow" class="loginWindow">
+    <!-- class="loginWindow" | class="loginWindow open" -->
+        <span class="modalWindow"></span>
+		<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+			<p>{$XE_VALIDATOR_MESSAGE}</p>
+		</div>
+        <div id="loginLayer" class="loginLayer loginTypeA">
+        <!-- class="loginLayer loginTypeA" | class="loginLayer loginTypeB" -->
+            <button type="button" class="close" onclick="document.getElementById('loginWindow').style.display='none'" accesskey="X"><span>Close Login Layer</span></button>
+            <form action="" method="post" class="typeA" id="commonLogin" ruleset="@login" >
+				<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
+				<input type="hidden" name="act" value="procMemberLogin" />
+                <fieldset>
+                    <legend>XE Login</legend>
+                    <dl>	
+                        <dt><label for="uid" cond="$member_config->identifier != 'email_address'">{$lang->user_id}</label><label for="uid" cond="$member_config->identifier == 'email_address'">{$lang->email_address}</label></dt>
+                        <dd><input name="user_id" type="text" class="inputuid" id="uid" /></dd>
+						<dt><label for="upw">{$lang->password}</label></dt>
+                        <dd><input name="password" type="password" class="inputupw" id="upw" />
+						<span class="loginButton"><input type="submit" value="{$lang->cmd_login}" /></span></dd>
+                    </dl>
+					<p class="keep">
+					<input name="keep_signed" type="checkbox" id="keepA" value="Y" class="inputCheck" onclick="if(this.checked) return confirm('{$lang->about_keep_signed}');"/>
+					<label for="keepA">{$lang->keep_signed}</label>
+				    </p>
+                </fieldset>
+            </form>
+			<div class="help">
+				<ol>
+				<li><a href="{getUrl('act','dispMemberSignUpForm')}">회원가입</a></li>
+				<li><a href="{getUrl('act','dispMemberFindAccount')}">아이디,비밀번호 찾기</a></li>
+				<li><a href="{getUrl('act','dispMemberResendAuthMail')}">인증 메일 재발송</a></li>
+				</ol>
+			</div>
+            <button type="button" class="close" onclick="document.getElementById('loginWindow').style.display='none'" accesskey="X"><span>Close Login Layer</span></button>
+        </div>
+    </div>
+    <!-- /loginWindow -->
+<!--@end-->
