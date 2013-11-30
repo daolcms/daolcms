@@ -40,7 +40,7 @@
 	// create Layout
 		//extra_vars init
 	$extra_vars->banner = 'y';
-	$extra_vars->body_style = 'home';
+	$extra_vars->body_style = 'main';
 	$extra_vars->main_menu = $menu_srl;
 	$extra_vars->bottom_menu = $menu_srl;
 	$extra_vars->menu_name_list = array();
