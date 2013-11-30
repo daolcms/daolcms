@@ -3,18 +3,6 @@
 <div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
 <p>{$XE_VALIDATOR_MESSAGE}</p>
 </div>
-	<!--@if(!$isEnviromentGatheringAgreement)-->
-	<form action="./" method="post" class="message info">
-	<input type="hidden" name="module" value="admin" />
-	<input type="hidden" name="act" value="procAdminEnviromentGatheringAgreement" />
-		<h2>{$lang->install_env_agreement}</h2>
-		<p>{$lang->install_env_agreement_desc}</p>
-		<div class="btnArea">
-			<span class="btn"><button type="submit" name="is_agree" value="true">{$lang->agree}</button></span>
-			<span class="btn"><button type="submit" name="is_agree" value="false">{$lang->disagree}</button></span>
-		</div>
-	</form>
-	<!--@end-->
 	<!--@if($addTables || $needUpdate)-->
 	<div class="message update">
 		<h2 cond="$needUpdate && $addTables">{$lang->need_update_and_table}</h2>

@@ -14,7 +14,6 @@
         <action name="procAdminLogout" type="controller" standalone="true" method="GET|POST" />
         <action name="procAdminInsertThemeInfo" type="controller" standalone="true" ruleset="insertThemeInfo" />
 		<action name="procAdminToggleFavorite" type="controller" ruleset="toggleFavorite" />
-		<action name="procAdminEnviromentGatheringAgreement" type="controller" standalone="true" />
 		<action name="procAdminUpdateConfig" type="controller" standalone="true" />
 		<action name="procAdminDeleteLogo" type="controller" standalone="true" />
 		<action name="procAdminMenuReset" type="controller" />

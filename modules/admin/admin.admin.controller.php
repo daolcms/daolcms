@@ -265,20 +265,6 @@
 		}
 
 		/**
-		 * Enviroment gathering agreement
-		 * @return void
-		 */
-		function procAdminEnviromentGatheringAgreement()
-		{
-			$isAgree = Context::get('is_agree');
-			if($isAgree == 'true') $_SESSION['enviroment_gather'] = 'Y';
-			else $_SESSION['enviroment_gather'] = 'N';
-
-			$redirectUrl = getUrl('', 'module', 'admin');
-			$this->setRedirectUrl($redirectUrl);
-		}
-
-		/**
 		 * Admin config update
 		 * @return void
 		 */
