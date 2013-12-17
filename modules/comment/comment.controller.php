@@ -137,7 +137,7 @@
 		 * @param bool $manual_inserted
 		 * @return object
 		 */
-                function insertComment($obj, $manual_inserted = false) {
+        function insertComment($obj, $manual_inserted = false) {
                 if(!$manual_inserted && !checkCSRF())
                 {
                      return new Object(-1, 'msg_invalid_request');
