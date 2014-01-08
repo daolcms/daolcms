@@ -4,6 +4,7 @@
 	 * admin view class of the menu module
 	 *
 	 * @author NHN (developers@xpressengine.com)
+         * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @package /modules/menu
 	 * @version 0.1
 	 */
@@ -154,7 +155,7 @@
 						unset($menuItems);
 						//$value->xml_file = sprintf('./files/cache/menu/%s.xml.php',$value->menu_srl);
 						$value->php_file = sprintf('./files/cache/menu/%s.php',$value->menu_srl);
-						if(file_exists($value->php_file)) @include($value->php_file);
+						if(is_readable($value->php_file)) include($value->php_file);
 
 						if(count($menu->list)>0)
 						{
@@ -187,7 +188,7 @@
 			$theme_file = _XE_PATH_.'files/theme/theme_info.php';
 			if(is_readable($theme_file))
 			{
-				@include($theme_file);
+				include($theme_file);
 				Context::set('current_layout', $theme_info->layout);
 			}
 			else

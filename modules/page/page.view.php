@@ -2,6 +2,7 @@
     /**
      * @class  pageView
      * @author NHN (developers@xpressengine.com)
+     * @Adaptor DAOL Project (developer@daolcms.org)
      * @brief page view class of the module
      **/
 
@@ -153,7 +154,7 @@
          **/
         function executeFile($path, $caching_interval, $cache_file) {
             // Cancel if the file doesn't exist
-            if(!file_exists($path)) return;
+            if(!is_readable($path)) return;
             // Get a path and filename
             $tmp_path = explode('/',$cache_file);
             $filename = $tmp_path[count($tmp_path)-1];
@@ -163,7 +164,7 @@
                 if(file_exists($cache_file)) FileHandler::removeFile($cache_file);
                 // Read a target file and get content
                 ob_start();
-                @include($path);
+                include($path);
                 $content = ob_get_clean();
                 // Replace relative path to the absolute path 
                 $this->path = str_replace('\\', '/', realpath(dirname($path))) . '/';
@@ -172,7 +173,7 @@
 
                 FileHandler::writeFile($cache_file, $content);
                 // Include and then Return the result
-                if(!file_exists($cache_file)) return;
+                if(!is_readable($cache_file)) return;
                 // Attempt to compile
                 $oTemplate = &TemplateHandler::getInstance();
                 $script = $oTemplate->compileDirect($filepath, $filename);
@@ -184,7 +185,7 @@
             $__Context->tpl_path = $filepath;
 
             ob_start();
-            @include($cache_file);
+            include($cache_file);
             $content = ob_get_clean();
 
             return $content;
