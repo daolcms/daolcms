@@ -40,7 +40,7 @@
 		 */
         function _close($connection) {
             $this->_query("commit", $connection);
-            @mysql_close($connection);
+            mysql_close($connection);
         }
 
 		/**
@@ -90,7 +90,7 @@
 				exit();
 			}
             // Run the query statement
-            $result = @mysql_query($query, $connection);
+            $result = mysql_query($query, $connection);
             // Error Check
             if(mysql_error($connection)) $this->setError(mysql_errno($connection), mysql_error($connection));
             // Return result
