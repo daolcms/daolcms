@@ -121,7 +121,7 @@
             $cache_file = sprintf('./files/cache/widget/%s.%s.cache.php', $widget, Context::getLangType());
 
 
-            if((is_readable($cache_file)&&filemtime($cache_file)>filemtime($xml_file)) {
+            if(is_readable($cache_file)&&filemtime($cache_file)>filemtime($xml_file)) {
                 include($cache_file);
                 return $widget_info;
             }
