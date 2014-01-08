@@ -247,7 +247,7 @@
             $output = ModuleHandler::triggerCall('file.downloadFile', 'before', $file_obj);
             if(!$output->toBool()) return $this->stop(($output->message)?$output->message:'msg_not_permitted_download');
             // File Output
-            if(strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
+            if(strstr($_SERVER['HTTP_USER_AGENT'], 'MSIE') || (strstr($_SERVER['HTTP_USER_AGENT'], 'Windows') && strstr($_SERVER['HTTP_USER_AGENT'], 'Trident') && strstr($_SERVER['HTTP_USER_AGENT'], 'rv'))) {
                 $filename = rawurlencode($filename);
                 $filename = preg_replace('/\./', '%2e', $filename, substr_count($filename, '.') - 1);
             }
