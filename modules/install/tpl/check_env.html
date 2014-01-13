@@ -9,7 +9,11 @@
 					<!--@foreach($checklist as $key => $val)-->
 					<tr>
 						<th scope="row">{$lang->install_checklist_title[$key]}<!--@if($key == 'php_version')--> (Ver. {$phpversion})<!--@end--></th>
-						<td><!--@if($val)-->{$lang->enable}<!--@else--><strong>{$lang->disable}</strong><br />{$lang->install_checklist_desc[$key]}<!--@end--></td>
+						<td><!--@if($val)-->{$lang->enable}<!--@else--><strong>{$lang->disable}</strong>
+						<br />{$lang->install_checklist_desc[$key]}<!--@end--></td>
+						<p cond="$key == 'php_version' && $phpversion_warning === true">
+                           {$lang->install_checklist_desc['php_version_warning']} <a href="http://php.net/eol.php" target="_blank">[{$lang->install_checklist_desc['php_more']}]</a>
+                        </p>
 					</tr>
 					<!--@end-->
 				</tbody>
