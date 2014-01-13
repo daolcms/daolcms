@@ -52,9 +52,6 @@
             $use_sso = Context::get('use_sso');
             if($use_sso !='Y') $use_sso = 'N';
 
-			$use_cdn = Context::get('use_cdn');
-			if($use_cdn != 'Y') $use_cdn = 'N';
-
             $time_zone = Context::get('time_zone');
 
             $qmail_compatibility = Context::get('qmail_compatibility');
@@ -84,21 +81,20 @@
 				$admin_ip_list = '';
 			}
 
-			$db_info = Context::getDBInfo();
-            $db_info->default_url = Context::get('default_url');
-            if($db_info->default_url && !preg_match('/^(http|https):\/\//i', $db_info->default_url)) $db_info->default_url = 'http://'.$db_info->default_url;
-            $db_info->time_zone = $time_zone;
-            $db_info->qmail_compatibility = $qmail_compatibility;
-            $db_info->use_db_session = $use_db_session;
-            $db_info->use_rewrite = $use_rewrite;
-            $db_info->use_sso = $use_sso;
-            $db_info->use_ssl = $use_ssl;
-			$db_info->use_cdn = $use_cdn;
-			$db_info->use_html5 = $use_html5;
-			$db_info->use_mobile_view = $use_mobile_view;
-			$db_info->admin_ip_list = $admin_ip_list;
+	        $db_info = Context::getDBInfo();
+	        $db_info->default_url = Context::get('default_url');
+	        if($db_info->default_url && !preg_match('/^(http|https):\/\//i', $db_info->default_url)) $db_info->default_url = 'http://'.$db_info->default_url;
+	        $db_info->time_zone = $time_zone;
+	        $db_info->qmail_compatibility = $qmail_compatibility;
+	        $db_info->use_db_session = $use_db_session;
+	        $db_info->use_rewrite = $use_rewrite;
+	        $db_info->use_sso = $use_sso;
+	        $db_info->use_ssl = $use_ssl;
+	        $db_info->use_html5 = $use_html5;
+	        $db_info->use_mobile_view = $use_mobile_view;
+	        $db_info->admin_ip_list = $admin_ip_list;
 
-			if($http_port) $db_info->http_port = (int) $http_port;
+            if($http_port) $db_info->http_port = (int) $http_port;
             else if($db_info->http_port) unset($db_info->http_port);
 
             if($https_port) $db_info->https_port = (int) $https_port;
