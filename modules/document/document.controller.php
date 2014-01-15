@@ -188,7 +188,15 @@ class documentController extends document {
 		if(!$obj->commentStatus) $obj->commentStatus = 'DENY';
 		if($obj->commentStatus == 'DENY') $this->_checkCommentStatusForOldVersion($obj);
 		if($obj->allow_trackback!='Y') $obj->allow_trackback = 'N';
-		if($obj->homepage &&  !preg_match('/^[a-z]+:\/\//i',$obj->homepage)) $obj->homepage = 'http://'.$obj->homepage;
+		if($obj->homepage) 
+		{
+		  $obj->homepage = removeHackTag($obj->homepage);
+		  if(!preg_match('/^[a-z]+:\/\//i',$obj->homepage))
+		  {
+		    $obj->homepage = 'http://'.$obj->homepage;
+		  }
+		}
+
 		if($obj->notify_message != 'Y') $obj->notify_message = 'N';
 		if(!$isRestore) $obj->ipaddress = $_SERVER['REMOTE_ADDR'];	//board에서 form key값으로 ipaddress를 사용하면 엄한 ip가 등록됨. 필터와는 상관없슴
 
