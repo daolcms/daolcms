@@ -2,6 +2,7 @@
     /**
      * @class  layoutAdminView
      * @author NHN (developers@xpressengine.com)
+     * @Adaptor DAOL Project (developer@daolcms.org)
      * admin view class of the layout module
      **/
 
@@ -358,7 +359,7 @@
             // menu in layout information becomes an argument for Context:: set
             if($layout_info->menu_count) {
                 foreach($layout_info->menu as $menu_id => $menu) {
-                    if(file_exists($menu->php_file)) @include($menu->php_file);
+                    if(is_readable($menu->php_file)) include($menu->php_file);
                     Context::set($menu_id, $menu);
                 }
             }

@@ -14,7 +14,7 @@
     /**
      * Display the version info of DAOL CMS.
      */
-    define('__DAOL_VERSION__', '1.0.0.0');
+    define('__DAOL_VERSION__', '1.0.0.1');
     /**
      * Display XE's full version.
      */
@@ -73,8 +73,6 @@
      * define('__OB_GZHANDLER_ENABLE__', 1);
      * define('__ENABLE_PHPUNIT_TEST__', 0);
      * define('__PROXY_SERVER__', 'http://domain:port/path');
-	 * define('__XE_CDN_PREFIX__', 'http://yourCdnDomain.com/path/');
-	 * define('__XE_CDN_VERSION__', 'yourCdnVersion');
      */
     if(file_exists(_XE_PATH_.'config/config.user.inc.php')) {
         require _XE_PATH_.'config/config.user.inc.php';
@@ -204,22 +202,6 @@
 		 * FileHandler:: getRemoteResource uses the constant
 		 */
 		define('__PROXY_SERVER__', null);
-	}
-
-	if(!defined('__XE_CDN_PREFIX__'))
-	{
-		/**
-		 * CDN prefix
-		 */
-		define('__XE_CDN_PREFIX__', 'http://static.xpressengine.com/core/');
-	}
-
-	if(!defined('__XE_CDN_VERSION__'))
-	{
-		/**
-		 * CDN version
-		 */
-		define('__XE_CDN_VERSION__', 'reliable');
 	}
 
     // Require specific files when using Firebug console output

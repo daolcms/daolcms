@@ -77,22 +77,10 @@
 		 *		$args[3]: index
 		 * </pre>
 		 *
-		 * If $useCdn set true, use CDN instead local file.
-		 * CDN path = $cdnPrefix . $cdnVersion . $args[0]<br />
-		 *<br />
-		 * i.e.<br />
-		 * $cdnPrefix = 'http://static.xpressengine.com/core/';<br />
-		 * $cdnVersion = 'ardent1';<br />
-		 * $args[0] = './common/js/xe.js';<br />
-		 * The CDN path is http://static.xprssengine.com/core/ardent1/common/js/xe.js.<br />
-		 *
 		 * @param array $args Arguments
-		 * @param bool $useCdn If set true, use cdn instead local file
-		 * @param string $cdnPrefix CDN url prefix. (http://static.xpressengine.com/core/)
-		 * @param string $cdnVersion CDN version string (ardent1)
 		 * @return void
 		 **/
-		function loadFile($args, $useCdn = false, $cdnPrefix = '', $cdnVersion = '')
+		function loadFile($args)
 		{
 			if (!is_array($args)) $args = array($args);
 
@@ -126,10 +114,7 @@
 					}
 				}
 
-				$file->useCdn = $useCdn;
 				$file->cdnPath = $this->_normalizeFilePath($pathInfo['dirname']);
-				$file->cdnPrefix = $cdnPrefix;
-				$file->cdnVersion = $cdnVersion;
 			}
 
 			$availableExtension = array('css'=>1, 'js'=>1);
@@ -256,9 +241,6 @@
 
 			$this->_sortMap($map, $mapIndex);
 
-			$dbInfo = Context::getDBInfo();
-			$useCdn = $dbInfo->use_cdn;
-
 			$result = array();
 			foreach($map as $indexedMap)
 			{
@@ -301,23 +283,14 @@
 
 			$this->_sortMap($map, $mapIndex);
 
-			$dbInfo = Context::getDBInfo();
-			$useCdn = $dbInfo->use_cdn;
-
 			$result = array();
 			foreach($map as $indexedMap)
 			{
 				foreach($indexedMap as $file)
 				{
-					if ($this->isSsl() == false && $useCdn == 'Y' && $file->useCdn && $file->cdnVersion != '%__XE_CDN_VERSION__%')
-					{
-						$fullFilePath = $file->cdnPrefix . $file->cdnVersion . '/' . substr($file->cdnPath, 2) . '/' . $file->fileName;
-					}
-					else
-					{
-						$noneCache = (is_readable($file->cdnPath.'/'.$file->fileName))?'?'.date('YmdHis', filemtime($file->cdnPath.'/'.$file->fileName)):'';
-						$fullFilePath = $file->filePath . '/' . $file->fileName.$noneCache;
-					}
+					$noneCache = (is_readable($file->cdnPath.'/'.$file->fileName))?'?'.date('YmdHis', filemtime($file->cdnPath.'/'.$file->fileName)):'';
+					$fullFilePath = $file->filePath . '/' . $file->fileName.$noneCache;
+
 					$result[] = array('file' => $fullFilePath, 'targetie' => $file->targetIe);
 				}
 			}

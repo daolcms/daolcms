@@ -7,7 +7,7 @@
 			<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
 				<p>{$XE_VALIDATOR_MESSAGE}</p>
 			</div>
-			<form rule="install" action="./" method="post">
+			<form ruleset="install" action="./" method="post">
 			<input type="hidden" name="act" value="procInstall" />
 				<ul class="form formAdmin">
 					<li><label for="aMail">{$lang->email_address}</label><input name="email_address" type="text" class="iText" id="aMail" /></li>

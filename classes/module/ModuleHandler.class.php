@@ -2,6 +2,7 @@
     /**
     * @class ModuleHandler
     * @author NHN (developers@xpressengine.com)
+    * @Adaptor DAOL Project (developer@daolcms.org)
     * Handling modules
     *
     * @remarks This class is to excute actions of modules.
@@ -81,7 +82,7 @@
             $called_position = 'before_module_init';
             $oAddonController = &getController('addon');
             $addon_file = $oAddonController->getCacheFilePath(Mobile::isFromMobilePhone()?'mobile':'pc');
-            @include($addon_file);
+            if(is_readable($addon_file)) include($addon_file);
         }
 
         /**
@@ -674,7 +675,7 @@
                         // Set menus into context
                         if($layout_info->menu_count) {
                             foreach($layout_info->menu as $menu_id => $menu) {
-                                if(file_exists($menu->php_file)) @include($menu->php_file);
+                                if(is_readable($menu->php_file)) include($menu->php_file);
                                 Context::set($menu_id, $menu);
                             }
                         }
@@ -771,9 +772,9 @@
                 $oModule->setModulePath($class_path);
 
                 // If the module has a constructor, run it.
-                if(!isset($GLOBALS['_called_constructor'][$instance_name])) {
+                if(!isset($GLOBALS['_called_constructor'][$instance_name]) && trim($instance_name)) {
                     $GLOBALS['_called_constructor'][$instance_name] = true;
-                    if(@method_exists($oModule, $instance_name)) $oModule->{$instance_name}();
+                    if(method_exists($oModule, $instance_name)) $oModule->{$instance_name}();
                 }
 
                 // Store the created instance into GLOBALS variable

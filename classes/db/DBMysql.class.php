@@ -13,7 +13,7 @@
 class DBMysql extends DB {
 
     /**
-	 * prefix of a tablename (One or more XEs can be installed in a single DB)
+	 * prefix of a tablename (One or more DAOLs can be installed in a single DB)
 	 * @var string
      */
     var $prefix   = 'daol_'; // / <
@@ -76,7 +76,7 @@ class DBMysql extends DB {
             $connection["db_hostname"] .= ':' . $connection["db_port"];
 
         // Attempt to connect
-        $result = @mysql_connect($connection["db_hostname"], $connection["db_userid"], $connection["db_password"]);
+        $result = mysql_connect($connection["db_hostname"], $connection["db_userid"], $connection["db_password"]);
 
         if(mysql_error()) {
             $this->setError(mysql_errno(), mysql_error());
@@ -84,11 +84,15 @@ class DBMysql extends DB {
         }
         // Error appears if the version is lower than 4.1
         if(mysql_get_server_info($result)<"4.1") {
-            $this->setError(-1, "XE cannot be installed under the version of mysql 4.1. Current mysql version is ".mysql_get_server_info());
+            $this->setError(-1, "DAOL cannot be installed under the version of mysql 4.1. Current mysql version is ".mysql_get_server_info());
             return;
         }
         // select db
-        @mysql_select_db($connection["db_database"], $result);
+        $output = mysql_select_db($connection["db_database"], $result);
+        if(!$output)
+        {
+          exit('DAOL cannot select database.');
+        }
         if(mysql_error()) {
             $this->setError(mysql_errno(), mysql_error());
             return;
@@ -115,7 +119,7 @@ class DBMysql extends DB {
 	 * @return void
 	 */
     function _close($connection) {
-        @mysql_close($connection);
+        mysql_close($connection);
     }
 
 	/**

@@ -3,6 +3,7 @@
 	 * adminAdminController class
 	 * admin controller class of admin module
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @package /modules/admin
 	 * @version 0.1
 	 */
@@ -370,9 +371,9 @@
 		 */
 		function procAdminRemoveIcons(){
 			$iconname = Context::get('iconname');
-			$file_exist = FileHandler::readFile(_XE_PATH_.'files/attach/xeicon/'.$iconname);
+			$file_exist = FileHandler::hasContent(_XE_PATH_.'files/attach/xeicon/'.$iconname);
 			if($file_exist) {
-				@FileHandler::removeFile(_XE_PATH_.'files/attach/xeicon/'.$iconname);
+				FileHandler::removeFile(_XE_PATH_.'files/attach/xeicon/'.$iconname);
 			} else {
 				return new Object(-1,'fail_to_delete');
 			}

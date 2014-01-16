@@ -149,6 +149,17 @@
 			<value xml:lang="tr"><![CDATA[[Gerekli] Eğer PHP sürümü 5.2.2 ise, Daol CMS yazılım hatasından dolayı kurulmayacaktır]]></value>
 			<value xml:lang="vi"><![CDATA[[Bắt buộc] Nếu phiên bản của PHP là 5.2.2, Daol CMS sẽ không thể cài đặt vì có lỗi.]]></value>
 		</item>
+		<item name="php_version_warning">
+			<value xml:lang="ko"><![CDATA[[권장] DAOL은 PHP 5.3.10 버전 이상을 권장합니다.<br> PHP 5.2.x 이하 버전은 더이상 업데이트되지 않는 버전입니다.]]></value>
+			<value xml:lang="en"><![CDATA[[Recommend] DAOL recommends only PHP Version 5.3.10 or higher]]></value>
+		</item>
+		<item name="php_more">
+			<value xml:lang="ko"><![CDATA[더보기]]></value>
+			<value xml:lang="en"><![CDATA[more]]></value>
+			<value xml:lang="jp"><![CDATA[もっと見る]]></value>もっと見る
+			<value xml:lang="zh-CN"><![CDATA[[更多]]></value>
+			<value xml:lang="zh-TW"><![CDATA[[更多]]></value>
+		</item>
 		<item name="permission">
 			<value xml:lang="ko"><![CDATA[[필수] Daol CMS의 설치 경로 또는 ./files 디렉토리의 퍼미션이 707이어야 합니다.]]></value>
 			<value xml:lang="en"><![CDATA[[Required] Daol CMS installation path or ./files directory's permission must be 707]]></value>

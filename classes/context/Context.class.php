@@ -319,7 +319,7 @@ class Context {
 		if(!$self->isInstalled()) return;
 
 		$config_file = $self->getConfigFile();
-		if(is_readable($config_file)) @include($config_file);
+		if(is_readable($config_file)) include($config_file);
 
                 // If master_db information does not exist, the config file needs to be updated
                 if(!isset($db_info->master_db)) {
@@ -604,7 +604,7 @@ class Context {
 
 		if ($filename && is_readable($filename)){
 			$self->loaded_lang_files[] = $filename;
-			@include($filename);
+			include($filename);
 		}else{
 			$self->_evalxmlLang($path);
 		}
@@ -1190,8 +1190,8 @@ class Context {
 				foreach($get_vars as $key => $val) {
 					if(is_array($val) && count($val)) {
 						foreach($val as $k => $v) $queries[] = $key.'['.$k.']='.urlencode($v);
-					} else {
-						$queries[] = $key.'='.@urlencode($val);
+					} elseif(is_string($val)) {
+						$queries[] = $key.'='.urlencode($val);
 					}
 				}
 				if(count($queries)) $query = 'index.php?'.implode('&', $queries);
@@ -1456,22 +1456,13 @@ class Context {
 	 *		$args[1]: media,
 	 *		$args[2]: target IE,
 	 *		$args[3]: index
-	 * @param bool $useCdn use cdn
-	 * @param string $cdnPrefix cdn prefix
-	 * @param string $cdnVersion cdn version
 	 *
 	 */
-	function loadFile($args, $useCdn = false, $cdnPrefix = '', $cdnVersion = '')
+	function loadFile($args)
 	{
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 
-		if ($useCdn && !$cdnPrefix)
-		{
-			$cdnPrefix = __XE_CDN_PREFIX__;
-			$cdnVersion = __XE_CDN_VERSION__;
-		}
-
-		$self->oFrontEndFileHandler->loadFile($args, $useCdn, $cdnPrefix, $cdnVersion);
+		$self->oFrontEndFileHandler->loadFile($args);
 	}
 
 	/**

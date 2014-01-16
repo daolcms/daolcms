@@ -3,6 +3,7 @@
  * Contains methods for accessing file system
  *
  * @author NHN (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  **/
 class FileHandler {
 	/**
@@ -46,9 +47,9 @@ class FileHandler {
 				FileHandler::copyDir($source_dir.$file,$target_dir.$file,$type);
 			}else{
 				if($type == 'force'){
-					@unlink($target_dir.$file);
+					unlink($target_dir.$file);
 				}else{
-					if(!file_exists($target_dir.$file)) @copy($source_dir.$file,$target_dir.$file);
+					if(!file_exists($target_dir.$file)) copy($source_dir.$file,$target_dir.$file);
 				}
 			}
 		}
@@ -68,8 +69,8 @@ class FileHandler {
 		$target_dir = FileHandler::getRealPath(dirname($target));
 		$target = basename($target);
 		if(!file_exists($target_dir)) FileHandler::makeDir($target_dir);
-		if($force=='Y') @unlink($target_dir.'/'.$target);
-		@copy($source, $target_dir.'/'.$target);
+		if($force=='Y') unlink($target_dir.'/'.$target);
+		copy($source, $target_dir.'/'.$target);
 	}
 
 	/**
@@ -81,11 +82,11 @@ class FileHandler {
 	function readFile($file_name) {
 		$file_name = FileHandler::getRealPath($file_name);
 
-		if(!file_exists($file_name)) return;
+		if(!is_readable($file_name)) return;
 		$filesize = filesize($file_name);
 		if($filesize<1) return;
 
-		if(function_exists('file_get_contents')) return @file_get_contents($file_name);
+		if(function_exists('file_get_contents')) return file_get_contents($file_name);
 
 		$fp = fopen($file_name, "r");
 		$buff = '';
@@ -119,7 +120,7 @@ class FileHandler {
 		if(@!$fp = fopen($file_name,$mode)) return false;
 		fwrite($fp, $buff);
 		fclose($fp);
-		@chmod($file_name, 0644);
+		chmod($file_name, 0644);
 	}
 
 	/**
@@ -129,8 +130,12 @@ class FileHandler {
 	 * @return bool Returns true on success or false on failure.
 	 **/
 	function removeFile($file_name) {
-		$file_name = FileHandler::getRealPath($file_name);
-		return (file_exists($file_name) && @unlink($file_name));
+    	$file_name = FileHandler::getRealPath($file_name);
+    	if(file_exists($file_name))
+    	{
+        	return unlink($file_name);
+    	}
+    	else return FALSE;
 	}
 
 	/**
@@ -145,7 +150,7 @@ class FileHandler {
 	function rename($source, $target) {
 		$source = FileHandler::getRealPath($source);
 		$target = FileHandler::getRealPath($target);
-		return @rename($source, $target);
+		return rename($source, $target);
 	}
 
 	/**
@@ -261,8 +266,8 @@ class FileHandler {
 					$oFtp->ftp_mkdir($ftp_path);
 					$oFtp->ftp_site("CHMOD 777 ".$ftp_path);
 				} else {
-					@mkdir($path, 0755);
-					@chmod($path, 0755);
+					mkdir($path, 0755);
+					chmod($path, 0755);
 				}
 			}
 		}
@@ -588,24 +593,24 @@ class FileHandler {
 		switch($type) {
 			case 'gif' :
 					if(!function_exists('imagecreatefromgif')) return false;
-					$source = @imagecreatefromgif($source_file);
+					$source = imagecreatefromgif($source_file);
 				break;
 			// jpg
 			case 'jpeg' :
 			case 'jpg' :
 					if(!function_exists('imagecreatefromjpeg')) return false;
-					$source = @imagecreatefromjpeg($source_file);
+					$source = imagecreatefromjpeg($source_file);
 				break;
 			// png
 			case 'png' :
 					if(!function_exists('imagecreatefrompng')) return false;
-					$source = @imagecreatefrompng($source_file);
+					$source = imagecreatefrompng($source_file);
 				break;
 			// bmp
 			case 'wbmp' :
 			case 'bmp' :
 					if(!function_exists('imagecreatefromwbmp')) return false;
-					$source = @imagecreatefromwbmp($source_file);
+					$source = imagecreatefromwbmp($source_file);
 				break;
 			default :
 				return;
@@ -658,7 +663,7 @@ class FileHandler {
 		imagedestroy($source);
 
 		if(!$output) return false;
-		@chmod($target_file, 0644);
+		chmod($target_file, 0644);
 
 		return true;
 	}

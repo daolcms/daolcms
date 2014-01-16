@@ -2,6 +2,7 @@
     /**
      * @class  widgetModel
      * @author NHN (developers@xpressengine.com)
+     * @Adaptor DAOL Project (developer@daolcms.org)
      * @version 0.1
      * @brief Model class for widget modules
      **/
@@ -120,8 +121,8 @@
             $cache_file = sprintf('./files/cache/widget/%s.%s.cache.php', $widget, Context::getLangType());
 
 
-            if(file_exists($cache_file)&&filemtime($cache_file)>filemtime($xml_file)) {
-                @include($cache_file);
+            if(is_readable($cache_file)&&filemtime($cache_file)>filemtime($xml_file)) {
+                include($cache_file);
                 return $widget_info;
             }
             // If no cache file exists, parse the xml and then return the variable.
@@ -260,7 +261,7 @@
             $buff = '<?php if(!defined("__ZBXE__")) exit(); '.$buff.' ?>';
             FileHandler::writeFile($cache_file, $buff);
 
-            if(file_exists($cache_file)) @include($cache_file);
+            if(is_readable($cache_file)) include($cache_file);
             return $widget_info;
         }
 
@@ -279,8 +280,8 @@
             // If the problem by comparing the cache file and include the return variable $widgetStyle_info
             $cache_file = sprintf('./files/cache/widgetstyles/%s.%s.cache.php', $widgetStyle, Context::getLangType());
 
-            if(file_exists($cache_file)&&filemtime($cache_file)>filemtime($xml_file)) {
-                @include($cache_file);
+            if(is_readable($cache_file)&&filemtime($cache_file)>filemtime($xml_file)) {
+                include($cache_file);
                 return $widgetStyle_info;
             }
             // If no cache file exists, parse the xml and then return the variable.
@@ -395,7 +396,7 @@
             $buff = '<?php if(!defined("__ZBXE__")) exit(); '.$buff.' ?>';
             FileHandler::writeFile($cache_file, $buff);
 
-            if(file_exists($cache_file)) @include($cache_file);
+            if(is_readable($cache_file)) include($cache_file);
             return $widgetStyle_info;
         }
 

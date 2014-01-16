@@ -2,6 +2,7 @@
     /**
      * @class  moduleModel
      * @author NHN (developers@xpressengine.com)
+     * @Adaptor DAOL Project (developer@daolcms.org)
      * @brief Model class of module module
      **/
 
@@ -638,8 +639,8 @@
                         		$buff .= sprintf('$info->menu->%s->index=\'%s\';', $action->attrs->menu_name, $name);
 							}
 							if(is_array($info->menu->{$action->attrs->menu_name}->acts)) {
-								@array_push($info->menu->{$action->attrs->menu_name}->acts, $name);
-								$currentKey = @array_search($name, $info->menu->{$action->attrs->menu_name}->acts);
+								array_push($info->menu->{$action->attrs->menu_name}->acts, $name);
+								$currentKey = array_search($name, $info->menu->{$action->attrs->menu_name}->acts);
 							}
 
                         	$buff .= sprintf('$info->menu->%s->acts[%d]=\'%s\';', $action->attrs->menu_name, $currentKey, $name);
