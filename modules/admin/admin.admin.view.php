@@ -566,7 +566,7 @@
           		$php_core['memory_limit'] = "{$ini_info['memory_limit']['local_value']}";
           		$info['PHP_Core'] = $php_core;
           
-          		$str_info = "[XE Server Environment " . date("Y-m-d") . "]\n\n";
+          		$str_info = "[DAOL Server Environment " . date("Y-m-d") . "]\n\n";
           		foreach( $info as $key=>$value )
           		{
           			if( is_array( $value ) == false ) {
