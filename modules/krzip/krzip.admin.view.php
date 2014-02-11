@@ -1,31 +1,31 @@
 <?php
-    /**
-     * @class  krzipAdminView
-     * @author NHN (developers@xpressengine.com)
-     * @brief admin view class of the krzip module 
-     **/
+/* Copyright (C) NAVER <http://www.navercorp.com> */
 
-    class krzipAdminView extends krzip {
+	/**
+	 * @class  krzipAdminView
+	 * @author NAVER (developers@xpressengine.com)
+	 * @brief admin view class of the krzip module 
+	 **/
 
-        /**
-         * @brief Initialization
-         **/
-        function init() {
-        }
+	class krzipAdminView extends krzip {
 
-        /**
-         * @brief Configuration
-         **/
-        function dispKrzipAdminConfig() {
-            // Get configurations (using module model object)
-            $oModuleModel = &getModel('module');
-            $config = $oModuleModel->getModuleConfig('krzip');
-            Context::set('config',$config);
-            // Set a template file
-            $this->setTemplatePath($this->module_path.'tpl');
-            $this->setTemplateFile('index');
-        }
+		/**
+		 * @brief Initialization
+		 **/
+		function init() {
+		}
 
-
-    }
+		/**
+		 * @brief Configuration
+		 **/
+		function dispKrzipAdminConfig() {
+			// Get configurations (using module model object)
+			$oModuleModel = getModel('module');
+			$config = $oModuleModel->getModuleConfig('krzip');
+			Context::set('config',$config);
+			// Set a template file
+			$this->setTemplatePath($this->module_path.'tpl');
+			$this->setTemplateFile('index');
+		}
+	}
 ?>
