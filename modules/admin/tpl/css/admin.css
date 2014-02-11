@@ -1,6 +1,7 @@
 ﻿@charset "utf-8";
 /* Element Reset */
 header,footer,section,article,aside,nav,hgroup,details,menu,figure,figcaption{display:block}
+a{text-decoration:none;}
 .x,
 .x table,
 .x input,
