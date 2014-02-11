@@ -395,33 +395,8 @@
 						}
 						$template = sprintf($template, implode('', $optionTag));
 					}elseif($extendForm->column_type == 'kr_zip'){
-						Context::loadFile(array('./modules/member/tpl/js/krzip_search.js', 'body'), true);
-						$extentionReplace = array(
-										 'msg_kr_address'       => $lang->msg_kr_address,
-										 'msg_kr_address_etc'       => $lang->msg_kr_address_etc,
-										 'cmd_search'	=> $lang->cmd_search,
-										 'cmd_search_again'	=> $lang->cmd_search_again,
-										 'addr_0'	=> $extendForm->value[0],
-										 'addr_1'	=> $extendForm->value[1]);
-						$replace = array_merge($extentionReplace, $replace);
-						$template = <<<EOD
-						<div class="krZip">
-							<div class="a" id="zone_address_search_%column_name%" >
-								<label for="krzip_address1_%column_name%">%msg_kr_address%</label><br />
-								<input type="text" id="krzip_address1_%column_name%" value="%addr_0%" />
-								<button type="button">%cmd_search%</button>
-							</div>
-							<div class="a" id="zone_address_list_%column_name%" style="display:none">
-								<select name="%column_name%[]" id="address_list_%column_name%"><option value="%addr_0%">%addr_0%</select>
-								<button type="button">%cmd_search_again%</button>
-							</div>
-							<div class="a address2">
-								<label for="krzip_address2_%column_name%">%msg_kr_address_etc%</label><br />
-								<input type="text" name="%column_name%[]" id="krzip_address2_%column_name%" value="%addr_1%" />
-							</div>
-						</div>
-						<script type="text/javascript">jQuery(function($){ $.krzip('%column_name%') });</script>
-EOD;
+                        $krzipModel = &getModel('krzip');
+                        $template = $krzipModel->getKrzipCodeSearchHtml($extendForm->column_name, $extendForm->value);
 					}elseif($extendForm->column_type == 'jp_zip'){
 						$template = '<input type="text" name="%column_name%" id="%column_name%" value="%value%" />';
 					}elseif($extendForm->column_type == 'date'){
