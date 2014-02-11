@@ -2,6 +2,7 @@
     /**
      * @class  memberAdminView
      * @author NHN (developers@xpressengine.com)
+     * @Adaptor DAOL Project (developer@daolcms.org)
      * member module's admin view class
      **/
 

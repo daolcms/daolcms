@@ -3,6 +3,7 @@
      * A class to handle extra variables used in posts, member and others
 	 *
      * @author NHN (developers@xpressengine.com)
+     * @Adaptor DAOL Project (developer@daolcms.org)
      **/
     class ExtraVar {
 

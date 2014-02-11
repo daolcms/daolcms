@@ -4,6 +4,7 @@
 	 * Admin view class of admin module
 	 *
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @package /modules/admin
 	 * @version 0.1
 	 */
