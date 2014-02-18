@@ -2,6 +2,7 @@
     /**
      * @class content
      * @author NHN (developers@xpressengine.com)
+     * @Adaptor DAOL Project (developer@daolcms.org)
      * @brief widget to display content
      * @version 0.1
      **/
@@ -580,6 +581,13 @@
 		}
 
         function _getTrackbackItems($args){
+	    $oTrackbackModel = &getModel('trackback');
+	    if(!$oTrackbackModel)
+	    {
+		return;
+	    }
+
+	    $obj = new stdClass;
             // Get categories
             $output = executeQueryArray('widgets.content.getCategories',$obj);
             if($output->toBool() && $output->data) {
@@ -591,8 +599,8 @@
             $obj->module_srl = $args->module_srl;
             $obj->sort_index = $args->order_target;
             $obj->list_count = $args->list_count * $args->page_count;
+
             // Get model object from the trackback module and execute getTrackbackList() method
-            $oTrackbackModel = &getModel('trackback');
             $output = $oTrackbackModel->getNewestTrackbackList($obj);
             // If an error occurs, just ignore it.
             if(!$output->toBool() || !$output->data) return;

@@ -4,6 +4,7 @@
 	 * Document the module's admin controller class
 	 *
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @package /modules/document
 	 * @version 0.1
 	 */
@@ -340,8 +341,8 @@
 
                 }
                 // Move the trackbacks
-                if($oDocument->getTrackbackCount()) {
-                    $oTrackbackModel = &getModel('trackback');
+                $oTrackbackModel = &getModel('trackback');
+                if($oTrackbackModel && $oDocument->getTrackbackCount()) {
                     $trackbacks = $oTrackbackModel->getTrackbackList($oDocument->document_srl);
                     if(count($trackbacks)) {
                         $success_count = 0;

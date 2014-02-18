@@ -4,6 +4,7 @@
 	 * document object
 	 *
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @package /modules/document
 	 * @version 0.1
 	 */
@@ -514,7 +515,7 @@
             if(!$this->document_srl) return;
             // Generate a key to prevent spams
             $oTrackbackModel = &getModel('trackback');
-            return $oTrackbackModel->getTrackbackUrl($this->document_srl, $this->getDocumentMid());
+            if($oTrackbackModel) return $oTrackbackModel->getTrackbackUrl($this->document_srl, $this->getDocumentMid());
         }
 
 		/**
