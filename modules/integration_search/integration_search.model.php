@@ -102,6 +102,10 @@
 		 * @return Object output trackback list
          **/
         function getTrackbacks($target, $module_srls_list, $search_target = "title", $search_keyword, $page=1, $list_count = 20) {
+            $oTrackbackModel = &getAdminModel('trackback');
+            if(!$oTrackbackModel) return new Object();
+            $args = new stdClass();
+            
             if(is_array($module_srls_list)) $module_srls = implode(',',$module_srls_list);
             else $module_srls = $module_srls_list;
             if($target == 'exclude') $args->exclude_module_srl = $module_srls;
@@ -114,7 +118,6 @@
             $args->sort_index = 'list_order'; 
             $args->order_type = 'asc';
             // Get a list of documents
-            $oTrackbackModel = &getAdminModel('trackback');
             $output = $oTrackbackModel->getTotalTrackbackList($args);
             if(!$output->toBool()|| !$output->data) return $output;
             return $output;
