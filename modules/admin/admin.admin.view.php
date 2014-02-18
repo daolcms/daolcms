@@ -235,11 +235,6 @@
 			$status->comment->todayCount = $oCommentModel->getCommentCountByDate($today);
 			$status->comment->totalCount = $oCommentModel->getCommentCountByDate();
 
-            // Trackback Status
-			$oTrackbackAdminModel = &getAdminModel('trackback');
-			$status->trackback->todayCount = $oTrackbackAdminModel->getTrackbackCountByDate($today);
-			$status->trackback->totalCount = $oTrackbackAdminModel->getTrackbackCountByDate();
-
             // Attached files Status
 			$oFileAdminModel = &getAdminModel('file');
 			$status->file->todayCount = $oFileAdminModel->getFilesCountByDate($today);
@@ -268,14 +263,6 @@
 				}
 			}
             Context::set('latestCommentList', $output);
-			unset($args, $output, $columnList);
-
-			//Latest Trackback
-			$oTrackbackModel = &getModel('trackback');
-			$columnList = array();
-			$args->list_count = 5;
-			$output =$oTrackbackModel->getNewestTrackbackList($args);
-            Context::set('latestTrackbackList', $output->data);
 			unset($args, $output, $columnList);
 
             // Get list of modules
