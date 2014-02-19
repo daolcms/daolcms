@@ -75,7 +75,7 @@ jQuery(function($){
 
 	// Display the dashboard in two column
 	$(window).resize(function(){
-		if($(document).width() < 1300){
+		if($(document).width() < 1370){
 			$('.dashboard>.section>br').remove();
 			$('.dashboard>.section>.portlet:odd').after('<br style="clear:both" />');
 		} else {

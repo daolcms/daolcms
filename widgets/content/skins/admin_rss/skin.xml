@@ -21,7 +21,6 @@
     <version>1.0</version>
     <date>2014-02-19</date>
     <link>http://www.daolcms.org/</link>
-
     <author email_address="developer@daolcms.org" link="http://www.daolcms.org/">
 		<name xml:lang="ko">DAOL Project</name>
         <name xml:lang="en">DAOL Project</name>
@@ -33,33 +32,4 @@
         <name xml:lang="ru">DAOL Project</name>
         <name xml:lang="tr">DAOL Project</name>
     </author>
-
-    <colorset>
-        <color name="white">
-            <title xml:lang="ko">흰색 바탕용</title>
-            <title xml:lang="jp">白い背景用</title>
-            <title xml:lang="zh-CN">白色背景</title>
-            <title xml:lang="en">White Background</title>
-            <title xml:lang="vi">Nền sáng</title>
-            <title xml:lang="zh-TW">白色背景</title>
-            <title xml:lang="tr">Beyaz Arkaplan</title>
-        </color>
-        <color name="black">
-            <title xml:lang="ko">어두운 바탕용</title>
-            <title xml:lang="jp">暗い背景用</title>
-            <title xml:lang="zh-CN">暗色背景</title>
-            <title xml:lang="en">Dark Background</title>
-            <title xml:lang="vi">Nền tối</title>
-            <title xml:lang="zh-TW">黑色背景</title>
-            <title xml:lang="tr">Siyah Arkaplan</title>
-        </color>
-        <color name="layout">
-            <title xml:lang="ko">레이아웃에 맞춤</title>
-            <title xml:lang="jp">レイアウトに合わせる</title>
-            <title xml:lang="zh-CN">随布局</title>
-            <title xml:lang="en">Custom Layout</title>
-            <title xml:lang="zh-TW">隨版面</title>
-            <title xml:lang="tr">Yerleşim Düzeni</title>
-        </color>
-    </colorset>
 </skin>
