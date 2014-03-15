@@ -489,7 +489,14 @@
             if(!$is_admin && !$source_obj->isGranted()) return new Object(-1, 'msg_not_permitted');
 
             if($obj->password) $obj->password = md5($obj->password);
-            if($obj->homepage &&  !preg_match('/^[a-z]+:\/\//i',$obj->homepage)) $obj->homepage = 'http://'.$obj->homepage;
+            if($obj->homepage) {
+                $obj->homepage = removeHackTag($obj->homepage);
+                if(!preg_match('/^[a-z]+:\/\//i',$obj->homepage))
+                {
+                    $obj->homepage = 'http://'.$obj->homepage;
+                }
+            }
+
             // set modifier's information if logged-in and posting author and modifier are matched.
             if(Context::get('is_logged')) {
                 $logged_info = Context::get('logged_info');
