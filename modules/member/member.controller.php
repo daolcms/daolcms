@@ -1645,6 +1645,7 @@
             $_SESSION['ipaddress'] = $_SERVER['REMOTE_ADDR'];
             $_SESSION['member_srl'] = $this->memberInfo->member_srl;
 			$_SESSION['is_admin'] = '';
+			setcookie('xe_logged', 'true', 0, '/');
 			// Do not save your password in the session jiwojum;;
             //unset($this->memberInfo->password);
             // User Group Settings
@@ -2068,6 +2069,7 @@
             session_destroy();
             setcookie(session_name(), '', time()-42000, '/');
             setcookie('sso','',time()-42000, '/');
+			setcookie('xe_logged', 'false', $_SERVER['REQUEST_TIME'] - 42000, '/');
 
 			if($memberSrl)
 			{
