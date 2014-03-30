@@ -83,7 +83,7 @@ class DBMysql extends DB {
             return;
         }
         // Error appears if the version is lower than 4.1
-        if(mysql_get_server_info($result)<"4.1") {
+        if(version_compare(mysql_get_server_info($result), '4.1', '<')) {
             $this->setError(-1, "DAOL cannot be installed under the version of mysql 4.1. Current mysql version is ".mysql_get_server_info());
             return;
         }
