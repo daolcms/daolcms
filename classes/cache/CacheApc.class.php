@@ -71,7 +71,7 @@ class CacheApc extends CacheBase {
 		unset($obj[1]);
 
 		if($modified_time > 0 && $modified_time > $obj[0]) {
-			$this->_delete($_key);
+			$this->delete($_key);
 			return false;
 		}
 		
@@ -92,22 +92,13 @@ class CacheApc extends CacheBase {
 		if(!$success || !is_array($obj)) return false;
 
 		if($modified_time > 0 && $modified_time > $obj[0]) {
-			$this->_delete($_key);
+			$this->delete($_key);
 			return false;
 		}
 
 		return $obj[1];
 	}
 
-	/**
-	 * Delete variable from the cache(private)
-	 *
-	 * @param string $_key Used to store the value.
-	 * @return void
-	 */
-	function _delete($_key) {
-		$this->put($_key,null,1);
-	}
 
 	/**
 	 * Delete variable from the cache
@@ -116,7 +107,7 @@ class CacheApc extends CacheBase {
 	 * @return void
 	 */
 	function delete($key) {
-		$this->_delete($key);
+		return apc_delete($key);
 	}
 
 	/**

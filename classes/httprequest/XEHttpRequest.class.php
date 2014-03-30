@@ -122,7 +122,7 @@ class XEHttpRequest {
 		// read response headers
 		$is_chunked = false;
 		while(strlen(trim($line = fgets($sock)))) {
-			list($equiv, $content) = preg_split('/ *: */', rtrim($line), 1);
+			list($equiv, $content) = preg_split('/ *: */', rtrim($line), 2);
 			if(!strcasecmp($equiv, 'Transfer-Encoding') && $content == 'chunked') {
 				$is_chunked = true;
 			}

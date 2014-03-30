@@ -42,7 +42,7 @@
 			<p class="q"><label for="cpw">{$lang->find_account_question}</label></p>
 			<p class="a">
 				<select name="find_account_question" style="width:290px">
-				<!--@for($i=1,$c=count($lang->find_account_question_items);$i<$c;$i++)-->
+				<!--@for($i=1,$c=count($lang->find_account_question_items);$i<=$c;$i++)-->
 					<option value="{$i}">{$lang->find_account_question_items[$i]}</option>
 				<!--@end-->
 				</select>
