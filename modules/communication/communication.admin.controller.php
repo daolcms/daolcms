@@ -19,13 +19,18 @@
          **/
         function procCommunicationAdminInsertConfig() {
             // get the default information
-            $args = Context::gets('skin','colorset','editor_skin','editor_colorset', 'mskin', 'layout_srl', 'mlayout_srl');
+            $args = Context::gets('skin', 'colorset', 'editor_skin', 'sel_editor_colorset', 'mskin', 'mcolorset', 'layout_srl', 'mlayout_srl', 'grant_write_default','grant_write_group');
 
             if(!$args->skin) $args->skin = 'default';
             if(!$args->colorset) $args->colorset = 'white';
             if(!$args->editor_skin) $args->editor_skin = 'default';
             if(!$args->mskin) $args->mskin = 'default';
             if(!$args->layout_srl) $args->layout_srl = null;
+
+			$oCommunicationModel = getModel('communication');
+			$args->grant_write = $oCommunicationModel->getGrantArray($args->grant_write_default, $args->grant_write_group);
+			unset($args->grant_write_default);
+			unset($args->grant_write_group);
 
             // create the module module Controller object
             $oModuleController = &getController('module');

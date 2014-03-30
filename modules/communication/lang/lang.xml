@@ -359,4 +359,12 @@
 		<value xml:lang="en"><![CDATA[Send a message to the author about this. If you don't write a message, it is not sent.]]></value>
 		<value xml:lang="jp"><![CDATA[作成者にメッセージを送信し、知らせます。作成しなければ送信されません。]]></value>
 	</item>
+	<item name="cmd_write_communication">
+		<value xml:lang="ko"><![CDATA[작성 권한]]></value>
+		<value xml:lang="en"><![CDATA[Write Grant]]></value>
+	</item>
+	<item name="cmd_manage_base">
+		<value xml:lang="ko"><![CDATA[기본 정보]]></value>
+		<value xml:lang="en"><![CDATA[Basic infomation]]></value>
+	</item>
 </lang>
