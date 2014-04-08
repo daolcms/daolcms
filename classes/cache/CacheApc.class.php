@@ -71,7 +71,7 @@ class CacheApc extends CacheBase {
 		unset($obj[1]);
 
 		if($modified_time > 0 && $modified_time > $obj[0]) {
-			$this->delete($_key);
+			$this->delete($key);
 			return false;
 		}
 		
@@ -92,7 +92,7 @@ class CacheApc extends CacheBase {
 		if(!$success || !is_array($obj)) return false;
 
 		if($modified_time > 0 && $modified_time > $obj[0]) {
-			$this->delete($_key);
+			$this->delete($key);
 			return false;
 		}
 
@@ -107,7 +107,8 @@ class CacheApc extends CacheBase {
 	 * @return void
 	 */
 	function delete($key) {
-		return apc_delete($key);
+		$_key = md5(_XE_PATH_ . $key);
+		return apc_delete($_key);
 	}
 
 	/**
