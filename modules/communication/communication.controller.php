@@ -55,6 +55,11 @@
             // Check if there is a member to receive a message
             $oMemberModel = &getModel('member');
             $oCommunicationModel = &getModel('communication');
+			$config = $oCommunicationModel->getConfig();
+			if(!$oCommunicationModel->checkGrant($config->grant_write))
+			{
+					return new Object(-1, 'msg_not_permitted');
+			}
             $receiver_member_info = $oMemberModel->getMemberInfoByMemberSrl($receiver_srl);
             if($receiver_member_info->member_srl != $receiver_srl) return new Object(-1, 'msg_not_exists_member');
             // check whether to allow to receive the message(pass if a top-administrator)

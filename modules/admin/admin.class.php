@@ -4,6 +4,7 @@
 	 * Base class of admin module
 	 *
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @package /modules/admin
 	 * @version 0.1
 	 */
@@ -124,78 +125,74 @@
 					'subMenu'=>array('comment'),
 				),
 				4=>array(
-					'module'=>'trackback',
-					'subMenu'=>array('trackback'),
-				),
-				5=>array(
 					'module'=>'file',
 					'subMenu'=>array('file'),
 				),
-				6=>array(
+				5=>array(
 					'module'=>'poll',
 					'subMenu'=>array('poll'),
 				),
-				7=>array(
+				6=>array(
 					'module'=>'rss',
 					'subMenu'=>array('rss'),
 				),
-				8=>array(
+				7=>array(
 					'module'=>'module',
 					'subMenu'=>array('multilingual'),
 				),
-				9=>array(
+				8=>array(
 					'module'=>'importer',
 					'subMenu'=>array('importer'),
 				),
-				10=>array(
+				9=>array(
 					'module'=>'trash',
 					'subMenu'=>array('trash'),
 				),
-				11=>array(
+				10=>array(
 					'module'=>'admin',
 					'subMenu'=>array('theme'),
 				),
-				12=>array(
+				11=>array(
 					'module'=>'autoinstall',
 					'subMenu'=>array('easyInstall'),
 				),
-				13=>array(
+				12=>array(
 					'module'=>'layout',
 					'subMenu'=>array('installedLayout'),
 				),
-				14=>array(
+				13=>array(
 					'module'=>'module',
 					'subMenu'=>array('installedModule'),
 				),
-				15=>array(
+				14=>array(
 					'module'=>'widget',
 					'subMenu'=>array('installedWidget'),
 				),
-				16=>array(
+				15=>array(
 					'module'=>'addon',
 					'subMenu'=>array('installedAddon'),
 				),
-				17=>array(
+				16=>array(
 					'module'=>'editor',
 					'subMenu'=>array('editor'),
 				),
-				18=>array(
+				17=>array(
 					'module'=>'spamfilter',
 					'subMenu'=>array('spamFilter'),
 				),
-				19=>array(
+				18=>array(
 					'module'=>'admin',
 					'subMenu'=>array('adminConfigurationGeneral', 'adminConfigurationFtp', 'adminMenuSetup'),
 				),
-				20=>array(
+				19=>array(
 					'module'=>'file',
 					'subMenu'=>array('fileUpload'),
 				),
-				21=>array(
+				20=>array(
 					'module'=>'module',
 					'subMenu'=>array('filebox'),
 				),
-				22=>array(
+				21=>array(
 					'module'=>'point',
 					'subMenu'=>array('point')
 				),
@@ -258,7 +255,6 @@
 					break;
 				case 'document':
 				case 'comment':
-				case 'trackback':
 				case 'file':
 				case 'poll':
 				case 'rss':

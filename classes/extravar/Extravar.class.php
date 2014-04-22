@@ -3,6 +3,7 @@
      * A class to handle extra variables used in posts, member and others
 	 *
      * @author NHN (developers@xpressengine.com)
+     * @Adaptor DAOL Project (developer@daolcms.org)
      **/
     class ExtraVar {
 
@@ -362,28 +363,8 @@
                     break;
                 // address
                 case "kr_zip" :
-                        // krzip address javascript plugin load
-                        Context::loadJavascriptPlugin('ui.krzip');
-
-                        $buff .=
-                            '<div id="addr_searched_'.$column_name.'" style="display:'.($value[0]?'block':'none').';">'.
-                                '<input type="text" readonly="readonly" name="'.$column_name.'[]" value="'.$value[0].'" class="address" />'.
-                                '<a href="#" onclick="doShowKrZipSearch(this, \''.$column_name.'\'); return false;" class="button red"><span>'.Context::getLang('cmd_cancel').'</span></a>'.
-                            '</div>'.
-
-                            '<div id="addr_list_'.$column_name.'" style="display:none;">'.
-                                '<select name="addr_list_'.$column_name.'"></select>'.
-                                '<a href="#" onclick="doSelectKrZip(this, \''.$column_name.'\'); return false;" class="button blue"><span>'.Context::getLang('cmd_select').'</span></a>'.
-                                '<a href="#" onclick="doHideKrZipList(this, \''.$column_name.'\'); return false;" class="button red"><span>'.Context::getLang('cmd_cancel').'</span></a>'.
-                            '</div>'.
-
-                            '<div id="addr_search_'.$column_name.'" style="display:'.($value[0]?'none':'block').'">'.
-                                '<input type="text" name="addr_search_'.$column_name.'" class="address" value="" />'.
-                                '<a href="#" onclick="doSearchKrZip(this, \''.$column_name.'\'); return false;" class="button green"><span>'.Context::getLang('cmd_search').'</span></a>'.
-                            '</div>'.
-
-                            '<input type="text" name="'.$column_name.'[]" value="'.htmlspecialchars($value[1]).'" class="address" />'.
-                            '';
+                        $krzipModel = &getModel('krzip');
+                        $buff .=  $krzipModel->getKrzipCodeSearchHtml($column_name, $value);
                     break;
                 // General text
                 default :

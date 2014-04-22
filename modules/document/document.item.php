@@ -4,6 +4,7 @@
 	 * document object
 	 *
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @package /modules/document
 	 * @version 0.1
 	 */
@@ -152,17 +153,32 @@
         function allowTrackback() {
             static $allow_trackback_status = null;
             if(is_null($allow_trackback_status)) {
-                // If the trackback module is configured to be disabled, do not allow. Otherwise, check the setting of each module.
-                $oModuleModel = &getModel('module');
-                $trackback_config = $oModuleModel->getModuleConfig('trackback');
-                if(!isset($trackback_config->enable_trackback)) $trackback_config->enable_trackback = 'Y';
-                if($trackback_config->enable_trackback != 'Y') $allow_trackback_status = false;
-                else {
-                    $module_srl = $this->get('module_srl');
-                    // Check settings of each module
-                    $module_config = $oModuleModel->getModulePartConfig('trackback', $module_srl);
-                    if($module_config->enable_trackback == 'N') $allow_trackback_status = false;
-                    else if($this->get('allow_trackback')=='Y' || !$this->isExists()) $allow_trackback_status = true;
+                // Check the tarckback module exist
+                if(!getClass('trackback'))
+                {
+                       $allow_trackback_status = false;
+                }
+                else
+                {
+                    // If the trackback module is configured to be disabled, do not allow. Otherwise, check the setting of each module.
+                    $oModuleModel = getModel('module');
+                    $trackback_config = $oModuleModel->getModuleConfig('trackback');
+
+                    if(!$trackback_config)
+                    {
+                       $trackback_config = new stdClass();
+                    }
+
+                    if(!isset($trackback_config->enable_trackback)) $trackback_config->enable_trackback = 'Y';
+                    if($trackback_config->enable_trackback != 'Y') $allow_trackback_status = false;
+                    else
+                    {
+                       $module_srl = $this->get('module_srl');
+                       // Check settings of each module
+                       $module_config = $oModuleModel->getModulePartConfig('trackback', $module_srl);
+                       if($module_config->enable_trackback == 'N') $allow_trackback_status = false;
+                       else if($this->get('allow_trackback')=='Y' || !$this->isExists()) $allow_trackback_status = true;
+                    }
                 }
             }
             return $allow_trackback_status;
@@ -514,7 +530,7 @@
             if(!$this->document_srl) return;
             // Generate a key to prevent spams
             $oTrackbackModel = &getModel('trackback');
-            return $oTrackbackModel->getTrackbackUrl($this->document_srl, $this->getDocumentMid());
+            if($oTrackbackModel) return $oTrackbackModel->getTrackbackUrl($this->document_srl, $this->getDocumentMid());
         }
 
 		/**

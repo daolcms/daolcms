@@ -7,7 +7,15 @@
      * @Adaptor DAOL Project (developer@daolcms.org)
      */
 
-    @error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
+	//php 5.4 이상에서 WARNING 표시 문제 수정
+    if(version_compare(PHP_VERSION, '5.4.0', '<'))
+		{
+	@error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING);
+		}
+	else
+		{
+	@error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING ^ E_STRICT);
+		}
 
     if(!defined('__ZBXE__')) exit();
 

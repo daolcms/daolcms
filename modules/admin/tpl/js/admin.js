@@ -75,12 +75,12 @@ jQuery(function($){
 
 	// Display the dashboard in two column
 	$(window).resize(function(){
-		if($(document).width() < 1300){
+		if($(document).width() < 1370){
 			$('.dashboard>.section>br').remove();
 			$('.dashboard>.section>.portlet:odd').after('<br style="clear:both" />');
 		} else {
 			$('.dashboard>.section>br').remove();
-			$('.dashboard>.section>.portlet:eq(2),.dashboard>.section>.portlet:eq(5)').after('<br style="clear:both" />');
+			$('.dashboard>.section>.portlet:odd').after('<br style="clear:both" />');
 		}
 	});
 	$(window).resize();

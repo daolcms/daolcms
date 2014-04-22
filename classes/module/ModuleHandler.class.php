@@ -43,8 +43,12 @@
 			$oContext = Context::getInstance();
 			if($oContext->isSuccessInit == false)
 			{
-				$this->error = 'msg_invalid_request';
-				return;
+				$logged_info = Context::get('logged_info');
+				if($logged_info->is_admin != "Y")
+				{
+					$this->error = 'msg_invalid_request';
+					return;
+				}
 			}
 
             // Set variables from request arguments
@@ -745,7 +749,7 @@
 				}
 
                 // Get base class name and load the file contains it
-                if(!class_exists($module)) {
+                if(!class_exists($module, false)) {
                     $high_class_file = sprintf('%s%s%s.class.php', _XE_PATH_,$class_path, $module);
                     if(!file_exists($high_class_file)) return NULL;
                     require_once($high_class_file);
@@ -756,7 +760,7 @@
 
                 // Create an instance with eval function
                 require_once($class_file);
-                if(!class_exists($instance_name)) return NULL;
+                if(!class_exists($instance_name, false)) return NULL;
 				$tmp_fn  = create_function('', "return new {$instance_name}();");
 				$oModule = $tmp_fn();
                 if(!is_object($oModule)) return NULL;

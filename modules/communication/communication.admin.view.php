@@ -49,6 +49,10 @@
 			$security->encodeHTML('communication_skin_list..title');
 			$security->encodeHTML('communication_mobile_skin_list..title');
 
+			$oMemberModel = getModel('member');
+			$group_list = $oMemberModel->getGroups($this->site_srl);
+			Context::set('group_list', $group_list);
+
 			// specify a template
             $this->setTemplatePath($this->module_path.'tpl');
             $this->setTemplateFile('index');

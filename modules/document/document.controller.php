@@ -367,8 +367,16 @@ class documentController extends document {
 		if($obj->comment_status) $obj->commentStatus = $obj->comment_status;
 		if(!$obj->commentStatus) $obj->commentStatus = 'DENY';
 		if($obj->commentStatus == 'DENY') $this->_checkCommentStatusForOldVersion($obj);
+		if($obj->commentStatus == 'DENY') $this->_checkCommentStatusForOldVersion($obj);
 		if($obj->allow_trackback!='Y') $obj->allow_trackback = 'N';
-		if($obj->homepage &&  !preg_match('/^[a-z]+:\/\//i',$obj->homepage)) $obj->homepage = 'http://'.$obj->homepage;
+		if($obj->homepage) {
+            $obj->homepage = removeHackTag($obj->homepage);
+            if(!preg_match('/^[a-z]+:\/\//i',$obj->homepage))
+            {
+                $obj->homepage = 'http://'.$obj->homepage;
+            }
+        }
+
 		if($obj->notify_message != 'Y') $obj->notify_message = 'N';
 		// Serialize the $extra_vars
 		$obj->extra_vars = serialize($obj->extra_vars);

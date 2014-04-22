@@ -7,7 +7,7 @@ if(!defined('__XE__')) exit();
  * @brief Add-on to resize images in the body
  **/
 
-if($called_position == 'after_module_proc' && Context::getResponseMethod()=="HTML") {
+if($called_position == 'after_module_proc' && (Context::getResponseMethod() == "HTML" || !isCrawler())) {
 	if(Mobile::isFromMobilePhone()) {
 		Context::loadFile('./addons/resize_image/css/resize_image.mobile.css', true);
 	} else {
