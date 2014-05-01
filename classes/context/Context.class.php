@@ -173,6 +173,9 @@ class Context {
 		$this->context->lang = &$GLOBALS['lang'];
 		$this->context->_COOKIE = $_COOKIE;
 
+		// 20140429 editor/image_link
+		$this->_checkGlobalVars();
+
 		$this->setRequestMethod('');
 
 		$this->_setXmlRpcArgument();
@@ -852,6 +855,16 @@ class Context {
 		($GLOBALS['HTTP_RAW_POST_DATA'] && $self->request_method='XMLRPC') or
 		($self->request_method = $_SERVER['REQUEST_METHOD']);
 	}
+
+	/**
+	 * handle global arguments
+	 *
+	 * @return void
+	 */
+	 function _checkGlobalVars()
+	 {
+		 $this->_recursiveCheckVar($_SERVER['HTTP_HOST']);
+	 }
 
 	/**
 	 * handle request areguments for GET/POST
