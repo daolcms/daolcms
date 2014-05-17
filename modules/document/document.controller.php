@@ -4,6 +4,7 @@
  * document the module's controller class
  *
  * @author NHN (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  * @package /modules/document
  * @version 0.1
  */
@@ -459,7 +460,7 @@ class documentController extends document {
 		$extra_keys = $oDocumentModel->getExtraKeys($obj->module_srl);
 		if(count($extra_keys)) {
 			foreach($extra_keys as $idx => $extra_item) {
-				$value = '';
+				$value = NULL;
 				if(isset($obj->{'extra_vars'.$idx})){
 					$tmp = $obj->{'extra_vars'.$idx};
 					if (is_array($tmp))
@@ -468,7 +469,7 @@ class documentController extends document {
 						$value = trim($tmp);
 				}
 				elseif(isset($obj->{$extra_item->name})) $value = trim($obj->{$extra_item->name});
-				if(!isset($value)) continue;
+				if($value == NULL) continue;
 				$this->insertDocumentExtraVar($obj->module_srl, $obj->document_srl, $idx, $value, $extra_item->eid);
 			}
 		}
@@ -999,13 +1000,18 @@ class documentController extends document {
 		$_SESSION['voted_document'][$document_srl] = true;
 
 		// Return result
+		$output = new Object();
 		if($point > 0)
 		{
-			return new Object(0, 'success_voted');
+			$output->setMessage('success_voted');
+			$output->add('voted_count', $obj->after_point);
 		}
 		else
 		{
-			return new Object(0, 'success_blamed');
+			$output->setMessage('success_blamed');
+			$output->add('blamed_count', $obj->after_point);
+
+		return $output;
 		}
 	}
 

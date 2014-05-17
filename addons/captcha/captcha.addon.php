@@ -11,8 +11,12 @@
 	if(!class_exists('AddonCaptcha', false))
 	{
 	// On the mobile mode, XE Core does not load jquery and xe.js as normal.
-	Context::loadFile(array('./common/js/jquery.min.js','head', NULL,-100000),true);
-	Context::loadFile(array('./common/js/xe.min.js','head', NULL,-100000),true);
+	if(Mobile::isFromMobilePhone())
+	{
+		Context::loadFile(array('./common/js/jquery.min.js','head', NULL,-100000),true);
+		Context::loadFile(array('./common/js/xe.min.js','head', NULL,-100000),true);
+	}
+
 		class AddonCaptcha
 		{
 			var $addon_info;
@@ -322,7 +326,7 @@ EOD;
 
 		$GLOBALS['__AddonCaptcha__'] = new AddonCaptcha;
 		$GLOBALS['__AddonCaptcha__']->setInfo($addon_info);
-		Context::set('oCaptcha', &$GLOBALS['__AddonCaptcha__']);
+		Context::set('oCaptcha', $GLOBALS['__AddonCaptcha__']);
 	}
 
 	$oAddonCaptcha = &$GLOBALS['__AddonCaptcha__'];
