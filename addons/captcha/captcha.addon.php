@@ -326,7 +326,7 @@ EOD;
 
 		$GLOBALS['__AddonCaptcha__'] = new AddonCaptcha;
 		$GLOBALS['__AddonCaptcha__']->setInfo($addon_info);
-		Context::set('oCaptcha', &$GLOBALS['__AddonCaptcha__']);
+		Context::set('oCaptcha', $GLOBALS['__AddonCaptcha__']);
 	}
 
 	$oAddonCaptcha = &$GLOBALS['__AddonCaptcha__'];
