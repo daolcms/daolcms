@@ -1010,9 +1010,9 @@ class documentController extends document {
 		{
 			$output->setMessage('success_blamed');
 			$output->add('blamed_count', $obj->after_point);
-
-		return $output;
 		}
+        
+		return $output;
 	}
 
 	/**
