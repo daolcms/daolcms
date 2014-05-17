@@ -63,9 +63,9 @@ class Validator
 	 * @return void
 	 */
 	function __construct($xml_path='') {
-		$this->_rules   = array();
+		$this->_rules = array();
 		$this->_filters = array();
-		$this->_xml_ruleset = null;
+		$this->_xml_ruleset = NULL;
 
 		if($xml_path) $this->load($xml_path);
 
