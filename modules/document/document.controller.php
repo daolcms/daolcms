@@ -460,7 +460,7 @@ class documentController extends document {
 		$extra_keys = $oDocumentModel->getExtraKeys($obj->module_srl);
 		if(count($extra_keys)) {
 			foreach($extra_keys as $idx => $extra_item) {
-				$value = '';
+				$value = NULL;
 				if(isset($obj->{'extra_vars'.$idx})){
 					$tmp = $obj->{'extra_vars'.$idx};
 					if (is_array($tmp))
@@ -469,7 +469,7 @@ class documentController extends document {
 						$value = trim($tmp);
 				}
 				elseif(isset($obj->{$extra_item->name})) $value = trim($obj->{$extra_item->name});
-				if(!isset($value)) continue;
+				if($value == NULL) continue;
 				$this->insertDocumentExtraVar($obj->module_srl, $obj->document_srl, $idx, $value, $extra_item->eid);
 			}
 		}
