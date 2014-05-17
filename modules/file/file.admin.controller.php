@@ -112,6 +112,7 @@
 
             $download_grant = Context::get('download_grant');
 
+            $file_config = new stdClass;
             $file_config->allow_outlink = Context::get('allow_outlink');
             $file_config->allow_outlink_format = Context::get('allow_outlink_format');
             $file_config->allow_outlink_site = Context::get('allow_outlink_site');
