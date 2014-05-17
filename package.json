@@ -1,5 +1,5 @@
 {
-  "name": "DAOL CMS",
+  "name": "daol-core",
   "devDependencies": {
     "grunt": ">0.4.0",
     "grunt-contrib-clean": "~0.5.0",
