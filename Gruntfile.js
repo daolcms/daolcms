@@ -1,6 +1,9 @@
 module.exports = function(grunt) {
 	"use strict";
 
+	var banner = '/*! DAOL CMS, www.daolcms.org */\n';
+	var banner_xe_js = banner + '/**!\n * @file   common.js + js_app.js + xml_handler.js + xml_js_filter.js\n * @brief  XE Common JavaScript\n **/\n';
+
 	grunt.file.defaultEncoding = 'utf8';
 
 	grunt.initConfig({
@@ -16,6 +19,7 @@ module.exports = function(grunt) {
 			'common-js': {
 				options: {
 					stripBanners: true,
+					banner: banner_xe_js
 				},
 				src: [
 					'common/js/common.js',
@@ -28,6 +32,7 @@ module.exports = function(grunt) {
 			'xpresseditor': {
 				options: {
 					stripBanners: true,
+					banner: banner_xe_js
 				},
 				src: [
 					'modules/editor/skins/xpresseditor/js/Xpress_Editor.js',
@@ -38,6 +43,9 @@ module.exports = function(grunt) {
 		},
 		uglify: {
 			'common-js': {
+				options: {
+					banner: banner_xe_js
+				},
 				files: {
 					'common/js/xe.min.js': ['common/js/xe.js']
 				}
@@ -338,6 +346,7 @@ module.exports = function(grunt) {
 				cmd: "tar",
 				args: ['xf', 'build/temp.full.tar', '-C', 'build/xe']
 			}, function (error, result, code) {
+				
 			});
 		});
 	});
