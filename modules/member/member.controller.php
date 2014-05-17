@@ -1769,7 +1769,7 @@
 			}
             $member_srl = $oMemberModel->getMemberSrlByNickName($args->nick_name);
 			$member_srl_by_decode = $oMemberModel->getMemberSrlByNickName(utf8_decode($args->nick_name));
-            if($member_srl || $member_srl_by_decode) return new Object(-1,'msg_exists_nick_name');
+            if(($member_srl || $member_srl_by_decode) && $orgMemberInfo->nick_name != $args->nick_name) return new Object(-1,'msg_exists_nick_name');;
 
             $member_srl = $oMemberModel->getMemberSrlByEmailAddress($args->email_address);
             if($member_srl) return new Object(-1,'msg_exists_email_address');
