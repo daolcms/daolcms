@@ -72,6 +72,7 @@
          **/
 		function getLayout($layout_srl) {
 			// Get information from the DB
+			$args = new stdClass();
 			$args->layout_srl = $layout_srl;
 			$output = executeQuery('layout.getLayout', $args);
 			if(!$output->data) return;
