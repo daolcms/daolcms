@@ -243,8 +243,7 @@
 			}
 			//FileHandler::createImageFile($target_file, $target_filename, $fitHeight, $fitWidth, $ext);
 			FileHandler::copyFile($target_file, $target_filename);
+			}
 		}
-
-    }
-/* End of file install.admin.controller.php */
-/* Location: ./modules/install/install.admin.controller.php */
+	}
+?>
