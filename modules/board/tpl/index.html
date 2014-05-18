@@ -106,6 +106,7 @@
 	<input type="hidden" name="error_return_url" value="" />
 		<select  cond="count($module_category)"name="module_category_srl">
 			<option value="">{$lang->module_category}</option>
+			<option value="" selected="selected"|cond="!$module_category_srl">{$lang->all}</option>
 			<option value="0" selected="selected"|cond="$module_category_srl==='0'">{$lang->not_exists}</option>
 			<option value="{$key}" loop="$module_category => $key,$val"  selected="selected"|cond="$module_category==$key">{$val->title}</option>
 		</select>
