@@ -349,7 +349,7 @@
 			$obj->module_srl = $originObject->module_srl;
 
 			$oCommentController = &getController('comment');
-			$output = $oCommentController->insertComment($obj);
+			$output = $oCommentController->insertComment($obj, true);
 
 			return $output;
 		}
