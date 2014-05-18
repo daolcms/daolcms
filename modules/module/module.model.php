@@ -208,7 +208,7 @@
 			} else $module_info = $output->data;
 
 			$oModuleController = getController('module');
-			$oModuleController->replaceDefinedLangCode($module_info->browser_title);
+			if(isset($module_info->browser_title)) $oModuleController->replaceDefinedLangCode($module_info->browser_title);
 
             return $this->addModuleExtraVars($module_info);
         }
