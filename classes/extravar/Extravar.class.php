@@ -370,7 +370,12 @@
                         $buff .=' <input type="text" name="'.$column_name.'" value="'.($value ? $value : $default).'" class="text" />';
                     break;
             }
-            if($this->desc) $buff .= '<p>' . htmlspecialchars($this->desc) . '</p>';
+            if($this->desc)
+            {
+                $oModuleController = getController('module');
+                $oModuleController->replaceDefinedLangCode($this->desc);
+                $buff .= '<p>' . htmlspecialchars($this->desc, ENT_COMPAT | ENT_HTML401, 'UTF-8', false) . '</p>';
+            }
             return $buff;
         }
     }
