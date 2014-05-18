@@ -478,6 +478,8 @@
             $oEditorController = &getController('editor');
             $oEditorController->deleteSavedDoc(false);
             $oEditorController->doSaveDoc($saved_doc);
+            
+            setUserSequence($saved_doc->document_srl);
 
             return $saved_doc;
         }
