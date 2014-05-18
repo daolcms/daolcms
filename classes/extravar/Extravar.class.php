@@ -206,8 +206,7 @@
                 case 'kr_zip' :
                         if(is_array($value)) $values = $value;
                         elseif(strpos($value,'|@|')!==false) $values = explode('|@|', $value);
-                        elseif(strpos($value,',')!==false) $values = explode(',', $value);
-						else $values = array($value);
+                        else $values = array($value);
                         return $values;
                     break;
                 //case 'date' :
