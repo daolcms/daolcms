@@ -87,7 +87,7 @@
 				if($_SESSION['file_management'][$file->file_srl]) $file->isCarted = true;
 				else $file->isCarted = false;
 
-                $file->download_url = $oFileModel->getDownloadUrl($file->file_srl, $file->sid);
+                $file->download_url = $oFileModel->getDownloadUrl($file->file_srl, $file->sid, $file->module_srl);
                 $output->data[$key] = $file;
             }
 
