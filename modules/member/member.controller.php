@@ -63,8 +63,8 @@
 			if ($limit_date > 0) {
 				$oMemberModel = &getModel('member');
 				if ($this->memberInfo->change_password_date < date ('YmdHis', strtotime ('-' . $limit_date . ' day'))) {
-					$this->setRedirectUrl(getNotEncodedUrl('','vid',Context::get('vid'),'mid',Context::get('mid'),'act','dispMemberModifyPassword'));
-					return;
+					$msg = sprintf(Context::getLang('msg_change_password_date'), $limit_date);
+					return $this->setRedirectUrl(getNotEncodedUrl('','vid',Context::get('vid'),'mid',Context::get('mid'),'act','dispMemberModifyPassword'), new Object(-1, $msg));
 				}
 			}
 
