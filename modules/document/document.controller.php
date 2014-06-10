@@ -744,9 +744,11 @@ class documentController extends document {
 		$document_srl = $oDocument->document_srl;
 		$member_srl = $oDocument->get('member_srl');
 		$logged_info = Context::get('logged_info');
-		// Call a trigger when the read count is updated (after)
-		$output = ModuleHandler::triggerCall('document.updateReadedCount', 'after', $oDocument);
-		if(!$output->toBool()) return $output;
+		
+		// Call a trigger when the read count is updated (before)
+		$trigger_output = ModuleHandler::triggerCall('document.updateReadedCount', 'before', $oDocument);
+		if(!$trigger_output->toBool()) return $trigger_output;
+        
 		// Pass if read count is increaded on the session information
 		if($_SESSION['readed_document'][$document_srl]) return false;
 
@@ -760,11 +762,24 @@ class documentController extends document {
 			$_SESSION['readed_document'][$document_srl] = true;
 			return false;
 		}
+        
+		$oDB = DB::getInstance();
+		$oDB->begin();
+        
 		// Update read counts
 		$args->document_srl = $document_srl;
 		$output = executeQuery('document.updateReadedCount', $args);
-		// Register session
-		$_SESSION['readed_document'][$document_srl] = true;
+        
+		// Call a trigger when the read count is updated (after)
+		$outptrigger_outputut = ModuleHandler::triggerCall('document.updateReadedCount', 'after', $oDocument);
+		if(!$trigger_output->toBool())
+		{
+			$oDB->rollback();
+			return $trigger_output;
+		}
+        
+		$oDB->commit();
+		
 		//remove from cache
         $oCacheHandler = &CacheHandler::getInstance('object');
         if($oCacheHandler->isSupport())
@@ -776,7 +791,10 @@ class documentController extends document {
             $cache_key = 'object_document_item:'.$document_srl;
             $oCacheHandler->delete($cache_key);
         }
-
+        
+		// Register session
+		$_SESSION['readed_document'][$document_srl] = true;
+        
 		return TRUE;
 	}
 
