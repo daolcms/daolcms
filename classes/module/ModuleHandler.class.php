@@ -77,7 +77,14 @@
 			{
 				if(Context::get('_use_ssl') == 'optional' && Context::isExistsSSLAction($this->act) && $_SERVER['HTTPS'] != 'on')
 				{
-					header('location:https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+					if(Context::get('_https_port')!=null)
+                    {
+                        header('location:https://' . $_SERVER['HTTP_HOST'] . ':' . Context::get('_https_port') . $_SERVER['REQUEST_URI']);
+                    }
+                    else
+                    {
+                        header('location:https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+                    }
 					return;
 				}
 			}
