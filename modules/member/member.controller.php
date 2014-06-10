@@ -397,7 +397,14 @@
 
 			$_SESSION['rechecked_password_step'] = 'VALIDATE_PASSWORD';
 
-			$redirectUrl = getNotEncodedUrl('', 'act', 'dispMemberModifyInfo');
+			if(Context::get('success_return_url'))
+            {
+                $redirectUrl = Context::get('success_return_url');
+            }
+            else
+            {
+                $redirectUrl = getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', 'dispMemberModifyInfo');
+            }
 			$this->setRedirectUrl($redirectUrl);
 
 		}
@@ -2145,8 +2152,15 @@
 			$oMemberModel = &getModel('member');
             $member_srl = $oMemberModel->getMemberSrlByEmailAddress($newEmail);
             if($member_srl) return new Object(-1,'msg_exists_email_address');
+            
+            if($_SESSION['rechecked_password_step'] != 'INPUT_DATA')
+            {
+                return $this->stop('msg_invalid_request');
+            }
+            unset($_SESSION['rechecked_password_step']);
 
-			$auth_args->user_id = $newEmail;
+			$auth_args = new stdClass;
+            $auth_args->user_id = $newEmail;
 			$auth_args->member_srl = $member_info->member_srl;
 			$auth_args->auth_key = md5(rand(0, 999999));
 			$auth_args->new_password = 'XE_change_emaill_address';
