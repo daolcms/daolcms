@@ -34,6 +34,8 @@
             if(!$args->subject_cut_size) $args->subject_cut_size = 0;
             // Cut the length of contents
             if(!$args->content_cut_size) $args->content_cut_size = 100;
+            // Cut the length of nickname
+            if(!$args->nickname_cut_size) $args->nickname_cut_size = 0;
             // Display time of the latest post
             if(!$args->duration_new) $args->duration_new = 12;
             // How to create thumbnails
@@ -636,6 +638,7 @@
             $widget_info->page_count = $args->page_count;
             $widget_info->subject_cut_size = $args->subject_cut_size;
             $widget_info->content_cut_size = $args->content_cut_size;
+            $widget_info->nickname_cut_size = $args->nickname_cut_size;
             $widget_info->new_window = $args->new_window;
 
             $widget_info->duration_new = $args->duration_new * 60*60;
@@ -780,8 +783,11 @@
         function getCategory(){
             return $this->get('category');
         }
-        function getNickName(){
-            return $this->get('nick_name');
+        function getNickName($cut_size = 0, $tail='...'){
+            if($cut_size) $nick_name = cut_str($this->get('nick_name'), $cut_size, $tail);
+            else $nick_name = $this->get('nick_name');
+            
+            return $nick_name;
         }
         function getAuthorSite(){
             return $this->get('author_site');
