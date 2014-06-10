@@ -279,6 +279,7 @@
             // check if module_srl is an arrary.
             if(is_array($obj->module_srl)) $args->module_srl = implode(',', $obj->module_srl);
             else $args->module_srl = $obj->module_srl;
+            $args->document_srl = $obj->document_srl;
             $args->list_count = $obj->list_count;
 			// cache controll
 			$oCacheHandler = &CacheHandler::getInstance('object');
