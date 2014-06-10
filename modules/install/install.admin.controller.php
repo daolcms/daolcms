@@ -225,11 +225,12 @@
 
 			list($width, $height, $type_no, $attrs) = @getimagesize($target_file);
 			if($iconname == 'favicon.ico') {
-			    if(!preg_match('/^.*\.ico$/i',$type)) {
-			    $fitHeight = $fitWidth = '16';
+			    if(!preg_match('/^.*(x-icon|\.icon)$/i',$type)) {
+                    Context::set('msg', '*.ico '.Context::getLang('msg_possible_only_file'));
+                    return;
 			    }
 			else if($iconname == 'mobicon.png') {
-			    if(!preg_match('/^.*\.png$/i',$type)) {
+			    if(!preg_match('/^.*(png).*$/',$type)) {
 			        Context::set('msg', '*.png '.Context::getLang('msg_possible_only_file'));
 			        return;
 			    }
