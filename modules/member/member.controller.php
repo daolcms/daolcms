@@ -1070,19 +1070,21 @@
             $memberSrl = $oMemberModel->getMemberSrlByEmailAddress($email_address);
             if(!$memberSrl) return $this->stop('msg_not_exists_member');
 
-			$columnList = array('member_srl', 'user_id', 'user_name', 'nick_name', 'email_address');
+            $columnList = array('member_srl', 'user_id', 'user_name', 'nick_name', 'email_address');
             $member_info = $oMemberModel->getMemberInfoByMemberSrl($memberSrl, 0, $columnList);
-
-			$oModuleModel = getModel('module');
-			$member_config = $oModuleModel->getModuleConfig('member');
-			if(!$member_config->skin) $member_config->skin = "default";
-			if(!$member_config->colorset) $member_config->colorset = "white";
+            
+            $oModuleModel = getModel('module');
+            $member_config = $oModuleModel->getModuleConfig('member');
+            if(!$member_config->skin) $member_config->skin = "default";
+            if(!$member_config->colorset) $member_config->colorset = "white";
 
             // Check if a authentication mail has been sent previously
+            $chk_args = new stdClass;
             $chk_args->member_srl = $member_info->member_srl;
             $output = executeQuery('member.chkAuthMail', $chk_args);
             if($output->toBool() && $output->data->count == '0') return new Object(-1, 'msg_invalid_request');
 
+            $chk_args = new stdClass;
             $auth_args->member_srl = $member_info->member_srl;
             $output = executeQueryArray('member.getAuthMailInfo', $auth_args);
             if(!$output->data || !$output->data[0]->auth_key)  return new Object(-1, 'msg_invalid_request');
