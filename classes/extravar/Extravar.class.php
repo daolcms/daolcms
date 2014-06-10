@@ -200,7 +200,7 @@
                         elseif(strpos($value,'|@|')!==false) $values = explode('|@|', $value);
                         elseif(strpos($value,',')!==false) $values = explode(',', $value);
                         else $values = array($value);
-                        for($i=0;$i<count($values);$i++) $values[$i] = htmlspecialchars($values[$i]);
+                        for($i=0;$i<count($values);$i++) $values[$i] = trim(htmlspecialchars($values[$i], ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
                         return $values;
                     break;
                 case 'kr_zip' :
