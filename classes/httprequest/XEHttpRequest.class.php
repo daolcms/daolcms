@@ -6,6 +6,7 @@
  * @author NHN (developers@xpressengine.com)
  * @package /classes/httprequest
  * @version 0.1
+ * @deprecated
  */
 class XEHttpRequest {
 	/**
@@ -18,6 +19,13 @@ class XEHttpRequest {
 	 * @var int
 	 */
 	var $m_port;
+    
+    /**
+     * target scheme 
+     * @var string
+     */
+    var $m_scheme;
+    
 	/**
 	 * target header
 	 * @var array
@@ -28,10 +36,11 @@ class XEHttpRequest {
 	 * constructor
 	 * @return void
 	 */
-	function XEHttpRequest($host, $port)
+	function XEHttpRequest($host, $port, $scheme='')
 	{
 	    $this->m_host = $host;
 	    $this->m_port = $port;
+        $this->m_scheme = $scheme;
 	    $this->m_headers = array();
 	}
 
@@ -90,7 +99,13 @@ class XEHttpRequest {
 	{
 		static $crlf = "\r\n";
 
-		$sock = @fsockopen($this->m_host, $this->m_port, $errno, $errstr, $timeout);
+		$scheme = '';
+        if($this->m_scheme=='https')
+        {
+            $scheme = 'ssl://';
+        }
+        
+        $sock = @fsockopen($scheme . $this->m_host, $this->m_port, $errno, $errstr, $timeout);
 		if(!$sock) {
 			return new Object(-1, 'socket_connect_failed');
 		}
