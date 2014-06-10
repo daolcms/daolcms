@@ -380,6 +380,7 @@
 			$oMail->setSender($obj->email_address, $obj->email_address);
 			$mail_title = "[XE - ".Context::get('mid')."] A new comment was posted on document: \"".$oDocument->getTitleText()."\"";
 			$oMail->setTitle($mail_title);
+            $url_comment = getFullUrl('','document_srl',$obj->document_srl).'#comment_'.$obj->comment_srl;
 			if($using_validation)
 			{
 				$url_approve = getFullUrl('','module','admin','act','procCommentAdminChangePublishedStatusChecked','cart[]',$obj->comment_srl,'will_publish','1','search_target','is_published','search_keyword','N');
@@ -390,8 +391,10 @@
 					<br />
 					Author: ".$member_info->nick_name."
 					<br />Author e-mail: ".$member_info->email_address."
+                    <br />From : <a href=\"" . $url_comment . "\">" . $url_comment . "</a>
 					<br />Comment:
 					<br />\"".$obj->content."\"
+                    <br />Document:
 					<br />
 					<br />
 					Approve it: <a href=\"".$url_approve."\">".$url_approve."</a>
@@ -406,8 +409,11 @@
 				$mail_content = "
 					Author: ".$member_info->nick_name."
 					<br />Author e-mail: ".$member_info->email_address."
+                    <br />From : <a href=\"" . $url_comment . "\">" . $url_comment . "</a>
 					<br />Comment:
 					<br />\"".$obj->content."\"
+                    <br />Document:
+                    <br />\"" . $oDocument->getContentText(). "\"
 				";
 				$oMail->setContent($mail_content);
 				// get email of thread's author
