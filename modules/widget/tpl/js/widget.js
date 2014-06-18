@@ -53,10 +53,9 @@ function doStartPageModify(zoneID, module_srl) {
     doFitBorderSize();
 
     // 드래그와 리사이즈와 관련된 이벤트 리스너 생성
-	jQuery('#zonePageContent')
-		.on('click', doCheckWidget)
-		.on('mousedown', doCheckWidgetDrag)
-		.on('mouseover', widgetSetup);
+	xAddEventListener(document.getElementById('zonePageContent'), "click",doCheckWidget);
+	xAddEventListener(document.getElementById('zonePageContent'), "mousedown",doCheckWidgetDrag);
+	xAddEventListener(document.getElementById('zonePageContent'), 'mouseover',widgetSetup);
 }
 
 
