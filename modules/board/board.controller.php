@@ -66,7 +66,10 @@
                 $obj->email_address = $obj->homepage = $obj->user_id = '';
                 $obj->user_name = $obj->nick_name = 'anonymous';
                 $bAnonymous = true;
-				$oDocument->add('member_srl', $obj->member_srl);
+                if($is_update===false)
+                {
+			$oDocument->add('member_srl', $obj->member_srl);
+                }
             }
             else
             {
