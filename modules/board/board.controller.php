@@ -48,6 +48,21 @@
             // check if the document is existed
             $oDocument = $oDocumentModel->getDocument($obj->document_srl, $this->grant->manager);
 
+            // if use anonymous is true
+            if($this->module_info->use_anonymous == 'Y') {
+                $obj->notify_message = 'N';
+                $this->module_info->admin_mail = '';
+                $obj->member_srl = -1*$logged_info->member_srl;
+                $obj->email_address = $obj->homepage = $obj->user_id = '';
+                $obj->user_name = $obj->nick_name = 'anonymous';
+                $bAnonymous = true;
+				$oDocument->add('member_srl', $obj->member_srl);
+            }
+            else
+            {
+                $bAnonymous = false;
+            }
+
             // update the document if it is existed
             if($oDocument->isExists() && $oDocument->document_srl == $obj->document_srl) {
 				if(!$oDocument->isGranted()) return new Object(-1,'msg_not_permitted');
@@ -58,42 +73,12 @@
 					$obj->title_color = $oDocument->get('title_color');
 					$obj->title_bold = $oDocument->get('title_bold');
 				}
-				
-		// if use anonymous is true
-		if($this->module_info->use_anonymous == 'Y')
-		{
-			$this->module_info->admin_mail = '';
-			$obj->notify_message = 'N';
-			$obj->email_address = $obj->homepage = $obj->user_id = '';
-			$obj->user_name = $obj->nick_name = 'anonymous';
-			$bAnonymous = true;
-			$oDocument->add('member_srl', $obj->member_srl);
-		}
-		else
-		{
-			$bAnonymous = false;
-		}
 
                 $output = $oDocumentController->updateDocument($oDocument, $obj);
                 $msg_code = 'success_updated';
 
             // insert a new document otherwise
             } else {
-            	// if use anonymous is true
-		if($this->module_info->use_anonymous == 'Y')
-		{
-			$this->module_info->admin_mail = '';
-			$obj->notify_message = 'N';
-			$obj->member_srl = -1*$logged_info->member_srl;
-			$obj->email_address = $obj->homepage = $obj->user_id = '';
-			$obj->user_name = $obj->nick_name = 'anonymous';
-			$bAnonymous = true;
-			$oDocument->add('member_srl', $obj->member_srl);
-		}
-		else
-		{
-			$bAnonymous = false;
-		}
                 $output = $oDocumentController->insertDocument($obj, $bAnonymous);
                 $msg_code = 'success_registed';
                 $obj->document_srl = $output->get('document_srl');
