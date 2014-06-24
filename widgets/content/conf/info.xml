@@ -394,7 +394,7 @@
             <var id="nickname_cut_size" type="text">
                 <name xml:lang="ko">닉네임 글자수</name>
                 <name xml:lang="en">Length of Nickname</name>
-            <var>
+            </var>
             <var id="new_window" type="select">
                 <name xml:lang="ko">링크</name>
                 <name xml:lang="en">Like</name>
