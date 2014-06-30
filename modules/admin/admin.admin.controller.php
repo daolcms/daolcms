@@ -122,6 +122,7 @@
 
 			$site_info = Context::get('site_module_info');
 
+			$args = new stdClass();
 			$args->site_srl = $site_info->site_srl;
 			$args->layout_srl = $vars->layout;
 
@@ -134,6 +135,7 @@
 			$memberConfig->layout_srl = $vars->layout;
 			$oModuleController->updateModuleConfig('member', $memberConfig); 
 
+			$skin_args = new stdClass();
 			$skin_args->site_srl = $site_info->site_srl;
 
 			foreach($vars as $key=>$val){
@@ -335,6 +337,7 @@
 		 */
 		function _insertFavorite($siteSrl, $module, $type = 'module')
 		{
+			$args = new stdClass();
 			$args->adminFavoriteSrl = getNextSequence();
 			$args->site_srl = $siteSrl;
 			$args->module = $module;
@@ -349,6 +352,7 @@
 		 */
 		function _deleteFavorite($favoriteSrl)
 		{
+			$args = new stdClass();
 			$args->admin_favorite_srl = $favoriteSrl;
 			$output = executeQuery('admin.deleteFavorite', $args);
 			return $output;

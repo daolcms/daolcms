@@ -263,6 +263,7 @@
             $xml_obj = $_xml_obj->theme;
 
             // 스킨이름
+			$theme_info = new stdClass();
 			$theme_info->name = $theme_name;
             $theme_info->title = $xml_obj->title->body;
 			$thumbnail = './themes/'.$theme_name.'/thumbnail.png';
@@ -277,7 +278,7 @@
 			else $publisher_list = $xml_obj->publisher;
 
 			foreach($publisher_list as $publisher) {
-				unset($publisher_obj);
+				$publisher_obj = new stdClass();
 				$publisher_obj->name = $publisher->name->body;
 				$publisher_obj->email_address = $publisher->attrs->email_address;
 				$publisher_obj->homepage = $publisher->attrs->link;
@@ -287,6 +288,7 @@
 			$layout = $xml_obj->layout;
 			$layout_path = $layout->directory->attrs->path;
 			$layout_parse = explode('/',$layout_path);
+			$layout_info = new stdClass();
 			switch($layout_parse[1]){
 				case 'themes' : {
 									$layout_info->name = $theme_name.'|@|'.$layout_parse[count($layout_parse)-1];
@@ -318,6 +320,7 @@
 
 			if ($is_new_layout){
 				$site_module_info = Context::get('site_module_info');
+				$args = new stdClass();
 				$args->site_srl = (int)$site_module_info->site_srl;
 				$args->layout_srl = getNextSequence();
 				$args->layout = $layout_info->name;
@@ -338,7 +341,7 @@
 			$oModuleModel = &getModel('module');
 			$skins = array();
 			foreach($skin_list as $val){
-				unset($skin_info);
+				$skin_info = new stdClass();
 				unset($skin_parse);
 				$skin_parse = explode('/',$val->directory->attrs->path);
 				switch($skin_parse[1]){
@@ -451,6 +454,7 @@
 		 */
 		function getFavoriteList($siteSrl = 0, $isGetModuleInfo = false)
 		{
+			$args = new stdClass();
 			$args->site_srl = $siteSrl;
 			$output = executeQueryArray('admin.getFavoriteList', $args);
 			if (!$output->toBool()) return $output;
@@ -480,6 +484,7 @@
 		 */
 		function isExistsFavorite($siteSrl, $module)
 		{
+			$args = new stdClass();
 			$args->site_srl = $siteSrl;
 			$args->module = $module;
 			$output = executeQuery('admin.getFavorite', $args);
@@ -560,6 +565,7 @@
          */
 		function getSiteCountByDate($date = '')
 		{
+			$args = new stdClass();
 			if($date) $args->regDate = date('Ymd', strtotime($date));
 
 			$output = executeQuery('admin.getSiteCountByDate', $args);

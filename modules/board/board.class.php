@@ -29,6 +29,7 @@
             $oModuleController->insertTrigger('member.getMemberMenu', 'board', 'controller', 'triggerMemberMenu', 'after');
 
             // install board module
+			$args = new stdClass();
             $args->site_srl = 0;
             $output = executeQuery('module.getSite', $args);
             if(!$output->data->index_module_srl) {

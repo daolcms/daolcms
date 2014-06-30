@@ -127,7 +127,7 @@
             $output = array();
             if(count($file_list) > 0) {
                 foreach($file_list as $key => $val){
-                    $item = null;
+                    $item = new stdClass();
                     $item->sid = $val->sid;
                     $item->download_count = $val->download_count;
                     $item->source_filename = $val->source_filename;
@@ -145,7 +145,7 @@
             $output = array();
             if(count($list)) {
                 foreach($list as $key => $val){
-                    $item = null;
+                    $item = new stdClass();
                     $item->name = $val->name;
                     $item->type = $val->type;
                     $item->desc = $val->desc;

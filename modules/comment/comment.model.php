@@ -102,6 +102,7 @@
 		 * @return int
 		 */
         function getChildCommentCount($comment_srl) {
+			$args = new stdClass();
             $args->comment_srl = $comment_srl;
             $output = executeQuery('comment.getChildCommentCount', $args);
             return (int)$output->data->count;
@@ -113,6 +114,7 @@
 		 * @return int
 		 */
         function getChildComments($comment_srl) {
+			$args = new stdClass();
             $args->comment_srl = $comment_srl;
             $output = executeQueryArray('comment.getChildComments', $args);
             return $output->data;
@@ -141,6 +143,7 @@
         function getComments($comment_srl_list, $columnList = array()) {
             if(is_array($comment_srl_list)) $comment_srls = implode(',',$comment_srl_list);
             // fetch from a database
+			$args = new stdClass();
             $args->comment_srls = $comment_srls;
 			$output = executeQuery('comment.getComments', $args, $columnList);
             if(!$output->toBool()) return;
@@ -167,6 +170,7 @@
 		 * @return int
 		 */
         function getCommentCount($document_srl) {
+			$args = new stdClass();
             $args->document_srl = $document_srl;
 		
 		// get the number of comments on the document module
@@ -213,6 +217,7 @@
 		 * @return int
 		 */
         function getCommentAllCount($module_srl,$published=null) {
+			$args = new stdClass();
             $args->module_srl = $module_srl;
 			
 			if(is_null($published))
@@ -277,7 +282,8 @@
                 unset($obj->mid);
             }
             // check if module_srl is an arrary.
-            if(is_array($obj->module_srl)) $args->module_srl = implode(',', $obj->module_srl);
+			$args = new stdClass();
+			if(is_array($obj->module_srl)) $args->module_srl = implode(',', $obj->module_srl);
             else $args->module_srl = $obj->module_srl;
             $args->document_srl = $obj->document_srl;
             $args->list_count = $obj->list_count;
@@ -364,6 +370,7 @@
 	            // get a very last page if no page exists
 	            if(!$page) $page = (int)( ($oDocument->getCommentCount()-1) / $comment_count) + 1;
 	            // get a list of comments
+				$args = new stdClass();
 	            $args->document_srl = $document_srl;
 	            $args->list_count = $comment_count;
 	            $args->page = $page;
@@ -408,6 +415,7 @@
             if(file_exists($lock_file) && filemtime($lock_file)+60*60*10<time()) return;
             FileHandler::writeFile($lock_file, '');
             // get a list
+			$args = new stdClass();
             $args->document_srl = $document_srl;
             $args->list_order = 'list_order';
             $output = executeQuery('comment.getCommentList', $args);
@@ -441,7 +449,7 @@
             // insert values to the database
             if(count($comment_list)) {
                 foreach($comment_list as $comment_srl => $item) {
-                    $comment_args = null;
+                    $comment_args = new stdClass();
                     $comment_args->comment_srl = $comment_srl;
                     $comment_args->document_srl = $document_srl;
                     $comment_args->head = $item->head;
@@ -494,6 +502,7 @@
         function getTotalCommentList($obj, $columnList = array()) {
             $query_id = 'comment.getTotalCommentList';
             // Variables
+			$args = new stdClass();
             $args->sort_index = 'list_order';
             $args->page = $obj->page?$obj->page:1;
             $args->list_count = $obj->list_count?$obj->list_count:20;
@@ -592,6 +601,7 @@
         function getTotalCommentCount($obj) {
             $query_id = 'comment.getTotalCommentCountByGroupStatus';
             // Variables
+			$args = new stdClass();
             $args->s_module_srl = $obj->module_srl;
             $args->exclude_module_srl = $obj->exclude_module_srl;
             // Search options
@@ -679,6 +689,7 @@
 
 			$oModuleModel = &getModel('module');
             $comment_config = $oModuleModel->getModulePartConfig('comment',$module_srl);
+			$args = new stdClass();
 			if($point == -1){
 				if($comment_config->use_vote_down!='S') return new Object(-1, 'msg_invalid_request');
 				$args->below_point = 0;

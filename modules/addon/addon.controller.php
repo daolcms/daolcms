@@ -108,6 +108,7 @@
 		 * @return void
          **/
         function _setMid($selected_addon,$mid_list,$site_srl=0) {
+			$args = new stdClass();
             $args->mid_list =  join('|@|',$mid_list);
             $this->doSetup($selected_addon, $args,$site_srl);
             $this->makeCacheFile($site_srl);
@@ -216,6 +217,7 @@
         function doSetup($addon, $extra_vars,$site_srl=0, $gtype = 'site') {
             if(!is_array($extra_vars->mid_list))	unset($extra_vars->mid_list);
 
+			$args = new stdClass();
             $args->addon = $addon;
             $args->extra_vars = serialize($extra_vars);
             if($gtype == 'global') return executeQuery('addon.updateAddon', $args);
@@ -234,6 +236,7 @@
             $addon_file = $addon_path.$site_srl.'.acivated_addons.cache.php';
             if(file_exists($addon_file)) FileHandler::removeFile($addon_file);
 
+			$args = new stdClass();
             $args->site_srl = $site_srl;
             executeQuery('addon.deleteSiteAddons', $args);
 

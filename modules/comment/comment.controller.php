@@ -237,6 +237,7 @@
             $oDB = &DB::getInstance();
             $oDB->begin();
             // Enter a list of comments first
+			$list_args = new stdClass();
             $list_args->comment_srl = $obj->comment_srl;
             $list_args->document_srl = $obj->document_srl;
             $list_args->module_srl = $obj->module_srl;
@@ -248,6 +249,7 @@
             // If parent comment exists, get information of the parent comment
             } else {
                 // get information of the parent comment posting
+				$parent_args = new stdClass();
                 $parent_args->comment_srl = $obj->parent_srl;
                 $parent_output = executeQuery('comment.getCommentListItem', $parent_args);
                 // return if no parent comment exists
@@ -262,6 +264,7 @@
                 // if the depth of comments is greater than 2, execute update.
                 } else {
                     // get the top listed comment among those in lower depth and same head with parent's.
+					$p_args = new stdClass();
                     $p_args->head = $parent->head;
                     $p_args->arrange = $parent->arrange;
                     $p_args->depth = $parent->depth;
@@ -363,6 +366,7 @@
 		}
 		else
 		{
+			$member_info = new stdClass();
 			$member_info->is_admin = "N";
 			$member_info->nick_name = $obj->nick_name;
 			$member_info->user_name = $obj->user_name;
@@ -630,6 +634,7 @@
             $oDB = &DB::getInstance();
             $oDB->begin();
             // Delete
+			$args = new stdClass();
             $args->comment_srl = $comment_srl;
             $output = executeQuery('comment.deleteComment', $args);
             if(!$output->toBool()) {
@@ -719,6 +724,7 @@
 			}
             if(!$oDocument->isExists() || !$oDocument->isGranted()) return new Object(-1, 'msg_not_permitted');
             // get a list of comments and then execute a trigger(way to reduce the processing cost for delete all)
+			$args = new stdClass();
             $args->document_srl = $document_srl;
             $comments = executeQueryArray('comment.getAllComments',$args);
             if($comments->data) {
@@ -743,7 +749,7 @@
 			//delete declared, declared_log, voted_log
 			if(is_array($commentSrlList) && count($commentSrlList)>0)
 			{
-				unset($args);
+				$args = new stdClass();
 				$args->comment_srl = join(',', $commentSrlList);
 				$this->_deleteDeclaredComments($args);
 				$this->_deleteVotedComments($args);
@@ -817,6 +823,7 @@
                 }
             }
             // If logged-in, use the member_srl. otherwise use the ipaddress.
+			$args = new stdClass();
             if($member_srl) {
                 $args->member_srl = $member_srl;
             } else {
@@ -846,6 +853,7 @@
             $args->point = $point;
             $output = executeQuery('comment.insertCommentVotedLog', $args);
 
+			$obj = new stdClass();
 			$obj->member_srl = $oComment->get('member_srl');
 			$obj->module_srl = $oComment->get('module_srl');
 			$obj->comment_srl = $oComment->get('comment_srl');
@@ -888,6 +896,7 @@
             // Fail if session information already has a reported document
             if($_SESSION['declared_comment'][$comment_srl]) return new Object(-1, 'failed_declared');
             // check if already reported
+			$args = new stdClass();
             $args->comment_srl = $comment_srl;
             $output = executeQuery('comment.getDeclaredComment', $args);
             if(!$output->toBool()) return $output;
@@ -947,6 +956,7 @@
             $comment_popup_menu_list = Context::get('comment_popup_menu_list');
             if(!is_array($comment_popup_menu_list)) $comment_popup_menu_list = array();
 
+			$obj = new stdClass();
             $obj->url = $url;
             $obj->str = $str;
             $obj->icon = $icon;
@@ -964,6 +974,8 @@
             $module_srl = Context::get('target_module_srl');
             if(preg_match('/^([0-9,]+)$/',$module_srl)) $module_srl = explode(',',$module_srl);
             else $module_srl = array($module_srl);
+
+			$comment_config = new stdClass();
 
             $comment_config->comment_count = (int)Context::get('comment_count');
 			if(!$comment_config->comment_count) $comment_config->comment_count = 50;

@@ -83,6 +83,8 @@
                 unset($info);
                 $info = $this->getAddonInfoXml($addon_name, $site_srl, $gtype);
 
+				if(!$info) $info = new stdClass();
+
                 $info->addon = $addon_name;
                 $info->path = $path;
                 $info->activated = false;
@@ -128,6 +130,7 @@
 
 
             // DB is set to bring history
+			$db_args = new stdClass();
             $db_args->addon = $addon;
             if($gtype == 'global') $output = executeQuery('addon.getAddonInfo',$db_args);
             else {
@@ -151,6 +154,7 @@
             // Add information
             if($xml_obj->version && $xml_obj->attrs->version == '0.2') {
                 // addon format v0.2
+				$date_obj = new stdClass();
                 sscanf($xml_obj->date->body, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
                 $addon_info->date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
 
@@ -166,7 +170,7 @@
                 else $author_list = $xml_obj->author;
 
                 foreach($author_list as $author) {
-                    unset($author_obj);
+                    $author_obj = new stdClass();
                     $author_obj->name = $author->name->body;
                     $author_obj->email_address = $author->attrs->email_address;
                     $author_obj->homepage = $author->attrs->link;
@@ -184,7 +188,7 @@
                         if(!is_array($group->var)) $extra_vars = array($group->var);
 
                         foreach($extra_vars as $key => $val) {
-                            unset($obj);
+                            $obj = new stdClass();
                             if(!$val->attrs->type) { $val->attrs->type = 'text'; }
 
                             $obj->group = $group->title->body;
@@ -221,13 +225,13 @@
                     else $history = $xml_obj->history;
 
                     foreach($history as $item) {
-                        unset($obj);
+                        $obj = new stdClass();
 
                         if($item->author) {
                             (!is_array($item->author)) ? $obj->author_list[] = $item->author : $obj->author_list = $item->author;
 
                             foreach($obj->author_list as $author) {
-                                unset($author_obj);
+                                $author_obj = new stdClass();
                                 $author_obj->name = $author->name->body;
                                 $author_obj->email_address = $author->attrs->email_address;
                                 $author_obj->homepage = $author->attrs->link;
@@ -246,7 +250,7 @@
                             (!is_array($item->log)) ? $obj->log[] = $item->log : $obj->log = $item->log;
 
                             foreach($obj->log as $log) {
-                                unset($log_obj);
+                                $log_obj = new stdClass();
                                 $log_obj->text = $log->body;
                                 $log_obj->link = $log->attrs->link;
                                 $obj->logs[] = $log_obj;
@@ -260,12 +264,15 @@
 
             } else {
                 // addon format 0.1
+				$addon_info = new stdClass();
                 $addon_info->addon_name = $addon;
                 $addon_info->title = $xml_obj->title->body;
                 $addon_info->description = trim($xml_obj->author->description->body);
                 $addon_info->version = $xml_obj->attrs->version;
+				$date_obj = new stdClass();
                 sscanf($xml_obj->author->attrs->date, '%d. %d. %d', $date_obj->y, $date_obj->m, $date_obj->d);
                 $addon_info->date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
+				$author_obj = new stdClass();
                 $author_obj->name = $xml_obj->author->name->body;
                 $author_obj->email_address = $xml_obj->author->attrs->email_address;
                 $author_obj->homepage = $xml_obj->author->attrs->link;
@@ -281,7 +288,7 @@
                         if(!is_array($group->var)) $extra_vars = array($group->var);
 
                         foreach($extra_vars as $key => $val) {
-                            unset($obj);
+                            $obj = new stdClass();
 
                             $obj->group = $group->title->body;
                             $obj->name = $val->attrs->name;
@@ -325,6 +332,7 @@
 		 * @return array Returns list
          **/
         function getInsertedAddons($site_srl = 0, $gtype = 'site') {
+			$args = new stdClass();
             $args->list_order = 'addon';
             if($gtype == 'global') $output = executeQuery('addon.getAddons', $args);
             else {
@@ -352,6 +360,7 @@
 		 * @return bool If addon is activated returns true. Otherwise returns false.
          **/
         function isActivatedAddon($addon, $site_srl = 0, $type = "pc", $gtype = 'site') {
+			$args = new stdClass();
             $args->addon = $addon;
             if($gtype == 'global') {
 				if($type == "pc") $output = executeQuery('addon.getAddonIsActivated', $args);
