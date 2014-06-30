@@ -10,4 +10,4 @@ DAOL Core is the base frame of DAOL CMS. DAOL CMS is a web CMS program, branched
 Authors
 ====
 
-@daolproject, @dorami, @qw5414, @YJSoft
+@daolproject, @dorami, @YJSoft
