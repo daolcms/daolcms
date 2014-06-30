@@ -61,6 +61,7 @@
 			$comment_srl_list = $cart;
 		}
 
+		$args = new stdClass();
 		$args->status = $will_publish;
 		$args->comment_srls_list = $comment_srl_list;
 		$output = executeQuery('comment.updatePublishedStatus', $args);
@@ -275,6 +276,7 @@
             $comment_srl = trim(Context::get('comment_srl'));
 
             if($comment_srl) {
+				$args = new stdClass();
                 $args->comment_srl = $comment_srl;
                 $output = executeQuery('comment.deleteDeclaredComments', $args);
                 if(!$output->toBool()) return $output;
@@ -310,6 +312,7 @@
 		 * @return object
 		 */
         function deleteModuleComments($module_srl) {
+			$args = new stdClass();
             $args->module_srl = $module_srl;
             $output = executeQuery('comment.deleteModuleComments', $args);
             if(!$output->toBool()) return $output;
@@ -335,6 +338,7 @@
 		{
 			if(is_array($originObject)) $originObject = (object)$originObject;
 
+			$obj = new stdClass();
 			$obj->document_srl = $originObject->document_srl;
 			$obj->comment_srl = $originObject->comment_srl;
 			$obj->parent_srl = $originObject->parent_srl;

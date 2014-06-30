@@ -74,6 +74,7 @@
             }
 
             // board index
+			$args = new stdClass();
             $args->module_srl = $this->module_srl; 
             $args->page = Context::get('page');; 
             $args->list_count = 9;

@@ -70,6 +70,7 @@
 		function createXeAdminMenu()
 		{
 			//insert menu
+			$args = new stdClass();
             $args->title = '__XE_ADMIN__';
             $args->menu_srl = getNextSequence();
             $args->listorder = $args->menu_srl * -1;

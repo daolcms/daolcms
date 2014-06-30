@@ -156,6 +156,7 @@
 
 			// Admin logo, title setup
 			$objConfig = $oModuleModel->getModuleConfig('admin');
+			$gnbTitleInfo = new stdClass();
 			$gnbTitleInfo->adminTitle = $objConfig->adminTitle ? $objConfig->adminTitle:'DAOL CMS Admin';
 			$gnbTitleInfo->adminLogo  = $objConfig->adminLogo ? $objConfig->adminLogo:'modules/admin/tpl/img/xe.h1.png';
 
@@ -186,7 +187,7 @@
 					if(!is_array($item)) $item = array($item);
 
 					foreach($item as $key => $val) {
-						$obj = null;
+						$obj = new stdClass();
 						$obj->title = $val->body;
 						$obj->date = $val->attrs->date;
 						$obj->url = $val->attrs->url;
@@ -216,27 +217,32 @@
 		 */
         function dispAdminIndex() {
             // Get statistics
+			$args = new stdClass();
             $args->date = date("Ymd000000", time()-60*60*24);
             $today = date("Ymd");
 
             // Member Status
 			$oMemberAdminModel = &getAdminModel('member');
+			$status = new stdClass();
 			$status->member->todayCount = $oMemberAdminModel->getMemberCountByDate($today);
 			$status->member->totalCount = $oMemberAdminModel->getMemberCountByDate();
 
             // Document Status
 			$oDocumentAdminModel = &getAdminModel('document');
 			$statusList = array('PUBLIC', 'SECRET');
+			$status->document = new stdClass();
 			$status->document->todayCount = $oDocumentAdminModel->getDocumentCountByDate($today, array(), $statusList);
 			$status->document->totalCount = $oDocumentAdminModel->getDocumentCountByDate('', array(), $statusList);
 
             // Comment Status
 			$oCommentModel = &getModel('comment');
+			$status->comment = new stdClass();
 			$status->comment->todayCount = $oCommentModel->getCommentCountByDate($today);
 			$status->comment->totalCount = $oCommentModel->getCommentCountByDate();
 
             // Attached files Status
 			$oFileAdminModel = &getAdminModel('file');
+			$status->file = new stdClass();
 			$status->file->todayCount = $oFileAdminModel->getFilesCountByDate($today);
 			$status->file->totalCount = $oFileAdminModel->getFilesCountByDate();
 
@@ -245,6 +251,7 @@
             // Latest Document
 			$oDocumentModel = &getModel('document');
 			$columnList = array('document_srl', 'module_srl', 'category_srl', 'title', 'nick_name', 'member_srl');
+			$args = new stdClass();
 			$args->list_count = 5;;
 			$output = $oDocumentModel->getDocumentList($args, false, false, $columnList);
             Context::set('latestDocumentList', $output->data);			

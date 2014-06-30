@@ -68,6 +68,7 @@
 				{
 					foreach($output->data as $row)
 					{
+						$args = new stdClass();
 						$args->site_srl = 0;
 						$args->addon = $row->addon;
 						$args->is_used = $row->is_used;

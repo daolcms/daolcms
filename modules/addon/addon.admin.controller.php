@@ -69,7 +69,7 @@
 			// update
 			foreach($updateList as $targetAddon)
 			{
-				unset($args);
+				$args = new stdClass();
 
 				if (in_array($targetAddon, $pcOnList))
 					$args->is_used = 'Y';
@@ -171,6 +171,7 @@
 		 * @return Object
          **/
         function doInsert($addon, $site_srl = 0, $gtype = 'site', $isUsed = 'N') {
+			$args = new stdClass();
             $args->addon = $addon;
             $args->is_used = $isUsed;
             if($gtype == 'global') return executeQuery('addon.insertAddon', $args);
@@ -188,6 +189,7 @@
 		 * @return Object
          **/
         function doActivate($addon, $site_srl = 0, $type = "pc", $gtype = 'site') {
+			$args = new stdClass();
             $args->addon = $addon;
 			if($type == "pc") $args->is_used = 'Y';
 			else $args->is_used_m = "Y";
@@ -205,6 +207,7 @@
 		 * @param string $gtype site or global
          **/
         function doDeactivate($addon, $site_srl = 0, $type = "pc", $gtype = 'site') {
+			$args = new stdClass();
             $args->addon = $addon;
 			if($type == "pc") $args->is_used = 'N';
 			else $args->is_used_m = 'N';
