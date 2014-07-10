@@ -29,6 +29,7 @@
 			$oRssModel = &getModel('rss');
 
 			if($rss_config) {
+				$feed_config = array();
 				foreach($rss_config as $module_srl => $config) {
 					if($config) {
 						$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);

@@ -169,6 +169,7 @@
          **/
         function setRssModuleConfig($module_srl, $open_rss, $open_total_feed = 'N', $feed_description = 'N', $feed_copyright = 'N') {
             $oModuleController = &getController('module');
+			$config = new stdClass;
             $config->open_rss = $open_rss;
             $config->open_total_feed = $open_total_feed;
             if($feed_description != 'N') { $config->feed_description = $feed_description; }
