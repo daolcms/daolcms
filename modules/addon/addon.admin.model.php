@@ -83,7 +83,7 @@
                 unset($info);
                 $info = $this->getAddonInfoXml($addon_name, $site_srl, $gtype);
 
-				if(!$info) $info = new stdClass();
+                if(!$info) $info = new stdClass();
 
                 $info->addon = $addon_name;
                 $info->path = $path;
@@ -130,7 +130,7 @@
 
 
             // DB is set to bring history
-			$db_args = new stdClass();
+            $db_args = new stdClass();
             $db_args->addon = $addon;
             if($gtype == 'global') $output = executeQuery('addon.getAddonInfo',$db_args);
             else {
@@ -154,7 +154,7 @@
             // Add information
             if($xml_obj->version && $xml_obj->attrs->version == '0.2') {
                 // addon format v0.2
-				$date_obj = new stdClass();
+                $date_obj = new stdClass();
                 sscanf($xml_obj->date->body, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
                 $addon_info->date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
 
@@ -264,7 +264,7 @@
 
             } else {
                 // addon format 0.1
-				$addon_info = new stdClass();
+                $addon_info = new stdClass();
                 $addon_info->addon_name = $addon;
                 $addon_info->title = $xml_obj->title->body;
                 $addon_info->description = trim($xml_obj->author->description->body);
@@ -360,7 +360,7 @@
 		 * @return bool If addon is activated returns true. Otherwise returns false.
          **/
         function isActivatedAddon($addon, $site_srl = 0, $type = "pc", $gtype = 'site') {
-			$args = new stdClass();
+            $args = new stdClass();
             $args->addon = $addon;
             if($gtype == 'global') {
 				if($type == "pc") $output = executeQuery('addon.getAddonIsActivated', $args);

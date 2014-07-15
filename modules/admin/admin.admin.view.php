@@ -217,7 +217,7 @@
 		 */
         function dispAdminIndex() {
             // Get statistics
-			$args = new stdClass();
+            $args = new stdClass();
             $args->date = date("Ymd000000", time()-60*60*24);
             $today = date("Ymd");
 

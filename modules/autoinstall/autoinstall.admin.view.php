@@ -300,7 +300,7 @@
             $xmlDoc = XmlGenerater::getXmlDoc($params);
             $oModel = &getModel('autoinstall');
 
-			$package = new stdClass();
+            $package = new stdClass();
 
             $targetpackages = array();
             if($xmlDoc)
