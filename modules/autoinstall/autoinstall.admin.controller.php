@@ -93,10 +93,7 @@
                 }
 
 				$type = $oModel->getTypeFromPath($package->path);
-				if($type == "core")
-				{
-                    $version = __ZBXE_VERSION__;
-				}
+				if($type == "core") null;
                 else
                 {
 					$config_file = null;
@@ -174,7 +171,7 @@
                 $ftp_password = $_SESSION['ftp_password'];
             }
 
-			$isSftpSupported = function_exists(ssh2_sftp);
+            $isSftpSupported = function_exists(ssh2_sftp);
             foreach($packages as $package_srl)
             {
                 $package = $oModel->getPackage($package_srl);
