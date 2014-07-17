@@ -400,7 +400,7 @@ class FileHandler {
 	 * @param string $post_data Request arguments array for POST method
 	 * @return string If success, the content of the target file. Otherwise: none
 	 **/
-	function _getRemoteResource($url, $body = null, $timeout = 3, $method = 'GET', $content_type = null, $headers = array(), $cookies = array(), $post_data = array()) {
+	function _getRemoteResource($url, $body = null, $timeout = 3, $method = 'GET', $content_type = null, $headers = array(), $cookies = array(), $post_data = array(), $request_config = array()) {
 		requirePear();
 		require_once('HTTP/Request.php');
 
@@ -412,6 +412,11 @@ class FileHandler {
 			$oRequest->addPostData('arg', serialize(array('Destination'=>$url, 'method'=>$method, 'body'=>$body, 'content_type'=>$content_type, "headers"=>$headers, "post_data"=>$post_data)));
 		} else {
 			$oRequest = new HTTP_Request($url);
+			if(count($request_config) && method_exists($oRequest, 'setConfig')) {
+				foreach($request_config as $key=>$val) {
+					$oRequest->setConfig($key, $val);
+				}
+			}
 			if(count($headers)) {
 				foreach($headers as $key => $val) {
 					$oRequest->addHeader($key, $val);
