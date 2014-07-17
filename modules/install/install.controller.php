@@ -160,15 +160,7 @@
             // When installing firebire DB, transaction will not be used
             if($db_info->db_type != "firebird") $oDB->begin();
             // Install all the modules
-            try {
-                $oDB->begin();
-                $this->installDownloadedModule();
-                $oDB->commit();
-            }
-            catch(Exception $e) {
-                $oDB->rollback();
-                return new Object(-1, $e->getMessage());
-            }
+            $this->installDownloadedModule();
 
             if($db_info->db_type != "firebird") $oDB->commit();
             // Create a config file
@@ -445,8 +437,6 @@
                 $file = trim($schema_files[$i]);
                 if(!$file || substr($file,-4)!='.xml') continue;
                 $output = $oDB->createTableByXmlFile($file);
-                if($output === false)
-                    throw new Exception('msg_create_table_failed');
             }
             // Create a table and module instance and then execute install() method
             unset($oModule);
