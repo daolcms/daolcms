@@ -381,7 +381,7 @@ class FileHandler {
 		}
 		else
 		{
-			return FileHandler::_getRemoteResource($url, $boyd, $timeout, $mehtod, $conent_type, $headers, $cookies, $post_data);
+			return FileHandler::_getRemoteResource($url, $boyd, $timeout, $mehtod, $conent_type, $headers, $cookies, $post_data, $request_config);
 		}
 	}
 
