@@ -767,10 +767,7 @@
 
                 // Create an instance with eval function
                 require_once($class_file);
-                if(version_compare(PHP_VERSION, '5.0.0', '>=')) {
-					if(!class_exists($instance_name, false)) return NULL;
-                }
-                if(!class_exists($instance_name)) return NULL;
+                if(!class_exists($instance_name, false)) return NULL;
 				$tmp_fn  = create_function('', "return new {$instance_name}();");
 				$oModule = $tmp_fn();
                 if(!is_object($oModule)) return NULL;
