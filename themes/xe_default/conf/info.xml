@@ -11,7 +11,7 @@
 	<description xml:lang="ko">XE가 제공하는 기본 테마입니다.</description>
 	<description xml:lang="en">The basic theme is provided by XE.</description>
 	<layout>
-			<directory path="./layouts/xe_official" />
+			<directory path="./layouts/daol_official" />
 	</layout>
 	<skinInfos>
 		<skinInfo>
