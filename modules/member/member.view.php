@@ -553,7 +553,14 @@
          * @brief 이메일 주소를 기본 로그인 계정 사용시 이메일 주소 변경을 위한 화면 추가
          **/
 		function dispMemberModifyEmailAddress(){
-            if(!Context::get('is_logged')) return $this->stop('msg_not_logged');
+            if($_SESSION['rechecked_password_step'] != 'VALIDATE_PASSWORD' && $_SESSION['rechecked_password_step'] != 'INPUT_DATA')
+            {
+                Context::set('success_return_url', getUrl('', 'mid', Context::get('mid'), 'act', 'dispMemberModifyEmailAddress'));
+                $this->dispMemberModifyInfoBefore();
+                return;
+            }
+            
+            $_SESSION['rechecked_password_step'] = 'INPUT_DATA';
 
 			$this->setTemplateFile('modify_email_address');
 		}

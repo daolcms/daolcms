@@ -27,6 +27,7 @@
 		{
 			if(!$module || !$act) return;
 
+			$args = new stdClass();
 			$args->module = $module;
 			$args->act = $act;
 			$args->ipaddress = $_SERVER['REMOTE_ADDR'];

@@ -23,12 +23,13 @@
 		 * @return Object
 		 **/
 		function dispRssAdminIndex() {
-			$oModuleModel = &getModel('module');
+			$oModuleModel = getModel('module');
 			$rss_config = $oModuleModel->getModulePartConfigs('rss');
 			$total_config = $oModuleModel->getModuleConfig('rss');
-			$oRssModel = &getModel('rss');
+			$oRssModel = getModel('rss');
 
 			if($rss_config) {
+				$feed_config = array();
 				foreach($rss_config as $module_srl => $config) {
 					if($config) {
 						$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);

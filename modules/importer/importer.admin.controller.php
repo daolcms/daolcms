@@ -863,7 +863,7 @@
                     $obj->last_update = base64_decode($xmlDoc->comment->update->body);
                     if(!$obj->last_update) $obj->last_update = $obj->regdate;
                     $obj->ipaddress = base64_decode($xmlDoc->comment->ipaddress->body);
-					$obj->status = base64_decode($xmlDoc->comment->status->body);
+                    $obj->status = base64_decode($xmlDoc->comment->status->body)==''?'1':base64_decode($xmlDoc->comment->status->body);
                     $obj->list_order = $obj->comment_srl*-1;
                     // Change content information (attachment)
                     if(count($files)) {
@@ -927,13 +927,13 @@
             $started = false;
             $buff = null;
 
+            $file_obj = new stdClass;
             while(!feof($fp)) {
                 $str = trim(fgets($fp, 1024));
                 // If it ends with </attaches>, break
                 if(trim($str) == '</attaches>') break;
                 // If it starts with <attach>, collect attachments
                 if(trim($str) == '<attach>') {
-                    $file_obj  = null;
                     $file_obj->file_srl = getNextSequence();
                     $file_obj->upload_target_srl = $upload_target_srl;
                     $file_obj->module_srl = $module_srl;

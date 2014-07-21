@@ -105,12 +105,11 @@
             }
 
             $oDocumentModel = &getModel('document');
-            $GLOBALS['XE_DOCUMENT_LIST'][$this->document_srl] = $this;
             if($load_extra_vars) {
+                $GLOBALS['XE_DOCUMENT_LIST'][$attribute->document_srl] = $this;
                 $oDocumentModel->setToAllDocumentExtraVars();
-                $this->add('title', $GLOBALS['XE_DOCUMENT_LIST'][$this->document_srl]->get('title'));
-                $this->add('content', $GLOBALS['XE_DOCUMENT_LIST'][$this->document_srl]->get('content'));
             }
+            $GLOBALS['XE_DOCUMENT_LIST'][$this->document_srl] = $this;
         }
 
         function isExists() {

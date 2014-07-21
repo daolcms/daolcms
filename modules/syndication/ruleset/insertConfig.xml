@@ -4,5 +4,6 @@
     </customrules>
     <fields>
 		<field name="site_url" required="true" />
+		<field name="syndication_token" required="true" />
     </fields>
 </ruleset>

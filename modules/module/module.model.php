@@ -208,7 +208,7 @@
 			} else $module_info = $output->data;
 
 			$oModuleController = getController('module');
-			$oModuleController->replaceDefinedLangCode($module_info->browser_title);
+			if(isset($module_info->browser_title)) $oModuleController->replaceDefinedLangCode($module_info->browser_title);
 
             return $this->addModuleExtraVars($module_info);
         }
@@ -438,6 +438,7 @@
 
             if(!$xml_obj) return;
             // Module Information
+            $module_info = new stdClass();
             if($xml_obj->version && $xml_obj->attrs->version == '0.2') {
                 // module format 0.2
                 $module_info->title = $xml_obj->title->body;
@@ -456,6 +457,7 @@
 
                 foreach($author_list as $author) {
                     unset($author_obj);
+                    $author_obj = new stdClass();
                     $author_obj->name = $author->name->body;
                     $author_obj->email_address = $author->attrs->email_address;
                     $author_obj->homepage = $author->attrs->link;
@@ -514,6 +516,7 @@
                 if(!$module_info->category) $module_info->category = 'service';
                 sscanf($xml_obj->author->attrs->date, '%d. %d. %d', $date_obj->y, $date_obj->m, $date_obj->d);
                 $module_info->date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
+                $author_obj = new stdClass();
                 $author_obj->name = $xml_obj->author->name->body;
                 $author_obj->email_address = $xml_obj->author->attrs->email_address;
                 $author_obj->homepage = $xml_obj->author->attrs->link;
@@ -542,7 +545,7 @@
             $xml_file = sprintf("%sconf/module.xml", $class_path);
             if(!file_exists($xml_file)) return;
             // Check if cached file exists
-            $cache_file = sprintf("./files/cache/module_info/%s.%s.%s.php", $module, Context::getLangType(), __ZBXE_VERSION__);
+            $cache_file = sprintf("./files/cache/module_info/%s.%s.%s.php", $module, Context::getLangType(), __DAOL_VERSION__);
             // Update if no cache file exists or it is older than xml file
             if(!file_exists($cache_file) || filemtime($cache_file)<filemtime($xml_file)) {
 
@@ -1078,6 +1081,7 @@
                 $info = $this->getModuleInfoXml($module_name);
                 unset($obj);
 
+                if(!isset($info)) continue;
                 $info->module = $module_name;
                 $info->created_table_count = $created_table_count;
                 $info->table_count = $table_count;

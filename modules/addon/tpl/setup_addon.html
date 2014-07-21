@@ -19,9 +19,9 @@
 	<input type="hidden" name="act" value="procAddonAdminSetupAddon" />
 	<input type="hidden" name="addon_name" value="{$addon_info->addon_name}" />
 
-	<block cond="count($addon_info->extra_vars)">
-		<block loop="$addon_info->extra_vars => $id, $var">
-			<block cond="!$not_first && !$var->group"><ul></block>
+<block cond="count($addon_info->extra_vars)">
+	<block loop="$addon_info->extra_vars => $id, $var">
+		<block cond="!$not_first && !$var->group"><ul></block>
 			<block cond="$group != $var->group">
 				<block cond="$not_first"></ul></block>
 				<h3 class="h3">{$var->group}</h3>
@@ -66,11 +66,11 @@
 			</div>
 		</fieldset>
 	</block>
+</block>
 	<div class="btnArea">
 		<span class="btn medium"><input type="submit" value="{$lang->cmd_save}" /></span>
 	</div>
 </form>
-</block>
 <script type="text/javascript">
 (function($){
 	$('#check_all')

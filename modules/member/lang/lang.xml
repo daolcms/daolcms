@@ -2217,6 +2217,10 @@ Bạn có thể quản lý thành viên bằng cách tạo những nhóm mới, 
 		<value xml:lang="zh-TW"><![CDATA[可設定密碼更新週期，將會定期通知更換密碼。 (設為零則不使用)]]></value>
 		<value xml:lang="tr"><![CDATA[Eğer buna bir değer biçerseniz, şifrenizi belirli aralıklarla değiştirmeniz konusunda bildirim alacaksanız (eğer 0 olarak ayarlandıysa, devredışıdır)]]></value>
 	</item>
+    <item name="msg_change_password_date">
+        <value xml:lang="ko"><![CDATA[%s일 동안 비밀번호를 변경하지 않았습니다. 개인정보 보호를 위하여 비밀번호를 변경해야 합니다.]]></value>
+        <value xml:lang="en"><![CDATA[You have not changed the password during %s days. For personal information protection, you need to change the password.]]></value>
+    </item>
 	<item name="login_trial_limit1">
 		<value xml:lang="ko"><![CDATA[로그인 시도 횟수 제한 횟수]]></value>
 		<value xml:lang="en"><![CDATA[Sign in trial limit]]></value>

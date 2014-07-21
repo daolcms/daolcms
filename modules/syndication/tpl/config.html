@@ -4,35 +4,38 @@
 <h3 class="xeAdmin">{$lang->syndication} <span class="gray">{$lang->cmd_management}</span></h3>
 <p class="summary">{$lang->about_syndication}</p>
 
-<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+{@$form_id = "modules/syndication/tpl/config.html"}
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == $form_id" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
 	<p>{$XE_VALIDATOR_MESSAGE}</p>
 </div>
 <form ruleset="insertService" action="./" method="post">
-<input type="hidden" name="act" value="procSyndicationAdminInsertService" />
+	<input type="hidden" name="xe_validator_id" value="{$form_id}" />
+	<input type="hidden" name="act" value="procSyndicationAdminInsertConfig" />
     <input type="hidden" name="year" value="{$year}" />
-    <table cellspacing="0" class="rowTable">
+
+    <table cellspacing="0" class="rowTable">	
     <tr>
         <th scope="row"><div>{$lang->my_syndication_url}</div></th>
         <td>
-            http://<input type="text" id="site_url" name="site_url" value="{$site_url}" class="inputTypeText siteUrl" />
-            <span class="button green"><input type="button" value="{$lang->cmd_check_syndication_echo}" onclick="pingSite(jQuery('#site_url').val())" /></span>
+            http://<input type="text" id="site_url" name="site_url" value="{$site_url}" />
+            <span class="button green"><input type="button" value="{$lang->cmd_check_syndication_echo}" onclick="pingCheck(jQuery('#site_url').val())" /></span>
             <p>{$lang->about_my_syndication_url}</p>
 			<p class="ping_test_result"></p>
         </td>
     </tr>
+    
     <tr>
-        <th scope="row"><div>{$lang->syndication_service}</div></th>
+        <th scope="row"><div>{$lang->my_syndication_password}</div></th>
         <td>
-            <ul class="syndiService">
-            <!--@foreach($services as $key => $val)-->
-                <li>
-                    <input type="checkbox" name="target_services" value="{$val->service}" id="target_service_{$val->service}" <!--@if($val->selected)-->checked="checked"<!--@end--> />
-                    <label for="target_service_{$val->service}">{$val->service}</label>
-					<!--@if($val->selected)--><span class="button green small"><input type="button" value="{$lang->cmd_check_syndication_status}" onclick="checkSyndicationStatus('{$val->service}')" /></span><!--@end-->
-                </li>
-            <!--@end-->
-            </ul>
-			<div class="print_result_status"></div>
+            <input type="text" id="syndication_password" name="syndication_password" value="{$syndication_password}" />
+            <p>{$lang->about_my_syndication_password}</p>
+        </td>
+    </tr>
+    
+    <tr>
+        <th scope="row"><div>{$lang->naver_syndication_token}</div></th>
+        <td>
+			<input type="text" name="syndication_token" value="{$syndication_token}" id="syndication_token" style="width:90%"/>
             <p>{$lang->about_syndication}</p>
         </td>
     </tr>

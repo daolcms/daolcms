@@ -374,85 +374,76 @@ class FileHandler {
 	 * @param string $post_data Request arguments array for POST method
 	 * @return string If success, the content of the target file. Otherwise: none
 	 **/
-	function getRemoteResource($url, $body = null, $timeout = 3, $method = 'GET', $content_type = null, $headers = array(), $cookies = array(), $post_data = array()) {
-		if(version_compare(PHP_VERSION, '5.0.0', '>='))
+	function getRemoteResource($url, $body = null, $timeout = 3, $method = 'GET', $content_type = null, $headers = array(), $cookies = array(), $post_data = array(), $request_config = array()) {
+		try {
+			requirePear();
+			require_once('HTTP/Request.php');
+
+			$parsed_url = parse_url(__PROXY_SERVER__);
+			if($parsed_url["host"]) {
+				$oRequest = new HTTP_Request(__PROXY_SERVER__);
+				$oRequest->setMethod('POST');
+				$oRequest->_timeout = $timeout;
+				$oRequest->addPostData('arg', serialize(array('Destination' => $url, 'method' => $method, 'body' => $body, 'content_type' => $content_type, "headers" => $headers, "post_data" => $post_data)));
+			}
+			else
+			{
+				$oRequest = new HTTP_Request($url);
+				if(count($request_config) && method_exists($oRequest, 'setConfig')) {
+					foreach($request_config as $key=>$val) {
+						$oRequest->setConfig($key, $val);
+					}
+				}
+				if(count($headers) > 0) {
+					foreach($headers as $key => $val) {
+						$oRequest->addHeader($key, $val);
+					}
+				}
+				if($cookies[$host]) {
+					foreach($cookies[$host] as $key => $val) {
+						$oRequest->addCookie($key, $val);
+					}
+				}
+				if(count($post_data) > 0) {
+					foreach($post_data as $key => $val) {
+						$oRequest->addPostData($key, $val);
+					}
+				}
+				if(!$content_type)
+					$oRequest->addHeader('Content-Type', 'text/html');
+				else
+					$oRequest->addHeader('Content-Type', $content_type);
+				$oRequest->setMethod($method);
+				if($body)
+					$oRequest->setBody($body);
+
+				$oRequest->_timeout = $timeout;
+			}
+
+			$oResponse = $oRequest->sendRequest();
+
+			$code = $oRequest->getResponseCode();
+			$header = $oRequest->getResponseHeader();
+			$response = $oRequest->getResponseBody();
+			if($c = $oRequest->getResponseCookies()) {
+				foreach($c as $k => $v) {
+					$cookies[$host][$v['name']] = $v['value'];
+				}
+			}
+
+			if($code > 300 && $code < 399 && $header['location']) {
+				return self::getRemoteResource($header['location'], $body, $timeout, $method, $content_type, $headers, $cookies, $post_data);
+			}
+
+			if($code != 200)
+				return;
+
+			return $response;
+		}
+		catch(Exception $e)
 		{
-			return include _XE_PATH_ . 'classes/file/getRemoteResourcePHP5.php';
+			return NULL;
 		}
-		else
-		{
-			return FileHandler::_getRemoteResource($url, $boyd, $timeout, $mehtod, $conent_type, $headers, $cookies, $post_data);
-		}
-	}
-
-	/**
-	 * Return remote file's content via HTTP
-	 *
-	 * If the target is moved (when return code is 300~399), this function follows the location specified response header.
-	 *
-	 * @param string $url The address of the target file 
-	 * @param string $body HTTP request body
-	 * @param int $timeout Connection timeout
-	 * @param string $method GET/POST
-	 * @param string $content_type Content type header of HTTP request
-	 * @param string[] $headers Headers key vaule array.
-	 * @param string[] $cookies Cookies key value array.
-	 * @param string $post_data Request arguments array for POST method
-	 * @return string If success, the content of the target file. Otherwise: none
-	 **/
-	function _getRemoteResource($url, $body = null, $timeout = 3, $method = 'GET', $content_type = null, $headers = array(), $cookies = array(), $post_data = array()) {
-		requirePear();
-		require_once('HTTP/Request.php');
-
-		$parsed_url = parse_url(__PROXY_SERVER__);
-		if($parsed_url["host"]) {
-			$oRequest = new HTTP_Request(__PROXY_SERVER__);
-			$oRequest->setMethod('POST');
-			$oRequest->_timeout = $timeout;
-			$oRequest->addPostData('arg', serialize(array('Destination'=>$url, 'method'=>$method, 'body'=>$body, 'content_type'=>$content_type, "headers"=>$headers, "post_data"=>$post_data)));
-		} else {
-			$oRequest = new HTTP_Request($url);
-			if(count($headers)) {
-				foreach($headers as $key => $val) {
-					$oRequest->addHeader($key, $val);
-				}
-			}
-			if($cookies[$host]) {
-				foreach($cookies[$host] as $key => $val) {
-					$oRequest->addCookie($key, $val);
-				}
-			}
-			if(count($post_data)) {
-				foreach($post_data as $key => $val) {
-					$oRequest->addPostData($key, $val);
-				}
-			}
-			if(!$content_type) $oRequest->addHeader('Content-Type', 'text/html');
-			else $oRequest->addHeader('Content-Type', $content_type);
-			$oRequest->setMethod($method);
-			if($body) $oRequest->setBody($body);
-
-			$oRequest->_timeout = $timeout;
-		}
-
-		$oResponse = $oRequest->sendRequest();
-
-		$code = $oRequest->getResponseCode();
-		$header = $oRequest->getResponseHeader();
-		$response = $oRequest->getResponseBody();
-		if($c = $oRequest->getResponseCookies()) {
-			foreach($c as $k => $v) {
-				$cookies[$host][$v['name']] = $v['value'];
-			}
-		}
-
-		if($code > 300 && $code < 399 && $header['location']) {
-			return FileHandler::getRemoteResource($header['location'], $body, $timeout, $method, $content_type, $headers, $cookies, $post_data);
-		} 
-
-		if($code != 200) return;
-
-		return $response;
 	}
 
 	/**

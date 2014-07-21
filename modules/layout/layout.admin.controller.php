@@ -202,14 +202,8 @@
                 $oLayoutModel = &getModel('layout');
                 $cache_file = $oLayoutModel->getUserLayoutCache($args->layout_srl, Context::getLangType());
                 FileHandler::removeFile($cache_file);
-				//remove from cache
-                $oCacheHandler = &CacheHandler::getInstance('object');
-                if($oCacheHandler->isSupport())
-                {
-                	$cache_key = 'object:'.$args->layout_srl;
-                	$oCacheHandler->delete($cache_key);
-                }
             }
+            
             return $output;
         }
 
@@ -240,13 +234,7 @@
             // Delete Layout
             $args->layout_srl = $layout_srl;
             $output = executeQuery("layout.deleteLayout", $args);
-			//remove from cache
-            $oCacheHandler = &CacheHandler::getInstance('object');
-            if($oCacheHandler->isSupport())
-            {
-            	$cache_key = 'object:'.$layout_srl;
-            	$oCacheHandler->delete($cache_key);
-            }
+			
             if(!$output->toBool()) return $output;
 
             return new Object(0,'success_deleted');

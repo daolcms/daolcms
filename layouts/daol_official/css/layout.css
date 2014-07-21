@@ -11,7 +11,7 @@ a{ text-decoration:none; color:#404040; }
 /*haeder login*/
 .header .header_login { width:100%; }
 .header .header_login .top_login { width:960px; margin:0 auto; }
-.header .header_login .top_login .login { float:right; height:31px; list-style-type:none; }
+.header .header_login .top_login .login { float:right; height:31px; list-style-type:none; margin-top:24px; }
 .header .header_login .top_login .login li { list-style-type:none; float:left; line-height:31px; color:#444; margin:0 0 0 10px; }
 .header .header_login .top_login .login li a { color:#444; }
 .header .header_login .top_login .login li button { cursor:pointer; background:transparent; border:0; color:#444; position:relative; top:-2px \0/IE8+9; }

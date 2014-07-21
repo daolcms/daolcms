@@ -39,7 +39,7 @@
          **/
         function getRssModuleConfig($module_srl) {
             // Get the configurations of the rss module
-            $oModuleModel = &getModel('module');
+            $oModuleModel = getModel('module');
             $module_rss_config = $oModuleModel->getModulePartConfig('rss', $module_srl);
             if(!$module_rss_config) $module_rss_config->open_rss = 'N';
             $module_rss_config->module_srl = $module_srl;

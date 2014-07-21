@@ -200,14 +200,13 @@
                         elseif(strpos($value,'|@|')!==false) $values = explode('|@|', $value);
                         elseif(strpos($value,',')!==false) $values = explode(',', $value);
                         else $values = array($value);
-                        for($i=0;$i<count($values);$i++) $values[$i] = htmlspecialchars($values[$i]);
+                        for($i=0;$i<count($values);$i++) $values[$i] = trim(htmlspecialchars($values[$i], ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
                         return $values;
                     break;
                 case 'kr_zip' :
                         if(is_array($value)) $values = $value;
                         elseif(strpos($value,'|@|')!==false) $values = explode('|@|', $value);
-                        elseif(strpos($value,',')!==false) $values = explode(',', $value);
-						else $values = array($value);
+                        else $values = array($value);
                         return $values;
                     break;
                 //case 'date' :
@@ -371,7 +370,12 @@
                         $buff .=' <input type="text" name="'.$column_name.'" value="'.($value ? $value : $default).'" class="text" />';
                     break;
             }
-            if($this->desc) $buff .= '<p>' . htmlspecialchars($this->desc) . '</p>';
+            if($this->desc)
+            {
+                $oModuleController = getController('module');
+                $oModuleController->replaceDefinedLangCode($this->desc);
+                $buff .= '<p>' . htmlspecialchars($this->desc, ENT_COMPAT | ENT_HTML401, 'UTF-8', false) . '</p>';
+            }
             return $buff;
         }
     }

@@ -63,8 +63,8 @@
 			if ($limit_date > 0) {
 				$oMemberModel = &getModel('member');
 				if ($this->memberInfo->change_password_date < date ('YmdHis', strtotime ('-' . $limit_date . ' day'))) {
-					$this->setRedirectUrl(getNotEncodedUrl('','vid',Context::get('vid'),'mid',Context::get('mid'),'act','dispMemberModifyPassword'));
-					return;
+					$msg = sprintf(Context::getLang('msg_change_password_date'), $limit_date);
+					return $this->setRedirectUrl(getNotEncodedUrl('','vid',Context::get('vid'),'mid',Context::get('mid'),'act','dispMemberModifyPassword'), new Object(-1, $msg));
 				}
 			}
 
@@ -397,7 +397,14 @@
 
 			$_SESSION['rechecked_password_step'] = 'VALIDATE_PASSWORD';
 
-			$redirectUrl = getNotEncodedUrl('', 'act', 'dispMemberModifyInfo');
+			if(Context::get('success_return_url'))
+            {
+                $redirectUrl = Context::get('success_return_url');
+            }
+            else
+            {
+                $redirectUrl = getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', 'dispMemberModifyInfo');
+            }
 			$this->setRedirectUrl($redirectUrl);
 
 		}
@@ -1070,19 +1077,21 @@
             $memberSrl = $oMemberModel->getMemberSrlByEmailAddress($email_address);
             if(!$memberSrl) return $this->stop('msg_not_exists_member');
 
-			$columnList = array('member_srl', 'user_id', 'user_name', 'nick_name', 'email_address');
+            $columnList = array('member_srl', 'user_id', 'user_name', 'nick_name', 'email_address');
             $member_info = $oMemberModel->getMemberInfoByMemberSrl($memberSrl, 0, $columnList);
-
-			$oModuleModel = getModel('module');
-			$member_config = $oModuleModel->getModuleConfig('member');
-			if(!$member_config->skin) $member_config->skin = "default";
-			if(!$member_config->colorset) $member_config->colorset = "white";
+            
+            $oModuleModel = getModel('module');
+            $member_config = $oModuleModel->getModuleConfig('member');
+            if(!$member_config->skin) $member_config->skin = "default";
+            if(!$member_config->colorset) $member_config->colorset = "white";
 
             // Check if a authentication mail has been sent previously
+            $chk_args = new stdClass;
             $chk_args->member_srl = $member_info->member_srl;
             $output = executeQuery('member.chkAuthMail', $chk_args);
             if($output->toBool() && $output->data->count == '0') return new Object(-1, 'msg_invalid_request');
 
+            $chk_args = new stdClass;
             $auth_args->member_srl = $member_info->member_srl;
             $output = executeQueryArray('member.getAuthMailInfo', $auth_args);
             if(!$output->data || !$output->data[0]->auth_key)  return new Object(-1, 'msg_invalid_request');
@@ -1118,7 +1127,7 @@
             $tpl_path = sprintf('%sskins/%s', $this->module_path, $member_config->skin);
             if(!is_dir($tpl_path)) $tpl_path = sprintf('%sskins/%s', $this->module_path, 'default');
 
-            $auth_url = getFullUrl('','module','member','act','procMemberAuthAccount','member_srl',$memberInfo->member_srl, 'auth_key',$auth_info->auth_key);
+            $auth_url = getFullUrl('','module','member','act','procMemberAuthAccount','member_srl',$member_info->member_srl, 'auth_key',$auth_info->auth_key);
             Context::set('auth_url', $auth_url);
 
 
@@ -1769,7 +1778,7 @@
 			}
             $member_srl = $oMemberModel->getMemberSrlByNickName($args->nick_name);
 			$member_srl_by_decode = $oMemberModel->getMemberSrlByNickName(utf8_decode($args->nick_name));
-            if($member_srl || $member_srl_by_decode) return new Object(-1,'msg_exists_nick_name');
+            if(($member_srl || $member_srl_by_decode) && $orgMemberInfo->nick_name != $args->nick_name) return new Object(-1,'msg_exists_nick_name');;
 
             $member_srl = $oMemberModel->getMemberSrlByEmailAddress($args->email_address);
             if($member_srl) return new Object(-1,'msg_exists_email_address');
@@ -2143,8 +2152,15 @@
 			$oMemberModel = &getModel('member');
             $member_srl = $oMemberModel->getMemberSrlByEmailAddress($newEmail);
             if($member_srl) return new Object(-1,'msg_exists_email_address');
+            
+            if($_SESSION['rechecked_password_step'] != 'INPUT_DATA')
+            {
+                return $this->stop('msg_invalid_request');
+            }
+            unset($_SESSION['rechecked_password_step']);
 
-			$auth_args->user_id = $newEmail;
+			$auth_args = new stdClass;
+            $auth_args->user_id = $newEmail;
 			$auth_args->member_srl = $member_info->member_srl;
 			$auth_args->auth_key = md5(rand(0, 999999));
 			$auth_args->new_password = 'XE_change_emaill_address';

@@ -21,7 +21,7 @@
         <!--@end-->
         <!--@foreach($document_list as $oDocument)-->
         <item>
-            <title>{str_replace('\'', '&apos;',htmlspecialchars($oDocument->getTitleText()))}</title>
+            <title><![CDATA[{$oDocument->getTitleText()}]]></title>
             <dc:creator>{str_replace('\'', '&apos;',$oDocument->getNickName())}</dc:creator>
             <link>{$oDocument->getPermanentUrl()}</link>
             <guid isPermaLink="true">{$oDocument->getPermanentUrl()}</guid>
@@ -29,9 +29,9 @@
             <comments>{$oDocument->getPermanentUrl()}#comment</comments>
             <!--@end-->
             <!--@if($open_rss_config[$oDocument->get('module_srl')]=='Y')-->
-            <description>{str_replace('\'', '&apos;', htmlspecialchars($oDocument->getTransContent(false,false,true)))}</description>
+            <description><![CDATA[{$oDocument->getTransContent(false,false,true)}]]></description>
             <!--@else-->
-            <description>{str_replace('\'', '&apos;', htmlspecialchars($oDocument->getContentText(100)))}</description>
+            <description><![CDATA[{$oDocument->getContentText(100)}]]></description>
             <!--@end-->
             <pubDate>{$oDocument->getRegdateGM()}</pubDate>
             <!--@foreach($oDocument->get('tag_list') as $tag)-->

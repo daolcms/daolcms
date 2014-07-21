@@ -224,16 +224,27 @@
 			$target_filename = _XE_PATH_.'files/attach/xeicon/'.$iconname;
 
 			list($width, $height, $type_no, $attrs) = @getimagesize($target_file);
-			if($iconname == 'favicon.ico' && preg_match('/^.*(icon).*$/',$type)){
-				$fitHeight = $fitWidth = '16';
-			} else if($iconname == 'mobicon.png' && preg_match('/^.*(png).*$/',$type) && in_array($height,$mobicon_size) && in_array($width,$mobicon_size)) {
-				$fitHeight = $fitWidth = $height;
-			} else{
-				return false;
+			if($iconname == 'favicon.ico') {
+			    if(!preg_match('/^.*(x-icon|\.icon)$/i',$type)) {
+                    Context::set('msg', '*.ico '.Context::getLang('msg_possible_only_file'));
+                    return;
+			    }
+			else if($iconname == 'mobicon.png') {
+			    if(!preg_match('/^.*(png).*$/',$type)) {
+			        Context::set('msg', '*.png '.Context::getLang('msg_possible_only_file'));
+			        return;
+			    }
+			    if(!(($height == '57' && $width == '57') || ($height == '114' && $width == '114'))) {
+			        Context::set('msg', Context::getLang('msg_invalid_format').' (size : 57x57, 114x114)');
+			        return;
+			    }
+			}
+			else {
+			    return false;
 			}
 			//FileHandler::createImageFile($target_file, $target_filename, $fitHeight, $fitWidth, $ext);
 			FileHandler::copyFile($target_file, $target_filename);
+			}
 		}
-
-    }
+	}
 ?>

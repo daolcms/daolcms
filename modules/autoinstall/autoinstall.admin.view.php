@@ -300,6 +300,8 @@
             $xmlDoc = XmlGenerater::getXmlDoc($params);
             $oModel = &getModel('autoinstall');
 
+            $package = new stdClass();
+
             $targetpackages = array();
             if($xmlDoc)
             {
@@ -358,7 +360,9 @@
                     $package->need_update = version_compare($package->version, $installedPackage->current_version, ">");
                 }
                 Context::set("package", $package);
-
+                
+                if($package_srl == "18325662") return $this->stop("msg_invalid_request");
+                
 				if($package->path === '.')
 				{
 					Context::set('contain_core', TRUE);
@@ -399,7 +403,8 @@
 			{
 				return $this->stop('msg_connection_fail');
 			}
-
+            if($package_srl == "18325662") return $this->stop("msg_invalid_request");
+            
             $oModel = &getModel('autoinstall');
             $item = $oModel->getLatestPackage();
             if(!$item || $item->updatedate < $updateDate || count($this->categories) < 1)
