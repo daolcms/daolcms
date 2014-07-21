@@ -1,127 +1,180 @@
 <?php
-    /**
-     * @class  syndicationController
-     * @author NHN (developers@xpressengine.com)
-     * @brief syndication module's Controller class
-     **/
+/* Copyright (C) NAVER <http://www.navercorp.com> */
 
-    class syndicationController extends syndication {
+/**
+ * @class  syndicationController
+ * @author NAVER (developers@xpressengine.com)
+ * @brief syndication module's Controller class
+ **/
 
-        function triggerInsertDocument(&$obj) {
-            if($obj->module_srl < 1) return new Object();
+class syndicationController extends syndication
+{
+	var $ping_message = '';
 
-            $oSyndicationModel = &getModel('syndication');
-            $oModuleModel = &getModel('module');
+	function triggerInsertDocument(&$obj) {
+		if($obj->module_srl < 1) return new Object();
 
-            if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
+		$oSyndicationModel = getModel('syndication');
+		$oModuleModel = getModel('module');
 
-            $config = $oModuleModel->getModuleConfig('syndication');
+		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
 
-            $id = $oSyndicationModel->getID('channel', $obj->module_srl);
-            $this->ping($id, 'article');
+		$config = $oModuleModel->getModuleConfig('syndication');
 
-            return new Object();
-        }
+		$id = $oSyndicationModel->getID('channel', $obj->module_srl);
+		$this->ping($id, 'article');
 
-        function triggerUpdateDocument(&$obj) {
-            if($obj->module_srl < 1) return new Object();
+		return new Object();
+	}
 
-            $oSyndicationModel = &getModel('syndication');
-            $oModuleModel = &getModel('module');
+	function triggerUpdateDocument(&$obj) {
+		if($obj->module_srl < 1) return new Object();
 
-            if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
+		$oSyndicationModel = getModel('syndication');
+		$oModuleModel = getModel('module');
 
-            $config = $oModuleModel->getModuleConfig('syndication');
+		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
 
-            $id = $oSyndicationModel->getID('channel', $obj->module_srl);
-            $this->ping($id, 'article');
+		$config = $oModuleModel->getModuleConfig('syndication');
 
-            return new Object();
-        }
+		$id = $oSyndicationModel->getID('channel', $obj->module_srl);
+		$this->ping($id, 'article');
 
-        function triggerDeleteDocument(&$obj) {
-            if($obj->module_srl < 1) return new Object();
+		return new Object();
+	}
 
-            $oSyndicationModel = &getModel('syndication');
-            $oModuleModel = &getModel('module');
+	function triggerDeleteDocument(&$obj) {
+		if($obj->module_srl < 1) return new Object();
 
-            if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
+		$oSyndicationModel = getModel('syndication');
+		$oModuleModel = getModel('module');
 
-            $this->insertLog($obj->module_srl, $obj->document_srl, $obj->title, $obj->content);
+		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
 
-            $id = $oSyndicationModel->getID('channel', $obj->module_srl);
-            $this->ping($id, 'deleted');
+		$this->insertLog($obj->module_srl, $obj->document_srl, $obj->title, $obj->content);
 
-            return new Object();
-        }
+		$id = $oSyndicationModel->getID('channel', $obj->module_srl);
+		$this->ping($id, 'deleted');
 
-        function triggerDeleteModule(&$obj) {
-            $oSyndicationModel = &getModel('syndication');
-            $oModuleModel = &getModel('module');
+		return new Object();
+	}
 
-            if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
+	function triggerDeleteModule(&$obj) {
+		$oSyndicationModel = getModel('syndication');
+		$oModuleModel = getModel('module');
 
-            $this->insertLog($obj->module_srl, $obj->document_srl, $obj->title, $obj->content);
+		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
 
-            $output = executeQuery('syndication.getExceptModule', $obj);
-            if($output->data->count) return new Object();
+		$output = executeQuery('syndication.getExceptModule', $obj);
+		if($output->data->count) return new Object();
+		
 
-            $id = $oSyndicationModel->getID('site', $obj->module_srl);
-            $this->ping($id, 'deleted');
+		$id = $oSyndicationModel->getID('site', $obj->module_srl);
+		$this->ping($id, 'deleted');
 
-            return new Object();
-        }
+		return new Object();
+	}
 
-        function triggerMoveDocumentToTrash(&$obj) {
-			$document_srl = $obj->document_srl;
-			$module_srl = $obj->module_srl;
-			
-            $oSyndicationModel = &getModel('syndication');
-            $oModuleModel = &getModel('module');
+	function triggerMoveDocumentToTrash(&$obj) {
+		$document_srl = $obj->document_srl;
+		$module_srl = $obj->module_srl;
 
-            if($oSyndicationModel->isExceptedModules($module_srl)) return new Object();
+		$oSyndicationModel = getModel('syndication');
+		$oModuleModel = getModel('module');
 
-            $id = $oSyndicationModel->getID('channel', $module_srl);
-            $this->ping($id, 'deleted');
+		if($oSyndicationModel->isExceptedModules($module_srl)) return new Object();
 
-			return new Object();
+		$this->insertLog($obj->module_srl, $obj->document_srl, '', '');
+
+		$id = $oSyndicationModel->getID('channel', $module_srl);
+		$this->ping($id, 'deleted');
+
+		return new Object();
+	}
+
+	function triggerRestoreTrash(&$obj) {
+		$document_srl = $obj->document_srl;
+		$module_srl = $obj->module_srl;
+
+		$oSyndicationModel = getModel('syndication');
+		$oModuleModel = getModel('module');
+
+		if($oSyndicationModel->isExceptedModules($module_srl)) return new Object();
+
+		$config = $oModuleModel->getModuleConfig('syndication');
+
+		// 신디케이션 삭제 로그 제거
+		$this->deleteLog($module_srl, $document_srl);
+
+		$id = $oSyndicationModel->getID('article', $module_srl.'-'.$document_srl);
+		$this->ping($id, 'article');
+
+		return new Object();
+	}
+
+	function insertLog($module_srl, $document_srl, $title = null, $summary = null)
+	{
+		$args = new stdClass;
+		$args->module_srl = $module_srl;
+		$args->document_srl = $document_srl;
+		$args->title = $title;
+		$args->summary = $summary;
+		$output = executeQuery('syndication.insertLog', $args);
+	}
+
+	function deleteLog($module_srl, $document_srl)
+	{
+		$args = new stdClass;
+		$args->module_srl = $module_srl;
+		$args->document_srl = $document_srl;
+		$output = executeQuery('syndication.deleteLog', $args);
+	}
+
+	function ping($id, $type, $page=1) {
+		$this->ping_message = '';
+
+		$oModuleModel = getModel('module');
+		$config = $oModuleModel->getModuleConfig('syndication');
+
+		if(!$config->syndication_token)
+		{
+			$this->ping_message = 'Syndication Token empty';
+			return false;
 		}
 
-        function triggerRestoreTrash(&$obj) {
-			$document_srl = $obj->document_srl;
-			$module_srl = $obj->module_srl;
-			
-            $oSyndicationModel = &getModel('syndication');
-            $oModuleModel = &getModel('module');
-
-            if($oSyndicationModel->isExceptedModules($module_srl)) return new Object();
-
-            $id = $oSyndicationModel->getID('article', $module_srl.'-'.$document_srl);
-            $this->ping($id, 'article');
-
-			return new Object();
+		if(substr($config->site_url,-1)!='/')
+		{
+			$config->site_url .= '/';
 		}
 
-        function insertLog($module_srl, $document_srl, $title = null, $summary = null) {
-            $args->module_srl = $module_srl;
-            $args->document_srl = $document_srl;
-            $args->title = $title;
-            $args->summary = $summary;
-            $output = executeQuery('syndication.insertLog', $args);
-        }
+		$ping_url = 'https://apis.naver.com/crawl/nsyndi/v2';
+		$ping_header = array();
+		$ping_header['Host'] = 'apis.naver.com';
+		$ping_header['Pragma'] = 'no-cache';
+		$ping_header['Accept'] = '*/*';
+		$ping_header['Authorization'] = sprintf("Bearer %s", $config->syndication_token);
 
-        function ping($id, $type) {
-            $oModuleModel = &getModel('module');
-            $config = $oModuleModel->getModuleConfig('syndication');
+		$request_config = array();
+		$request_config['ssl_verify_peer'] = false;
 
-            if(!count($config->target_services)) return;
-            if(substr($config->site_url,-1)!='/') $config->site_url .= '/';
-            foreach($config->target_services as $key => $val) {
-                $ping_url = trim($this->services[$val]);
-                if(!$ping_url) continue;
-                $ping_body = sprintf('http://%s?module=syndication&act=getSyndicationList&id=%s&type=%s', $config->site_url, $id, $type);
-                FileHandler::getRemoteResource($ping_url, null, 3, 'POST', 'application/x-www-form-urlencoded', array(), array(), array('link'=>$ping_body));
-            }
-        }
-    }
-?>
+		$ping_body = sprintf('http://%s?module=syndication&act=getSyndicationList&id=%s&type=%s&page=%s&syndication_password=%s', $config->site_url, $id, $type, $page, $config->syndication_password);
+
+		$buff = FileHandler::getRemoteResource($ping_url, null, 10, 'POST', 'application/x-www-form-urlencoded', $ping_header, array(), array('ping_url'=>$ping_body), $request_config);
+
+		$xml = new XmlParser();
+		$xmlDoc= $xml->parse($buff);
+		if($xmlDoc->result->error_code->boddy != '000')
+		{
+			if(!$buff)
+			{
+				$this->ping_message = 'Socket connection error. Check your Server Environment.';
+			}
+			else
+			{
+				$this->ping_message = $xmlDoc->result->message->body;
+			}
+			return false;
+		}
+		return true;
+	}
+}

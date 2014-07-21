@@ -1,14 +1,13 @@
-
-    <entry>
-        <id>{htmlspecialchars($article->id)}</id>
-        <title>{htmlspecialchars($article->title)}</title>
-        <updated>{$article->updated}</updated>
-        <link rel="alternative" href="{$article->alternative_href}" />
-        <link rel="channel" href="{htmlspecialchars($article->channel_id)}" />
-        <link rel="channel-alternative" href="{$article->channel_alternative_href}" />
-        <published>{date('Y-m-d\TH:i:s',ztime($article->regdate)).$time_zone}</published>
-        <author>
-            <name>{htmlspecialchars($article->nick_name)}</name>
-        </author>
-        <content>{htmlspecialchars($article->content)}</content>
-    </entry>
+	<entry>
+		<id>{$article->alternative_href}</id>
+		<title>{htmlspecialchars($article->title)}</title>
+		<author>
+			<name>{htmlspecialchars($article->nick_name)}</name>
+		</author>
+		<updated>{$article->updated}</updated>
+		<published>{date('Y-m-d\TH:i:s',ztime($article->regdate)).$time_zone}</published>
+		<link rel="via" href="{$article->channel_alternative_href}"/>
+		<content type="html">{htmlspecialchars($article->content)}</content>
+		<summary/>
+		<category/>
+	</entry>

@@ -25,11 +25,11 @@ function doSyncExceptModules(id) {
 }
 
 
-function pingSite(site_url){
+function pingCheck(site_url){
 
 	jQuery('p.ping_test_result').html('');
 	var response_tags = new Array('error','message','ping_result');
-	exec_xml('syndication','procSyndicationAdminCheckSitePingResult',{'site_url':site_url},function(ret_obj,response_tags){
+	exec_xml('syndication','procSyndicationAdminCheckPingResult',{'site_url':site_url},function(ret_obj,response_tags){
 		var error = ret_obj['error'];
 		var message = ret_obj['message'];
 		var ping_result = ret_obj['ping_result'];

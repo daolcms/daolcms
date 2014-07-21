@@ -1,5 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <lang>
+	<item name="help">
+		<value xml:lang="ko"><![CDATA[도움말]]></value>
+		<value xml:lang="en"><![CDATA[Help]]></value>
+		<value xml:lang="jp"><![CDATA[ヘルプ]]></value>
+	</item>
 	<item name="syndication">
 		<value xml:lang="ko"><![CDATA[신디케이션]]></value>
 		<value xml:lang="en"><![CDATA[Syndication]]></value>
@@ -19,6 +24,13 @@
 		<value xml:lang="zh-TW"><![CDATA[供稿服務]]></value>
 		<value xml:lang="tr"><![CDATA[İçerik Paylaşım Hizmeti]]></value>
 	</item>
+	<item name="naver_syndication_token">
+		<value xml:lang="ko"><![CDATA[NAVER 신디케이션 Token]]></value>
+		<value xml:lang="en"><![CDATA[NAVER Syndication Token]]></value>
+		<value xml:lang="jp"><![CDATA[NAVER シンディケーション Token]]></value>
+		<value xml:lang="zh-TW"><![CDATA[NAVER 聯合供搞 Token]]></value>
+		<value xml:lang="tr"><![CDATA[NAVER İçerik Paylaşımı Token]]></value>
+	</item>
 	<item name="about_syndication_service">
 		<value xml:lang="ko"><![CDATA[신디케이션 표준 규약에 맞춰 신디케이션 서비스를 제공하는 곳입니다.<br/>[적용하기] 버튼을 선택하시면 선택 또는 해제된 서비스에 Ping 을 통해서 결과를 통보하게 됩니다]]></value>
 		<value xml:lang="en"><![CDATA[Syndication Service provides syndication services according to a standard protocol.<br/>You will get Ping result from the selected (deselected) services if you apply.]]></value>
@@ -32,11 +44,23 @@
 		<value xml:lang="jp"><![CDATA[サイトアドレス]]></value>
 		<value xml:lang="zh-TW"><![CDATA[供稿網址]]></value>
 	</item>
+	<item name="my_syndication_password">
+		<value xml:lang="ko"><![CDATA[신디케이션 비밀번호]]></value>
+		<value xml:lang="en"><![CDATA[Syndication Password]]></value>
+		<value xml:lang="jp"><![CDATA[シンジケーションパスワード]]></value>
+		<value xml:lang="zh-TW"><![CDATA[聚合密碼]]></value>
+	</item>
 	<item name="about_my_syndication_url">
 		<value xml:lang="ko"><![CDATA[신디케이션 정보를 제공할때 사용되는 사이트의 주소를 입력해주세요. 이 주소는 대표 주소를 이용해주시고 가능한 바꾸시지 않는 것이 좋습니다]]></value>
 		<value xml:lang="en"><![CDATA[Please enter the URL which will be used when providing syndication information. It is recommended to use representative URL and keep it as long as you can.]]></value>
 		<value xml:lang="jp"><![CDATA[シンディケーション情報を提供するときに使用されるサイトのアドレスを入力してください。このアドレスは、代表アドレスを利用し、できれば変更しないでください。]]></value>
 		<value xml:lang="tr"><![CDATA[Lütfen sendikasyon bilgilerini sağlarken kullanılacak URLyi girin. Temsili bir URLyi mümkün olduğu sürece kullanmak daha uygun olabilir.]]></value>
+	</item>
+	<item name="about_my_syndication_password">
+		<value xml:lang="ko"><![CDATA[신디케이션 비밀번호를 설정하여 허용되지 않은 곳에서의 접근을 차단합니다.]]></value>
+		<value xml:lang="en"><![CDATA[Set syndication password for block access where not allowed.]]></value>
+		<value xml:lang="jp"><![CDATA[許可されていないブロックアクセスのための設定シンジケーションパスワード。]]></value>
+		<value xml:lang="zh-TW"><![CDATA[銀團設置密碼的地方不允許的訪問。]]></value>
 	</item>
 	<item name="except_module">
 		<value xml:lang="ko"><![CDATA[제외시킬 모듈]]></value>
@@ -56,6 +80,13 @@
 		<value xml:lang="jp"><![CDATA[サイトアドレスを入力してください。]]></value>
 		<value xml:lang="zh-TW"><![CDATA[請輸入網站網址]]></value>
 		<value xml:lang="tr"><![CDATA[Lütfen URL girişi yapın]]></value>
+	</item>
+	<item name="msg_syndication_token_is_null">
+		<value xml:lang="ko"><![CDATA[신디케이션 Token을 입력해주세요]]></value>
+		<value xml:lang="en"><![CDATA[Please enter Syndication Token.]]></value>
+		<value xml:lang="jp"><![CDATA[シンジケートTokenを入力してください]]></value>
+		<value xml:lang="zh-TW"><![CDATA[請輸入辛迪加令牌]]></value>
+		<value xml:lang="tr"><![CDATA[Sendikasyon Token'ı girin.]]></value>
 	</item>
 	<item name="success_applied">
 		<value xml:lang="ko"><![CDATA[적용되었습니다]]></value>

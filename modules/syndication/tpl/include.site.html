@@ -1,5 +1,7 @@
-    <id>{htmlspecialchars($site_info->id)}</id>
+	<id>{htmlspecialchars($site_info->self_href)}</id>
     <title>{htmlspecialchars($site_info->title)}</title>
+	<author>
+		<name>{$site_info->site_title}</name>
+	</author>
     <updated>{$site_info->updated}</updated>
-    <link rel="self" href="{htmlspecialchars($site_info->self_href)}" />
-    <link rel="alternative" href="{$site_info->alternative_href}" />
+	<link rel="site" href="{htmlspecialchars($site_info->self_href)}" title="{htmlspecialchars($site_info->title)}"/>
