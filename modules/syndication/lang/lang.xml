@@ -165,4 +165,8 @@
 		<value xml:lang="jp"><![CDATA[同期化状態]]></value>
 		<value xml:lang="tr"><![CDATA[Eş zamanlama statüleri]]></value>
 	</item>
+	<item name="msg_need_openssl_support">
+		<value xml:lang="ko"><![CDATA[OpenSSL(http://php.net/manual/en/book.openssl.php)이 필요합니다. 서버 관리자에게 문의하세요.]]></value>
+		<value xml:lang="en"><![CDATA[Need OpenSSL(http://php.net/manual/en/book.openssl.php) support. Please contact to your server administrator.]]></value>
+	</item>
 </lang>

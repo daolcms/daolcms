@@ -15,6 +15,24 @@
 
     <table cellspacing="0" class="rowTable">	
     <tr>
+        <th scope="row"><div>{$lang->help}</div></th>
+        <td>
+            <p>{$lang->about_syndication}</p>
+            <p><a href="http://webmastertool.naver.com/syndi/status.naver" target="_blank">http://webmastertool.naver.com/syndi/status.naver</a></p>
+        </td>
+	</tr>
+
+	<tr>
+        <th scope="row"><div>{$lang->use}</div></th>
+        <td>
+            <select name="syndication_use">
+                <option value="Y" selected="selected"|cond="$syndication_use=='Y'">{$lang->use}</option>
+                <option value="N" selected="selected"|cond="$syndication_use=='N'">{$lang->notuse}</option>
+            </select>
+        <td>
+	</tr>
+	
+    <tr>
         <th scope="row"><div>{$lang->my_syndication_url}</div></th>
         <td>
             http://<input type="text" id="site_url" name="site_url" value="{$site_url}" />
@@ -64,3 +82,12 @@
     </tr>
     </table>
 </form>
+
+<div>
+    <h2>Ping Fail log</h2>
+    <ul>
+        <li loop="$ping_log=>$obj">
+            <span>{zdate($obj->regdate)}</span> / <span>{urldecode($obj->message)}</span>
+        </li>
+	</ul>
+</div>
