@@ -18,6 +18,14 @@ class syndicationAdminView extends syndication
 
 		$module_config = $oModuleModel->getModuleConfig('syndication');
 
+		$oSyndicationModel = getModel('syndication');
+		Context::set('ping_log', $oSyndicationModel->getResentPingLog());
+
+		if(!$module_config->syndication_use)
+		{
+			$module_config->syndication_use = 'Y';
+		}
+
 		if(!$module_config->site_url)
 		{
 			$module_config->site_url = Context::getDefaultUrl()?Context::getDefaultUrl():getFullUrl();
@@ -33,11 +41,11 @@ class syndicationAdminView extends syndication
 			$module_config->syndication_password = uniqid();
 		}
 
+		Context::set('syndication_use', $module_config->syndication_use);
 		Context::set('site_url', preg_replace('/^(http|https):\/\//i','',$module_config->site_url));
 		Context::set('year', $module_config->year);
 		Context::set('syndication_token', $module_config->syndication_token);
 		Context::set('syndication_password', $module_config->syndication_password);
-
 
 		$output = executeQueryArray('syndication.getExceptModules');
 		$except_module_list = array();
@@ -49,6 +57,7 @@ class syndicationAdminView extends syndication
 			}
 		}
 		Context::set('except_module', $except_module_list);
+		
 
 		//Security
 		$security = new Security();

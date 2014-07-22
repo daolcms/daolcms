@@ -20,10 +20,11 @@ class syndicationAdminController extends syndication {
 		$oSyndicationModel = getModel('syndication');
 
 		$config = new stdClass;
+		$config->syndication_use = Context::get('syndication_use');
 		$config->site_url = preg_replace('/\/+$/is','',Context::get('site_url'));
 		$config->year = Context::get('year');
 		$config->syndication_token = Context::get('syndication_token');
-		$config->syndication_password = Context::get('syndication_password');
+		$config->syndication_password = urlencode(Context::get('syndication_password'));
 
 		if(!$config->site_url) return new Object(-1,'msg_site_url_is_null');
 		if(!$config->syndication_token) return new Object(-1,'msg_syndication_token_is_null');
@@ -41,6 +42,11 @@ class syndicationAdminController extends syndication {
 				$output = executeQuery('syndication.insertExceptModule',$args);
 				if(!$output->toBool()) return $output;
 			}
+		}
+
+		if(!$this->checkOpenSSLSupport())
+		{
+			return new Object(-1, 'msg_need_openssl_support');
 		}
 
 		$this->setMessage('success_applied');

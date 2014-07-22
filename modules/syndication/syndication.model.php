@@ -306,8 +306,48 @@ class syndicationModel extends syndication
 					break;
 
 					case 'article':
-						Context::set('article', $this->getArticle($document_srl));
-						$this->setTemplateFile('include.articles');
+						$channel_info = new stdClass;
+						$channel_info->id = $this->getID('channel', $module_info->module_srl);
+						$channel_info->site_title = $this->handleLang($site_module_info->browser_title, $site_module_info->site_srl);
+						$channel_info->title = $this->handleLang($module_info->browser_title, $module_info->site_srl);
+						$channel_info->updated = date("Y-m-d\\TH:i:s").$time_zone;
+						$channel_info->self_href = $this->getSelfHref($channel_info->id, $type);
+						$channel_info->alternative_href = $this->getAlternativeHref($module_info);
+						$channel_info->summary = $module_info->description;
+						if($module_info->module == "textyle")
+						{
+							$channel_info->type = "blog";
+							$channel_info->rss_href = getFullSiteUrl($module_info->domain, '', 'mid', $module_info->mid, 'act', 'rss');
+						}
+						else
+						{
+							$channel_info->type = "web";
+						}
+						$except_module_srls = $this->getExceptModuleSrls();
+						if($except_module_srls)
+						{
+							$args->except_modules = implode(',',$except_module_srls);
+						}
+
+						$output = executeQuery('syndication.getSiteUpdatedTime', $args);
+						if($output->data) $channel_info->updated = date("Y-m-d\\TH:i:s", ztime($output->data->last_update)).$time_zone;
+						Context::set('channel_info', $channel_info);
+
+
+						$this->setTemplateFile('channel');
+						switch($type) {
+							case "article" :
+								$articles = new stdClass; 
+								$articles->list = array($this->getArticle($document_srl));
+								Context::set('articles', $articles);
+							break;
+
+							case "deleted" :
+								$deleted = new stdClass; 
+								$deleted->list = $this->getDeletedByDocumentSrl($document_srl);
+								Context::set('deleted', $deleted);
+							break;
+						}
 					break;
 			}
 		} else {
@@ -458,6 +498,22 @@ class syndicationModel extends syndication
 		return $result;
 	}
 
+	function getDeletedByDocumentSrl($document_srl)
+	{
+		$args = new stdClass;
+		$args->document_srl = $document_srl;
+		$output = executeQueryArray('syndication.getDeletedList', $args);
+		foreach($output->data as $key => $val) {
+			$val->id = $this->getID('article', $val->module_srl.'-'.$val->document_srl);
+			$val->deleted = date("Y-m-d\\TH:i:s", ztime($val->regdate)).$time_zone;
+			$val->alternative_href = getFullSiteUrl($this->site_url, '', 'document_srl', $val->document_srl);
+			$val->channel_id = $this->getID('channel', $val->module_srl.'-'.$val->document_srl);
+			$output->data[$key] = $val;
+		}
+
+		return $output->data;
+	}
+
 	function getID($type, $target_id = null) {
 		if($this->site_url==null) $this->init();
 
@@ -505,5 +561,47 @@ class syndicationModel extends syndication
 		$time = strtotime($date);
 		if($time == -1) $time = ztime(str_replace(array('-','T',':'),'',$date));
 		return date('YmdHis', $time);
+	}
+
+	function getResentPingLogPath()
+	{
+		$target_filename = _XE_PATH_.'files/cache/tmp/syndication_ping_log';
+		if(!file_exists($target_filename))
+		{
+			FileHandler::writeFile($target_filename, '');
+		}
+		return $target_filename;
+	}
+
+	function setResentPingLog($msg)
+	{
+		$file_path = $this->getResentPingLogPath();
+
+		$args = new stdClass;
+		$args->regdate = date('YmdHis');
+		$args->message = urlencode($msg);
+
+		$list = $this->getResentPingLog();
+		if(count($list)>=10)
+		{
+			array_pop($list);
+		}
+		array_unshift($list, $args);
+		FileHandler::writeFile($file_path, serialize($list));
+
+		return true;
+	}
+
+	function getResentPingLog()
+	{
+		$file_path = $this->getResentPingLogPath();
+		$str = FileHandler::readFile($file_path);
+		$list = array();
+		if($str)
+		{
+			$list = unserialize($str);
+		}
+
+		return $list;
 	}
 }

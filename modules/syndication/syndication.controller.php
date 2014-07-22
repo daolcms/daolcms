@@ -21,7 +21,10 @@ class syndicationController extends syndication
 
 		$config = $oModuleModel->getModuleConfig('syndication');
 
-		$id = $oSyndicationModel->getID('channel', $obj->module_srl);
+		if($config->syndication_use!='Y') return new Object();
+
+		$target_id = sprintf('%s-%s', $obj->module_srl, $obj->document_srl);
+		$id = $oSyndicationModel->getID('article', $target_id);
 		$this->ping($id, 'article');
 
 		return new Object();
@@ -37,7 +40,10 @@ class syndicationController extends syndication
 
 		$config = $oModuleModel->getModuleConfig('syndication');
 
-		$id = $oSyndicationModel->getID('channel', $obj->module_srl);
+		if($config->syndication_use!='Y') return new Object();
+
+		$target_id = sprintf('%s-%s', $obj->module_srl, $obj->document_srl);
+		$id = $oSyndicationModel->getID('article', $target_id);
 		$this->ping($id, 'article');
 
 		return new Object();
@@ -51,19 +57,29 @@ class syndicationController extends syndication
 
 		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
 
+		$config = $oModuleModel->getModuleConfig('syndication');
+
+		if($config->syndication_use!='Y') return new Object();
+
 		$this->insertLog($obj->module_srl, $obj->document_srl, $obj->title, $obj->content);
 
-		$id = $oSyndicationModel->getID('channel', $obj->module_srl);
+		$target_id = sprintf('%s-%s', $obj->module_srl, $obj->document_srl);
+		$id = $oSyndicationModel->getID('article', $target_id);
 		$this->ping($id, 'deleted');
 
 		return new Object();
 	}
 
+	// @deplicate
 	function triggerDeleteModule(&$obj) {
 		$oSyndicationModel = getModel('syndication');
 		$oModuleModel = getModel('module');
 
 		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
+
+		$config = $oModuleModel->getModuleConfig('syndication');
+
+		if($config->syndication_use!='Y') return new Object();
 
 		$output = executeQuery('syndication.getExceptModule', $obj);
 		if($output->data->count) return new Object();
@@ -75,38 +91,66 @@ class syndicationController extends syndication
 		return new Object();
 	}
 
-	function triggerMoveDocumentToTrash(&$obj) {
-		$document_srl = $obj->document_srl;
-		$module_srl = $obj->module_srl;
+	function triggerMoveDocumentModule(&$obj)
+	{
+		if($obj->module_srl < 1) return new Object();
 
 		$oSyndicationModel = getModel('syndication');
 		$oModuleModel = getModel('module');
 
-		if($oSyndicationModel->isExceptedModules($module_srl)) return new Object();
+		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
+
+		$config = $oModuleModel->getModuleConfig('syndication');
+
+		if($config->syndication_use!='Y') return new Object();
+
+		$arr_document_srl = explode(',', $obj->document_srls);
+		if(!$arr_document_srl) return new Object();
+
+		foreach($arr_document_srl as $document_srl)
+		{
+			$target_id = sprintf('%s-%s', $obj->module_srl, $document_srl);
+			$id = $oSyndicationModel->getID('article', $target_id);
+			$this->ping($id, 'article');
+		}
+
+		return new Object();
+	}
+
+	function triggerMoveDocumentToTrash(&$obj) {
+		$oSyndicationModel = getModel('syndication');
+		$oModuleModel = getModel('module');
+
+		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
+
+		$config = $oModuleModel->getModuleConfig('syndication');
+
+		if($config->syndication_use!='Y') return new Object();
 
 		$this->insertLog($obj->module_srl, $obj->document_srl, '', '');
 
-		$id = $oSyndicationModel->getID('channel', $module_srl);
+		$target_id = sprintf('%s-%s', $obj->module_srl, $obj->document_srl);
+		$id = $oSyndicationModel->getID('article', $target_id);
 		$this->ping($id, 'deleted');
 
 		return new Object();
 	}
 
 	function triggerRestoreTrash(&$obj) {
-		$document_srl = $obj->document_srl;
-		$module_srl = $obj->module_srl;
-
 		$oSyndicationModel = getModel('syndication');
 		$oModuleModel = getModel('module');
 
-		if($oSyndicationModel->isExceptedModules($module_srl)) return new Object();
+		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
 
 		$config = $oModuleModel->getModuleConfig('syndication');
 
-		// 신디케이션 삭제 로그 제거
-		$this->deleteLog($module_srl, $document_srl);
+		if($config->syndication_use!='Y') return new Object();
 
-		$id = $oSyndicationModel->getID('article', $module_srl.'-'.$document_srl);
+		// 신디케이션 삭제 로그 제거
+		$this->deleteLog($obj->module_srl, $obj->document_srl);
+
+		$target_id = sprintf('%s-%s', $obj->module_srl, $obj->document_srl);
+		$id = $oSyndicationModel->getID('article', $target_id);
 		$this->ping($id, 'article');
 
 		return new Object();
@@ -133,12 +177,23 @@ class syndicationController extends syndication
 	function ping($id, $type, $page=1) {
 		$this->ping_message = '';
 
+		$oSyndicationModel = getModel('syndication');
+
 		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('syndication');
 
 		if(!$config->syndication_token)
 		{
 			$this->ping_message = 'Syndication Token empty';
+			$oSyndicationModel->setResentPingLog($this->ping_message);
+			return false;
+		}
+
+		if(!$this->checkOpenSSLSupport())
+		{
+			$lang = Context::get('lang');
+			$this->ping_message = $lang->msg_need_openssl_support;
+			$oSyndicationModel->setResentPingLog($this->ping_message);
 			return false;
 		}
 
@@ -157,13 +212,14 @@ class syndicationController extends syndication
 		$request_config = array();
 		$request_config['ssl_verify_peer'] = false;
 
-		$ping_body = sprintf('http://%s?module=syndication&act=getSyndicationList&id=%s&type=%s&page=%s&syndication_password=%s', $config->site_url, $id, $type, $page, $config->syndication_password);
+		$ping_body = getNotEncodedFullUrl('', 'module', 'syndication', 'act', 'getSyndicationList', 'id', $id, 'type', $type, 'page', $page, 'syndication_password', $config->syndication_password);
 
 		$buff = FileHandler::getRemoteResource($ping_url, null, 10, 'POST', 'application/x-www-form-urlencoded', $ping_header, array(), array('ping_url'=>$ping_body), $request_config);
 
 		$xml = new XmlParser();
 		$xmlDoc= $xml->parse($buff);
-		if($xmlDoc->result->error_code->boddy != '000')
+
+		if($xmlDoc->result->error_code->body != '000')
 		{
 			if(!$buff)
 			{
@@ -173,6 +229,8 @@ class syndicationController extends syndication
 			{
 				$this->ping_message = $xmlDoc->result->message->body;
 			}
+
+			$oSyndicationModel->setResentPingLog($this->ping_message);
 			return false;
 		}
 		return true;
