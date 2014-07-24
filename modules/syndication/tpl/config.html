@@ -13,7 +13,7 @@
 	<input type="hidden" name="act" value="procSyndicationAdminInsertConfig" />
     <input type="hidden" name="year" value="{$year}" />
 
-    <table cellspacing="0" class="rowTable">	
+    <table cellspacing="0" class="rowTable">
     <tr>
         <th scope="row"><div>{$lang->help}</div></th>
         <td>
@@ -36,7 +36,7 @@
         <th scope="row"><div>{$lang->my_syndication_url}</div></th>
         <td>
             http://<input type="text" id="site_url" name="site_url" value="{$site_url}" />
-            <span class="button green"><input type="button" value="{$lang->cmd_check_syndication_echo}" onclick="pingCheck(jQuery('#site_url').val())" /></span>
+            <span class="btn"><input type="button" value="{$lang->cmd_check_syndication_echo}" onclick="pingCheck(jQuery('#site_url').val())" /></span>
             <p>{$lang->about_my_syndication_url}</p>
 			<p class="ping_test_result"></p>
         </td>
@@ -68,8 +68,8 @@
                 <!--@end-->
             </select>
             <ul class="midCommand">
-                <li><a href="{getUrl('','module','module','act','dispModuleSelectList','id','except_module')}" onclick="popopen(this.href, 'ModuleSelect');return false;" class="button blue"><span>{$lang->cmd_insert}</span></a></li>
-                <li><a href="#" onclick="removeExceptModule('except_module');return false;" class="button red"><span>{$lang->cmd_delete}</span></a></li>
+                <li><span class="btn"><a href="{getUrl('','module','module','act','dispModuleSelectList','id','except_module')}" onclick="popopen(this.href, 'ModuleSelect');return false;" class="button blue">{$lang->cmd_insert}</a></span></li>
+                <li><span class="btn"><a href="#" onclick="removeExceptModule('except_module');return false;" class="button red">{$lang->cmd_delete}</a></span></li>
             </ul>
             <p>{$lang->about_except_module}</p>
             <input type="hidden" name="except_module" id="except_module" value="{implode(',',$except_module_srls)}" />
@@ -77,7 +77,7 @@
     </tr>
     <tr>
         <th colspan="2" class="button">
-            <span class="button black strong"><input type="submit" value="{$lang->cmd_apply}" accesskey="s" /></span>
+            <span class="btn"><input type="submit" value="{$lang->cmd_apply}" accesskey="s" /></span>
         </th>
     </tr>
     </table>
