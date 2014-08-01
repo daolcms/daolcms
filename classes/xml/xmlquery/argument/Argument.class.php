@@ -136,10 +136,9 @@ class Argument {
 			if (!is_array($value))
 				$value = $this->_escapeStringValue($value);
 			else {
-				$total = count($value);
-				for ($i = 0; $i < $total; $i++)
-					$value[$i] = $this->_escapeStringValue($value[$i]);
-				//$value[$i] = '\''.$value[$i].'\'';
+				foreach($value as $key=>$val) {
+					$value[$key] = $this->_escapeStringValue($val);
+				}
 			}
 		}
 		if($this->uses_default_value) return $value;
