@@ -1,0 +1,53 @@
+<include target="./header.html" />
+<section>
+	<div class="cnb">
+		<ul>
+			<li class="active"><a href="{getUrl('','module','admin','act','dispSpamfilterAdminSetting')}">{$lang->cmd_denied_ip}</a></li>
+			<li><a href="{getUrl('','module','admin','act','dispSpamfilterAdminDeniedWordList')}">{$lang->cmd_denied_word}</a></li>
+			<li><a href="{getUrl('','module','admin','act','dispSpamfilterAdminConfigBlock')}">{$lang->cmd_config_block}</a></li>
+		</ul>
+	</div>
+    <div class="table even">
+		<form action="./" method="post" class="form">
+		<input type="hidden" name="act" value="procSpamfilterAdminDeleteDeniedIP" />
+		<input type="hidden" name="module" value="spamfilter" />
+		<input type="hidden" name="xe_validator_id" value="modules/spamfilter/tpl/1" />
+			<table width="100%" border="1" cellspacing="0">
+				<caption>
+					{$lang->cmd_denied_ip}
+					<span class="side"><span class="btn small"><button type="submit">{$lang->cmd_delete}</button></span></span>
+				</caption>
+				<thead>
+					<tr>
+    					<th scope="col">IP</th>
+    					<th scope="col">{$lang->description}</th>
+    					<th scope="col">{$lang->regdate}</th>
+    					<th scope="col"><input type="checkbox" name="ipaddress" title="Check All" /></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr loop="$ip_list => $ip_info">
+    					<td>{$ip_info->ipaddress}</td>
+    					<td>{$ip_info->description}</td>
+    					<td>{zdate($ip_info->regdate,'Y-m-d')}</td>
+    					<td><input type="checkbox" name="ipaddress[]" value="{$ip_info->ipaddress}" /></td>
+					</tr>
+				<tr cond="!$ip_list">
+					<td colspan="4" style="text-align:center">{$lang->no_data}</td>
+				</tr>
+			</tbody>
+			</table>
+		</form>
+    </div>
+	<form action="./" method="post" class="form">
+		<input type="hidden" name="act" value="procSpamfilterAdminInsertDeniedIP" />
+		<input type="hidden" name="module" value="spamfilter" />
+		<input type="hidden" name="xe_validator_id" value="modules/spamfilter/tpl/1" />
+		<input type="hidden" name="active" value="ip" />
+		<textarea name="ipaddress_list" title="{$lang->add_denied_ip}: {$lang->about_denied_ip}" rows="4" cols="42" style="width:100%" placeholder="{$lang->about_denied_ip}"></textarea>
+		<span class="btn small" style="margin-top:10px">
+			<button type="submit">{$lang->add_denied_ip}</button>
+		</span>
+	</form>
+</section>
+<include target="./footer.html" />
