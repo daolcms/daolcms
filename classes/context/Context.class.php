@@ -807,6 +807,8 @@ class Context {
 	 * @return string converted string
 	 */
 	function convertEncodingStr($str) {
+		if(!$str) return null;
+		$obj = new stdClass();
 		$obj->str = $str;
 		$obj = Context::convertEncoding($obj);
 		return $obj->str;
