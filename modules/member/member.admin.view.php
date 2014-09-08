@@ -396,8 +396,8 @@
 						}
 						$template = sprintf($template, implode('', $optionTag));
 					}elseif($extendForm->column_type == 'kr_zip'){
-                        $krzipModel = &getModel('krzip');
-                        $template = $krzipModel->getKrzipCodeSearchHtml($extendForm->column_name, $extendForm->value);
+						$krzipModel = &getModel('krzip');
+						$template = $krzipModel->getKrzipCodeSearchHtml($extendForm->column_name, $extendForm->value);
 					}elseif($extendForm->column_type == 'jp_zip'){
 						$template = '<input type="text" name="%column_name%" id="%column_name%" value="%value%" />';
 					}elseif($extendForm->column_type == 'date'){
