@@ -87,7 +87,8 @@
             $db_info->slave_db[] = get_object_vars($con_string);
 
             if(!$db_info->default_url) $db_info->default_url = Context::getRequestUri();
-            $db_info->lang_type = Context::getLangType();
+            $db_info->lang_type = Context::get('lang_type') ? Context::get('lang_type') : Context::getLangType();
+			Context::setLangType($db_info->lang_type);
 
             // Set DB type and information
             Context::setDBInfo($db_info);
