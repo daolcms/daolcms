@@ -212,7 +212,8 @@
 			$db_info->master_db['db_table_prefix'] = Context::get('db_table_prefix');
 			$db_info->slave_db = array($db_info->master_db);
 			$db_info->default_url = Context::getRequestUri();
-			$db_info->lang_type = Context::getLangType();
+			$db_info->lang_type = Context::get('lang_type') ? Context::get('lang_type') : Context::getLangType();
+			Context::setLangType($db_info->lang_type);
 			$db_info->use_rewrite = Context::get('use_rewrite');
 			$db_info->time_zone = Context::get('time_zone');
 			return $db_info;
