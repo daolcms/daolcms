@@ -13,17 +13,17 @@
          * @brief Initialization
          **/
         function init() {
-			// Set browser title
-			Context::setBrowserTitle(Context::getLang('introduce_title'));
-            // Specify the template path
-            $this->setTemplatePath($this->module_path.'tpl');
-            // Error occurs if already installed
-            if(Context::isInstalled()) return $this->stop('msg_already_installed');
-            // Install a controller
-            $oInstallController = &getController('install');
-            $this->install_enable = $oInstallController->checkInstallEnv();
-            // If the environment is installable, execute installController::makeDefaultDirectory()
-            if($this->install_enable) $oInstallController->makeDefaultDirectory();
+		// Set browser title
+		Context::setBrowserTitle(Context::getLang('introduce_title'));
+		// Specify the template path
+		$this->setTemplatePath($this->module_path.'tpl');
+		// Error occurs if already installed
+		if(Context::isInstalled()) return $this->stop('msg_already_installed');
+		// Install a controller
+		$oInstallController = &getController('install');
+		$this->install_enable = $oInstallController->checkInstallEnv();
+		// If the environment is installable, execute installController::makeDefaultDirectory()
+		if($this->install_enable) $oInstallController->makeDefaultDirectory();
         }
 
         /**
@@ -31,26 +31,26 @@
          **/
         function dispInstallIntroduce() {
 			/**
-				 * If './config/install.config.php' file is created and has array shown in the example below, DAOLCMS will be installed using config file.
-				 * ex )
-				  $install_config = array(
-				  'db_type' =>'mysql_innodb', //mysql, mysql_innodb, mysqli, sqlite3_pdo, ...
-				  'db_port' =>'3306',
-				  'db_hostname' =>'localhost',
-				  'db_userid' =>'root',
-				  'db_password' =>'root',
-				  'db_database' =>'xe_database',
-				  'db_table_prefix' =>'xe',
-				  'use_rewrite' =>'N',
-				  'time_zone' =>'0000', //like +0900(Asia/Seoul)
-				  'email_address' =>'admin@xe.com', //will be created as admin account
-				  'password' =>'pass',
-				  'password2' =>'pass',
-				  'nick_name' =>'admin',
-				  'user_id' =>'admin',
-				  'lang_type' =>'ko',	// en, jp, ...
-				  );
-				 */
+			 * If './config/install.config.php' file is created and has array shown in the example below, DAOLCMS will be installed using config file.
+			 * ex )
+			  $install_config = array(
+			  'db_type' =>'mysql_innodb', //mysql, mysql_innodb, mysqli, sqlite3_pdo, ...
+			  'db_port' =>'3306',
+			  'db_hostname' =>'localhost',
+			  'db_userid' =>'root',
+			  'db_password' =>'root',
+			  'db_database' =>'xe_database',
+			  'db_table_prefix' =>'xe',
+			  'use_rewrite' =>'N',
+			  'time_zone' =>'0000', //like +0900(Asia/Seoul)
+			  'email_address' =>'admin@xe.com', //will be created as admin account
+			  'password' =>'pass',
+			  'password2' =>'pass',
+			  'nick_name' =>'admin',
+			  'user_id' =>'admin',
+			  'lang_type' =>'ko',	// en, jp, ...
+			  );
+			 */
 			$install_config_file = FileHandler::getRealPath('./config/install.config.php');
 			if(file_exists($install_config_file)){
 				include $install_config_file;
@@ -61,6 +61,7 @@
 						Context::set($k,$v,true);
 					}
 					unset($GLOBALS['__DB__']);
+					Context::setLangType(Context::get('lang_type'));
 					Context::set('install_config', true, true);
 					$oInstallController = &getController('install');
 					$output = $oInstallController->procInstall();
