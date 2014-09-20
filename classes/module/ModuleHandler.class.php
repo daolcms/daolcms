@@ -274,6 +274,22 @@
             if(!$kind && $this->module == 'admin') $kind = 'admin';
 			if($this->module_info->use_mobile != "Y") Mobile::setMobile(false);
 
+			if($kind == 'admin')
+			{
+				$oMemberController = ModuleHandler::getModuleInstance('member', 'controller');
+				$validate_session = $oMemberController->validateSession();
+				$oMemberController->regenerateSession();
+				if(!$validate_session)
+				{
+					$this->error = 'security_invalid_session';
+					$oMessageObject = ModuleHandler::getModuleInstance('message', 'view');
+					$oMessageObject->setError(-1);
+					$oMessageObject->setMessage($this->error);
+					$oMessageObject->dispMessage();
+					return $oMessageObject;
+				}
+			}
+			
 			// admin menu check
             if(Context::isInstalled())
 			{
