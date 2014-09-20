@@ -1,48 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="0.2">
 	<title xml:lang="ko">Syndication</title>
-	<title xml:lang="zh-CN">Syndication</title>
 	<title xml:lang="en">Syndication</title>
-	<title xml:lang="vi">Syndication</title>
-	<title xml:lang="es">Syndication</title>
 	<title xml:lang="jp">Syndication</title>
-	<title xml:lang="ru">Syndication</title>
+	<title xml:lang="zh-CN">Syndication</title>
 	<title xml:lang="zh-TW">Syndication</title>
+	<title xml:lang="fr">Syndication</title>
+	<title xml:lang="de">Syndication</title>
+	<title xml:lang="ru">Syndication</title>
+	<title xml:lang="es">Syndication</title>
 	<title xml:lang="tr">Syndication</title>
-	<description xml:lang="ko">검색서비스업체와 직접 통신을 통해 컨텐츠를 잘 검색되도록 하는 Syndication 규약을 따라 정보를 주고받는 모듈</description>
-	<description xml:lang="zh-CN">검색서비스업체와 직접 통신을 통해 컨텐츠를 잘 검색되도록 하는 Syndication 규약을 따라 정보를 주고받는 모듈</description>
-	<description xml:lang="en">검색서비스업체와 직접 통신을 통해 컨텐츠를 잘 검색되도록 하는 Syndication 규약을 따라 정보를 주고받는 모듈</description>
-	<description xml:lang="vi">검색서비스업체와 직접 통신을 통해 컨텐츠를 잘 검색되도록 하는 Syndication 규약을 따라 정보를 주고받는 모듈</description>
-	<description xml:lang="es">검색서비스업체와 직접 통신을 통해 컨텐츠를 잘 검색되도록 하는 Syndication 규약을 따라 정보를 주고받는 모듈</description>
-	<description xml:lang="jp">검색서비스업체와 직접 통신을 통해 컨텐츠를 잘 검색되도록 하는 Syndication 규약을 따라 정보를 주고받는 모듈</description>
-	<description xml:lang="ru">검색서비스업체와 직접 통신을 통해 컨텐츠를 잘 검색되도록 하는 Syndication 규약을 따라 정보를 주고받는 모듈</description>
-	<description xml:lang="zh-TW">검색서비스업체와 직접 통신을 통해 컨텐츠를 잘 검색되도록 하는 Syndication 규약을 따라 정보를 주고받는 모듈</description>
-	<description xml:lang="tr">검색서비스업체와 직접 통신을 통해 컨텐츠를 잘 검색되도록 하는 Syndication 규약을 따라 정보를 주고받는 모듈</description>
-	<version>4.0.0-beta.2</version>
-	<date>2014-07-11</date>
+	<title xml:lang="vi">Syndication</title>
+	<title xml:lang="mm">Syndication</title>
+	<description xml:lang="ko">검색서비스업체와 직접 통신을 통해 컨텐츠를 잘 검색되도록 하는 Syndication 규약을 따라 정보를 주고받는 모듈.</description>
+	<description xml:lang="en">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
+	<description xml:lang="jp">より良い検索結果を得るためSyndication用語を使用して、検索サービス提供者に情報を送受信するためのモジュール。</description>
+	<description xml:lang="zh-CN">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
+	<description xml:lang="zh-TW">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
+	<description xml:lang="fr">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.<description>
+	<description xml:lang="de">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
+	<description xml:lang="ru">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
+	<description xml:lang="es">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
+	<description xml:lang="tr">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.<description>
+	<description xml:lang="vi">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.<description>
+	<description xml:lang="mm">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.<description>
+	<version>4.0.0</version>
+	<date>2014-09-17</date>
 	<category>interlock</category>
 
     <author email_address="developer@daolcms.org" link="http://www.daolcms.org/">
         <name xml:lang="ko">DAOL</name>
-        <name xml:lang="zh-CN">DAOL</name>
         <name xml:lang="en">DAOL</name>
-        <name xml:lang="vi">DAOL</name>
-        <name xml:lang="es">DAOL</name>
         <name xml:lang="jp">DAOL</name>
-        <name xml:lang="ru">DAOL</name>
+        <name xml:lang="zh-CN">DAOL</name>
         <name xml:lang="zh-TW">DAOL</name>
+        <name xml:lang="fr">DAOL</name>
+        <name xml:lang="de">DAOL</name>
+        <name xml:lang="ru">DAOL</name>
+        <name xml:lang="es">DAOL</name>
         <name xml:lang="tr">DAOL</name>
+        <name xml:lang="vi">DAOL</name>
+        <name xml:lang="mm">DAOL</name>
     </author>
 
     <author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
         <name xml:lang="ko">NAVER</name>
-        <name xml:lang="zh-CN">NAVER</name>
         <name xml:lang="en">NAVER</name>
-        <name xml:lang="vi">NAVER</name>
-        <name xml:lang="es">NAVER</name>
         <name xml:lang="jp">NAVER</name>
-        <name xml:lang="ru">NAVER</name>
+        <name xml:lang="zh-CN">NAVER</name>
         <name xml:lang="zh-TW">NAVER</name>
+        <name xml:lang="fr">NAVER</name>
+        <name xml:lang="de">NAVER</name>
+        <name xml:lang="ru">NAVER</name>
+        <name xml:lang="es">NAVER</name>
         <name xml:lang="tr">NAVER</name>
+        <name xml:lang="vi">NAVER</name>
+        <name xml:lang="mm">NAVER</name>
     </author>
 </module>
