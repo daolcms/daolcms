@@ -376,8 +376,7 @@
 			$key = $parent_module.'.'.$kind.'.'.$type;
 
 			$module_extend_info = $this->loadModuleExtends();
-			if(array_key_exists($key, $module_extend_info))
-			{
+			if(array_key_exists($key, $module_extend_info)) {
 				return $module_extend_info[$key];
 			}
 
@@ -1091,14 +1090,12 @@
 			return $list;
 		}
 
-		function checkNeedInstall($module_name)
-		{
+		function checkNeedInstall($module_name) {
 			$oDB = &DB::getInstance();
 			$info = null;
 
 			$moduledir = ModuleHandler::getModulePath($module_name);
-			if(file_exists(FileHandler::getRealPath($moduledir."schemas")))
-			{
+			if(file_exists(FileHandler::getRealPath($moduledir."schemas"))) {
 				$tmp_files = FileHandler::readDir($moduledir."schemas", '/(\.xml)$/');
 				$table_count = count($tmp_files);
 				// Check if the table is created
@@ -1114,8 +1111,7 @@
 			return false;
 		}
 
-		function checkNeedUpdate($module_name)
-		{
+		function checkNeedUpdate($module_name) {
 			// Check if it is upgraded to module.class.php on each module
 			$oDummy = &getModule($module_name, 'class');
 			if($oDummy && method_exists($oDummy, "checkUpdate")) {
@@ -1171,9 +1167,7 @@
 				$oDummy = &getModule($module_name, 'class');
 				if($oDummy && method_exists($oDummy, "checkUpdate")) {
 					$info->need_update = $oDummy->checkUpdate();
-				}
-				else
-				{
+				} else {
 					continue;
 				}
 
@@ -1516,17 +1510,14 @@
 			return $output;
 		}
 		
-		function unserializeAttributes($module_filebox_list)
-		{
-			if(is_array($module_filebox_list))
-			{
-				foreach($module_filebox_list->data as $item)
-				{
+		function unserializeAttributes($module_filebox_list) {
+			if(is_array($module_filebox_list)) {
+				foreach($module_filebox_list->data as $item) {
 					$attributes = explode(';', $item->comment);
-					foreach($attributes as $attribute){
+					foreach($attributes as $attribute) {
 						$values = explode(':', $attribute);
 						if((count($values) % 2) ==1) {
-							for($i=2;$i<count($values);$i++){
+							for($i=2;$i<count($values);$i++) {
 								$values[1].=":".$values[$i];
 							}
 						}
@@ -1539,8 +1530,7 @@
 			return $module_filebox_list;
 		}
 
-		function getFileBoxListHtml()
-		{
+		function getFileBoxListHtml() {
 			$logged_info = Context::get('logged_info');
 			if($logged_info->is_admin !='Y' && !$logged_info->is_site_admin) return new Object(-1, 'msg_not_permitted');
 			$link = parse_url($_SERVER["HTTP_REFERER"]);
@@ -1571,7 +1561,7 @@
 			$this->add('html', $html);
 		}
 
-		function getModuleFileBoxPath($module_filebox_srl){
+		function getModuleFileBoxPath($module_filebox_srl) {
 			return sprintf("./files/attach/filebox/%s",getNumberingPath($module_filebox_srl,3));
 		}
 
@@ -1623,7 +1613,7 @@
 
 			$list = array();
 
-			if($output->toBool()){
+			if($output->toBool()) {
 				foreach((array)$output->data as $code_info){
 					unset($codeInfo);
 					$codeInfo = array('name'=>'$user_lang->'.$code_info->name, 'value'=>$code_info->value);
@@ -1636,15 +1626,13 @@
 		/**
 		 * @brief already instance created module list
 		 **/
-		function getModuleListByInstance($site_srl = 0, $columnList = array())
-		{
+		function getModuleListByInstance($site_srl = 0, $columnList = array()) {
 			$args->site_srl = $site_srl;
 			$output = executeQueryArray('module.getModuleListByInstance', $args, $columnList);
 			return $output;
 		}
 
-		function getLangByLangcode()
-		{
+		function getLangByLangcode() {
 			$langCode = Context::get('langCode');
 			if (!$langCode) return;
 
