@@ -23,15 +23,15 @@
 			if (!$xml_conditions)
 			    return;
 
-                        $xml_condition_list = array();
-                        if($xml_conditions->condition)
-                            $xml_condition_list = $xml_conditions->condition;
+						$xml_condition_list = array();
+						if($xml_conditions->condition)
+							$xml_condition_list = $xml_conditions->condition;
 
-                        if($xml_conditions->query){
-                            if(!is_array($xml_condition_list)) $xml_condition_list = array($xml_condition_list);
-                            if(!is_array($xml_conditions->query)) $xml_conditions->query = array($xml_conditions->query);
-                            $xml_condition_list = array_merge($xml_condition_list, $xml_conditions->query);
-                        }
+						if($xml_conditions->query){
+							if(!is_array($xml_condition_list)) $xml_condition_list = array($xml_condition_list);
+							if(!is_array($xml_conditions->query)) $xml_conditions->query = array($xml_conditions->query);
+							$xml_condition_list = array_merge($xml_condition_list, $xml_conditions->query);
+						}
 			if($xml_condition_list){
 				$this->condition_groups[] = new ConditionGroupTag($xml_condition_list);
 			}

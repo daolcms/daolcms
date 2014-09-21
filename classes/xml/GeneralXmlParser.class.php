@@ -73,17 +73,17 @@ class GeneralXmlParser {
 	    $parent_obj = &$this->output[count($this->output)-1];
 
 	    if($parent_obj->childNodes[$node_name]) 
-        {
-    		$tmp_obj = $parent_obj->childNodes[$node_name];
-    		if(is_array($tmp_obj)) {
-    		    array_push($parent_obj->childNodes[$node_name], $cur_obj);
-    		} else {
-    		    $parent_obj->childNodes[$node_name] = array();
-    		    array_push($parent_obj->childNodes[$node_name], $tmp_obj);
-    		    array_push($parent_obj->childNodes[$node_name], $cur_obj);
-    		}
-   	    } else {
-    		$parent_obj->childNodes[$node_name] = $cur_obj;
+		{
+			$tmp_obj = $parent_obj->childNodes[$node_name];
+			if(is_array($tmp_obj)) {
+			    array_push($parent_obj->childNodes[$node_name], $cur_obj);
+			} else {
+			    $parent_obj->childNodes[$node_name] = array();
+			    array_push($parent_obj->childNodes[$node_name], $tmp_obj);
+			    array_push($parent_obj->childNodes[$node_name], $cur_obj);
+			}
+		} else {
+			$parent_obj->childNodes[$node_name] = $cur_obj;
 	    }
 	}
 

@@ -40,26 +40,26 @@
 			$this->groups = $groups;
 			$this->orderby = $orderby;
 			$this->limit = $limit;
-                        $this->join_type = $join_type;
+						$this->join_type = $join_type;
 		}
 
 		function getAlias(){
 			return $this->alias;
 		}
 
-                function isJoinTable(){
-                    if($this->join_type) return true;
-                    return false;
-                }
+				function isJoinTable(){
+					if($this->join_type) return true;
+					return false;
+				}
 
-                function toString($with_values = true){
-                    $oDB = &DB::getInstance();
+				function toString($with_values = true){
+					$oDB = &DB::getInstance();
 
-                    return '(' .$oDB->getSelectSql($this, $with_values) . ')';
+					return '(' .$oDB->getSelectSql($this, $with_values) . ')';
 
-                }
+				}
 
-                function isSubquery(){
-                    return true;
-                }
+				function isSubquery(){
+					return true;
+				}
 	}

@@ -209,7 +209,7 @@
 		<domain name="http://flvs.daum.net" desc="다음 TV 팟 동영상" mobile="false">
 			<pattern>http://flvs.daum.net/</pattern>
 		</domain>
- 		<domain name="http://play.pullbbang.com" desc="풀빵 동영상" mobile="false">
+		<domain name="http://play.pullbbang.com" desc="풀빵 동영상" mobile="false">
 			<pattern>http://play.pullbbang.com/#.swf</pattern>
 		</domain>
 		<domain name="" desc="게임스팟 동영상">

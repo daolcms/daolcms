@@ -26,8 +26,8 @@
 
 		var $_value;
 
-                var $_show;
-                var $_value_to_string;
+				var $_show;
+				var $_value_to_string;
 
 		/**
 		 * constructor
@@ -77,7 +77,7 @@
 		 * @return string
 		 */
 		function toStringWithoutValue(){
-                    return $this->pipe . ' ' . $this->getConditionPart($this->_value);
+					return $this->pipe . ' ' . $this->getConditionPart($this->_value);
 		}
 
 		/**
@@ -85,7 +85,7 @@
 		 * @return string
 		 */
 		function toStringWithValue(){
-                    return $this->pipe . ' ' . $this->getConditionPart($this->_value);
+					return $this->pipe . ' ' . $this->getConditionPart($this->_value);
 		}
 
 		function setPipe($pipe){
@@ -96,54 +96,54 @@
 		 * @return boolean
 		 */
 		function show(){
-                    if(!isset($this->_show)){
-                        if(is_array($this->_value) && count($this->_value) === 1 && $this->_value[0] === '') {
-                            $this->_show = false;
-                        }
-                        else {
-                            $this->_show = true;
-                            switch($this->operation) {
-                                case 'equal' :
-                                case 'more' :
-                                case 'excess' :
-                                case 'less' :
-                                case 'below' :
-                                case 'like_tail' :
-                                case 'like_prefix' :
-                                case 'like' :
-                                case 'notlike_tail' :
-                                case 'notlike_prefix' :
-                                case 'notlike' :
-                                case 'in' :
-                                case 'notin' :
+					if(!isset($this->_show)){
+						if(is_array($this->_value) && count($this->_value) === 1 && $this->_value[0] === '') {
+							$this->_show = false;
+						}
+						else {
+							$this->_show = true;
+							switch($this->operation) {
+								case 'equal' :
+								case 'more' :
+								case 'excess' :
+								case 'less' :
+								case 'below' :
+								case 'like_tail' :
+								case 'like_prefix' :
+								case 'like' :
+								case 'notlike_tail' :
+								case 'notlike_prefix' :
+								case 'notlike' :
+								case 'in' :
+								case 'notin' :
 								case 'not_in' :
-                                case 'and':
-                                case 'or':
-                                case 'xor':
-                                case 'not':
-                                case 'notequal' :
-                                        // if variable is not set or is not string or number, return
-                                        if(!isset($this->_value)) { $this->_show = false; break;}
-                                        if($this->_value === '') { $this->_show = false; break; }
+								case 'and':
+								case 'or':
+								case 'xor':
+								case 'not':
+								case 'notequal' :
+										// if variable is not set or is not string or number, return
+										if(!isset($this->_value)) { $this->_show = false; break;}
+										if($this->_value === '') { $this->_show = false; break; }
 										$tmpArray = array('string'=>1, 'integer'=>1);
-                                        if(!isset($tmpArray[gettype($this->_value)]))
+										if(!isset($tmpArray[gettype($this->_value)]))
 										{
 											$this->_show = false; break;
 										}
-                                        break;
-                                case 'between' :
-                                        if(!is_array($this->_value)) { $this->_show = false; break;}
-                                        if(count($this->_value)!=2) {$this->_show = false; break;}
+										break;
+								case 'between' :
+										if(!is_array($this->_value)) { $this->_show = false; break;}
+										if(count($this->_value)!=2) {$this->_show = false; break;}
 								case 'null':
 								case 'notnull':
 									break;
 								default:
 									// If operation is not one of the above, means the condition is invalid
 									$this->_show = false;
-                            }
-                        }
-                    }
-                    return $this->_show;
+							}
+						}
+					}
+					return $this->_show;
 		}
 
 		/**
@@ -152,72 +152,72 @@
 		 * @return string
 		 */
 		function getConditionPart($value) {
-                    $name = $this->column_name;
-                    $operation = $this->operation;
+					$name = $this->column_name;
+					$operation = $this->operation;
 
-                        switch($operation) {
-                            case 'equal' :
-                                    return $name.' = '.$value;
-                                break;
-                            case 'more' :
-                                    return $name.' >= '.$value;
-                                break;
-                            case 'excess' :
-                                    return $name.' > '.$value;
-                                break;
-                            case 'less' :
-                                    return $name.' <= '.$value;
-                                break;
-                            case 'below' :
-                                    return $name.' < '.$value;
-                                break;
-                            case 'like_tail' :
-                            case 'like_prefix' :
-                            case 'like' :
+						switch($operation) {
+							case 'equal' :
+									return $name.' = '.$value;
+								break;
+							case 'more' :
+									return $name.' >= '.$value;
+								break;
+							case 'excess' :
+									return $name.' > '.$value;
+								break;
+							case 'less' :
+									return $name.' <= '.$value;
+								break;
+							case 'below' :
+									return $name.' < '.$value;
+								break;
+							case 'like_tail' :
+							case 'like_prefix' :
+							case 'like' :
 									if(defined('__CUBRID_VERSION__') 
 											&& __CUBRID_VERSION__ >= '8.4.1') 
 										return $name.' rlike '.$value;
-                                    else
+									else
 										return $name.' like '.$value;
-                                break;
-                            case 'notlike_tail' :
-                            case 'notlike_prefix' :
-                            case 'notlike' :
-                                    return $name.' not like '.$value;
-                                break;
-                            case 'in' :
-                                    return $name.' in '.$value;
-                                break;
-                            case 'notin' :
+								break;
+							case 'notlike_tail' :
+							case 'notlike_prefix' :
+							case 'notlike' :
+									return $name.' not like '.$value;
+								break;
+							case 'in' :
+									return $name.' in '.$value;
+								break;
+							case 'notin' :
 							case 'not_in' :
-                                    return $name.' not in '.$value;
-                                break;
-                            case 'notequal' :
-                                    return $name.' <> '.$value;
-                                break;
-                            case 'notnull' :
-                                    return $name.' is not null';
-                                break;
-                            case 'null' :
-                                    return $name.' is null';
-                                break;
-                            case 'and' :
-                                    return $name.' & '.$value;
-                                break;
-                            case 'or' :
-                                    return $name.' | '.$value;
-                                break;
-                            case 'xor' :
-                                    return $name.' ^ '.$value;
-                                break;
-                            case 'not' :
-                                    return $name.' ~ '.$value;
-                                break;
-                            case 'between' :
-                            return $name.' between ' . $value[0] . ' and ' . $value[1];
-                                            break;
-                }
-            }
+									return $name.' not in '.$value;
+								break;
+							case 'notequal' :
+									return $name.' <> '.$value;
+								break;
+							case 'notnull' :
+									return $name.' is not null';
+								break;
+							case 'null' :
+									return $name.' is null';
+								break;
+							case 'and' :
+									return $name.' & '.$value;
+								break;
+							case 'or' :
+									return $name.' | '.$value;
+								break;
+							case 'xor' :
+									return $name.' ^ '.$value;
+								break;
+							case 'not' :
+									return $name.' ~ '.$value;
+								break;
+							case 'between' :
+							return $name.' between ' . $value[0] . ' and ' . $value[1];
+											break;
+				}
+			}
 	}
 
 ?>

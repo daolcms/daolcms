@@ -240,12 +240,12 @@ class Validator
 			}
 
 			if(is_array($value)) {
-                if(!isset($value[tmp_name])){
-                    $value = implode('', $value);
-                }else{
-                    $value = $value['name'];
-                }
-            }
+				if(!isset($value[tmp_name])){
+					$value = implode('', $value);
+				}else{
+					$value = $value['name'];
+				}
+			}
 
 			// conditional statement
 			foreach($filter['if'] as $cond) {

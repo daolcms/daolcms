@@ -130,12 +130,12 @@ class FileHandler {
 	 * @return bool Returns true on success or false on failure.
 	 **/
 	function removeFile($file_name) {
-    	$file_name = FileHandler::getRealPath($file_name);
-    	if(file_exists($file_name))
-    	{
-        	return unlink($file_name);
-    	}
-    	else return FALSE;
+		$file_name = FileHandler::getRealPath($file_name);
+		if(file_exists($file_name))
+		{
+			return unlink($file_name);
+		}
+		else return FALSE;
 	}
 
 	/**

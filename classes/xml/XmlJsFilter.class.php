@@ -3,8 +3,8 @@
 	 * filter class traslate xml content into javascript code
 	 *
 	 * it convert xml code into js file and save the result as a cache file
-     * @code
-     * <pre>{
+	 * @code
+	 * <pre>{
 	 * <filter name="name of javascript funcion" act="action name" confirm_msg_code="message string to be prompted when submitting the form" >
 	 *  <form> <-- code to validate data in the form
 	 *    <node target="name" required="true" minlength="1" maxlength="5" filter="email,userid,alpha,number" equalto="target" />
@@ -16,11 +16,11 @@
 	 * <tag name="error" /> <- get the result of error name
 	 *  </response>
 	 * </filter>
-     * }</pre>
-     *
+	 * }</pre>
+	 *
 	 * @detail
 	 * <pre>{
-     * - syntax description of <form> node
+	 * - syntax description of <form> node
 	 *  target = name of for element
 	 *  required = flag indicating whether a field is mandatory or not
 	 *  minlength, maxlength = mininum, maxinum length of string allowed for the field
@@ -38,18 +38,18 @@
 	 *
 	 * - response
 	 *  tag = key : name of variable that will contain the result of the execution
-     * }</pre>
+	 * }</pre>
 	 * @class XmlJsFilter
 	 * @author NHN (developers@xpressengine.com)
 	 * @package /classes/xml
-     * @version 0.2
+	 * @version 0.2
 	 */
 	class XmlJsFilter extends XmlParser {
 		/**
 		 * version
 		 * @var string
 		 */
-        var $version = '0.2.5';
+		var $version = '0.2.5';
 		/**
 		 * compiled javascript cache path
 		 * @var string
@@ -80,8 +80,8 @@
 
 		/**
 		 * Compile a xml_file only when a corresponding js file does not exists or is outdated
-         * @return void Returns NULL regardless of the success of failure of the operation
-         */
+		 * @return void Returns NULL regardless of the success of failure of the operation
+		 */
 		function compile() {
 			if(!file_exists($this->xml_file)) return;
 			if(!file_exists($this->js_file)) $this->_compile();

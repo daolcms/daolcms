@@ -14,15 +14,15 @@
 		 * @param string $pipe
 		 * @return void
 		 */
-            function ConditionWithArgument($column_name, $argument, $operation, $pipe = ""){
-                    if($argument === null) { $this->_show = false; return; }
-                        parent::Condition($column_name, $argument, $operation, $pipe);
+			function ConditionWithArgument($column_name, $argument, $operation, $pipe = ""){
+					if($argument === null) { $this->_show = false; return; }
+						parent::Condition($column_name, $argument, $operation, $pipe);
 			$this->_value = $argument->getValue();
 		}
 
 		function getArgument(){
-                    if(!$this->show()) return;
-                    return $this->argument;
+					if(!$this->show()) return;
+					return $this->argument;
 		}
 
 		/**
@@ -57,14 +57,14 @@
 		 * @return boolean
 		 */
 		function show(){
-                    if(!isset($this->_show)){
-                        if(!$this->argument->isValid()) $this->_show = false;
-                        if($this->_value === '\'\'') $this->_show = false;
-                        if(!isset($this->_show)){
-                            return parent::show();
-                        }
-                    }
-                    return $this->_show;
+					if(!isset($this->_show)){
+						if(!$this->argument->isValid()) $this->_show = false;
+						if($this->_value === '\'\'') $this->_show = false;
+						if(!isset($this->_show)){
+							return parent::show();
+						}
+					}
+					return $this->_show;
 		}
 	}
 
