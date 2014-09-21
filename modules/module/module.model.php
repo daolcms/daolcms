@@ -159,23 +159,23 @@
             $args->mid = $mid;
             $args->site_srl = (int)$site_srl;
             $oCacheHandler = &CacheHandler::getInstance('object');
-        	if($oCacheHandler->isSupport()){
-					$cache_key = 'object:'.$mid.'_'.$site_srl;
-					$module_srl = $oCacheHandler->get($cache_key);
-					if($module_srl){
+            if($oCacheHandler->isSupport()){
+                    $cache_key = 'object:'.$mid.'_'.$site_srl;
+                    $module_srl = $oCacheHandler->get($cache_key);
+                    if($module_srl){
 						$cache_key = 'object_module_info:'.$module_srl;
 						$output = $oCacheHandler->get($cache_key);
-					}
-			}
-			if(!$output){
+                    }
+            }
+            if(!$output){
 				$output = executeQuery('module.getMidInfo', $args);
 				if($oCacheHandler->isSupport()) {
-					$cache_key = 'object:'.$mid.'_'.$site_srl;
-					$oCacheHandler->put($cache_key,$output->data->module_srl);
-					$cache_key = 'object_module_info:'.$output->data->module_srl;
-					$oCacheHandler->put($cache_key,$output);
+                    $cache_key = 'object:'.$mid.'_'.$site_srl;
+                    $oCacheHandler->put($cache_key,$output->data->module_srl);
+                    $cache_key = 'object_module_info:'.$output->data->module_srl;
+                    $oCacheHandler->put($cache_key,$output);
 				}
-			}
+            }
 
             $module_info = $output->data;
             if(!$module_info->module_srl && $module_info->data[0]) $module_info = $module_info->data[0];
