@@ -515,12 +515,12 @@ if($called_position == 'before_module_proc')
 <?xml version="1.0" ?>
 <rsd version="1.0" xmlns="http://archipelago.phrasewise.com/rsd" >
 <service>
-    <engineName>XpressEngine</engineName>
-    <engineLink>http://www.xpressengine.com/ </engineLink>
-    <homePageLink>{$homepagelink}</homePageLink>
-    <apis>
-        <api name="MetaWeblog" preferred="true" apiLink="{$api_url}" blogID="" />
-    </apis>
+	<engineName>XpressEngine</engineName>
+	<engineLink>http://www.xpressengine.com/ </engineLink>
+	<homePageLink>{$homepagelink}</homePageLink>
+	<apis>
+		<api name="MetaWeblog" preferred="true" apiLink="{$api_url}" blogID="" />
+	</apis>
 </service>
 </rsd>
 RSDContent;
