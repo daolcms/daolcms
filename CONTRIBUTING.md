@@ -21,5 +21,6 @@ Issue 작성 시 참고해주세요.
 * newline은 UNIX type을 사용합니다. 일부 파일이 다른 type을 사용하더라도 절대 고치지 마세요!
 * 들여쓰기는 1개의 탭으로 합니다
 * class 선언과 function, if, foreach, for, while 등 중괄호의 `{`는 같은 줄에, `}`는 다른 줄에 있어야 합니다
+	* else의 경우 } else, } else { 로 작성해주세요.
 	* 마찬가지로 선언 다음에는 공백을 두지 않습니다. ex) CORRECT `if(...)`, INCORRECT `if (...)`
 * **Coding convention에 맞지 않는 코드를 발견 하더라도 목적과 관계 없는 코드는 절대 고치지 마세요**
