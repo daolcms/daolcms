@@ -1,12 +1,12 @@
 <?php
-	if(!defined("__ZBXE__")) exit();
+    if(!defined("__ZBXE__")) exit();
 
-	/**
-	 * @file captcha.addon.php
-	 * @author NHN (developers@xpressengine.com)
-	 * @brief Captcha for a particular action
+    /**
+     * @file captcha.addon.php
+     * @author NHN (developers@xpressengine.com)
+     * @brief Captcha for a particular action
 	 * English alphabets and voice verification added
-	 **/
+     **/
 
 	if(!class_exists('AddonCaptcha', false))
 	{
@@ -28,8 +28,8 @@
 
 			function before_module_proc()
 			{
-				if($this->addon_info->act_type == 'everytime' && $_SESSION['captcha_authed']) {
-					unset($_SESSION['captcha_authed']);
+			    if($this->addon_info->act_type == 'everytime' && $_SESSION['captcha_authed']) {
+			        unset($_SESSION['captcha_authed']);
 				}
 			}
 
@@ -83,7 +83,7 @@
 				$arr = range('A','Y');
 				shuffle($arr);
 				$arr = array_slice($arr,0,6);
-				$_SESSION['captcha_keyword'] = join('', $arr);
+                $_SESSION['captcha_keyword'] = join('', $arr);
 			}
 
 			function before_module_init_setCaptchaSession()
@@ -96,22 +96,22 @@
 
 				$this->createKeyword();
 
-				$target = Context::getLang('target_captcha');
-				header("Content-Type: text/xml; charset=UTF-8");
-				header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-				header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-				header("Cache-Control: no-store, no-cache, must-revalidate");
-				header("Cache-Control: post-check=0, pre-check=0", false);
-				header("Pragma: no-cache");
-				printf("<response>\r\n <error>0</error>\r\n <message>success</message>\r\n <about_captcha><![CDATA[%s]]></about_captcha>\r\n <captcha_reload><![CDATA[%s]]></captcha_reload>\r\n <captcha_play><![CDATA[%s]]></captcha_play>\r\n <cmd_input><![CDATA[%s]]></cmd_input>\r\n <cmd_cancel><![CDATA[%s]]></cmd_cancel>\r\n </response>"
+                $target = Context::getLang('target_captcha');
+                header("Content-Type: text/xml; charset=UTF-8");
+                header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+                header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+                header("Cache-Control: no-store, no-cache, must-revalidate");
+                header("Cache-Control: post-check=0, pre-check=0", false);
+                header("Pragma: no-cache");
+                printf("<response>\r\n <error>0</error>\r\n <message>success</message>\r\n <about_captcha><![CDATA[%s]]></about_captcha>\r\n <captcha_reload><![CDATA[%s]]></captcha_reload>\r\n <captcha_play><![CDATA[%s]]></captcha_play>\r\n <cmd_input><![CDATA[%s]]></cmd_input>\r\n <cmd_cancel><![CDATA[%s]]></cmd_cancel>\r\n </response>"
 						,Context::getLang('about_captcha')
 						,Context::getLang('captcha_reload')
 						,Context::getLang('captcha_play')
 						,Context::getLang('cmd_input')
 						,Context::getLang('cmd_cancel')
 						);
-				Context::close();
-				exit();
+                Context::close();
+                exit();
 			}
 
 			function before_module_init_captchaImage()
@@ -119,18 +119,18 @@
 				if($_SESSION['captcha_authed']) return false;
 				if(Context::get('renew')) $this->createKeyword();
 
-				$keyword = $_SESSION['captcha_keyword'];
+			    $keyword = $_SESSION['captcha_keyword'];
 				$im = $this->createCaptchaImage($keyword);
 
-				header("Cache-Control: ");
-				header("Pragma: ");
-				header("Content-Type: image/png");
+                header("Cache-Control: ");
+                header("Pragma: ");
+                header("Content-Type: image/png");
 
 				imagepng($im);
 				imagedestroy($im);
 
 				Context::close();
-				exit();
+                exit();
 			}
 
 			function createCaptchaImage($string)
@@ -227,7 +227,7 @@
 				header('Content-Length: ' . strlen($data));
 
 				echo $data;
-				Context::close();
+                Context::close();
 				exit();
 			}
 
@@ -259,7 +259,7 @@
 			{
 				if($_SESSION['captcha_authed']) return true;
 
-				if(strtoupper($_SESSION['captcha_keyword']) == strtoupper(Context::get('secret_text'))) {
+                if(strtoupper($_SESSION['captcha_keyword']) == strtoupper(Context::get('secret_text'))) {
 					$_SESSION['captcha_authed'] = true;
 					return true;
 				}
@@ -276,16 +276,16 @@
 					return false;
 				}
 
-				header("Content-Type: text/xml; charset=UTF-8");
-				header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-				header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-				header("Cache-Control: no-store, no-cache, must-revalidate");
-				header("Cache-Control: post-check=0, pre-check=0", false);
-				header("Pragma: no-cache");
-				print("<response>\r\n<error>0</error>\r\n<message>success</message>\r\n</response>");
+                header("Content-Type: text/xml; charset=UTF-8");
+                header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+                header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+                header("Cache-Control: no-store, no-cache, must-revalidate");
+                header("Cache-Control: post-check=0, pre-check=0", false);
+                header("Pragma: no-cache");
+                print("<response>\r\n<error>0</error>\r\n<message>success</message>\r\n</response>");
 
-				Context::close();
-				exit();
+                Context::close();
+                exit();
 			}
 
 			function inlineDisplay()

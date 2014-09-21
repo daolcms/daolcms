@@ -34,8 +34,8 @@ if($called_position == 'before_module_init' && $this->module != 'member') {
 		Context::loadLang('./addons/member_communication/lang');
 		Context::loadFile(array('./addons/member_communication/tpl/member_communication.js'), true);
 
-		$text	= preg_replace('@\r?\n@', '\\n', addslashes(Context::getLang('alert_new_message_arrived')));
-		$link	= Context::getRequestUri().'?module=communication&act=dispCommunicationNewMessage';
+		$text   = preg_replace('@\r?\n@', '\\n', addslashes(Context::getLang('alert_new_message_arrived')));
+		$link   = Context::getRequestUri().'?module=communication&act=dispCommunicationNewMessage';
 		$script = "<script type=\"text/javascript\">jQuery(function(){ xeNotifyMessage('{$text}','{$new_message_count}'); });</script>";
 
 		Context::addHtmlFooter($script);

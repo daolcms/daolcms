@@ -43,7 +43,7 @@ if($called_position == 'before_module_proc') {
 	// If you have a WAP class content output via WAP class
 	else $oMobile->displayModuleContent();
 // If neither navigation mode nor WAP class is, display the module's result
-} else if($called_position == 'after_module_proc')	{
+} else if($called_position == 'after_module_proc')  {
 	// Display
 	$oMobile->displayContent();
 }

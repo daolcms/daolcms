@@ -6,7 +6,7 @@ window.xeNotifyMessage = function(text, count){
 		$bar = $('<div class="message info" />')
 			.hide()
 			.css({
-				'position'	 : 'absolute',
+				'position'   : 'absolute',
 				'z-index' : '100',
 			})
 			.prependTo(document.body);
