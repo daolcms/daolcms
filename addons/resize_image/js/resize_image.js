@@ -7,7 +7,7 @@ var xScreen = null;
 
 // 슬라이드를 위한 블랙 스크린을 만들거나 반환하는 함수
 function getScreen() {
-	var body    = $(document.body);
+	var body	= $(document.body);
 	var controls, imgframe, closebtn, prevbtn, nextbtn;
 
 	// 스크린이 없으면 스크린을 만든다.
@@ -85,7 +85,7 @@ function getScreen() {
 
 		// xScreen 객체를 확장한다.
 		xScreen.xeShow = function() {
-			var clientWidth  = $(window).width();
+			var clientWidth	 = $(window).width();
 			var clientHeight = $(window).height();
 
 			$("#xe_gallery_controls,#xe_gallery_screen").css({
@@ -93,11 +93,11 @@ function getScreen() {
 				width  : $(document).width() + "px",
 				height : $(document).height() + "px",
 				left   : 0,
-				top    : 0
-				//width  : clientWidth + "px",
+				top	   : 0
+				//width	 : clientWidth + "px",
 				//height : clientHeight + "px",
-				// left   : $(document).scrollLeft(),
-				// top    : $(document).scrollTop()
+				// left	  : $(document).scrollLeft(),
+				// top	  : $(document).scrollTop()
 			});
 
 			closebtn.css("left", Math.round((clientWidth-60)/2) + "px");
@@ -117,7 +117,7 @@ function getScreen() {
 			this.xeMove(1);
 		};
 		xScreen.xeMove = function(val) {
-			var clientWidth  = $(window).width();
+			var clientWidth	 = $(window).width();
 			var clientHeight = $(window).height();
 
 			this.index += val;
@@ -125,18 +125,18 @@ function getScreen() {
 			prevbtn.css("visibility", (this.index>0)?"visible":"hidden");
 			nextbtn.css("visibility", (this.index<this.list.size()-1)?"visible":"hidden");
 
-            //textyle 이미지 리사이즈 처리
-            var src = this.list.eq(this.index).attr("rawsrc");
-            if(!src) src = this.list.eq(this.index).attr("src");
+			//textyle 이미지 리사이즈 처리
+			var src = this.list.eq(this.index).attr("rawsrc");
+			if(!src) src = this.list.eq(this.index).attr("src");
 
 			imgframe.attr("src", src).css({
 				left : Math.round( Math.max( parseInt($(document).scrollLeft()) + (clientWidth-imgframe.width()-14)/2, 0 ) ) + "px",
-				top  : Math.round( Math.max( parseInt($(document).scrollTop()) + (clientHeight-imgframe.height()-14)/2, 0 ) ) + "px"
+				top	 : Math.round( Math.max( parseInt($(document).scrollTop()) + (clientHeight-imgframe.height()-14)/2, 0 ) ) + "px"
 			});
 
 			closebtn.css({
 				left : Math.round( Math.max( parseInt($(document).scrollLeft()) + (clientWidth-closebtn.width())/2, 0 ) ) + "px",
-				top  : Math.round( Math.max( parseInt($(document).scrollTop()) + 10, 0 ) ) + "px"
+				top	 : Math.round( Math.max( parseInt($(document).scrollTop()) + 10, 0 ) ) + "px"
 			});
 		};
 
@@ -146,8 +146,8 @@ function getScreen() {
 		controls = $("#xe_gallery_controls");
 		imgframe = $("#xe_gallery_holder");
 		closebtn = $("#xe_gallery_closebtn");
-		prevbtn  = $("#xe_gallery_prevbtn");
-		nextbtn  = $("#xe_gallery_nextbtn");
+		prevbtn	 = $("#xe_gallery_prevbtn");
+		nextbtn	 = $("#xe_gallery_nextbtn");
 	}
 
 	return xScreen;
@@ -156,9 +156,9 @@ function getScreen() {
 // 이미지 슬라이드를 보는 함수
 function slideshow(event) {
 	var container  = $(this).closest('.xe_content');
-	var imglist    = container.find("img[rel=xe_gallery]");
+	var imglist	   = container.find("img[rel=xe_gallery]");
 	var currentIdx = $.inArray($(this).get(0), imglist.get());
-	var xScreen    = getScreen();
+	var xScreen	   = getScreen();
 
 	// 스크린을 보여주고
 	xScreen.list  = imglist;
