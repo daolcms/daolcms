@@ -1223,14 +1223,11 @@
             if(!$member_info->member_srl) return false;
             if($member_info->is_admin == 'Y') return true;
 
-            if(!isset($site_srl))
-            {
+            if(!isset($site_srl)) {
                 $site_module_info = Context::get('site_module_info');
                 if(!$site_module_info) return;
                 $args->site_srl = $site_module_info->site_srl;
-            }
-            else
-            {
+            } else {
                 $args->site_srl = $site_srl;
             }
 
@@ -1311,13 +1308,10 @@
         function syncSkinInfoToModuleInfo(&$module_info) {
             if(!$module_info->module_srl) return;
 
-			if(Mobile::isFromMobilePhone())
-			{
+			if(Mobile::isFromMobilePhone()) {
 				$cache_key = 'object_module_mobile_skin_vars:' . $module_info->module_srl;
 				$query = 'module.getModuleMobileSkinVars';
-			}
-			else
-			{
+			} else {
 				$cache_key = 'object_module_skin_vars:' . $module_info->module_srl;
 				$query = 'module.getModuleSkinVars';
 			}
@@ -1402,10 +1396,12 @@
             // If module_srl doesn't exist(if unable to set permissions)
             if(!$module_srl) {
                 $grant->access = true;
-                if($this->isSiteAdmin($member_info, $module_info->site_srl)) $grant->access = $grant->is_admin = $grant->manager = $grant->is_site_admin = true;
-                else $grant->is_admin = $grant->manager = $member_info->is_admin=='Y'?true:false;
-            // If module_srl exists
+                if($this->isSiteAdmin($member_info, $module_info->site_srl)) {
+                    $grant->access = $grant->manager = $grant->is_site_admin = true;
+                }
+                $grant->is_admin = $grant->manager = ($member_info->is_admin == 'Y') ? true : false;
             } else {
+                // If module_srl exists
                 // Get a type of granted permission
                 $grant->access = $grant->is_admin = $grant->manager = $grant->is_site_admin = ($member_info->is_admin=='Y'||$this->isSiteAdmin($member_info, $module_info->site_srl))?true:false;
                 // If a just logged-in member is, check if the member is a module administrator
@@ -1421,8 +1417,7 @@
                     // If planet, get permission settings from the planet home
                     if ($module_info->module == 'planet') {
                         $output = executeQueryArray('module.getPlanetGrants', $args);
-                    }
-                    else {
+                    } else {
                         $args->module_srl = $module_srl;
                         $output = executeQueryArray('module.getModuleGrants', $args);
                     }
@@ -1590,12 +1585,12 @@
 				$rulsetFile = str_replace('@', '', $ruleset);
 				$xml_file = sprintf('./files/ruleset/%s.xml', $rulsetFile);
 				return FileHandler::getRealPath($xml_file);
-			}else if (strpos($ruleset, '#') !== false){
+			} else if (strpos($ruleset, '#') !== false){
 				$rulsetFile = str_replace('#', '', $ruleset).'.'.$mid;
 				$xml_file = sprintf('./files/ruleset/%s.xml', $rulsetFile);
 				if (is_readable($xml_file))
 					return FileHandler::getRealPath($xml_file);
-				else{
+				else {
 					$ruleset = str_replace('#', '', $ruleset);
 				}
 					
