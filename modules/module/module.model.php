@@ -1402,7 +1402,8 @@
 			} else {
 				// If module_srl exists
 				// Get a type of granted permission
-				$grant->access = $grant->is_admin = $grant->manager = $grant->is_site_admin = ($member_info->is_admin=='Y'||$this->isSiteAdmin($member_info, $module_info->site_srl))?true:false;
+				$grant->access = $grant->manager = $grant->is_site_admin = ($member_info->is_admin=='Y'||$this->isSiteAdmin($member_info, $module_info->site_srl))?true:false;
+				$grant->is_admin = ($member_info->is_admin == 'Y') ? true : false;
 				// If a just logged-in member is, check if the member is a module administrator
 				if(!$grant->manager && $member_info->member_srl) {
 					$args->module_srl = $module_srl;
