@@ -86,12 +86,12 @@ $('form.siteMap')
 		getModuleList();
 
 		var openWindow = menuItem.open_window;
-		var openWindowForm = editForm.find('input=[name=menu_open_window]');
+		var openWindowForm = editForm.find('input[name=menu_open_window]');
 		if(openWindow == 'Y') openWindowForm[1].checked = true;
 		else openWindowForm[0].checked = true;
 
 		var expand = menuItem.expand;
-		var expandForm = editForm.find('input=[name=menu_expand]');
+		var expandForm = editForm.find('input[name=menu_expand]');
 		if(expand == 'Y') expandForm[0].checked = true;
 		else expandForm[0].checked = false;
 
@@ -107,7 +107,7 @@ $('form.siteMap')
 		htmlBuffer += '>'+xe.lang.grant_to_login_user+'</option> <option value="-2"';
 		if(menuItem.group_srls != null &&menuItem.group_srls.item!='-1') htmlBuffer += ' selected="selected" ';
 		htmlBuffer += '>'+xe.lang.grant_to_group+'</option></select> <div id="zone_menu_grant"';
-		if(!menuItem.group_srls == null ||menuItem.group_srls.item=='-1') htmlBuffer +='style="display:none"';
+		if(menuItem.group_srls == null ||menuItem.group_srls.item=='-1') htmlBuffer +='style="display:none"';
 		htmlBuffer +='>';
 
 		for(x in menuItem.groupList.item)
