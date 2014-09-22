@@ -161,7 +161,7 @@ jQuery( function() { jQuery('.grant_default').change( function(event) { doShowMe
 						<select name="menu_grant_default" class="grant_default">
 							<option value="0" selected="selected">{$lang->grant_to_all}</option>
 							<option value="-1">{$lang->grant_to_login_user}</option>
-							<option value="">{$lang->grant_to_group}</option>
+							<option value="-2">{$lang->grant_to_group}</option>
 						</select>
 						<div id="zone_menu_grant" style="display:none">
 							<block loop="$group_list=>$key,$value"><input type="checkbox" name="group_srls[]" id="group_srls_{$value->group_srl}" value="{$value->group_srl}" /> <label for="group_srls_{$value->group_srl}">{$value->title}</label></block>

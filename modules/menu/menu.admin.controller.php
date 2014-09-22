@@ -139,9 +139,10 @@
             if($source_args->menu_open_window!="Y") $source_args->menu_open_window = "N";
             if($source_args->menu_expand !="Y") $source_args->menu_expand = "N";
 
+			if(!is_array($source_args->group_srls)) $source_args->group_srls = str_replace('|@|',',',$source_args->group_srls);
+			if($source_args->menu_grant_default == -2) $source_args->group_srls = implode(',', $source_args->group_srls);
 			if($source_args->menu_grant_default == -1) $source_args->group_srls = -1;
-            if(!is_array($source_args->group_srls)) $source_args->group_srls = str_replace('|@|',',',$source_args->group_srls);
-			else $source_args->group_srls = implode(',', $source_args->group_srls);
+			if($source_args->menu_grant_default == 0) $source_args->group_srls = '';
 
             $source_args->parent_srl = (int)$source_args->parent_srl;
 
