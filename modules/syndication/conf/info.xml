@@ -17,13 +17,13 @@
 	<description xml:lang="jp">より良い検索結果を得るためSyndication用語を使用して、検索サービス提供者に情報を送受信するためのモジュール。</description>
 	<description xml:lang="zh-CN">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
 	<description xml:lang="zh-TW">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
-	<description xml:lang="fr">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.<description>
+	<description xml:lang="fr">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
 	<description xml:lang="de">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
 	<description xml:lang="ru">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
 	<description xml:lang="es">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
-	<description xml:lang="tr">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.<description>
-	<description xml:lang="vi">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.<description>
-	<description xml:lang="mm">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.<description>
+	<description xml:lang="tr">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
+	<description xml:lang="vi">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
+	<description xml:lang="mm">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
 	<version>4.0.0</version>
 	<date>2014-09-17</date>
 	<category>interlock</category>
