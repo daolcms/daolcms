@@ -1706,7 +1706,7 @@
 		function validateSession() {
 			$destory_session = false;
 			
-			if($_SESSION['ipaddress'] != $_SERVER['REMOTE_ADDR']) $destory_session = true;
+			if($_SESSION['destroyed'] === true) $destory_session = true;
 			
 			if($destory_session) {
 				$this->destroySessionInfo();
@@ -1717,8 +1717,13 @@
 		}
 		
 		function regenerateSession() {
-			if(!$_SESSION['session_checkup'] || time() - $_SESSION['session_checkup'] > 30) {
-				session_regenerate_id(true);
+			if(!$_SESSION['session_checkup']) {
+				$_SESSION['session_checkup'] = time();
+			}
+			
+			if(time() - $_SESSION['session_checkup'] > 30) {
+				$_SESSION['destroyed'] = true;
+				session_regenerate_id();
 				$_SESSION['session_checkup'] = time();
 			}
 		}
