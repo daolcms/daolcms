@@ -977,15 +977,17 @@ class Context {
 			$val = array($val);
 		}
 
+		$result = array();
 		foreach($val as $k => $v)
 		{
+			$k = htmlentities($k);
 			if($key === 'page' || $key === 'cpage' || substr($key, -3) === 'srl')
 			{
-				$val[$k] = !preg_match('/^[0-9,]+$/', $v) ? (int)$v : $v;
+				$result[$k] = !preg_match('/^[0-9,]+$/', $v) ? (int)$v : $v;
 			}
 			elseif($key === 'mid' || $key === 'vid' || $key === 'search_keyword')
 			{
-				$val[$k] = htmlspecialchars($v);
+				$result[$k] = htmlspecialchars($v);
 			}
 			else
 			{
@@ -994,18 +996,13 @@ class Context {
 					$v = stripslashes($v);
 				}
 
-				if (is_string($v)) $val[$k] = trim($v);
+				if(!is_array($v)) {
+					$result[$k] = trim($v);
+				}
 			}
 		}
 
-		if($isArray)
-		{
-			return $val;
-		}
-		else
-		{
-			return $val[0];
-		}
+		return $isArray ? $result : $result[0];
 	}
 
 	/**
