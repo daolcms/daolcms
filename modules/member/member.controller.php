@@ -1724,6 +1724,7 @@
 			if(time() - $_SESSION['session_checkup'] > 30) {
 				$_SESSION['destroyed'] = true;
 				session_regenerate_id();
+				$_SESSION['destroyed'] = false;
 				$_SESSION['session_checkup'] = time();
 			}
 		}

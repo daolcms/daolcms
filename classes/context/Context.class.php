@@ -241,8 +241,9 @@ class Context {
 				array(&$oSessionController, 'gc')
 			);
 		}
-		session_start();
+		
 		if($sess=$_POST[session_name()]) session_id($sess);
+		session_start();
 
 		// set authentication information in Context and session
 		if(Context::isInstalled()) {
