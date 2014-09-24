@@ -2,7 +2,7 @@
 /* Element Reset */
 header,footer,section,article,aside,nav,hgroup,details,menu,figure,figcaption{display:block}
 a{text-decoration:none;}
-.x{min-width:300px;max-width:1360px;margin:0 auto;}
+.x{min-width:300px;max-width:1280px;margin:0 auto;}
 .x,
 .x table,
 .x input,
