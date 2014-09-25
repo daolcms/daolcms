@@ -216,7 +216,9 @@
             
             $logged_info = Context::get('logged_info');
             if($logged_info->is_admin == 'Y') {
-                $file_config->allowed_filesize = preg_replace("/[a-z]/is","",ini_get('upload_max_filesize'));
+                $size = preg_replace('/[a-z]/is', '', ini_get('upload_max_filesize'));
+				$file_config->allowed_attach_size = $size;
+				$file_config->allowed_filesize = $size;
                 $file_config->allowed_filetypes = '*.*';
             }
             return $file_config;
