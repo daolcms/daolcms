@@ -406,7 +406,7 @@ function beforeUnloadHandler(){
 }
 
 $(function($){
-	$('.wfsr')
+	$(document)
 		.ajaxStart(function(){
 			$(window).bind('beforeunload', beforeUnloadHandler);
 		})
