@@ -65,8 +65,8 @@
 					</td>
 					{@ $member_info['group_list'] = implode(', ', $member_info['group_list'])}
 					<td class="nowr" loop="$usedIdentifiers=>$name,$title">{$member_info[$name]}</td>
-					<td class="nowr">{zdate($member_info['regdate'], 'Y-m-d')}</td>
-					<td class="nowr">{zdate($member_info['last_login'], 'Y-m-d')}</td>
+					<td class="nowr" title="{zdate($member_info['regdate'], 'Y-m-d H:i:s')}">{zdate($member_info['regdate'], 'Y-m-d')}</td>
+					<td class="nowr" title="{zdate($member_info['last_login'], 'Y-m-d H:i:s')}">{zdate($member_info['last_login'], 'Y-m-d')}</td>
 					<td>{$member_info['group_list']}&nbsp;</td>
 					{@ $lang_denied = ($member_info['denied'] == 'N')?$lang->approval:$lang->denied}
 					<td class="nowr">{$lang_denied}</td>
