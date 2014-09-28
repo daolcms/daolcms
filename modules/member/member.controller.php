@@ -2131,8 +2131,8 @@
             session_destroy();
             setcookie(session_name(), '', $_SERVER['REQUEST_TIME']-42000, '/');
             setcookie('sso','',$_SERVER['REQUEST_TIME']-42000, '/');
-			setcookie('xeak','',$_SERVER['REQUEST_TIME']-42000, '/');
-			setcookie('xe_logged', 'false', $_SERVER['REQUEST_TIME'] - 42000, '/');
+            setcookie('xeak','',$_SERVER['REQUEST_TIME']-42000, '/');
+            setcookie('xe_logged', 'false', $_SERVER['REQUEST_TIME'] - 42000, '/');
 
 			if($memberSrl || $_COOKIE['xeak'])
 			{
