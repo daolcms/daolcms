@@ -2129,13 +2129,16 @@
                 $_SESSION[$key] = '';
             }
             session_destroy();
-            setcookie(session_name(), '', time()-42000, '/');
-            setcookie('sso','',time()-42000, '/');
+            setcookie(session_name(), '', $_SERVER['REQUEST_TIME']-42000, '/');
+            setcookie('sso','',$_SERVER['REQUEST_TIME']-42000, '/');
+			setcookie('xeak','',$_SERVER['REQUEST_TIME']-42000, '/');
 			setcookie('xe_logged', 'false', $_SERVER['REQUEST_TIME'] - 42000, '/');
 
-			if($memberSrl)
+			if($memberSrl || $_COOKIE['xeak'])
 			{
+				$args = new stdClass();
 				$args->member_srl = $memberSrl;
+				$args->autologin_key = $_COOKIE['xeak'];
 				$output = executeQuery('member.deleteAutologin', $args);
 			}
         }
