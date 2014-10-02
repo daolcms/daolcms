@@ -992,13 +992,15 @@ class Context {
 			}
 			else
 			{
+				$result[$k] = $v;
+				
 				if($do_stripslashes && version_compare(PHP_VERSION, '5.9.0', '<') && get_magic_quotes_gpc())
 				{
-					$v = stripslashes($v);
+					$result[$k] = stripslashes($result[$k]);
 				}
 
-				if(!is_array($v)) {
-					$result[$k] = trim($v);
+				if(!is_array($result[$k])) {
+					$result[$k] = trim($result[$k]);
 				}
 			}
 		}
