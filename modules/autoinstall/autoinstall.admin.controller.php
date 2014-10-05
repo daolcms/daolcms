@@ -370,5 +370,6 @@
 			$this->setMessage('success_deleted', 'update');
 			
 			return new Object();
+		}
     }
 ?>
