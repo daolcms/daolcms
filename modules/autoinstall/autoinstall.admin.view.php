@@ -299,6 +299,8 @@
 			{
 				return $this->dispAutoinstallAdminIndex();
 			}
+			
+			if($package_srl == "18325662") return $this->stop("msg_invalid_request");
 
 			$oAdminModel = getAdminModel('autoinstall');
 			$package = $oAdminModel->getInstallInfo($package_srl);
@@ -349,6 +351,7 @@
 			{
 				return $this->stop('msg_connection_fail');
 			}
+			
             if($package_srl == "18325662") return $this->stop("msg_invalid_request");
             
             $oModel = getModel('autoinstall');

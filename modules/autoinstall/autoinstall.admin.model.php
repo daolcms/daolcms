@@ -205,10 +205,8 @@ class autoinstallAdminModel extends autoinstall
 			$packageInfo->type = $oModel->getTypeFromPath($package->path);
 			$packageInfo->url = $oModel->getUpdateUrlByPackageSrl($package->package_srl);
 
-			if($packageInfo->type == 'core')
-			{
-				$title = 'XpressEngine';
-			}
+			if($packageInfo->type == 'core') NULL;
+			
 			else
 			{
 				$configFile = $oModel->getConfigFilePath($packageInfo->type);
@@ -326,8 +324,6 @@ class autoinstallAdminModel extends autoinstall
 				$package->need_update = version_compare($package->version, $installedPackage->current_version, ">");
 			}
 			
-			if($package_srl == "18325662") return $this->stop("msg_invalid_request");
-
 			if($package->path === '.')
 			{
 				$package->contain_core = TRUE;
