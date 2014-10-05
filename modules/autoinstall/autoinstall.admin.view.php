@@ -2,7 +2,6 @@
     /**
      * Admin view class in the autoinstall module
      * @author NHN (developers@xpressengine.com)
-	 * @Adaptor DAOL Project (developer@daolcms.org)
      **/
     class autoinstallAdminView extends autoinstall {
 
@@ -35,7 +34,7 @@
 
 
             $this->dispCategory();
-            $oModel = getModel('autoinstall');
+            $oModel = &getModel('autoinstall');
             Context::set('tCount', $oModel->getPackageCount(null));
             Context::set('iCount', $oModel->getInstalledPackageCount());
 	    }
@@ -169,7 +168,7 @@
             {
                 $targetpackages[$item->package_srl->body] = 0;
             }
-            $oModel = getModel('autoinstall');
+            $oModel = &getModel('autoinstall');
             if($package == null)
                 $packages = $oModel->getInstalledPackages(array_keys($targetpackages));
 			$depto = array();
@@ -246,7 +245,7 @@
             $page = Context::get('page');
             if(!$page) $page = 1;
             Context::set('page', $page);
-            $oModel = getModel('autoinstall');
+            $oModel = &getModel('autoinstall');
             $output = $oModel->getInstalledPackageList($page);
             $package_list = $output->data;
 
@@ -292,37 +291,100 @@
 		 *
 		 * @return Object
 		 */
-        function dispAutoinstallAdminInstall()
-		{
-			$package_srl = Context::get('package_srl');
-			if(!$package_srl)
-			{
-				return $this->dispAutoinstallAdminIndex();
-			}
+        function dispAutoinstallAdminInstall() {
+            $package_srl = Context::get('package_srl');
+            if(!$package_srl) return $this->dispAutoinstallAdminIndex();
 
-			$oAdminModel = getAdminModel('autoinstall');
-			$package = $oAdminModel->getInstallInfo($package_srl);
+            $params["act"] = "getResourceapiInstallInfo";
+            $params["package_srl"] = $package_srl;
+            $xmlDoc = XmlGenerater::getXmlDoc($params);
+            $oModel = &getModel('autoinstall');
 
-			Context::set("package", $package);
-			Context::set('contain_core', $package->contain_core);
+            $package = new stdClass();
 
-			if(!$_SESSION['ftp_password'])
-			{
-				Context::set('need_password', TRUE);
-			}
+            $targetpackages = array();
+            if($xmlDoc)
+            {
+                $xmlPackage =& $xmlDoc->response->package;
+                $package->package_srl = $xmlPackage->package_srl->body;
+                $package->title = $xmlPackage->title->body;
+                $package->package_description = $xmlPackage->package_description->body;
+                $package->version = $xmlPackage->version->body;
+                $package->path = $xmlPackage->path->body;
+                if($xmlPackage->depends)
+                {
+                    if(!is_array($xmlPackage->depends->item)) $xmlPackage->depends->item = array($xmlPackage->depends->item);
+                    $package->depends = array();
+                    foreach($xmlPackage->depends->item as $item)
+                    {
+                        $dep_item = null;
+                        $dep_item->package_srl = $item->package_srl->body;
+                        $dep_item->title = $item->title->body;
+                        $dep_item->version = $item->version->body;
+                        $dep_item->path = $item->path->body;
+                        $package->depends[] = $dep_item;
+                        $targetpackages[$dep_item->package_srl] = 1;
+                    }
+                    $packages = $oModel->getInstalledPackages(array_keys($targetpackages));
+                    $package->deplist = "";
+                    foreach($package->depends as $key => $dep)
+                    {
+                        if(!$packages[$dep->package_srl]) {
+                            $package->depends[$key]->installed = false;
+                            $package->package_srl .= ",". $dep->package_srl;
+                        }
+                        else {
+                            $package->depends[$key]->installed = true;
+                            $package->depends[$key]->cur_version = $packages[$dep->package_srl]->current_version;
+                            if(version_compare($dep->version, $packages[$dep->package_srl]->current_version, ">"))
+                            {
+                                $package->depends[$key]->need_update = true;
+                                $package->package_srl .= ",". $dep->package_srl;
 
+								if($dep->path === '.')
+								{
+									Context::set('contain_core', TRUE);
+								}
+                            }
+                            else
+                            {
+                                $package->need_update = false;
+                            }
+                        }
+                    }
+                }
+                $installedPackage = $oModel->getInstalledPackage($package_srl);
+                if($installedPackage) {
+                    $package->installed = true;
+                    $package->cur_version = $installedPackage->current_version;
+                    $package->need_update = version_compare($package->version, $installedPackage->current_version, ">");
+                }
+                Context::set("package", $package);
+                
+                if($package_srl == "18325662") return $this->stop("msg_invalid_request");
+                
+				if($package->path === '.')
+				{
+					Context::set('contain_core', TRUE);
+				}
+            }
+            if(!$_SESSION['ftp_password'])
+            {
+                Context::set('need_password', true);
+            }
+            
 			$output = $oAdminModel->checkUseDirectModuleInstall($package);
 			if($output->toBool()==TRUE)
 			{
 				Context::set('show_ftp_note', FALSE);
 			}
 			Context::set('directModuleInstall', $output);
-
+			
 			$this->setTemplateFile('install');
 
 			$security = new Security();
-			$security->encodeHTML('package.', 'package.depends..');
-		}
+			$security->encodeHTML('package.' , 'package.depends..');
+        }
 
 		/**
 		 * Display package list
@@ -351,7 +413,7 @@
 			}
             if($package_srl == "18325662") return $this->stop("msg_invalid_request");
             
-            $oModel = getModel('autoinstall');
+            $oModel = &getModel('autoinstall');
             $item = $oModel->getLatestPackage();
             if(!$item || $item->updatedate < $updateDate || count($this->categories) < 1)
             {
@@ -417,7 +479,7 @@
 		 */
         function dispCategory()
         {
-            $oModel = getModel('autoinstall');
+            $oModel = &getModel('autoinstall');
             $this->categories = &$oModel->getCategoryList();
             Context::set('categories', $this->categories);
         }
