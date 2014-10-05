@@ -748,7 +748,6 @@ class FileHandler {
 	{
 		return (is_readable($filename) && !!filesize($filename));
 	}
-}
 
 	/**
 	 * Check is writable dir
