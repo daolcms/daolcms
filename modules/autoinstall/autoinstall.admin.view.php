@@ -374,6 +374,10 @@
             }
             
 			$output = $oAdminModel->checkUseDirectModuleInstall($package);
+			if($output->toBool()==TRUE)
+			{
+				Context::set('show_ftp_note', FALSE);
+			}
 			Context::set('directModuleInstall', $output);
 			
 			$this->setTemplateFile('install');
@@ -506,6 +510,10 @@
 			if(!$config_file) return $this->stop("msg_invalid_request");
 			
 			$output = $oAdminModel->checkUseDirectModuleInstall($installedPackage);
+			if($output->toBool()==TRUE)
+			{
+				Context::set('show_ftp_note', FALSE);
+			}
 			Context::set('directModuleInstall', $output);
 
 			$params["act"] = "getResourceapiPackages";

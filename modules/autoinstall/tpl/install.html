@@ -5,6 +5,24 @@
 <div cond="$contain_core" class="message info">
 	<p>{$lang->msg_update_core}</p>
 </div>
+<div cond="$package->installed">
+	<p>{$lang->current_version}: {$package->cur_version} <block cond="$package->need_update">({$lang->require_update})</block></p>
+</div>
+<div cond="$package->depends && (!$package->installed || $package->need_update)">
+	<p>{$lang->about_depending_programs}</p>
+	<p>{$lang->description_install}</p>
+	<ul>
+		<li loop="$package->depends => $dep">
+			{$dep->title} ver. {$dep->version} -
+			<block cond="$dep->installed">{$lang->current_version}: {$dep->cur_version} <block cond="$dep->need_update">({$lang->require_update})</block></block>
+			<block cond="!$dep->installed">{$lang->require_installation}</block>
+			<block cond="$show_ftp_note && ($dep->need_update || !$dep->installed)">
+				<a href="{_XE_DOWNLOAD_SERVER_}?module=resourceapi&act=procResourceapiDownload&package_srl={$dep->package_srl}">{$lang->cmd_download}</a> ({$lang->path}: {$dep->path})
+			</block>
+		</li>
+	</ul>
+</div>
+<!--
 <p cond="$package->installed">{$lang->current_version}: {$package->cur_version} <block cond="$package->need_update">({$lang->require_update})</block></p>
 <p cond="!$package->installed">{$lang->require_installation}</p>
 <block cond="$package->depends">
@@ -20,13 +38,27 @@
 	</li>
 	</ul>
 </block>
-
+-->
 <block cond="!$package->installed || $package->need_update">
+	<div cond="!$directModuleInstall->toBool() || $show_ftp_note">
+		<block cond="!$directModuleInstall->toBool()">
+			<p>{$lang->msg_direct_install_not_supported}</p>
+			<ul>
+				<li loop="$directModuleInstall->get('path') => $path">{$path}</li>
+			</ul>
+		</block>
+		<block cond="$show_ftp_note" >
+			<p>{$lang->description_download}. (<a href="{getUrl('', 'module', 'admin', 'act', 'dispAdminConfigFtp')}">FTP Setup</a>)</p>
+			<p>{$lang->path}: {$package->path}</p>
+			<p><a class="x_btn x_btn-primary x_pull-right" href="{_XE_DOWNLOAD_SERVER_}?module=resourceapi&act=procResourceapiDownload&package_srl={$package->package_srl}">{$lang->cmd_download}</a>
+		</block>	
+	<!--
 	<block cond="$show_ftp_note">
 		<p>{$lang->description_download}. (<a href="{getUrl('', 'module', 'admin', 'act', 'dispAdminConfigFtp')}">FTP Setup</a>)</p>
 		<p>{$lang->path}: {$package->path}</p>
 		<p><a href="{_XE_DOWNLOAD_SERVER_}?module=resourceapi&act=procResourceapiDownload&package_srl={$package->package_srl}">{$lang->cmd_download}</a>
 	</block>
+	-->
 	<block cond="!$show_ftp_note">
 		<p>{$lang->description_install}</p>
 		<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
@@ -39,7 +71,7 @@
 			<input type="hidden" name="return_url" value="{$return_url}" />
 			<input cond="!$need_password" type="hidden" name="ftp_password" value="dummy" />
 
-			<block cond="$need_password">
+			<block cond="$need_password && !$directModuleInstall->toBool()">
 				<p class="q"><label for="ftp_password">FTP {$lang->password}</label></p>
 				<p class="a"><input type="password" name="ftp_password" id="ftp_password" value="" /> <span class="desc">{$lang->about_ftp_password}</span></p>
 			</block>
