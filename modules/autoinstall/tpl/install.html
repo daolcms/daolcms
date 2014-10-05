@@ -22,7 +22,7 @@
 		</li>
 	</ul>
 </div>
-<!--
+<!--//
 <p cond="$package->installed">{$lang->current_version}: {$package->cur_version} <block cond="$package->need_update">({$lang->require_update})</block></p>
 <p cond="!$package->installed">{$lang->require_installation}</p>
 <block cond="$package->depends">
@@ -47,12 +47,13 @@
 				<li loop="$directModuleInstall->get('path') => $path">{$path}</li>
 			</ul>
 		</block>
-		<block cond="$show_ftp_note" >
+		<block cond="$show_ftp_note">
 			<p>{$lang->description_download}. (<a href="{getUrl('', 'module', 'admin', 'act', 'dispAdminConfigFtp')}">FTP Setup</a>)</p>
 			<p>{$lang->path}: {$package->path}</p>
 			<p><a class="x_btn x_btn-primary x_pull-right" href="{_XE_DOWNLOAD_SERVER_}?module=resourceapi&act=procResourceapiDownload&package_srl={$package->package_srl}">{$lang->cmd_download}</a>
-		</block>	
-	<!--
+		</block>
+	</div>
+	<!--//
 	<block cond="$show_ftp_note">
 		<p>{$lang->description_download}. (<a href="{getUrl('', 'module', 'admin', 'act', 'dispAdminConfigFtp')}">FTP Setup</a>)</p>
 		<p>{$lang->path}: {$package->path}</p>

@@ -1,9 +1,11 @@
 <?php
+/* Copyright (C) DAOL Project <http://www.daolcms.org> */
 /* Copyright (C) NAVER <http://www.navercorp.com> */
 
 /**
  * Model class of the autoinstall module
  * @author NAVER (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  */
 class autoinstallAdminModel extends autoinstall
 {
@@ -323,6 +325,8 @@ class autoinstallAdminModel extends autoinstall
 				$package->cur_version = $installedPackage->current_version;
 				$package->need_update = version_compare($package->version, $installedPackage->current_version, ">");
 			}
+			
+			if($package_srl == "18325662") return $this->stop("msg_invalid_request");
 
 			if($package->path === '.')
 			{
@@ -358,7 +362,6 @@ class autoinstallAdminModel extends autoinstall
 			$directModuleInstall = FALSE;
 			$arrUnwritableDir[] = $output->get('path');
 		}
-
 		foreach($package->depends as $dep)
 		{
 			$output = $this->isWritableDir($dep->path);
