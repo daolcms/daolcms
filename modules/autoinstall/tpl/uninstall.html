@@ -17,13 +17,20 @@
 		<input type="hidden" name="act" value="procAutoinstallAdminUninstallPackage" />
 		<input type="hidden" name="package_srl" value="{$package_srl}" />
 		<input type="hidden" name="return_url" value="{$return_url}" />
-		<input cond="!$need_password" type="hidden" name="ftp_password" value="dummy" />
+		<input cond="!$need_password || $directModuleInstall->toBool()" type="hidden" name="ftp_password" value="dummy" />
 
-		<block cond="$need_password">
+		<block cond="$need_password && !$directModuleInstall->toBool()">
 			<p class="q"><label for="ftp_password">FTP {$lang->password}</label></p>
 			<p class="a"><input type="password" name="ftp_password" id="ftp_password" value="" /> <span class="desc">{$lang->about_ftp_password}</span></p>
 		</block>
-
+		
+		<block cond="!$directModuleInstall->toBool()">
+			<p>{$lang->msg_direct_install_not_supported}</p>
+			<ul>
+				<li loop="$directModuleInstall->get('path') => $path">{$path}</li>
+			</ul>
+		</block>
+		
 		<div class="btnArea">
 			<span class="btn medium"><input type="submit" value="{$lang->cmd_delete}" /></span>
 		</div>

@@ -372,7 +372,11 @@
             {
                 Context::set('need_password', true);
             }
-            $this->setTemplateFile('install');
+            
+			$output = $oAdminModel->checkUseDirectModuleInstall($package);
+			Context::set('directModuleInstall', $output);
+			
+			$this->setTemplateFile('install');
 
 			$security = new Security();
 			$security->encodeHTML('package.' , 'package.depends..');
@@ -485,7 +489,8 @@
 		{
             $package_srl = Context::get('package_srl');
             if(!$package_srl) return $this->dispAutoinstallAdminIndex();
-			$oModel =& getModel('autoinstall');
+			$oModel = getModel('autoinstall');
+			$oAdminModel = getAdminModel('autoinstall');
 			$installedPackage = $oModel->getInstalledPackage($package_srl);
 			if(!$installedPackage) return $this->dispAutoinstallAdminInstalledPackages();
 
@@ -499,6 +504,9 @@
 			if(!$type || $type == "core") return $this->stop("msg_invalid_request");
 			$config_file = $oModel->getConfigFilePath($type);
 			if(!$config_file) return $this->stop("msg_invalid_request");
+			
+			$output = $oAdminModel->checkUseDirectModuleInstall($installedPackage);
+			Context::set('directModuleInstall', $output);
 
 			$params["act"] = "getResourceapiPackages";
 			$params["package_srls"] = $package_srl;
