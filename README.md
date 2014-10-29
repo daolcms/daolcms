@@ -14,7 +14,7 @@ DAOL Core is the base frame of DAOL CMS. DAOL CMS is a web CMS program, branched
 * Creative Tree : http://www.creativetree.co.kr/
 
 ## Authors
-@daolproject, @dorami, @qw5414, @YJSoft
+@daolproject, @dorami, @qw5414, @Web-Engine, @YJSoft
 
 ## Contribution Guide
 `CONTRIBUTING.md`파일을 참고하세요.
