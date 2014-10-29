@@ -31,10 +31,10 @@
 		}
 
 		function show(){
-                    if(!$this->argument) return false;
-                    $value = $this->argument->getValue();
-                    if(!isset($value)) return false;
-                    return true;
+					if(!$this->argument) return false;
+					$value = $this->argument->getValue();
+					if(!isset($value)) return false;
+					return true;
 		}
 
 		function getArgument(){

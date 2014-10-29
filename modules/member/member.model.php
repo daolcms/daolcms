@@ -204,7 +204,7 @@
                     $logged_info->is_site_admin = false;
                 }
 				Context::set('logged_info', $logged_info);
-
+				
                 return $logged_info;
             }
             return NULL;

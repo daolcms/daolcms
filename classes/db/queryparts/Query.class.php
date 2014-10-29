@@ -62,7 +62,7 @@
 		 * column list
 		 * @var array
 		 */
-                var $columnList = NULL;
+				var $columnList = NULL;
 
 		/**
 		 * order by text
@@ -96,7 +96,7 @@
 			$this->action = $action;
 			$this->priority = $priority;
 
-                        if(!isset($tables)) return;
+						if(!isset($tables)) return;
 			$this->columns = $this->setColumns($columns);
 			$this->tables = $this->setTables($tables);
 			$this->conditions = $this->setConditions($conditions);
@@ -121,20 +121,20 @@
 			$this->priority = $priority;
 		}
 
-                function setColumnList($columnList){
-                        $this->columnList = $columnList;
-                        if(count($this->columnList) > 0) {
-                            $selectColumns = array();
-                            $dbParser = DB::getParser();
+				function setColumnList($columnList){
+						$this->columnList = $columnList;
+						if(count($this->columnList) > 0) {
+							$selectColumns = array();
+							$dbParser = DB::getParser();
 
-                            foreach($this->columnList as $columnName){
-                                    $columnName = $dbParser->escapeColumn($columnName);
-                                    $selectColumns[] = new SelectExpression($columnName);
-                            }
-                            unset($this->columns);
-                            $this->columns = $selectColumns;
-                        }
-                }
+							foreach($this->columnList as $columnName){
+									$columnName = $dbParser->escapeColumn($columnName);
+									$selectColumns[] = new SelectExpression($columnName);
+							}
+							unset($this->columns);
+							$this->columns = $selectColumns;
+						}
+				}
 
 		function setColumns($columns){
 			if(!isset($columns) || count($columns) === 0){
@@ -164,13 +164,13 @@
 		}
 
 		function setConditions($conditions){
-                    $this->conditions = array();
-                    if(!isset($conditions) || count($conditions) === 0) return;
+					$this->conditions = array();
+					if(!isset($conditions) || count($conditions) === 0) return;
 		    if(!is_array($conditions)) $conditions = array($conditions);
 
-                    foreach($conditions as $conditionGroup){
-                        if($conditionGroup->show()) $this->conditions[] = $conditionGroup;
-                    }
+					foreach($conditions as $conditionGroup){
+						if($conditionGroup->show()) $this->conditions[] = $conditionGroup;
+					}
 		}
 
 		function setGroups($groups){
@@ -291,15 +291,15 @@
 		 */
 		function getSelectString($with_values = TRUE){
 			        $select = array();
-                    foreach($this->columns as $column){
-                            if($column->show())
-                                    if($column->isSubquery()){
-                                            $select[] = $column->toString($with_values) . ' as '. $column->getAlias();
-                                    }
-                                    else
-                                            $select[] = $column->getExpression($with_values);
-                    }
-                    return trim(implode($select, ', '));
+					foreach($this->columns as $column){
+							if($column->show())
+									if($column->isSubquery()){
+											$select[] = $column->toString($with_values) . ' as '. $column->getAlias();
+									}
+									else
+											$select[] = $column->getExpression($with_values);
+					}
+					return trim(implode($select, ', '));
 		}
 
 		/**
@@ -308,11 +308,11 @@
 		 * @return string
 		 */
 		function getUpdateString($with_values = TRUE){
-                    foreach($this->columns as $column){
-                        if($column->show())
-                           $update[] = $column->getExpression($with_values);
-                    }
-                    return trim(implode($update, ', '));
+					foreach($this->columns as $column){
+						if($column->show())
+						   $update[] = $column->getExpression($with_values);
+					}
+					return trim(implode($update, ', '));
 		}
 
 		/**
@@ -368,7 +368,7 @@
 				if($table->isJoinTable() || !$simple_table_count) $from .= $table->toString($with_values) . ' ';
 				else $from .= ', '.$table->toString($with_values) . ' ';
 
-                                if(is_a($table, 'Subquery')) $from .= $table->getAlias() ? ' as ' . $table->getAlias() . ' ' : ' ';
+								if(is_a($table, 'Subquery')) $from .= $table->getAlias() ? ' as ' . $table->getAlias() . ' ' : ' ';
 
 				$simple_table_count++;
 			}
@@ -436,7 +436,7 @@
 			    if(count($this->orderby) === 0) return '';
 			    $orderBy = '';
 			    foreach($this->orderby as $order){
-    				$orderBy .= $order->toString() .', ';
+					$orderBy .= $order->toString() .', ';
 			    }
 			    $orderBy = substr($orderBy, 0, -2);
 			    $this->_orderByString = $orderBy;

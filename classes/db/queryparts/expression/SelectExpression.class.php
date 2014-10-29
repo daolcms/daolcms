@@ -52,8 +52,8 @@
 		    return array();
 		}
 
-                function isSubquery(){
-                    return false;
-                }
+				function isSubquery(){
+					return false;
+				}
 	}
 ?>

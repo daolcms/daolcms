@@ -3,9 +3,9 @@
 	<grants />
 	<permissions />
 	<actions>
-		<action name="getSyndicationList" type="model" />
-		<action name="dispSyndicationAdminConfig" type="view" admin_index="true" />
-		<action name="procSyndicationAdminInsertConfig" type="controller" ruleset="insertService" />
-		<action name="procSyndicationAdminCheckPingResult" type="controller" />
+		<action name="getSyndicationList" type="model" standalone="true" />
+		<action name="dispSyndicationAdminConfig" type="view" standalone="true" admin_index="true" />
+		<action name="procSyndicationAdminInsertConfig" type="controller" standalone="true" ruleset="insertService" />
+		<action name="procSyndicationAdminCheckPingResult" type="controller" standalone="true" />
 	</actions>
 </module>

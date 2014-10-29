@@ -130,12 +130,12 @@ class FileHandler {
 	 * @return bool Returns true on success or false on failure.
 	 **/
 	function removeFile($file_name) {
-    	$file_name = FileHandler::getRealPath($file_name);
-    	if(file_exists($file_name))
-    	{
-        	return unlink($file_name);
-    	}
-    	else return FALSE;
+		$file_name = FileHandler::getRealPath($file_name);
+		if(file_exists($file_name))
+		{
+			return unlink($file_name);
+		}
+		else return FALSE;
 	}
 
 	/**
@@ -748,7 +748,57 @@ class FileHandler {
 	{
 		return (is_readable($filename) && !!filesize($filename));
 	}
-}
+	
+	/**
+	 * Check file exists.
+	 *
+	 * @param string $filename Target file name
+	 * @return bool Returns FALSE if the file does not exists, or Returns full path file(string).
+	 */
+	function exists($filename)
+	{
+		$filename = self::getRealPath($filename);
+		return file_exists($filename) ? $filename : FALSE;
+	}
+	
+	/**
+	 * Check it is dir
+	 *
+	 * @param string $dir Target dir path
+	 * @return bool Returns FALSE if the dir is not dir, or Returns full path of dir(string).
+	 */
+	function isDir($path)
+	{
+		$path = self::getRealPath($path);
+		return is_dir($path) ? $path : FALSE;
+	}
 
+	/**
+	 * Check is writable dir
+	 *
+	 * @param string $path Target dir path
+	 * @return bool
+	 */
+	function isWritableDir($path)
+	{
+		$path = self::getRealPath($path);
+		if(is_dir($path)==FALSE)
+		{
+			return FALSE;
+		}
+
+		$checkFile = $path . '/_CheckWritableDir';
+
+		$fp = fopen($checkFile, 'w');
+		if(!is_resource($fp))
+		{
+			return FALSE;
+		}
+		fclose($fp);
+
+		self::removeFile($checkFile);
+		return TRUE;
+	}
+}
 /* End of file FileHandler.class.php */
 /* Location: ./classes/file/FileHandler.class.php */

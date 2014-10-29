@@ -3,5 +3,5 @@ jQuery(function($){
 	$('.language>.toggle').click(function(){
 		$('.selectLang').toggle();
 	});
-    
+	
 });

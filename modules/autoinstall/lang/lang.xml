@@ -264,6 +264,20 @@
 		<value xml:lang="jp"><![CDATA[アップデートしますか？]]></value>
 		<value xml:lang="zh-TW"><![CDATA[確定要更新嗎？]]></value>
 	</item>
+	<item name="msg_daol_cannot_use_easyinstall">
+		<value xml:lang="ko"><![CDATA[다올은 쉬운 설치로 업데이트할 수 없습니다.]]></value>
+		<value xml:lang="en"><![CDATA[Could not update DAOL using EasyInstaller.]]></value>
+		<value xml:lang="jp"><![CDATA[イージーインストールを使用してDAOLを更新できませんでした。]]></value>
+		<value xml:lang="zh-CN"><![CDATA[Could not update DAOL using EasyInstaller.]]></value>
+		<value xml:lang="zh-TW"><![CDATA[Could not update DAOL using EasyInstaller.]]></value>
+		<value xml:lang="fr"><![CDATA[Could not update DAOL using EasyInstaller.]]></value>
+		<value xml:lang="de"><![CDATA[Could not update DAOL using EasyInstaller.]]></value>
+		<value xml:lang="ru"><![CDATA[Could not update DAOL using EasyInstaller.]]></value>
+		<value xml:lang="es"><![CDATA[Could not update DAOL using EasyInstaller.]]></value>
+		<value xml:lang="tr"><![CDATA[Could not update DAOL using EasyInstaller.]]></value>
+		<value xml:lang="vi"><![CDATA[Could not update DAOL using EasyInstaller.]]></value>
+		<value xml:lang="mn"><![CDATA[Could not update DAOL using EasyInstaller.]]></value>
+	</item>
 	<item name="msg_connection_fail">
 		<value xml:lang="ko"><![CDATA[서버 접속이 원활하지 않습니다.]]></value>
 		<value xml:lang="en"><![CDATA[Failed to connect to server.]]></value>
@@ -321,7 +335,12 @@
 	<item name="msg_sftp_not_supported">
 		<value xml:lang="ko"><![CDATA[SFTP를 지원하지 않는 환경입니다.]]></value>
 		<value xml:lang="en"><![CDATA[SFTP is not supported.]]></value>
-		<value xml:lang="jp"><![CDATA[SFTP非対応環境です。]]></value>
+		<value xml:lang="jp"><![CDATA[SFTPの非対応環境です。]]></value>
+	</item>
+	<item name="msg_direct_install_not_supported">
+		<value xml:lang="ko"><![CDATA[아래 목록에 나열된 디렉터리에 쓰기 권한이 없기 때문에 FTP를 사용합니다.]]></value>
+		<value xml:lang="en"><![CDATA[Use FTP because there is no write permission to the directories listed in the list below.]]></value>
+		<value xml:lang="jp"><![CDATA[下記のリストにリストされているディレクトリへの書き込み権限がないため、FTPを使用してください。]]></value>
 	</item>
 	<item name="msg_does_not_support_delete">
 		<value xml:lang="ko"><![CDATA[이 패키지가 삭제를 지원하지 않습니다(모듈 클래스에 moduleUninstall()이 없음).]]></value>

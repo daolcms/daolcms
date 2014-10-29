@@ -25,7 +25,7 @@
 		}
 
 		function getExpression($with_value = true){
-                        return "$this->column_name = $this->argument";
+						return "$this->column_name = $this->argument";
 		}
 
 		function getValue(){
@@ -36,8 +36,8 @@
 		}
 
 		function show(){
-                        if(!$this->argument) return false;
-                        $value = $this->argument;
+						if(!$this->argument) return false;
+						$value = $this->argument;
 			if(!isset($value)) return false;
 			return true;
 		}

@@ -1,6 +1,7 @@
 <?php
 	// ko/en/...
 	$lang = Context::getLangType();
+	$logged_info = Context::get('logged_info');
 
 	// insertMenu
 	$menu_args->site_srl = 0;
@@ -62,7 +63,7 @@
 
 	// insertPageModule
 	$page_args->layout_srl = $layout_srl;
-	$page_args->browser_title = 'welcome_page';
+	$page_args->browser_title = 'Welcome DAOL CMS';
 	$page_args->module = 'page';
 	$page_args->mid = 'welcome_page';
 	$page_args->module_category_srl = 0;
@@ -83,13 +84,19 @@
 	$oDocumentModel = &getModel('document');
 	$oDocumentController = &getController('document');
 
+	$obj->member_srl = $logged_info->member_srl;
+	$obj->user_id = htmlspecialchars_decode($logged_info->user_id);
+	$obj->user_name = htmlspecialchars_decode($logged_info->user_name);
+	$obj->nick_name = htmlspecialchars_decode($logged_info->nick_name);
+	$obj->email_address = $logged_info->email_address;
+
 	$obj->module_srl = $module_srl;
 	Context::set('version', __DAOL_VERSION__);
 	$obj->title = 'Welcome DAOL CMS';
 
 	$obj->content = $oTemplateHandler->compile('./modules/install/script/welcome_content', 'welcome_content_'.$lang);
 
-	$output = $oDocumentController->insertDocument($obj);
+	$output = $oDocumentController->insertDocument($obj,true);
 	if(!$output->toBool()) return $output;
 	
 	$document_srl = $output->get('document_srl');

@@ -59,19 +59,19 @@
 		 */
 		function TableTag($table){
 			$dbParser = DB::getParser();
-                        
-                        $this->unescaped_name = $table->attrs->name;
+						
+						$this->unescaped_name = $table->attrs->name;
 			$this->name = $dbParser->parseTableName($table->attrs->name);
 			
-                        $this->alias = $table->attrs->alias;
+						$this->alias = $table->attrs->alias;
 			if(!$this->alias) $this->alias = $table->attrs->name; 
 			
 			$this->join_type = $table->attrs->type;
 			
-                        $this->conditions = $table->conditions;			
-                        
-                        if($this->isJoinTable())
-                            $this->conditionsTag = new JoinConditionsTag($this->conditions);
+						$this->conditions = $table->conditions;			
+						
+						if($this->isJoinTable())
+							$this->conditionsTag = new JoinConditionsTag($this->conditions);
 		}
 		
 		function isJoinTable(){
@@ -108,11 +108,11 @@
 								, $dbParser->escape($this->name)
 								, $this->alias ? ', \'' . $dbParser->escape($this->alias) .'\'' : '');			
 		}
-                
-                function getArguments(){
-                    if(!isset($this->conditionsTag)) return array();
-                    return $this->conditionsTag->getArguments();
-                }
+				
+				function getArguments(){
+					if(!isset($this->conditionsTag)) return array();
+					return $this->conditionsTag->getArguments();
+				}
 	}
 
 ?>

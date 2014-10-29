@@ -241,8 +241,9 @@ class Context {
 				array(&$oSessionController, 'gc')
 			);
 		}
-		session_start();
+		
 		if($sess=$_POST[session_name()]) session_id($sess);
+		session_start();
 
 		// set authentication information in Context and session
 		if(Context::isInstalled()) {
@@ -324,26 +325,26 @@ class Context {
 		$config_file = $self->getConfigFile();
 		if(is_readable($config_file)) include($config_file);
 
-                // If master_db information does not exist, the config file needs to be updated
-                if(!isset($db_info->master_db)) {
-                    $db_info->master_db = array();
-                    $db_info->master_db["db_type"] = $db_info->db_type; unset($db_info->db_type);
-                    $db_info->master_db["db_port"] = $db_info->db_port; unset($db_info->db_port);
-                    $db_info->master_db["db_hostname"] = $db_info->db_hostname; unset($db_info->db_hostname);
-                    $db_info->master_db["db_password"] = $db_info->db_password; unset($db_info->db_password);
-                    $db_info->master_db["db_database"] = $db_info->db_database; unset($db_info->db_database);
-                    $db_info->master_db["db_userid"] = $db_info->db_userid; unset($db_info->db_userid);
-                    $db_info->master_db["db_table_prefix"] = $db_info->db_table_prefix; unset($db_info->db_table_prefix);
-                    if(substr($db_info->master_db["db_table_prefix"],-1)!='_') $db_info->master_db["db_table_prefix"] .= '_';
+				// If master_db information does not exist, the config file needs to be updated
+				if(!isset($db_info->master_db)) {
+					$db_info->master_db = array();
+					$db_info->master_db["db_type"] = $db_info->db_type; unset($db_info->db_type);
+					$db_info->master_db["db_port"] = $db_info->db_port; unset($db_info->db_port);
+					$db_info->master_db["db_hostname"] = $db_info->db_hostname; unset($db_info->db_hostname);
+					$db_info->master_db["db_password"] = $db_info->db_password; unset($db_info->db_password);
+					$db_info->master_db["db_database"] = $db_info->db_database; unset($db_info->db_database);
+					$db_info->master_db["db_userid"] = $db_info->db_userid; unset($db_info->db_userid);
+					$db_info->master_db["db_table_prefix"] = $db_info->db_table_prefix; unset($db_info->db_table_prefix);
+					if(substr($db_info->master_db["db_table_prefix"],-1)!='_') $db_info->master_db["db_table_prefix"] .= '_';
 
-                    $slave_db = $db_info->master_db;
-                    $db_info->slave_db = array($slave_db);
+					$slave_db = $db_info->master_db;
+					$db_info->slave_db = array($slave_db);
 					
-                    $self->setDBInfo($db_info);
+					$self->setDBInfo($db_info);
 
-                    $oInstallController = &getController('install');
-                    $oInstallController->makeConfigFile();
-                }
+					$oInstallController = &getController('install');
+					$oInstallController->makeConfigFile();
+				}
 		
 		if(!$db_info->use_prepared_statements) 
 		{
@@ -807,6 +808,8 @@ class Context {
 	 * @return string converted string
 	 */
 	function convertEncodingStr($str) {
+		if(!$str) return null;
+		$obj = new stdClass();
 		$obj->str = $str;
 		$obj = Context::convertEncoding($obj);
 		return $obj->str;
@@ -975,35 +978,34 @@ class Context {
 			$val = array($val);
 		}
 
+		$result = array();
 		foreach($val as $k => $v)
 		{
+			$k = htmlentities($k);
 			if($key === 'page' || $key === 'cpage' || substr($key, -3) === 'srl')
 			{
-				$val[$k] = !preg_match('/^[0-9,]+$/', $v) ? (int)$v : $v;
+				$result[$k] = !preg_match('/^[0-9,]+$/', $v) ? (int)$v : $v;
 			}
 			elseif($key === 'mid' || $key === 'vid' || $key === 'search_keyword')
 			{
-				$val[$k] = htmlspecialchars($v);
+				$result[$k] = htmlspecialchars($v);
 			}
 			else
 			{
+				$result[$k] = $v;
+				
 				if($do_stripslashes && version_compare(PHP_VERSION, '5.9.0', '<') && get_magic_quotes_gpc())
 				{
-					$v = stripslashes($v);
+					$result[$k] = stripslashes($result[$k]);
 				}
 
-				if (is_string($v)) $val[$k] = trim($v);
+				if(!is_array($result[$k])) {
+					$result[$k] = trim($result[$k]);
+				}
 			}
 		}
 
-		if($isArray)
-		{
-			return $val;
-		}
-		else
-		{
-			return $val[0];
-		}
+		return $isArray ? $result : $result[0];
 	}
 
 	/**
@@ -1581,7 +1583,7 @@ class Context {
 	 * @deprecated
 	 * @param array $files File list
 	 * @return array File list
- 	 */
+	 */
 	function _getUniqueFileList($files) {
 		ksort($files);
 		$files = array_values($files);

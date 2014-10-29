@@ -47,7 +47,7 @@
 			$conditions_string = 'array('.PHP_EOL;
 			foreach($this->conditions as $condition){
 				$conditions_string .= $condition->getConditionString() . PHP_EOL . ',';
-                        }
+						}
 			$conditions_string = substr($conditions_string, 0, -2);//remove ','
 			$conditions_string .= ')';
 
@@ -57,7 +57,7 @@
 		function getArguments(){
 			$arguments = array();
 			foreach($this->conditions as $condition){
-                                $arguments = array_merge($arguments, $condition->getArguments());
+								$arguments = array_merge($arguments, $condition->getArguments());
 			}
 			return $arguments;
 		}

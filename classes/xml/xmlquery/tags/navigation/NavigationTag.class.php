@@ -40,27 +40,27 @@
 		 */
 		function NavigationTag($xml_navigation){
 			$this->order = array();
-            if($xml_navigation) {
-                $order = $xml_navigation->index;
-                if($order) {
-                    if(!is_array($order)) $order = array($order);
-                    foreach($order as $order_info) {
-                        $this->order[] = new IndexTag($order_info);
-                    }
+			if($xml_navigation) {
+				$order = $xml_navigation->index;
+				if($order) {
+					if(!is_array($order)) $order = array($order);
+					foreach($order as $order_info) {
+						$this->order[] = new IndexTag($order_info);
+					}
 
-                if($xml_navigation->page && $xml_navigation->page->attrs || $xml_navigation->list_count && $xml_navigation->list_count->attrs)
-                	$this->limit = new LimitTag($xml_navigation);
+				if($xml_navigation->page && $xml_navigation->page->attrs || $xml_navigation->list_count && $xml_navigation->list_count->attrs)
+					$this->limit = new LimitTag($xml_navigation);
 
-                if ($xml_navigation->list_count)
+				if ($xml_navigation->list_count)
 		    $this->list_count = $xml_navigation->list_count->attrs;
 
-                if ($xml_navigation->page_count)
+				if ($xml_navigation->page_count)
 		    $this->page_count = $xml_navigation->page_count->attrs;
 
-                if ($xml_navigation->page)
+				if ($xml_navigation->page)
 		    $this->page = $xml_navigation->page->attrs;
-                }
-            }
+				}
+			}
 		}
 
 		/**

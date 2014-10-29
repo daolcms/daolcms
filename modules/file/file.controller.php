@@ -662,13 +662,15 @@
 		 * @param int $file_srl Sequence of file to delete
 		 * @return Object
          **/
-        function deleteFile($file_srl) {
+        function deleteFile($file_srl)
+        {
             if(!$file_srl) return;
 
             $srls = explode(',',$file_srl);
             if(!count($srls)) return;
 
-            for($i=0;$i<count($srls);$i++) {
+            for($i=0, $c=count($srls); $i<$c; $i++)
+            {
                 $srl = (int)$srls[$i];
                 if(!$srl) continue;
 
@@ -705,30 +707,35 @@
 		 * @param int $upload_target_srl Upload target srl to delete files
 		 * @return Object
          **/
-        function deleteFiles($upload_target_srl) {
+        function deleteFiles($upload_target_srl)
+        {
             // Get a list of attachements
             $oFileModel = &getModel('file');
-			$columnList = array('uploaded_filename', 'module_srl');
+            $columnList = array('file_srl', 'uploaded_filename', 'module_srl');
             $file_list = $oFileModel->getFiles($upload_target_srl, $columnList);
             // Success returned if no attachement exists
             if(!is_array($file_list)||!count($file_list)) return new Object();
+            
             // Remove from the DB
             $args->upload_target_srl = $upload_target_srl;
             $output = executeQuery('file.deleteFiles', $args);
             if(!$output->toBool()) return $output;
+            
             // Delete the file
             $path = array();
             $file_count = count($file_list);
             for($i=0;$i<$file_count;$i++) {
+                $this->deleteFile($file_list[$i]->file_srl);
+                
                 $uploaded_filename = $file_list[$i]->uploaded_filename;
-                FileHandler::removeFile($uploaded_filename);
-                $module_srl = $file_list[$i]->module_srl;
-
                 $path_info = pathinfo($uploaded_filename);
                 if(!in_array($path_info['dirname'], $path)) $path[] = $path_info['dirname'];
             }
             // Remove a file directory of the document
-            for($i=0;$i<count($path);$i++) FileHandler::removeBlankDir($path[$i]);
+            for($i=0, $c=count($path); $i<$c; $i++)
+            {
+            	FileHandler::removeBlankDir($path[$i]);
+            }
 
             return $output;
         }

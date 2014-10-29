@@ -242,12 +242,12 @@ class QueryTag {
 		if ($this->columns)
 			$buff .= '$query->setColumns(' . $this->columns->toString() . ');' . PHP_EOL;
 
-        $buff .= '$query->setTables(' . $this->tables->toString() .');'.PHP_EOL;
+		$buff .= '$query->setTables(' . $this->tables->toString() .');'.PHP_EOL;
 		if($this->action == 'insert-select')
 				$buff .= '$query->setSubquery(' . $this->subquery->toString() .');'.PHP_EOL;
-        $buff .= '$query->setConditions('.$this->conditions->toString() .');'.PHP_EOL;
-       	$buff .= '$query->setGroups(' . $this->groups->toString() . ');'.PHP_EOL;
-       	$buff .= '$query->setOrder(' . $this->navigation->getOrderByString() .');'.PHP_EOL;
+		$buff .= '$query->setConditions('.$this->conditions->toString() .');'.PHP_EOL;
+		$buff .= '$query->setGroups(' . $this->groups->toString() . ');'.PHP_EOL;
+		$buff .= '$query->setOrder(' . $this->navigation->getOrderByString() .');'.PHP_EOL;
 		$buff .= '$query->setLimit(' . $this->navigation->getLimitString() .');'.PHP_EOL;
 
 		$this->buff = $buff;
@@ -304,7 +304,7 @@ class QueryTag {
 			$arguments = array_merge($arguments, $this->columns->getArguments());
 		if($this->action =='insert-select')
 			$arguments = array_merge($arguments, $this->subquery->getArguments());
-        $arguments = array_merge($arguments, $this->tables->getArguments());
+		$arguments = array_merge($arguments, $this->tables->getArguments());
 		$arguments = array_merge($arguments, $this->conditions->getArguments());
 		$arguments = array_merge($arguments, $this->navigation->getArguments());
 		return $arguments;

@@ -21,19 +21,19 @@
 		function GroupsTag($xml_groups){			
 			$this->groups = array();
 			
-            if($xml_groups) {
-                if(!is_array($xml_groups)) $xml_groups = array($xml_groups);
-                
+			if($xml_groups) {
+				if(!is_array($xml_groups)) $xml_groups = array($xml_groups);
+				
 		$dbParser = &DB::getParser();
-                for($i=0;$i<count($xml_groups);$i++) {
-                    $group = $xml_groups[$i];
-                    $column = trim($group->attrs->column);
-                    if(!$column) continue;
-                    
-                    $column = $dbParser->parseExpression($column);
-                    $this->groups[] = $column;
-                }
-            }			
+				for($i=0;$i<count($xml_groups);$i++) {
+					$group = $xml_groups[$i];
+					$column = trim($group->attrs->column);
+					if(!$column) continue;
+					
+					$column = $dbParser->parseExpression($column);
+					$this->groups[] = $column;
+				}
+			}			
 		}
 		
 		function toString(){

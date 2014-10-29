@@ -159,7 +159,8 @@
         {
             @set_time_limit(0);
             $package_srls = Context::get('package_srl');
-            $oModel =& getModel('autoinstall');
+			$oModel = getModel('autoinstall');
+			$oAdminModel = getAdminModel('autoinstall');
             $packages = explode(',', $package_srls);
             $ftp_info =  Context::getFTPInfo();
             if(!$_SESSION['ftp_password'])
@@ -175,7 +176,11 @@
             foreach($packages as $package_srl)
             {
                 $package = $oModel->getPackage($package_srl);
-                if($ftp_info->sftp && $ftp_info->sftp == 'Y' && $isSftpSupported)
+                if($oAdminModel->checkUseDirectModuleInstall($package)->toBool())
+				{
+					$oModuleInstaller = new DirectModuleInstaller($package);
+				}
+				else if($ftp_info->sftp && $ftp_info->sftp == 'Y' && $isSftpSupported)
                 {
                     $oModuleInstaller = new SFTPModuleInstaller($package);
                 }
@@ -280,11 +285,53 @@
 		function procAutoinstallAdminUninstallPackage()
 		{
 			$package_srl = Context::get('package_srl');
-            $oModel =& getModel('autoinstall');
+            $output = $this->uninstallPackageByPackageSrl($package_srl);
+			if($output->toBool()==FALSE)
+			{
+				return $output;
+			}
+			
+			if (Context::get('return_url'))
+			{
+				$this->setRedirectUrl(Context::get('return_url'));
+			}
+			else
+			{
+				$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminInstalledPackages'));
+			}
+		}
+		
+		/**
+		 * Uninstall package by package serial number
+		 *
+		 * @return Object
+		 */
+		function uninstallPackageByPackageSrl($package_srl)
+		{
+			$oModel = getModel('autoinstall');
 			$package = $oModel->getPackage($package_srl);
+			
+			return $this->_uninstallPackage($package);
+		}
+		
+		/**
+		 * Uninstall package by package path
+		 *
+		 * @return Object
+		 */
+		function uninstallPackageByPath($path)
+		{
 			$path = $package->path;
-
-            if(!$_SESSION['ftp_password'])
+			return $this->_uninstallPackage($package);
+		}
+		
+		private function _uninstallPackage($package)
+		{
+			$path = $package->path;
+			
+			$oAdminModel = getAdminModel('autoinstall');
+            
+			if(!$_SESSION['ftp_password'])
             {
                 $ftp_password = Context::get('ftp_password');
             }
@@ -295,7 +342,11 @@
             $ftp_info =  Context::getFTPInfo();
 
 			$isSftpSupported = function_exists(ssh2_sftp);
-			if($ftp_info->sftp && $ftp_info->sftp == 'Y' && $isSftpSupported)
+			if($oAdminModel->checkUseDirectModuleInstall($package)->toBool())
+			{
+				$oModuleInstaller = new DirectModuleInstaller($package);
+			}
+			else if($ftp_info->sftp && $ftp_info->sftp == 'Y' && $isSftpSupported)
 			{
 				$oModuleInstaller = new SFTPModuleInstaller($package);
 			}
@@ -317,15 +368,8 @@
 			$this->_updateinfo();
 
 			$this->setMessage('success_deleted', 'update');
-
-			if (Context::get('return_url'))
-			{
-				$this->setRedirectUrl(Context::get('return_url'));
-			}
-			else
-			{
-				$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminInstalledPackages'));
-			}
+			
+			return new Object();
 		}
     }
 ?>

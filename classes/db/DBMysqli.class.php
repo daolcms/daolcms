@@ -12,26 +12,26 @@
 	 * @package /classes/db
 	 * @version 0.1
 	 **/
-    class DBMysqli extends DBMysql {
+	class DBMysqli extends DBMysql {
 
 		/**
 		 * Constructor
 		 * @return void
 		 **/
-        function DBMysqli() {
-            $this->_setDBInfo();
-            $this->_connect();
-        }
+		function DBMysqli() {
+			$this->_setDBInfo();
+			$this->_connect();
+		}
 
 		/**
 		 * Return if supportable
 		 * Check 'mysqli_connect' function exists.
 		 * @return boolean
 		 */
-        function isSupported() {
-            if(!function_exists('mysqli_connect')) return false;
-            return true;
-        }
+		function isSupported() {
+			if(!function_exists('mysqli_connect')) return false;
+			return true;
+		}
 
 		/**
 		 * Create an instance of this class
@@ -48,28 +48,28 @@
 		 * @param array $connection connection's value is db_hostname, db_port, db_database, db_userid, db_password
 		 * @return resource
 		 */
-        function __connect($connection) {
-            // Attempt to connect
-            if ($connection["db_port"]) {
-                $result = @mysqli_connect($connection["db_hostname"]
-                                                        , $connection["db_userid"]
-                                                        , $connection["db_password"]
-                                                        , $connection["db_database"]
-                                                        , $connection["db_port"]);
-            } else {
-                $result = @mysqli_connect($connection["db_hostname"]
-                                                        , $connection["db_userid"]
-                                                        , $connection["db_password"]
-                                                        , $connection["db_database"]);
-            }
+		function __connect($connection) {
+			// Attempt to connect
+			if ($connection["db_port"]) {
+				$result = @mysqli_connect($connection["db_hostname"]
+														, $connection["db_userid"]
+														, $connection["db_password"]
+														, $connection["db_database"]
+														, $connection["db_port"]);
+			} else {
+				$result = @mysqli_connect($connection["db_hostname"]
+														, $connection["db_userid"]
+														, $connection["db_password"]
+														, $connection["db_database"]);
+			}
 			$error = mysqli_connect_errno();
-            if($error) {
-                $this->setError($error,mysqli_connect_error());
-                return;
-            }
-            mysqli_set_charset($result,'utf8');
-            return $result;
-        }
+			if($error) {
+				$this->setError($error,mysqli_connect_error());
+				return;
+			}
+			mysqli_set_charset($result,'utf8');
+			return $result;
+		}
 
 		/**
 		 * DB disconnection
@@ -77,23 +77,23 @@
 		 * @param resource $connection
 		 * @return void
 		 */
-        function _close($connection) {
-            mysqli_close($connection);
-        }
+		function _close($connection) {
+			mysqli_close($connection);
+		}
 
 		/**
 		 * Handles quatation of the string variables from the query
 		 * @param string $string
 		 * @return string
 		 */
-        function addQuotes($string) {
-            if(version_compare(PHP_VERSION, "5.9.0", "<") && get_magic_quotes_gpc()) $string = stripslashes(str_replace("\\","\\\\",$string));
-            if(!is_numeric($string)){
-                $connection = $this->_getConnection('master');
-                $string = mysqli_escape_string($connection,$string);
-            }
-            return $string;
-        }
+		function addQuotes($string) {
+			if(version_compare(PHP_VERSION, "5.9.0", "<") && get_magic_quotes_gpc()) $string = stripslashes(str_replace("\\","\\\\",$string));
+			if(!is_numeric($string)){
+				$connection = $this->_getConnection('master');
+				$string = mysqli_escape_string($connection,$string);
+			}
+			return $string;
+		}
 
 		/**
 		 * Execute the query
@@ -102,7 +102,7 @@
 		 * @param resource $connection
 		 * @return resource
 		 */
-        function __query($query, $connection) {
+		function __query($query, $connection) {
 			if($this->use_prepared_statements == 'Y')
 			{			
 				// 1. Prepare query
@@ -141,16 +141,16 @@
 				}
 				
 			}
-            // Run the query statement
-            $result = mysqli_query($connection,$query);
-            // Error Check
+			// Run the query statement
+			$result = mysqli_query($connection,$query);
+			// Error Check
 			$error = mysqli_error($connection);
-            if($error){
+			if($error){
 				$this->setError(mysqli_errno($connection), $error);
 			}
-            // Return result
-            return $result;
-        }
+			// Return result
+			return $result;
+		}
 		
 		/**
 		 * Before execute query, prepare statement
@@ -207,25 +207,25 @@
 		 * @param int|NULL $arrayIndexEndValue
 		 * @return array
 		 */
-        function _fetch($result, $arrayIndexEndValue = NULL) {
+		function _fetch($result, $arrayIndexEndValue = NULL) {
 			if($this->use_prepared_statements != 'Y'){
 				return parent::_fetch($result, $arrayIndexEndValue);
 			}
 			$output = array();
-            if(!$this->isConnected() || $this->isError() || !$result) return $output;
+			if(!$this->isConnected() || $this->isError() || !$result) return $output;
 			
 			// Prepared stements: bind result variable and fetch data
 			$stmt = $result;
 			$meta = mysqli_stmt_result_metadata($stmt);
 			$fields = mysqli_fetch_fields($meta);
 
-            /**
-             * Mysqli has a bug that causes LONGTEXT columns not to get loaded
-             * Unless store_result is called before
-             * MYSQLI_TYPE for longtext is 252
-             */
-            $longtext_exists = false;
-            foreach($fields as $field)
+			/**
+			 * Mysqli has a bug that causes LONGTEXT columns not to get loaded
+			 * Unless store_result is called before
+			 * MYSQLI_TYPE for longtext is 252
+			 */
+			$longtext_exists = false;
+			foreach($fields as $field)
 			{
 				if(isset($resultArray[$field->name])) // When joined tables are used and the same column name appears twice, we should add it separately, otherwise bind_result fails
 					$field->name = 'repeat_' . $field->name;				
@@ -234,14 +234,14 @@
 				$row[$field->name] = "";
 				$resultArray[$field->name] = &$row[$field->name];
 
-                if($field->type == 252) $longtext_exists = true;
+				if($field->type == 252) $longtext_exists = true;
 			}
 			$resultArray = array_merge(array($stmt), $resultArray);
 
-            if($longtext_exists)
-            {
-                mysqli_stmt_store_result($stmt);
-            }
+			if($longtext_exists)
+			{
+				mysqli_stmt_store_result($stmt);
+			}
 
 			call_user_func_array('mysqli_stmt_bind_result', $resultArray);
 
@@ -274,13 +274,13 @@
 				$output = $rows;
 			}
 			
-            if(count($output)==1){
-            	if(isset($arrayIndexEndValue)) return $output;
-            	else return $output[0];
-            }
+			if(count($output)==1){
+				if(isset($arrayIndexEndValue)) return $output;
+				else return $output[0];
+			}
 			
-            return $output;
-        }		
+			return $output;
+		}		
 		
 		/**
 		 * Handles insertAct
@@ -361,8 +361,8 @@
 		 */
 		function db_insert_id()
 		{
-            $connection = $this->_getConnection('master');
-            return  mysqli_insert_id($connection);
+			$connection = $this->_getConnection('master');
+			return  mysqli_insert_id($connection);
 		}
 
 		/**
@@ -383,5 +383,5 @@
 		function db_free_result(&$result){
 			return mysqli_free_result($result);		
 		}		
-    }
+	}
 ?>

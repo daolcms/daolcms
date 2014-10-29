@@ -42,7 +42,7 @@
 		 * QueryTag object
 		 * @var QueryTag
 		 */
-                var $query;
+				var $query;
 
 		/**
 		 * constructor
@@ -57,7 +57,7 @@
 
 			// If default value is column name, it should be escaped
 			if($isColumnName = (strpos($condition->attrs->default, '.') !== false
-                                && strpos($condition->attrs->default, '.') !== 0
+								&& strpos($condition->attrs->default, '.') !== 0
 								&& strpos($condition->attrs->default, '%') === false ))
 			{
 				$condition->attrs->default = $dbParser->parseExpression($condition->attrs->default);
@@ -118,39 +118,39 @@
 		}
 
 		function getArguments(){
-                    $arguments = array();
-                    if($this->query)
-                        $arguments = array_merge($arguments, $this->query->getArguments());
-                    if($this->argument)
-                        $arguments[] = $this->argument;
-                    return $arguments;
+					$arguments = array();
+					if($this->query)
+						$arguments = array_merge($arguments, $this->query->getArguments());
+					if($this->argument)
+						$arguments[] = $this->argument;
+					return $arguments;
 		}
 
 		function getConditionString(){
-                        if($this->query){
-                            return sprintf("new ConditionSubquery('%s',%s,%s%s)"
-                                            , $this->column_name
-                                            , $this->default_column
-                                            , '"'.$this->operation.'"'
-                                            , $this->pipe ? ", '" . $this->pipe . "'" : ''
-                                            );
-                        }
-                        else if(isset($this->default_column)){
-                            return sprintf("new ConditionWithoutArgument('%s',%s,%s%s)"
-                                            , $this->column_name
-                                            , $this->default_column
-                                            , '"'.$this->operation.'"'
-                                            , $this->pipe ? ", '" . $this->pipe . "'" : ''
-                                            );
-                        }
-                        else{
-                            return sprintf("new ConditionWithArgument('%s',%s,%s%s)"
-                                            , $this->column_name
-                                            , '$' . $this->argument_name . '_argument'
-                                            , '"'.$this->operation.'"'
-                                            , $this->pipe ? ", '" . $this->pipe . "'" : ''
-                                            );
-                        }
+						if($this->query){
+							return sprintf("new ConditionSubquery('%s',%s,%s%s)"
+											, $this->column_name
+											, $this->default_column
+											, '"'.$this->operation.'"'
+											, $this->pipe ? ", '" . $this->pipe . "'" : ''
+											);
+						}
+						else if(isset($this->default_column)){
+							return sprintf("new ConditionWithoutArgument('%s',%s,%s%s)"
+											, $this->column_name
+											, $this->default_column
+											, '"'.$this->operation.'"'
+											, $this->pipe ? ", '" . $this->pipe . "'" : ''
+											);
+						}
+						else{
+							return sprintf("new ConditionWithArgument('%s',%s,%s%s)"
+											, $this->column_name
+											, '$' . $this->argument_name . '_argument'
+											, '"'.$this->operation.'"'
+											, $this->pipe ? ", '" . $this->pipe . "'" : ''
+											);
+						}
 		}
 	}
 ?>

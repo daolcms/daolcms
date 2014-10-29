@@ -40,9 +40,9 @@
 		 */
 		function getExpressionWithValue(){
 			$value = $this->argument->getValue();
-                        $operation = $this->argument->getColumnOperation();
-                        if(isset($operation))
-                                return "$this->column_name = $this->column_name $operation $value";
+						$operation = $this->argument->getColumnOperation();
+						if(isset($operation))
+								return "$this->column_name = $this->column_name $operation $value";
 			return "$this->column_name = $value";
 		}
 
@@ -52,9 +52,9 @@
 		 * @return string
 		 */
 		function getExpressionWithoutValue(){
-                        $operation = $this->argument->getColumnOperation();
-                        if(isset($operation))
-                                return "$this->column_name = $this->column_name $operation ?";
+						$operation = $this->argument->getColumnOperation();
+						if(isset($operation))
+								return "$this->column_name = $this->column_name $operation ?";
 			return "$this->column_name = ?";
 		}
 
@@ -66,8 +66,8 @@
 		}
 
 		function show(){
-                        if(!$this->argument) return false;
-                        $value = $this->argument->getValue();
+						if(!$this->argument) return false;
+						$value = $this->argument->getValue();
 			if(!isset($value)) return false;
 			return true;
 		}

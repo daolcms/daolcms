@@ -38,50 +38,50 @@
 		function createConditionValue(){
 			if(!isset($this->value)) return;
 
-                        $operation = $this->operation;
-                        $value = $this->value;
+						$operation = $this->operation;
+						$value = $this->value;
 
-                        switch($operation) {
-                            case 'like_prefix' :
+						switch($operation) {
+							case 'like_prefix' :
 									if(defined('__CUBRID_VERSION__') 
 											&& __CUBRID_VERSION__ >= '8.4.1') {
 										$this->value = '^' . str_replace('%', '(.*)', preg_quote($value));
 											}
-                                    else 
+									else 
 										$this->value =  $value.'%';
-                                break;
-                            case 'like_tail' :
+								break;
+							case 'like_tail' :
 									if(defined('__CUBRID_VERSION__') 
 											&& __CUBRID_VERSION__ >= '8.4.1') 
 										$this->value = str_replace('%', '(.*)', preg_quote($value)) . '$';
-                                    else								
+									else								
 										$this->value = '%'.$value;
-                                break;
-                            case 'like' :
+								break;
+							case 'like' :
 									if(defined('__CUBRID_VERSION__') 
 											&& __CUBRID_VERSION__ >= '8.4.1') {
 										$this->value = str_replace('%', '(.*)', preg_quote($value));								
 											}
-                                    else								
+									else								
 										$this->value = '%'.$value.'%';
-                                break;
-                            case 'notlike' :
-                                    $this->value = '%'.$value.'%';
-                                break;
-                            case 'notlike_prefix' :
-                                    $this->value = $value.'%';
-                                break;
-                            case 'notlike_tail' :
-                                    $this->value = '%'.$value;
-                                break;
-                            case 'in':
-                                    if(!is_array($value)) $this->value = array($value);
-                                break;
-                            case 'notin':
+								break;
+							case 'notlike' :
+									$this->value = '%'.$value.'%';
+								break;
+							case 'notlike_prefix' :
+									$this->value = $value.'%';
+								break;
+							case 'notlike_tail' :
+									$this->value = '%'.$value;
+								break;
+							case 'in':
+									if(!is_array($value)) $this->value = array($value);
+								break;
+							case 'notin':
 							case 'not_in':
-                                    if(!is_array($value)) $this->value = array($value);
-                                break;
-                        }
+									if(!is_array($value)) $this->value = array($value);
+								break;
+						}
 		}
 
 		/**
@@ -117,6 +117,6 @@
 			$this->type = $column_type;
 		}
 
-        }
+		}
 
 ?>

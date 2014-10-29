@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <layout version="0.2">
-    <title xml:lang="ko">DAOL 공식 레이아웃</title>
-    <title xml:lang="en">DAOL Official Layout</title>
-    <description xml:lang="ko">다올 CMS 공식 레이아웃</description>
-    <version>1.1</version>
-    <date>2014-05-04</date>
+	<title xml:lang="ko">DAOL 공식 레이아웃</title>
+	<title xml:lang="en">DAOL Official Layout</title>
+	<description xml:lang="ko">다올 CMS 공식 레이아웃</description>
+	<version>1.1</version>
+	<date>2014-05-04</date>
 
-    <author email_address="support@xdt.kr" link="http://xdt.kr">
-        <name xml:lang="ko">범진혁</name>
+	<author email_address="support@xdt.kr" link="http://xdt.kr">
+		<name xml:lang="ko">범진혁</name>
 		<name xml:lang="en">Beom Jinhyeok</name>
-    </author>
+	</author>
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org">
-        <name xml:lang="ko">다올 Project</name>
+		<name xml:lang="ko">다올 Project</name>
 		<name xml:lang="en">DAOL Project</name>
-    </author>
-    <menus>
+	</author>
+	<menus>
 		<menu name="main_menu" maxdepth="1" default="true">
-            <title xml:lang="ko">메뉴</title>
+			<title xml:lang="ko">메뉴</title>
 			<title xml:lang="en">menu</title>
-        </menu>
+		</menu>
 		<menu name="footer_menu" maxdepth="1" default="true">
-            <title xml:lang="ko">하단 메뉴</title>
+			<title xml:lang="ko">하단 메뉴</title>
 			<title xml:lang="en">footer menu</title>
-        </menu>
-    </menus>
+		</menu>
+	</menus>
 	<extra_vars>
 	    <var name="body_style" type="select">
 			<title xml:lang="ko">본문 스타일</title>
@@ -45,22 +45,22 @@
 			<title xml:lang="ko">헤더 로고 주소</title>
 			<description xml:lang="ko">이미지 로고를 클릭하면 이동될 주소입니다.</description>
 		</var>
-        <var name="footer_copy" type="text">
+		<var name="footer_copy" type="text">
 			<title xml:lang="ko">푸터 저작권</title>
 			<description xml:lang="ko">푸터에 들어갈 회사, 싸이트명을 입력해 주세요.</description>
 		</var>
 		<var name="banner_style" type="select">
-            <title xml:lang="ko">베너 출력</title>
-            <description xml:lang="ko">베너 출력 여부를 선택하세요.</description>
-            <options value="y">
-                <title xml:lang="ko">예 출력합니다</title>
-                <value>y</value>
-            </options>
+			<title xml:lang="ko">베너 출력</title>
+			<description xml:lang="ko">베너 출력 여부를 선택하세요.</description>
+			<options value="y">
+				<title xml:lang="ko">예 출력합니다</title>
+				<value>y</value>
+			</options>
 			<options value="n">
-                <title xml:lang="ko">아니오 출력하지 않습니다</title>
-                <value>n</value>
-            </options>
-        </var>
+				<title xml:lang="ko">아니오 출력하지 않습니다</title>
+				<value>n</value>
+			</options>
+		</var>
 		<var name="banner_image_1" type="image">
 			<title xml:lang="ko">베너 이미지 1</title>
 			<description xml:lang="ko">베너 1번 슬라이드에 출력될 이미지 입니다. 958*250 크기의 이미지를 권장합니다.</description>

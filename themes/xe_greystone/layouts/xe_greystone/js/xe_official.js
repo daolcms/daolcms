@@ -1,25 +1,25 @@
 // Hide And Show Toggle
 var cc=0
 function hideShow(id) {
-    if (cc==0) {
-        cc=1
-        document.getElementById(id).style.display="none";
-    } else {
-        cc=0
-        document.getElementById(id).style.display="block";
-    }
+	if (cc==0) {
+		cc=1
+		document.getElementById(id).style.display="none";
+	} else {
+		cc=0
+		document.getElementById(id).style.display="block";
+	}
 }
 
 // Show And Hide Toggle
 var cc=0
 function showHide(id) {
-    if (cc==0) {
-        cc=1
-        document.getElementById(id).style.display="block";
-    } else {
-        cc=0
-        document.getElementById(id).style.display="none";
-    }
+	if (cc==0) {
+		cc=1
+		document.getElementById(id).style.display="block";
+	} else {
+		cc=0
+		document.getElementById(id).style.display="none";
+	}
 }
 
 // Local Navigation Toggle
@@ -30,7 +30,7 @@ function lnbToggle(id) {
 
 // IS
 function chkIsKind(key, value) {
-    showHide('selectOrder');
-    xGetElementById('search_target'+key).checked = true;
-    xInnerHtml('search_target_label', value);
+	showHide('selectOrder');
+	xGetElementById('search_target'+key).checked = true;
+	xInnerHtml('search_target_label', value);
 }

@@ -5,8 +5,8 @@
 <!--%import("js/banner.js")-->
 <!--@end-->
 <div class="header">
-    <div class="header_login">
-        <div class="top_login">
+	<div class="header_login">
+		<div class="top_login">
 		<div class="login">
 		<!--@if(!$is_logged)-->
 			<li>방문자님, 환영합니다!</li>
@@ -54,7 +54,7 @@
 </div>
 <!--@if($layout_info->banner_style=="y")-->
 <div class="doc_banner">
-    <div class="doc_slide">
+	<div class="doc_slide">
 		<div id="slides">
 		   <div class="slides_container">
 				<div class="slide">
@@ -93,7 +93,7 @@
 		{$content}
 		</div>
 	</div>
-    <!--@elseif($layout_info->body_style=="main")-->
+	<!--@elseif($layout_info->body_style=="main")-->
 	<div class="xdt_page">
 		<div class="page1">
 		{$content}
@@ -103,48 +103,48 @@
 </div>
 <div class="footer">
    <div class="footer_content">
-    <p class="copy">
-    Copyrights © {$layout_info->footer_copy} 	
-    </p>
-    <ul class="menu">
+	<p class="copy">
+	Copyrights © {$layout_info->footer_copy} 	
+	</p>
+	<ul class="menu">
 	   <li loop="$footer_menu->list=>$key1,$val1" class="active"|cond="$val1['selected']">
 	     <a href="{$val1['href']}" target="_blank"|cond="$val1['open_window']=='Y'">{$val1['link']}</a>
 	   </li>
-    </ul>
+	</ul>
 	</div>
 </div>
 <!--@if(!$is_logged)-->
-    {@ $member_config = MemberModel::getMemberConfig(); }
-    <!--%import("./filter/login.xml")-->
-    <!--@if($member_config->enable_openid=='Y')--><!--%import("./filter/openid_login.xml")--><!--@end-->
-    <!-- loginWindow -->
-    <div id="loginWindow" class="loginWindow">
-    <!-- class="loginWindow" | class="loginWindow open" -->
-        <span class="modalWindow"></span>
+	{@ $member_config = MemberModel::getMemberConfig(); }
+	<!--%import("./filter/login.xml")-->
+	<!--@if($member_config->enable_openid=='Y')--><!--%import("./filter/openid_login.xml")--><!--@end-->
+	<!-- loginWindow -->
+	<div id="loginWindow" class="loginWindow">
+	<!-- class="loginWindow" | class="loginWindow open" -->
+		<span class="modalWindow"></span>
 		<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
 			<p>{$XE_VALIDATOR_MESSAGE}</p>
 		</div>
-        <div id="loginLayer" class="loginLayer loginTypeA">
-        <!-- class="loginLayer loginTypeA" | class="loginLayer loginTypeB" -->
-            <button type="button" class="close" onclick="document.getElementById('loginWindow').style.display='none'" accesskey="X"><span>Close Login Layer</span></button>
-            <form action="" method="post" class="typeA" id="commonLogin" ruleset="@login" >
+		<div id="loginLayer" class="loginLayer loginTypeA">
+		<!-- class="loginLayer loginTypeA" | class="loginLayer loginTypeB" -->
+			<button type="button" class="close" onclick="document.getElementById('loginWindow').style.display='none'" accesskey="X"><span>Close Login Layer</span></button>
+			<form action="" method="post" class="typeA" id="commonLogin" ruleset="@login" >
 				<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
 				<input type="hidden" name="act" value="procMemberLogin" />
-                <fieldset>
-                    <legend>XE Login</legend>
-                    <dl>	
-                        <dt><label for="uid" cond="$member_config->identifier != 'email_address'">{$lang->user_id}</label><label for="uid" cond="$member_config->identifier == 'email_address'">{$lang->email_address}</label></dt>
-                        <dd><input name="user_id" type="text" class="inputuid" id="uid" /></dd>
+				<fieldset>
+					<legend>XE Login</legend>
+					<dl>	
+						<dt><label for="uid" cond="$member_config->identifier != 'email_address'">{$lang->user_id}</label><label for="uid" cond="$member_config->identifier == 'email_address'">{$lang->email_address}</label></dt>
+						<dd><input name="user_id" type="text" class="inputuid" id="uid" /></dd>
 						<dt><label for="upw">{$lang->password}</label></dt>
-                        <dd><input name="password" type="password" class="inputupw" id="upw" />
+						<dd><input name="password" type="password" class="inputupw" id="upw" />
 						<span class="loginButton"><input type="submit" value="{$lang->cmd_login}" /></span></dd>
-                    </dl>
+					</dl>
 					<p class="keep">
 					<input name="keep_signed" type="checkbox" id="keepA" value="Y" class="inputCheck" onclick="if(this.checked) return confirm('{$lang->about_keep_signed}');"/>
 					<label for="keepA">{$lang->keep_signed}</label>
 				    </p>
-                </fieldset>
-            </form>
+				</fieldset>
+			</form>
 			<div class="help">
 				<ol>
 				<li><a href="{getUrl('act','dispMemberSignUpForm')}">회원가입</a></li>
@@ -152,8 +152,8 @@
 				<li><a href="{getUrl('act','dispMemberResendAuthMail')}">인증 메일 재발송</a></li>
 				</ol>
 			</div>
-            <button type="button" class="close" onclick="document.getElementById('loginWindow').style.display='none'" accesskey="X"><span>Close Login Layer</span></button>
-        </div>
-    </div>
-    <!-- /loginWindow -->
+			<button type="button" class="close" onclick="document.getElementById('loginWindow').style.display='none'" accesskey="X"><span>Close Login Layer</span></button>
+		</div>
+	</div>
+	<!-- /loginWindow -->
 <!--@end-->

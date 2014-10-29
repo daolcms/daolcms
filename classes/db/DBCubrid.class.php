@@ -81,7 +81,7 @@
 		 */
 		function __connect($connection)
 		{
-            // attempts to connect
+			// attempts to connect
 			$result = @cubrid_connect($connection["db_hostname"], $connection["db_port"], $connection["db_database"], $connection["db_userid"], $connection["db_password"]);
 
 			// check connections
@@ -99,7 +99,7 @@
 			
 			if(__CUBRID_VERSION__ >= '8.4.0')
 				cubrid_set_autocommit($result, CUBRID_AUTOCOMMIT_TRUE);			
-            
+			
 			return $result;
 		}
 
@@ -166,9 +166,9 @@
 		 */
 		function _rollback()
 		{
-            $connection = $this->_getConnection('master');
+			$connection = $this->_getConnection('master');
 			@cubrid_rollback ($connection);
-            return TRUE;
+			return TRUE;
 		}
 
 		/**
@@ -263,7 +263,7 @@
 				return false;
 			}
 			// Return the result
- 			return $result;
+			return $result;
 		}
 
 		/**
@@ -322,13 +322,13 @@
 
 			if ($result) cubrid_close_request($result);
 
-                        if(count($output)==1){
-                            // If call is made for pagination, always return array
-                            if(isset($arrayIndexEndValue)) return $output;
-                            // Else return object instead of array
-                            else return $output[0];
-                        }
-                        return $output;
+						if(count($output)==1){
+							// If call is made for pagination, always return array
+							if(isset($arrayIndexEndValue)) return $output;
+							// Else return object instead of array
+							else return $output[0];
+						}
+						return $output;
 		}
 
 		/**
@@ -549,38 +549,38 @@
 		 * Delete duplicated index of the table
 		 * @return boolean
 		 */
-        function deleteDuplicateIndexes()
-        {
-            $query = sprintf("
-                        select \"class_name\"
-                                , case
-                                when substr(\"index_name\", 0, %d) = '%s'
-                                    then substr(\"index_name\", %d)
-                                else \"index_name\" end as unprefixed_index_name
-                                , \"is_unique\"
-                          from \"db_index\"
-                          where \"class_name\" like %s
-                          group by \"class_name\"
-                                  , case
-                                      when substr(\"index_name\", 0, %d) = '%s'
-                                         then substr(\"index_name\", %d)
-                                      else \"index_name\"
-                                    end
-                          having count(*) > 1
-                        ", strlen($this->prefix)
-                        , $this->prefix
-                        , strlen($this->prefix) + 1
-                        , "'" . $this->prefix . '%' . "'"
-                        , strlen($this->prefix)
-                        , $this->prefix
-                        , strlen($this->prefix) + 1
-                        );
-            $result = $this->_query ($query);
+		function deleteDuplicateIndexes()
+		{
+			$query = sprintf("
+						select \"class_name\"
+								, case
+								when substr(\"index_name\", 0, %d) = '%s'
+									then substr(\"index_name\", %d)
+								else \"index_name\" end as unprefixed_index_name
+								, \"is_unique\"
+						  from \"db_index\"
+						  where \"class_name\" like %s
+						  group by \"class_name\"
+								  , case
+									  when substr(\"index_name\", 0, %d) = '%s'
+										 then substr(\"index_name\", %d)
+									  else \"index_name\"
+									end
+						  having count(*) > 1
+						", strlen($this->prefix)
+						, $this->prefix
+						, strlen($this->prefix) + 1
+						, "'" . $this->prefix . '%' . "'"
+						, strlen($this->prefix)
+						, $this->prefix
+						, strlen($this->prefix) + 1
+						);
+			$result = $this->_query ($query);
 
-            if ($this->isError ()) return FALSE;
+			if ($this->isError ()) return FALSE;
 
-            $output = $this->_fetch ($result);
-            if (!$output) return FALSE;
+			$output = $this->_fetch ($result);
+			if (!$output) return FALSE;
 
 			if(!is_array($output)) {
 				$indexes_to_be_deleted = array($output);
@@ -589,15 +589,15 @@
 				$indexes_to_be_deleted = $output;
 			}
 
-            foreach($indexes_to_be_deleted as $index)
-            {
-                $this->dropIndex(substr($index->class_name, strlen($this->prefix))
+			foreach($indexes_to_be_deleted as $index)
+			{
+				$this->dropIndex(substr($index->class_name, strlen($this->prefix))
 						, $this->prefix . $index->unprefixed_index_name
 						, $index->is_unique == 'YES' ? TRUE : FALSE);
-            }
+			}
 
-            return TRUE;
-        }
+			return TRUE;
+		}
 
 		/**
 		 * Creates a table by using xml contents
@@ -866,7 +866,7 @@
 		 * @return Object
 		 */
 		function queryError($queryObject){
-                        $limit = $queryObject->getLimit();
+						$limit = $queryObject->getLimit();
 			if ($limit && $limit->isPageHandler()){
 					$buff = new Object ();
 					$buff->total_count = 0;
@@ -887,26 +887,26 @@
 		 * @return Object Object with page info containing
 		 */
 		function queryPageLimit($queryObject, $connection, $with_values){
-            $limit = $queryObject->getLimit();
+			$limit = $queryObject->getLimit();
 		 	// Total count
 			$temp_where = $queryObject->getWhereString($with_values, FALSE);
 		 	$count_query = sprintf('select count(*) as "count" %s %s', 'FROM ' . $queryObject->getFromString($with_values), ($temp_where === '' ? '' : ' WHERE '. $temp_where));
 
-            // Check for distinct query and if found update count query structure
-            $temp_select = $queryObject->getSelectString($with_values);
-            $uses_distinct = strpos(strtolower($temp_select), "distinct") !== FALSE;
-            $uses_groupby = $queryObject->getGroupByString() != '';
-            if($uses_distinct || $uses_groupby) {
-                $count_query = sprintf('select %s %s %s %s'
-                    , $temp_select
-                    , 'FROM ' . $queryObject->getFromString($with_values)
-                    , ($temp_where === '' ? '' : ' WHERE '. $temp_where)
-                    , ($uses_groupby ? ' GROUP BY ' . $queryObject->getGroupByString() : '')
-                );
+			// Check for distinct query and if found update count query structure
+			$temp_select = $queryObject->getSelectString($with_values);
+			$uses_distinct = strpos(strtolower($temp_select), "distinct") !== FALSE;
+			$uses_groupby = $queryObject->getGroupByString() != '';
+			if($uses_distinct || $uses_groupby) {
+				$count_query = sprintf('select %s %s %s %s'
+					, $temp_select
+					, 'FROM ' . $queryObject->getFromString($with_values)
+					, ($temp_where === '' ? '' : ' WHERE '. $temp_where)
+					, ($uses_groupby ? ' GROUP BY ' . $queryObject->getGroupByString() : '')
+				);
 
-                // If query uses grouping or distinct, count from original select
-                $count_query = sprintf('select count(*) as "count" from (%s) xet', $count_query);
-            }
+				// If query uses grouping or distinct, count from original select
+				$count_query = sprintf('select count(*) as "count" from (%s) xet', $count_query);
+			}
 
 			$count_query .= (__DEBUG_QUERY__&1 && $queryObject->queryID)?sprintf (' '.$this->comment_syntax, $queryObject->queryID):'';
 			$result = $this->_query($count_query, $connection);
@@ -928,8 +928,8 @@
 				$total_page = 1;
 			}
 
-            // check the page variables
-            if ($page > $total_page) {
+			// check the page variables
+			if ($page > $total_page) {
 				// If requested page is bigger than total number of pages, return empty list
 				
 				$buff = new Object ();		
@@ -978,30 +978,30 @@
 		 * @param int $list_count
 		 * @return string select paging sql
 		 */
-                function getSelectPageSql($query, $with_values = TRUE, $start_count = 0, $list_count = 0) {
+				function getSelectPageSql($query, $with_values = TRUE, $start_count = 0, $list_count = 0) {
 
-                    $select = $query->getSelectString($with_values);
-                    if($select == '') return new Object(-1, "Invalid query");
-                    $select = 'SELECT ' .$select;
+					$select = $query->getSelectString($with_values);
+					if($select == '') return new Object(-1, "Invalid query");
+					$select = 'SELECT ' .$select;
 
-                    $from = $query->getFromString($with_values);
-                    if($from == '') return new Object(-1, "Invalid query");
-                    $from = ' FROM '.$from;
+					$from = $query->getFromString($with_values);
+					if($from == '') return new Object(-1, "Invalid query");
+					$from = ' FROM '.$from;
 
-                    $where = $query->getWhereString($with_values);
-                    if($where != '')
-                        $where = ' WHERE ' . $where;
+					$where = $query->getWhereString($with_values);
+					if($where != '')
+						$where = ' WHERE ' . $where;
 
-                    $groupBy = $query->getGroupByString();
-                    if($groupBy != '') $groupBy = ' GROUP BY ' . $groupBy;
+					$groupBy = $query->getGroupByString();
+					if($groupBy != '') $groupBy = ' GROUP BY ' . $groupBy;
 
-                    $orderBy = $query->getOrderByString();
-                    if($orderBy != '') $orderBy = ' ORDER BY ' . $orderBy;
+					$orderBy = $query->getOrderByString();
+					if($orderBy != '') $orderBy = ' ORDER BY ' . $orderBy;
 
-                    $limit = $query->getLimitString();
+					$limit = $query->getLimitString();
 		    if ($limit != '') $limit = sprintf (' LIMIT %d, %d', $start_count, $list_count);
 
-                    return $select . ' ' . $from . ' ' . $where . ' ' . $groupBy . ' ' . $orderBy . ' ' . $limit;
-                }
+					return $select . ' ' . $from . ' ' . $where . ' ' . $groupBy . ' ' . $orderBy . ' ' . $limit;
+				}
 }
 ?>

@@ -41,13 +41,13 @@
 		function IndexTag($index){
 			$this->argument_name = $index->attrs->var;
 
-                        // Sort index - column by which to sort
+						// Sort index - column by which to sort
 			//$dbParser = new DB(); $dbParser = &$dbParser->getParser();
 			//$index->attrs->default = $dbParser->parseExpression($index->attrs->default);
 			$this->default = $index->attrs->default;
 			$this->argument = new QueryArgument($index);
 
-                        // Sort order - asc / desc
+						// Sort order - asc / desc
 			$this->sort_order = $index->attrs->order;
 			$sortList = array('asc'=>1, 'desc'=>1);
 			if(!isset($sortList[$this->sort_order])){
