@@ -458,8 +458,8 @@ class FileHandler {
 	 * @param string[] $headers Headers key vaule array.
 	 * @return bool true: success, false: failed 
 	 **/
-	function getRemoteFile($url, $target_filename, $body = null, $timeout = 3, $method = 'GET', $content_type = null, $headers = array()) {
-		$body = FileHandler::getRemoteResource($url, $body, $timeout, $method, $content_type, $headers);
+	function getRemoteFile($url, $target_filename, $body = null, $timeout = 3, $method = 'GET', $content_type = null, $headers = array(), $cookies = array(), $post_data = array(), $request_config = array()) {
+		$body = FileHandler::getRemoteResource($url, $body, $timeout, $method, $content_type, $headers, $cookies, $post_data, $request_config);
 		if(!$body) return false;
 		$target_filename = FileHandler::getRealPath($target_filename);
 		FileHandler::writeFile($target_filename, $body);
