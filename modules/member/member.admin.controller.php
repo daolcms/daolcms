@@ -2,6 +2,7 @@
     /**
      * @class  memberAdminController
      * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
      * member module of the admin controller class
      **/
 
