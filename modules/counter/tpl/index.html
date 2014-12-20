@@ -14,7 +14,7 @@
 <form action="./index.php" method="get" name="calendar" id="fo_calendar">
     <input type="hidden" name="module" value="{$module}" />
     <input type="hidden" name="act" value="{$act}" />
-    <input type="hidden" name="selected_date" id="selected_date" value="{zDate('Ymd',$selected_date)}" />
+    <input type="hidden" name="selected_date" id="selected_date" value="{zdate($selected_date,'Ymd')}" />
 	<div class="table">
 		<table width="100%" border="1" cellspacing="0">
 			<thead>
