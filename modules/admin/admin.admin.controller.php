@@ -46,6 +46,9 @@
 			FileHandler::rename('./files/cache', $temp_cache_dir);
 			FileHandler::makeDir('./files/cache');
 
+            // remove module extend cache
+            FileHandler::removeFile(_XE_PATH_.'files/config/module_extend.php');
+			
             // remove debug files
             FileHandler::removeFile(_XE_PATH_.'files/_debug_message.php');
             FileHandler::removeFile(_XE_PATH_.'files/_debug_db_query.php');
