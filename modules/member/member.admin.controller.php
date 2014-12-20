@@ -911,8 +911,12 @@
 				$args->list_order = $args->group_srl;
 			}
 			
-			if (!$args->group_srl) $args->group_srl = getNextSequence();
-            return executeQuery('member.insertGroup', $args);
+			if(!$args->group_srl) $args->group_srl = getNextSequence();
+			$args->list_order = $args->group_srl;
+			$output = executeQuery('member.insertGroup', $args);
+			$this->_deleteMemberGroupCache($args->site_srl);
+			
+			return $output;
         }
 
         /**
