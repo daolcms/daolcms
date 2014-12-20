@@ -588,9 +588,10 @@
 		{
 			$file_exsit = FileHandler::readFile(_XE_PATH_.'files/attach/xeicon/'.$iconname);
 			if(!$file_exsit){
-				$icon_url = './modules/admin/tpl/img/'.$default_icon_name	;
+				$icon_url = './modules/admin/tpl/img/'.$default_icon_name;
 			} else {
-				$icon_url = $db_info->default_url.'files/attach/xeicon/'.$iconname;
+				$default_url = Context::getDefaultUrl();
+				$icon_url = $default_url.'files/attach/xeicon/'.$iconname;
 			}
 			return $icon_url;
 		}
