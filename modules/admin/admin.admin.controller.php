@@ -81,7 +81,6 @@
 				return new Object(-1,'msg_self_restart_cache_engine');
 			}
 
-
 			// remove cache dir
 			$tmp_cache_list = FileHandler::readDir('./files','/(^cache_[0-9]+)/');
 			if($tmp_cache_list){
