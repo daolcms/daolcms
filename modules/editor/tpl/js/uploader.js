@@ -1,5 +1,6 @@
 /**
  * @author NHN (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  * @version 0.1.1
  * @brief 파일 업로드 관련
  **/
