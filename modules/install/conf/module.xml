@@ -4,6 +4,7 @@
     <permissions />
     <actions>
         <action name="dispInstallIntroduce" type="view" standalone="true" index="true" />
+		<action name="dispInstallLicenseAgreement" type="view" />
         <action name="dispInstallCheckEnv" type="view" standalone="true" />
         <action name="dispInstallSelectDB" type="view" standalone="true" />
         <action name="dispInstallDBForm" type="view" standalone="true" />
@@ -17,7 +18,8 @@
         <action name="procSqliteDBSetting" type="controller" standalone="true" ruleset="sqlite" />
         <action name="procConfigSetting" type="controller" standalone="true" ruleset="config" />
         <action name="procInstall" type="controller" standalone="true" ruleset="install" />
-        <action name="procInstallFTP" type="controller" standalone="true" />
+        <action name="procInstallLicenseAggrement" type="controller" />
+		<action name="procInstallFTP" type="controller" standalone="true" />
         <action name="procInstallCheckFTP" type="controller" standalone="true" />
         <action name="procInstallAdminInstall" type="controller" standalone="true" />
         <action name="procInstallAdminUpdate" type="controller" standalone="true" />

@@ -296,9 +296,18 @@
             Context::set('addTables', $addTables);
             Context::set('needUpdate', $needUpdate);
 
-			$oSecurity = new Security();
-			$oSecurity->encodeHTML('module_list..', 'module_list..author..', 'newVersionList..');
+            $oSecurity = new Security();
+            $oSecurity->encodeHTML('module_list..', 'module_list..author..', 'newVersionList..');
 
+            // license agreement check
+            $isLicenseAgreement = FALSE;
+            $path = FileHandler::getRealPath('./files/env/license_agreement');
+            $isLicenseAgreement = FALSE;
+            if(file_exists($path)) {
+                $isLicenseAgreement = TRUE;
+            }
+            Context::set('isLicenseAgreement', $isLicenseAgreement);
+			
             Context::set('layout','none');
 
             $this->setTemplateFile('index');
@@ -406,7 +415,6 @@
 				$img = sprintf('<img src="%s" alt="" style="height:0px;width:0px" />', $server.$params);
 				Context::addHtmlFooter($img);
 
-				FileHandler::removeDir($path);
 				FileHandler::writeFile($path.$mainVersion,'1');
 
 			}
@@ -420,7 +428,6 @@
 					Context::addHtmlFooter($img);
 				}
 
-				FileHandler::removeDir($path);
 				FileHandler::writeFile($path.$mainVersion,'1');
 				unset($_SESSION['enviroment_gather']);
 			}
