@@ -9,6 +9,7 @@
     class installController extends install {
 		var $db_tmp_config_file = '';
 		var $etc_tmp_config_file = '';
+		var $flagLicenseAgreement = './files/env/license_agreement';
 
         /**
          * @brief Initialization

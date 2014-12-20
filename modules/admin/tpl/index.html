@@ -3,7 +3,8 @@
 <div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
 <p>{$XE_VALIDATOR_MESSAGE}</p>
 </div>
-	<form action="./" method="post" class="message info" cond="!$isLicenseAgreement">
+	<!--@if(!$isLicenseAgreement)-->
+	<form action="./" method="post" class="message info">
 		<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin')}" />
 		<input type="hidden" name="module" value="install" />
 		<input type="hidden" name="act" value="procInstallLicenseAggrement" />
@@ -16,6 +17,7 @@
 			<span class="btn"><button type="submit" name="is_agree" value="">{$lang->cmd_license_agree}</button></span>
 		</div>
 	</form>
+	<!--@end-->
 	<!--@if($addTables || $needUpdate)-->
 	<div class="message update">
 		<h2 cond="$needUpdate && $addTables">{$lang->need_update_and_table}</h2>
