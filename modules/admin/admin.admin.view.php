@@ -54,7 +54,6 @@
             if($db_info->http_port) Context::set('http_port', $db_info->http_port);
             if($db_info->https_port) Context::set('https_port', $db_info->https_port);
 
-			$this->showSendEnv();
 			$this->checkEasyinstall();
         }
 
