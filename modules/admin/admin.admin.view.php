@@ -396,43 +396,6 @@
             $this->setTemplateFile('admin_setup');
 		}
 
-
-		/**
-		 * Enviroment information send to XE collect server
-		 * @return void
-		 */
-		function showSendEnv() {
-			if(Context::getResponseMethod() != 'HTML') return;
-
-			$server = 'http://collect.xpressengine.com/env/img.php?';
-			$path = './files/env/';
-			$install_env = $path . 'install';
-			$mainVersion = join('.', array_slice(explode('.', __ZBXE_VERSION__), 0, 2));
-
-			if(file_exists(FileHandler::getRealPath($install_env))) {
-				$oAdminAdminModel = &getAdminModel('admin');
-				$params = $oAdminAdminModel->getEnv('INSTALL');
-				$img = sprintf('<img src="%s" alt="" style="height:0px;width:0px" />', $server.$params);
-				Context::addHtmlFooter($img);
-
-				FileHandler::writeFile($path.$mainVersion,'1');
-
-			}
-			else if(isset($_SESSION['enviroment_gather']) && !file_exists(FileHandler::getRealPath($path.$mainVersion)))
-			{
-				if($_SESSION['enviroment_gather']=='Y')
-				{
-					$oAdminAdminModel = &getAdminModel('admin');
-					$params = $oAdminAdminModel->getEnv();
-					$img = sprintf('<img src="%s" alt="" style="height:0px;width:0px" />', $server.$params);
-					Context::addHtmlFooter($img);
-				}
-
-				FileHandler::writeFile($path.$mainVersion,'1');
-				unset($_SESSION['enviroment_gather']);
-			}
-		}
-
 		/**
 		 * Display Admin theme Configuration(settings) page
 		 * @return void
