@@ -110,7 +110,7 @@ html{height:100%;background:url(../img/bgHtml.gif) repeat-x 0 0}
 .desc strong{color:#F60}
 .agreement{color:#eee}
 .agreement label{font-weight:bold;vertical-align:middle;cursor:pointer}
-.agreement a{color:#6CF;text-decoration:underline;vertical-align:middle}
+.agreement a{color:#6CF;text-decoration:underline}
 .agreement em{color:#f60}
 .agreement p{line-height:1.5}
 /* Waiting for server response */
