@@ -337,7 +337,7 @@
 			
 			$oModuleModel = &getModel('module');
 			$config = $oModuleModel->getModuleConfig('module');
-       		Context::set('htmlFooter',$config->htmlFooter);
+			Context::set('htmlFooter',htmlspecialchars($config->htmlFooter));
 
 
 			$columnList = array('modules.mid', 'modules.browser_title', 'sites.index_module_srl');
