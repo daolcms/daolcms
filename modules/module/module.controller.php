@@ -702,6 +702,8 @@
             if(!$obj || !count($obj)) return;
 
             foreach($obj as $key => $val) {
+                if(is_object($val) || is_array($val)) continue;
+				
                 $args = null;
                 $args->module_srl = $module_srl;
                 $args->name = trim($key);
