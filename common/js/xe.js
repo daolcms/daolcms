@@ -1,15 +1,10 @@
 /**
- * @file   common/js/xe.min.js
+ * @file   common/js/xe.js
  * @author NHN (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  * @brief  XE Common JavaScript
  **/
-/**
- * @file js_app.js
- * @author NHN (developers@xpressengine.com)
- * @brief XE JavaScript Application Framework (JAF)
- * @namespace xe
- * @update 20100701
- */
+
 (function($){
 
 var _xe_base, _app_base, _plugin_base;
@@ -697,7 +692,7 @@ function _displayMultimedia(src, width, height, options) {
 	if(/\.(gif|jpg|jpeg|bmp|png)$/i.test(src)){
 		html = '<img src="'+src+'" width="'+width+'" height="'+height+'" />';
 	} else if(/\.flv$/i.test(src) || /\.mov$/i.test(src) || /\.moov$/i.test(src) || /\.m4v$/i.test(src)) {
-		html = '<embed src="'+request_uri+'common/img/flvplayer.swf" allowfullscreen="true" autostart="'+autostart+'" width="'+width+'" height="'+height+'" flashvars="&file='+src+'&width='+width+'&height='+height+'&autostart='+autostart+'" wmode="'+params.wmode+'" />';
+		html = '<embed src="'+request_uri+'common/img/flvplayer.swf" allowfullscreen="true" allowscriptaccess="never" autostart="'+autostart+'" width="'+width+'" height="'+height+'" flashvars="&file='+src+'&width='+width+'&height='+height+'&autostart='+autostart+'" wmode="'+params.wmode+'" />';
 	} else if(/\.swf/i.test(src)) {
 		clsid = 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000';
 
@@ -710,16 +705,14 @@ function _displayMultimedia(src, width, height, options) {
 				html += '<param name="'+name+'" value="'+params[name]+'" />';
 			}
 		}
-		html += ''
-			+ '<embed src="'+src+'" autostart="'+autostart+'"  width="'+width+'" height="'+height+'" flashvars="'+params.flashvars+'" wmode="'+params.wmode+'"></embed>'
-			+ '</object>';
+		html += '' + '<embed src="'+src+'" allowscriptaccess="never" autostart="'+autostart+'" width="'+width+'" height="'+height+'" flashvars="'+params.flashvars+'" wmode="'+params.wmode+'"></embed>' + '</object>';
 	}  else {
 		if (jQuery.browser.mozilla || jQuery.browser.opera) {
 			// firefox and opera uses 0 or 1 for autostart parameter.
 			autostart = (params.autostart && params.autostart != 'false') ? '1' : '0';
 		}
 
-		html = '<embed src="'+src+'" autostart="'+autostart+'" width="'+width+'" height="'+height+'"';
+		html = '<embed src="'+src+'" allowscriptaccess="never" autostart="'+autostart+'" width="'+width+'" height="'+height+'"';
 		if(params.wmode == 'transparent') {
 			html += ' windowlessvideo="1"';
 		}
