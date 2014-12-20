@@ -908,16 +908,17 @@
 				 if(!$output->toBool()) return $output;
 			}
 			
-			if(!isset($args->list_order) || $args->list_order=='') {
-				$args->list_order = $args->group_srl;
-			}
+            if(!$args->group_srl) $args->group_srl = getNextSequence();
 			
-			if(!$args->group_srl) $args->group_srl = getNextSequence();
-			$args->list_order = $args->group_srl;
-			$output = executeQuery('member.insertGroup', $args);
-			$this->_deleteMemberGroupCache($args->site_srl);
+            if(!$args->list_order) {
+                $args->list_order = $args->group_srl;
+            }
 			
-			return $output;
+            $args->list_order = $args->group_srl;
+            $output = executeQuery('member.insertGroup', $args);
+            $this->_deleteMemberGroupCache($args->site_srl);
+			
+            return $output;
         }
 
         /**
@@ -927,7 +928,7 @@
          **/
         function updateGroup($args) {
             // Check the value of is_default. 
-			if(!$args->group_srl) return new Object(-1, 'lang->msg_not_founded');
+            if(!$args->group_srl) return new Object(-1, 'lang->msg_not_founded');
             if($args->is_default!='Y') {
 				$args->is_default = 'N';
 			} else {
