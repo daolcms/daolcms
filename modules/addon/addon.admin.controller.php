@@ -1,19 +1,19 @@
 <?php
-	require_once(_XE_PATH_.'modules/addon/addon.controller.php');
+    require_once(_XE_PATH_.'modules/addon/addon.controller.php');
 
-	/**
-	 * Admin controller class of addon modules
-	 * @author NHN (developers@xpressengine.com)
-	 **/
-	class addonAdminController extends addonController {
+    /**
+     * Admin controller class of addon modules
+     * @author NHN (developers@xpressengine.com)
+     **/
+    class addonAdminController extends addonController {
 
-		/**
-		 * Initialization
+        /**
+         * Initialization
 		 *
 		 * @return void
-		 **/
-		function init() {
-		}
+         **/
+        function init() {
+        }
 
 		/**
 		 * Set addon activate
@@ -99,7 +99,7 @@
 				$this->makeCacheFile($site_srl, 'mobile', 'site');
 			}
 
-			$this->setMessage('success_updated', 'info');
+            $this->setMessage('success_updated', 'info');
 			if (Context::get('success_return_url'))
 			{
 				$this->setRedirectUrl(Context::get('success_return_url'));
@@ -110,12 +110,12 @@
 			}
 		}
 
-		/**
-		 * Add active/inactive change
+        /**
+         * Add active/inactive change
 		 *
 		 * @return Object
-		 **/
-		function procAddonAdminToggleActivate() {
+         **/
+        function procAddonAdminToggleActivate() {
 			$oAddonModel = &getAdminModel('addon');
 
 			$site_module_info = Context::get('site_module_info');
@@ -131,89 +131,89 @@
 			}
 
 			$this->makeCacheFile($site_module_info->site_srl, $type);
-		}
+        }
 
-		/**
-		 * Add the configuration information input
+        /**
+         * Add the configuration information input
 		 *
 		 * @return Object
-		 **/
-		function procAddonAdminSetupAddon() {
-			$args = Context::getRequestVars();
+         **/
+        function procAddonAdminSetupAddon() {
+            $args = Context::getRequestVars();
 			$module = $args->module;
-			$addon_name = $args->addon_name;
-			unset($args->module);
-			unset($args->act);
-			unset($args->addon_name);
-			unset($args->body);
+            $addon_name = $args->addon_name;
+            unset($args->module);
+            unset($args->act);
+            unset($args->addon_name);
+            unset($args->body);
 			unset($args->error_return_url);
 
-			$site_module_info = Context::get('site_module_info');
+            $site_module_info = Context::get('site_module_info');
 
-			$output = $this->doSetup($addon_name, $args, $site_module_info->site_srl, 'site');
+            $output = $this->doSetup($addon_name, $args, $site_module_info->site_srl, 'site');
 			if (!$output->toBool()) return $output;
 
-			$this->makeCacheFile($site_module_info->site_srl, "pc", 'site');
-			$this->makeCacheFile($site_module_info->site_srl, "mobile", 'site');
+            $this->makeCacheFile($site_module_info->site_srl, "pc", 'site');
+            $this->makeCacheFile($site_module_info->site_srl, "mobile", 'site');
 
 			$this->setRedirectUrl(getNotEncodedUrl('', 'module', $module, 'act', 'dispAddonAdminSetup', 'selected_addon', $addon_name), $output);
-		}
+        }
 
 
 
-		/**
-		 * Adds addon to DB
+        /**
+         * Adds addon to DB
 		 *
 		 * @param string $addon Addon name
 		 * @param int $site_srl Site srl
 		 * @param string $gtype site or global
 		 * @param string $isUsed Whether to use
 		 * @return Object
-		 **/
-		function doInsert($addon, $site_srl = 0, $gtype = 'site', $isUsed = 'N') {
-			$args = new stdClass();
-			$args->addon = $addon;
-			$args->is_used = $isUsed;
-			if($gtype == 'global') return executeQuery('addon.insertAddon', $args);
-			$args->site_srl = $site_srl;
-			return executeQuery('addon.insertSiteAddon', $args);
-		}
+         **/
+        function doInsert($addon, $site_srl = 0, $gtype = 'site', $isUsed = 'N') {
+            $args = new stdClass();
+            $args->addon = $addon;
+            $args->is_used = $isUsed;
+            if($gtype == 'global') return executeQuery('addon.insertAddon', $args);
+            $args->site_srl = $site_srl;
+            return executeQuery('addon.insertSiteAddon', $args);
+        }
 
-		/**
-		 * Activate addon
+        /**
+         * Activate addon
 		 *
-		 * @param string $addon Addon name
+         * @param string $addon Addon name
 		 * @param int $site_srl Site srl
 		 * @param string $type pc or modile
 		 * @param string $gtype site or global
 		 * @return Object
-		 **/
-		function doActivate($addon, $site_srl = 0, $type = "pc", $gtype = 'site') {
-			$args = new stdClass();
-			$args->addon = $addon;
+         **/
+        function doActivate($addon, $site_srl = 0, $type = "pc", $gtype = 'site') {
+            $args = new stdClass();
+            $args->addon = $addon;
 			if($type == "pc") $args->is_used = 'Y';
 			else $args->is_used_m = "Y";
-			if($gtype == 'global') return executeQuery('addon.updateAddon', $args);
-			$args->site_srl = $site_srl;
-			return executeQuery('addon.updateSiteAddon', $args);
-		}
+            if($gtype == 'global') return executeQuery('addon.updateAddon', $args);
+            $args->site_srl = $site_srl;
+            return executeQuery('addon.updateSiteAddon', $args);
+        }
 
-		/**
-		 * Deactivate Addon
-		 *
+        /**
+         * Deactivate Addon
+         *
 		 * @param string $addon Addon name
 		 * @param int $site_srl Site srl
 		 * @param string $type pc or mobile
 		 * @param string $gtype site or global
-		 **/
-		function doDeactivate($addon, $site_srl = 0, $type = "pc", $gtype = 'site') {
-			$args = new stdClass();
-			$args->addon = $addon;
+         **/
+        function doDeactivate($addon, $site_srl = 0, $type = "pc", $gtype = 'site') {
+            $args = new stdClass();
+            $args->addon = $addon;
 			if($type == "pc") $args->is_used = 'N';
 			else $args->is_used_m = 'N';
-			if($gtype == 'global') return executeQuery('addon.updateAddon', $args);
-			$args->site_srl = $site_srl;
-			return executeQuery('addon.updateSiteAddon', $args);
-		}
-	}
+            if($gtype == 'global') return executeQuery('addon.updateAddon', $args);
+            $args->site_srl = $site_srl;
+            return executeQuery('addon.updateSiteAddon', $args);
+        }
+    }
 ?>

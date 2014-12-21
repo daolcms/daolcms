@@ -8,41 +8,41 @@
 	 * @package /modules/admin
 	 * @version 0.1
 	 */
-	class admin extends ModuleObject {
+    class admin extends ModuleObject {
 		/**
 		 * Install admin module
 		 * @return Object
 		 */
-		function moduleInstall() {
-			return new Object();
-		}
+        function moduleInstall() {
+            return new Object();
+        }
 
 		/**
 		 * If update is necessary it returns true
 		 * @return bool
 		 */
-		function checkUpdate() {
-			$oDB = &DB::getInstance();
-			if(!$oDB->isColumnExists("admin_favorite", "type")) return true;
+        function checkUpdate() {
+            $oDB = &DB::getInstance();
+            if(!$oDB->isColumnExists("admin_favorite", "type")) return true;
 
-			return false;
-		}
+            return false;
+        }
 
 		/**
 		 * Update module
 		 * @return Object
 		 */
-		function moduleUpdate() {
-			$oDB = &DB::getInstance();
-			if(!$oDB->isColumnExists("admin_favorite", "type"))
+        function moduleUpdate() {
+            $oDB = &DB::getInstance();
+            if(!$oDB->isColumnExists("admin_favorite", "type"))
 			{
 				$oAdminAdminModel = &getAdminModel('admin');
 				$output = $oAdminAdminModel->getFavoriteList();
 				$favoriteList = $output->get('favoriteList');
 
 				$oDB->dropColumn('admin_favorite', 'admin_favorite_srl');
-				$oDB->addColumn('admin_favorite',"admin_favorite_srl","number",11,0);
-				$oDB->addColumn('admin_favorite',"type","varchar",30, 'module');
+            	$oDB->addColumn('admin_favorite',"admin_favorite_srl","number",11,0);
+            	$oDB->addColumn('admin_favorite',"type","varchar",30, 'module');
 				if(is_array($favoriteList))
 				{
 					$oAdminAdminController = &getAdminController('admin');
@@ -53,15 +53,15 @@
 					}
 				}
 			}
-			return new Object();
-		}
+            return new Object();
+        }
 
 		/**
 		 * Regenerate cache file
 		 * @return void
 		 */
-		function recompileCache() {
-		}
+        function recompileCache() {
+        }
 
 		/**
 		 * Regenerate xe admin default menu
@@ -71,10 +71,10 @@
 		{
 			//insert menu
 			$args = new stdClass();
-			$args->title = '__XE_ADMIN__';
-			$args->menu_srl = getNextSequence();
-			$args->listorder = $args->menu_srl * -1;
-			$output = executeQuery('menu.insertMenu', $args);
+            $args->title = '__XE_ADMIN__';
+            $args->menu_srl = getNextSequence();
+            $args->listorder = $args->menu_srl * -1;
+            $output = executeQuery('menu.insertMenu', $args);
 			$menuSrl = $args->menu_srl;
 			unset($args);
 
@@ -92,7 +92,7 @@
 				}
 				else $args->url = '#';
 				$args->listorder = -1*$args->menu_item_srl;
-				$output = executeQuery('menu.insertMenuItem', $args);
+                $output = executeQuery('menu.insertMenuItem', $args);
 			}
 
 			$oMenuAdminModel = &getAdminModel('menu');
@@ -212,7 +212,7 @@
 			$args->hover_btn = '';
 			$args->active_btn = '';
 			$args->group_srls = $adminGroupSrl;
-			$oModuleModel = &getModel('module');
+            $oModuleModel = &getModel('module');
 
 			foreach($gnbModuleList AS $key=>$value)
 			{
@@ -287,5 +287,5 @@
 					return 'extensions';
 			}
 		}
-	}
+    }
 ?>

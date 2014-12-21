@@ -7,17 +7,17 @@
 	 * @package /modules/admin
 	 * @version 0.1
 	 */
-	class adminAdminController extends admin {
+    class adminAdminController extends admin {
 		/**
 		 * initialization
 		 * @return void
 		 */
-		function init() {
-			// forbit access if the user is not an administrator
-			$oMemberModel = &getModel('member');
-			$logged_info = $oMemberModel->getLoggedInfo();
-			if($logged_info->is_admin!='Y') return $this->stop("msg_is_not_administrator");
-		}
+        function init() {
+            // forbit access if the user is not an administrator
+            $oMemberModel = &getModel('member');
+            $logged_info = $oMemberModel->getLoggedInfo();
+            if($logged_info->is_admin!='Y') return $this->stop("msg_is_not_administrator");
+        }
 
 		/**
 		 * Admin menu reset
@@ -40,29 +40,29 @@
 		 * Regenerate all cache files
 		 * @return void
 		 */
-		function procAdminRecompileCacheFile() {
+        function procAdminRecompileCacheFile() {
 			// rename cache dir
 			$temp_cache_dir = './files/cache_'. time();
 			FileHandler::rename('./files/cache', $temp_cache_dir);
 			FileHandler::makeDir('./files/cache');
 
-			// remove module extend cache
-			FileHandler::removeFile(_XE_PATH_.'files/config/module_extend.php');
+            // remove module extend cache
+            FileHandler::removeFile(_XE_PATH_.'files/config/module_extend.php');
 			
-			// remove debug files
-			FileHandler::removeFile(_XE_PATH_.'files/_debug_message.php');
-			FileHandler::removeFile(_XE_PATH_.'files/_debug_db_query.php');
-			FileHandler::removeFile(_XE_PATH_.'files/_db_slow_query.php');
+            // remove debug files
+            FileHandler::removeFile(_XE_PATH_.'files/_debug_message.php');
+            FileHandler::removeFile(_XE_PATH_.'files/_debug_db_query.php');
+            FileHandler::removeFile(_XE_PATH_.'files/_db_slow_query.php');
 
-			$oModuleModel = &getModel('module');
-			$module_list = $oModuleModel->getModuleList();
+            $oModuleModel = &getModel('module');
+            $module_list = $oModuleModel->getModuleList();
 
-			// call recompileCache for each module
-			foreach($module_list as $module) {
-				$oModule = null;
-				$oModule = &getClass($module->module);
-				if(method_exists($oModule, 'recompileCache')) $oModule->recompileCache();
-			}
+            // call recompileCache for each module
+            foreach($module_list as $module) {
+                $oModule = null;
+                $oModule = &getClass($module->module);
+                if(method_exists($oModule, 'recompileCache')) $oModule->recompileCache();
+            }
 
 			// remove cache
 			$truncated = array();
@@ -89,31 +89,31 @@
 				}
 			}
 
-			// remove duplicate indexes (only for CUBRID)
-			$db_type = &Context::getDBType();
-			if($db_type == 'cubrid')
-			{
-				$db = &DB::getInstance();
-				$db->deleteDuplicateIndexes();
-			}
+            // remove duplicate indexes (only for CUBRID)
+            $db_type = &Context::getDBType();
+            if($db_type == 'cubrid')
+            {
+                $db = &DB::getInstance();
+                $db->deleteDuplicateIndexes();
+            }
 
 			// check autoinstall packages
 			$oAutoinstallAdminController = getAdminController('autoinstall');
 			$oAutoinstallAdminController->checkInstalled();
 
-			$this->setMessage('success_updated');
-		}
+            $this->setMessage('success_updated');
+        }
 
 		/**
 		 * Logout
 		 * @return void
 		 */
-		function procAdminLogout() {
-			$oMemberController = &getController('member');
-			$oMemberController->procMemberLogout();
+        function procAdminLogout() {
+            $oMemberController = &getController('member');
+            $oMemberController->procMemberLogout();
 
 			header('Location: '.getNotEncodedUrl('', 'module','admin'));
-		}
+        }
 
 		/**
 		 * Insert theme information
@@ -174,15 +174,15 @@
 				}
 			}
 
-			$theme_buff = sprintf(
-				'<?php '.
-				'if(!defined("__ZBXE__")) exit(); '.
+            $theme_buff = sprintf(
+                '<?php '.
+                'if(!defined("__ZBXE__")) exit(); '.
 				'%s'.
-				'?>',
+                '?>',
 				$theme_output
-			);
-			// Save File
-			FileHandler::writeFile($theme_file, $theme_buff);
+            );
+            // Save File
+            FileHandler::writeFile($theme_file, $theme_buff);
 
 			
 			$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAdminTheme');
@@ -280,10 +280,10 @@
 		function procAdminUpdateConfig()
 		{
 			$adminTitle = Context::get('adminTitle');
-			$file = $_FILES['adminLogo'];
+            $file = $_FILES['adminLogo'];
 
-			$oModuleModel = &getModel('module');
-			$oAdminConfig = $oModuleModel->getModuleConfig('admin');
+            $oModuleModel = &getModel('module');
+            $oAdminConfig = $oModuleModel->getModuleConfig('admin');
 
 			if($file['tmp_name'])
 			{
@@ -322,10 +322,10 @@
 		 */
 		function procAdminDeleteLogo()
 		{
-			$oModuleModel = &getModel('module');
-			$oAdminConfig = $oModuleModel->getModuleConfig('admin');
+            $oModuleModel = &getModel('module');
+            $oAdminConfig = $oModuleModel->getModuleConfig('admin');
 
-			FileHandler::removeFile(_XE_PATH_.$oAdminConfig->adminLogo);
+            FileHandler::removeFile(_XE_PATH_.$oAdminConfig->adminLogo);
 			unset($oAdminConfig->adminLogo);
 
 			$oModuleController = &getController('module');
@@ -389,5 +389,5 @@
 			}
 			$this->setMessage('success_deleted');
 		}
-	}
+    }
 ?>

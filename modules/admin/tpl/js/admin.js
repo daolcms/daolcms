@@ -5,7 +5,7 @@ jQuery(function($){
 
 	// Overlapping label
 	$('.form li').find('>input:text:not(".notmulti"),>input:password,>textarea')
-		.filter('input[value!=""],textarea:not(:empty)').prev('label').css('visibility','hidden').end().end()
+ 		.filter('input[value!=""],textarea:not(:empty)').prev('label').css('visibility','hidden').end().end()
 		.prev('label')
 			.addClass('overlap')
 			.css({top:'15px',left:'5px'})
@@ -1226,11 +1226,11 @@ function initLayer($layer) {
 
 			function save_lang() {
 				var params = {};
-				if(name && mode == MODE_UPDATE) params.lang_name = name;
+ 				if(name && mode == MODE_UPDATE) params.lang_name = name;
 
-				$input.each(function(k,v){ var $this = $(this); params[$this.parent('li').attr('class')] = $this.val() });
+ 				$input.each(function(k,v){ var $this = $(this); params[$this.parent('li').attr('class')] = $this.val() });
 
-				$.exec_json('module.procModuleAdminInsertLang', params, on_complete);
+ 				$.exec_json('module.procModuleAdminInsertLang', params, on_complete);
 			};
 
 			function on_complete(data) {
@@ -1354,23 +1354,23 @@ function hideWaitingFogLayer() {
 
 // install module
 function doInstallModule(module) {
-	var params = new Array();
-	params['module_name'] = module;
-	exec_xml('install','procInstallAdminInstall',params, completeInstallModule);
+    var params = new Array();
+    params['module_name'] = module;
+    exec_xml('install','procInstallAdminInstall',params, completeInstallModule);
 	showWaitingFogLayer();
 }
 
 // upgrade module
 function doUpdateModule(module) {
-	var params = new Array();
-	params['module_name'] = module;
-	exec_xml('install','procInstallAdminUpdate',params, completeInstallModule);
+    var params = new Array();
+    params['module_name'] = module;
+    exec_xml('install','procInstallAdminUpdate',params, completeInstallModule);
 	showWaitingFogLayer();
 }
 
 function completeInstallModule(ret_obj) {
-	alert(ret_obj['message']);
-	location.reload();
+    alert(ret_obj['message']);
+    location.reload();
 }
 
 jQuery(function($){
