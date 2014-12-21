@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module>
-    <grants />
-    <permissions />
-    <actions>
-        <action name="dispAddonAdminIndex" type="view" standalone="true" admin_index="true" menu_name="installedAddon" menu_index="true" />
-        <action name="dispAddonAdminInfo" type="view" standalone="true" />
-        <action name="dispAddonAdminSetup" type="view" standalone="true" menu_name="installedAddon" />
-        <action name="procAddonAdminToggleActivate" type="controller" standalone="true" />
-        <action name="procAddonAdminSetupAddon" type="controller" standalone="true" ruleset="updateAddonSetup" />
-        <action name="procAddonSetupAddonAddMid" type="controller" />
-        <action name="procAddonSetupAddonDelMid" type="controller" />
+	<grants />
+	<permissions />
+	<actions>
+		<action name="dispAddonAdminIndex" type="view" standalone="true" admin_index="true" menu_name="installedAddon" menu_index="true" />
+		<action name="dispAddonAdminInfo" type="view" standalone="true" />
+		<action name="dispAddonAdminSetup" type="view" standalone="true" menu_name="installedAddon" />
+		<action name="procAddonAdminToggleActivate" type="controller" standalone="true" />
+		<action name="procAddonAdminSetupAddon" type="controller" standalone="true" ruleset="updateAddonSetup" />
+		<action name="procAddonSetupAddonAddMid" type="controller" />
+		<action name="procAddonSetupAddonDelMid" type="controller" />
 		<action name="procAddonAdminSaveActivate" type="controller" />
-    </actions>
+	</actions>
 	<menus>
 		<menu name="installedAddon">
 			<title xml:lang="en">Add-ons</title>

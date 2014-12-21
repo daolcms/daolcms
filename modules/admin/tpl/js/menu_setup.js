@@ -22,7 +22,7 @@ jQuery(function($){
 		moduleList = obj.menuList;
 		if(moduleList)
 		{
- 			var menuNameList = $('#menuNameList');
+			var menuNameList = $('#menuNameList');
 			for(var x in moduleList)
 			{
 				var menuList = moduleList[x];
