@@ -1,9 +1,11 @@
 <?php
+/* Copyright (C) DAOL Project <http://www.daolcms.org> */
 /* Copyright (C) NAVER <http://www.navercorp.com> */
 
 	/**
 	 * @class  krzipModel
 	 * @author NAVER (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief model class of the krzip module
 	 **/
 
