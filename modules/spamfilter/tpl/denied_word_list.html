@@ -7,7 +7,7 @@
 			<li><a href="{getUrl('','module','admin','act','dispSpamfilterAdminConfigBlock')}">{$lang->cmd_config_block}</a></li>
 		</ul>
 	</div>
-    <div class="table even">
+	<div class="table even">
 		<form action="./" method="post" class="form">
 		<input type="hidden" name="act" value="procSpamfilterAdminDeleteDeniedWord" />
 		<input type="hidden" name="module" value="spamfilter" />
@@ -19,23 +19,23 @@
 				</caption>
 				<thead>
 					<tr>
-    					<th scope="col">{$lang->word}</th>
-    					<th scope="col">{$lang->latest_hit}</th>
-    					<th scope="col">{$lang->hit}</th>
-    					<th scope="col">{$lang->regdate}</th>
-    					<th scope="col"><input type="checkbox" name="word" title="Check All" /></th>
+						<th scope="col">{$lang->word}</th>
+						<th scope="col">{$lang->latest_hit}</th>
+						<th scope="col">{$lang->hit}</th>
+						<th scope="col">{$lang->regdate}</th>
+						<th scope="col"><input type="checkbox" name="word" title="Check All" /></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr loop="$word_list => $word_info">
-    					<td>{$word_info->word}</td>
-    					<td><!--@if($word_info->latest_hit)-->{zdate($word_info->latest_hit,'Y-m-d H:i')}<!--@else-->-<!--@end--></td>
-    					<td>{$word_info->hit}</td>
-    					<td>{zdate($word_info->regdate,'Y-m-d')}</td>
-    					<td><input type="checkbox" name="word[]" value="{$word_info->word}" /></td>
+						<td>{$word_info->word}</td>
+						<td><!--@if($word_info->latest_hit)-->{zdate($word_info->latest_hit,'Y-m-d H:i')}<!--@else-->-<!--@end--></td>
+						<td>{$word_info->hit}</td>
+						<td>{zdate($word_info->regdate,'Y-m-d')}</td>
+						<td><input type="checkbox" name="word[]" value="{$word_info->word}" /></td>
 					</tr>
 					<tr cond="!$word_list">
-    					<td colspan="5" style="text-align:center">{$lang->no_data}</td>
+						<td colspan="5" style="text-align:center">{$lang->no_data}</td>
 					</tr>
 				</tbody>
 			</table>
