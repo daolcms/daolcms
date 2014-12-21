@@ -2,7 +2,7 @@
   <form />
   <parameter />
   <response>
-    <tag name="error" />
-    <tag name="message" />
+	<tag name="error" />
+	<tag name="message" />
   </response>
 </filter>
