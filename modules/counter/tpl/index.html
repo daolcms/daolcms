@@ -5,16 +5,16 @@
 <!--%load_js_plugin("ui.datepicker")-->
 
 <script type="text/javascript">
-    function moveDate() {
+	function moveDate() {
 		document.forms['calendar'].submit();
-        return true;
-    }
+		return true;
+	}
 </script>
 <h3 class="h3">{$lang->counter} {$lang->cmd_management}</h3>
 <form action="./index.php" method="get" name="calendar" id="fo_calendar">
-    <input type="hidden" name="module" value="{$module}" />
-    <input type="hidden" name="act" value="{$act}" />
-    <input type="hidden" name="selected_date" id="selected_date" value="{zdate($selected_date,'Ymd')}" />
+	<input type="hidden" name="module" value="{$module}" />
+	<input type="hidden" name="act" value="{$act}" />
+	<input type="hidden" name="selected_date" id="selected_date" value="{zdate($selected_date,'Ymd')}" />
 	<div class="table">
 		<table width="100%" border="1" cellspacing="0">
 			<thead>
@@ -57,7 +57,7 @@
 			</tbody>
 			</table>
 	</div>
-    </form>
+	</form>
 	<div class="cnb">
 		<ul>
 			<!--@foreach($lang->cmd_select_counter_type as $key => $val)-->
@@ -69,9 +69,9 @@
 
 <!-- 일자를 옮기는 form -->
 <form action="./" method="get" id="fo_counter">
-    <input type="hidden" name="module" value="{$module}" />
-    <input type="hidden" name="act" value="{$act}" />
-    <input type="hidden" name="selected_date" value="{$selected_date}" />
+	<input type="hidden" name="module" value="{$module}" />
+	<input type="hidden" name="act" value="{$act}" />
+	<input type="hidden" name="selected_date" value="{$selected_date}" />
 </form>
 
 
