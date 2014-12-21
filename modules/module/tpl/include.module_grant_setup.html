@@ -1,6 +1,6 @@
 <load target="js/module_admin.js" />
 <script type="text/javascript">
-    jQuery( function() { jQuery('.grant_default').change( function(event) { doShowGrantZone(); } ); doShowGrantZone() } );
+	jQuery( function() { jQuery('.grant_default').change( function(event) { doShowGrantZone(); } ); doShowGrantZone() } );
 </script>
 
 <form ruleset="insertModulesGrant" action="./" method="post" id="manageSelectedModuleGrant">
@@ -8,8 +8,8 @@
 	<input type="hidden" name="act" value="procModuleAdminModuleGrantSetup" />
 	<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
 	<input type="hidden" name="module_srls" value="{$module_srls}" />
-    <h3 class="h3">{$lang->permission_setting}</h3>
-    <p>{$lang->about_grant_deatil}</p>
+	<h3 class="h3">{$lang->permission_setting}</h3>
+	<p>{$lang->about_grant_deatil}</p>
 	<div class="table">
 		<table width="100%" border="1" cellspacing="0">
 			<thead>

@@ -1,6 +1,6 @@
 <load target="js/module_admin.js" />
 <script type="text/javascript">
-    jQuery( function() { jQuery('.grant_default').change( function(event) { doShowGrantZone(); } ); doShowGrantZone() } );
+	jQuery( function() { jQuery('.grant_default').change( function(event) { doShowGrantZone(); } ); doShowGrantZone() } );
 </script>
 <h1 class="h1">{$lang->bundle_grant_setup}</h1>
 <div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
@@ -10,8 +10,8 @@
 	<input type="hidden" name="module" value="module" />
 	<input type="hidden" name="act" value="procModuleAdminModuleGrantSetup" />
 	<input type="hidden" name="module_srls" value="{$module_srls}" />
-    <h2 class="h2">{$lang->permission_setting}</h2>
-    <p>{$lang->about_grant_deatil}</p>
+	<h2 class="h2">{$lang->permission_setting}</h2>
+	<p>{$lang->about_grant_deatil}</p>
 	<div class="table">
 		<table width="100%" border="1" cellspacing="0">
 			<thead>
