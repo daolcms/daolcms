@@ -41,7 +41,7 @@ var no_text_comment = '{$lang->no_text_comment}';
 					</tr>
 				</tfoot>
 				<tbody>
-    				<!--@foreach($trash_list as $no => $oTrashVO)-->
+					<!--@foreach($trash_list as $no => $oTrashVO)-->
 					<tr>
 						<td class="title"><!--@if(!trim($oTrashVO->getTitle()) && $oTrashVO->getOriginModule() == 'comment')--><strong>{$lang->no_text_comment}</strong><!--@else-->{$oTrashVO->getTitle()}<!--@end--> (<!--@if($oTrashVO->getOriginModule() == 'document')-->{$lang->document}<!--@else-->{$lang->comment}<!--@end-->)</td>
 						<td class="nowr"><span class="member_{$oTrashVO->getRemoverSrl()}">{htmlspecialchars($oTrashVO->getNickName())}</span></td>
@@ -50,7 +50,7 @@ var no_text_comment = '{$lang->no_text_comment}';
 						<td class="title">{$oTrashVO->getDescription()}</td>
 						<td><input type="checkbox" name="cart" value="{$oTrashVO->getTrashSrl()}" /></td>
 					</tr>
-    				<!--@end-->
+					<!--@end-->
 				</tbody>
 			</table>
 		</div>
@@ -92,8 +92,8 @@ var no_text_comment = '{$lang->no_text_comment}';
 	<input type="hidden" name="error_return_url" value="" />
 	<input type="hidden" name="module" value="{$module}" />
 	<input type="hidden" name="act" value="{$act}" />
-  	<input cond="$search_keyword" type="hidden" name="search_keyword" value="{$search_keyword}" />
-  	<input cond="$search_target" type="hidden" name="search_target" value="{$search_target}" />
+	<input cond="$search_keyword" type="hidden" name="search_keyword" value="{$search_keyword}" />
+	<input cond="$search_target" type="hidden" name="search_target" value="{$search_target}" />
 
 	<a href="{getUrl('page', '')}" class="direction">&laquo; FIRST</a>
 	<block cond="$page_navigation->first_page + $page_navigation->page_count > $page_navigation->last_page && $page_navigation->page_count != $page_navigation->total_page">
