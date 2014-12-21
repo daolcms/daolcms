@@ -7,13 +7,13 @@
 	 * @package /modules/admin
 	 * @version 0.1
 	 */
-    class adminAdminModel extends admin
-    {
+	class adminAdminModel extends admin
+	{
 		/**
 		 * Ftp root path
 		 * @var string
 		 */
-        var $pwd;
+		var $pwd;
 		/**
 		 * Buffer for Admin GNB menu
 		 * @var string
@@ -24,102 +24,102 @@
 		 * Add file list to Object after sftp connect
 		 * @return void|Object
 		 */
-        function getSFTPList()
-        {
-            $ftp_info =  Context::getRequestVars();
-            if(!$ftp_info->ftp_host)
-            {
-                $ftp_info->ftp_host = "127.0.0.1";
-            }
-            $connection = ssh2_connect($ftp_info->ftp_host, $ftp_info->ftp_port);
-            if(!ssh2_auth_password($connection, $ftp_info->ftp_user, $ftp_info->ftp_password))
-            {
-                return new Object(-1,'msg_ftp_invalid_auth_info');
-            }
+		function getSFTPList()
+		{
+			$ftp_info =  Context::getRequestVars();
+			if(!$ftp_info->ftp_host)
+			{
+				$ftp_info->ftp_host = "127.0.0.1";
+			}
+			$connection = ssh2_connect($ftp_info->ftp_host, $ftp_info->ftp_port);
+			if(!ssh2_auth_password($connection, $ftp_info->ftp_user, $ftp_info->ftp_password))
+			{
+				return new Object(-1,'msg_ftp_invalid_auth_info');
+			}
 
-            $sftp = ssh2_sftp($connection);
-            $curpwd = "ssh2.sftp://$sftp".$this->pwd;
-            $dh = @opendir($curpwd);
+			$sftp = ssh2_sftp($connection);
+			$curpwd = "ssh2.sftp://$sftp".$this->pwd;
+			$dh = @opendir($curpwd);
 			if(!$dh) return new Object(-1, 'msg_ftp_invalid_path');
-            $list = array();
-            while(($file = readdir($dh)) !== false) {
-                if(is_dir($curpwd.$file))
-                {
-                    $file .= "/";
-                }
-                else
-                {
-                    continue;
-                }
-                $list[] = $file;
-            }
-            closedir($dh);
-            $this->add('list', $list);
-        }
+			$list = array();
+			while(($file = readdir($dh)) !== false) {
+				if(is_dir($curpwd.$file))
+				{
+					$file .= "/";
+				}
+				else
+				{
+					continue;
+				}
+				$list[] = $file;
+			}
+			closedir($dh);
+			$this->add('list', $list);
+		}
 
 		/**
 		 * Add file list to Object after ftp connect
 		 * @return void|Object
 		 */
-        function getAdminFTPList()
-        {
+		function getAdminFTPList()
+		{
 			Context::loadLang('./modules/autoinstall/lang');
-            set_time_limit(5);
-            require_once(_XE_PATH_.'libs/ftp.class.php');
-            $ftp_info =  Context::getRequestVars();
-            if(!$ftp_info->ftp_user || !$ftp_info->ftp_password)
-            {
-                return new Object(-1, 'msg_ftp_invalid_auth_info');
-            }
+			set_time_limit(5);
+			require_once(_XE_PATH_.'libs/ftp.class.php');
+			$ftp_info =  Context::getRequestVars();
+			if(!$ftp_info->ftp_user || !$ftp_info->ftp_password)
+			{
+				return new Object(-1, 'msg_ftp_invalid_auth_info');
+			}
 
-            $this->pwd = $ftp_info->ftp_root_path;
+			$this->pwd = $ftp_info->ftp_root_path;
 
-            if(!$ftp_info->ftp_host)
-            {
-                $ftp_info->ftp_host = "127.0.0.1";
-            }
+			if(!$ftp_info->ftp_host)
+			{
+				$ftp_info->ftp_host = "127.0.0.1";
+			}
 
 			if (!$ftp_info->ftp_port || !is_numeric ($ftp_info->ftp_port)) {
 				$ftp_info->ftp_port = "21";
 			}
 
-            if($ftp_info->sftp == 'Y')
-            {
+			if($ftp_info->sftp == 'Y')
+			{
 				if(!function_exists(ssh2_sftp))
 				{
-                    return new Object(-1,'disable_sftp_support');
+					return new Object(-1,'disable_sftp_support');
 				}
-                return $this->getSFTPList();
-            }
+				return $this->getSFTPList();
+			}
 
-            $oFtp = new ftp();
-            if($oFtp->ftp_connect($ftp_info->ftp_host, $ftp_info->ftp_port)){
+			$oFtp = new ftp();
+			if($oFtp->ftp_connect($ftp_info->ftp_host, $ftp_info->ftp_port)){
 				if($oFtp->ftp_login($ftp_info->ftp_user, $ftp_info->ftp_password)) {
 					$_list = $oFtp->ftp_rawlist($this->pwd);
 					$oFtp->ftp_quit();
 				}
-                else
-                {
-                    return new Object(-1,'msg_ftp_invalid_auth_info');
-                }
+				else
+				{
+					return new Object(-1,'msg_ftp_invalid_auth_info');
+				}
 			}
-            $list = array();
+			$list = array();
 
 			if($_list){
-                foreach($_list as $k => $v){
+				foreach($_list as $k => $v){
 					$src = null;
 					$src->data = $v;
 					$res = Context::convertEncoding($src);
 					$v = $res->data;
-                    if(strpos($v,'d') === 0 || strpos($v, '<DIR>')) $list[] = substr(strrchr($v,' '),1) . '/';
-                }
-            }
+					if(strpos($v,'d') === 0 || strpos($v, '<DIR>')) $list[] = substr(strrchr($v,' '),1) . '/';
+				}
+			}
 			else
 			{
 				return new Object(-1,'msg_ftp_no_directory');
 			}
-            $this->add('list', $list);
-        }
+			$this->add('list', $list);
+		}
 
 		/**
 		 * Parameter arrange for send to XE collect server
@@ -132,9 +132,9 @@
 					 	'ext' => array('pcre','json','hash','dom','session','spl','standard','date','ctype','tokenizer','apache2handler','filter','posix','reflection','pdo')
 						,'module' => array('addon','admin','autoinstall', 'comment', 'communication', 'counter', 'document', 'editor', 'file', 'importer', 'install', 'integration_search', 'layout', 'member', 'menu', 'message', 'module', 'opage', 'page', 'point', 'poll', 'rss', 'session', 'spamfilter', 'tag',  'trackback', 'trash', 'widget')
 						,'addon' => array('autolink', 'blogapi', 'captcha', 'counter', 'member_communication', 'member_extra_info', 'mobile', 'openid_delegation_id', 'point_level_icon', 'resize_image' )
-                        , 'layout' => array('default')
-                        , 'widget' => array('content', 'language_select', 'login_info','mcontent')
-                        , 'widgetstyle' => array(),
+						, 'layout' => array('default')
+						, 'widget' => array('content', 'language_select', 'login_info','mcontent')
+						, 'widgetstyle' => array(),
 					);
 
 			$info = array();
@@ -178,44 +178,44 @@
 			}
 			$info['addon'] = substr($info['addon'],1);
  
-            $info['layout'] = "";
-      		$oLayoutModel = getModel('layout');
-      		$layout_list = $oLayoutModel->getDownloadedLayoutList();
-      		foreach($layout_list as $layout)
-      		{
-      			if(in_array($layout->layout, $skip['layout']))
-      			{
-      				continue;
-      			}
-      			$info['layout'] .= '|' . $layout->layout;
-      		}
-      		$info['layout'] = substr($info['layout'], 1);
-      
-      		$info['widget'] = "";
-      		$oWidgetModel = getModel('widget');
-      		$widget_list = $oWidgetModel->getDownloadedWidgetList();
-      		foreach($widget_list as $widget)
-      		{
-      			if(in_array($widget->widget, $skip['widget']))
-      			{
-      				continue;
-      			}
-      			$info['widget'] .= '|' . $widget->widget;
-      		}
-      		$info['widget'] = substr($info['widget'], 1);
-      
-      		$info['widgetstyle'] = "";
-      		$oWidgetModel = getModel('widget');
-      		$widgetstyle_list = $oWidgetModel->getDownloadedWidgetStyleList();
-      		foreach($widgetstyle_list as $widgetstyle)
-      		{
-      			if(in_array($widgetstyle->widgetStyle, $skip['widgetstyle']))
-      			{
-      				continue;
-      			}
-      			$info['widgetstyle'] .= '|' . $widgetstyle->widgetStyle;
-      		}
-      		$info['widgetstyle'] = substr($info['widgetstyle'], 1);
+			$info['layout'] = "";
+			$oLayoutModel = getModel('layout');
+			$layout_list = $oLayoutModel->getDownloadedLayoutList();
+			foreach($layout_list as $layout)
+			{
+				if(in_array($layout->layout, $skip['layout']))
+				{
+					continue;
+				}
+				$info['layout'] .= '|' . $layout->layout;
+			}
+			$info['layout'] = substr($info['layout'], 1);
+	  
+			$info['widget'] = "";
+			$oWidgetModel = getModel('widget');
+			$widget_list = $oWidgetModel->getDownloadedWidgetList();
+			foreach($widget_list as $widget)
+			{
+				if(in_array($widget->widget, $skip['widget']))
+				{
+					continue;
+				}
+				$info['widget'] .= '|' . $widget->widget;
+			}
+			$info['widget'] = substr($info['widget'], 1);
+	  
+			$info['widgetstyle'] = "";
+			$oWidgetModel = getModel('widget');
+			$widgetstyle_list = $oWidgetModel->getDownloadedWidgetStyleList();
+			foreach($widgetstyle_list as $widgetstyle)
+			{
+				if(in_array($widgetstyle->widgetStyle, $skip['widgetstyle']))
+				{
+					continue;
+				}
+				$info['widgetstyle'] .= '|' . $widgetstyle->widgetStyle;
+			}
+			$info['widgetstyle'] = substr($info['widgetstyle'], 1);
 
 			$param = '';
 			foreach($info as $k => $v){
@@ -254,18 +254,18 @@
 			if ($GLOBALS['__ThemeInfo__'][$theme_name]) return $GLOBALS['__ThemeInfo__'][$theme_name];
 
 			$info_file = _XE_PATH_.'themes/'.$theme_name.'/conf/info.xml';
-            if(!file_exists($info_file)) return;
+			if(!file_exists($info_file)) return;
 
-            $oXmlParser = new XmlParser();
-            $_xml_obj = $oXmlParser->loadXmlFile($info_file);
-            if(!$_xml_obj->theme) return;
+			$oXmlParser = new XmlParser();
+			$_xml_obj = $oXmlParser->loadXmlFile($info_file);
+			if(!$_xml_obj->theme) return;
 
-            $xml_obj = $_xml_obj->theme;
+			$xml_obj = $_xml_obj->theme;
 
-            // 스킨이름
+			// 스킨이름
 			$theme_info = new stdClass();
 			$theme_info->name = $theme_name;
-            $theme_info->title = $xml_obj->title->body;
+			$theme_info->title = $xml_obj->title->body;
 			$thumbnail = './themes/'.$theme_name.'/thumbnail.png';
 			$theme_info->thumbnail = (file_exists($thumbnail))?$thumbnail:null;
 			$theme_info->version = $xml_obj->version->body;
@@ -383,16 +383,16 @@
 		 */
 		function getModulesSkinList(){
 			if ($GLOBALS['__ThemeModuleSkin__']['__IS_PARSE__']) return $GLOBALS['__ThemeModuleSkin__'];
-            $searched_list = FileHandler::readDir('./modules');
-            sort($searched_list);
+			$searched_list = FileHandler::readDir('./modules');
+			sort($searched_list);
 
-            $searched_count = count($searched_list);
-            if(!$searched_count) return;
+			$searched_count = count($searched_list);
+			if(!$searched_count) return;
 
 			$exceptionModule = array('editor', 'poll', 'homepage', 'textyle');
 
 			$oModuleModel = &getModel('module');
-            foreach($searched_list as $val) {
+			foreach($searched_list as $val) {
 				$skin_list = $oModuleModel->getSkins('./modules/'.$val);
 
 				if (is_array($skin_list) && count($skin_list) > 0 && !in_array($val, $exceptionModule)){
@@ -419,8 +419,8 @@
 			$currentLang = Context::getLangType();
 			$cacheFile = sprintf('./files/cache/menu/admin_lang/adminMenu.%s.lang.php', $currentLang);
 
-            // Update if no cache file exists or it is older than xml file
-            if(!is_readable($cacheFile))
+			// Update if no cache file exists or it is older than xml file
+			if(!is_readable($cacheFile))
 			{
 				$oModuleModel = &getModel('module');
 				$installed_module_list = $oModuleModel->getModulesXmlInfo();
@@ -504,65 +504,65 @@
 			return $returnObject;
 		}
 
-        /**
-         * Return site list
+		/**
+		 * Return site list
 		 * @return void
-         */
+		 */
 		function getSiteAllList()
 		{
 			if(Context::get('domain')) $domain = Context::get('domain');
-            $siteList = $this->getAllSitesThatHaveModules($domain);
-    		$this->add('site_list', $siteList);
+			$siteList = $this->getAllSitesThatHaveModules($domain);
+			$this->add('site_list', $siteList);
 		}
 
-        /**
-         * Returns a list of all sites that contain modules
-         * For each site domain and site_srl are retrieved
-         *
-         * @return array
-         */
-        function getAllSitesThatHaveModules($domain = null)
-        {
-            $args = new stdClass();
-            if($domain) $args->domain = $domain;
-            $columnList = array('domain', 'site_srl');
+		/**
+		 * Returns a list of all sites that contain modules
+		 * For each site domain and site_srl are retrieved
+		 *
+		 * @return array
+		 */
+		function getAllSitesThatHaveModules($domain = null)
+		{
+			$args = new stdClass();
+			if($domain) $args->domain = $domain;
+			$columnList = array('domain', 'site_srl');
 
-            $siteList = array();
-            $output = executeQueryArray('admin.getSiteAllList', $args, $columnList);
-            if($output->toBool()) $siteList = $output->data;
+			$siteList = array();
+			$output = executeQueryArray('admin.getSiteAllList', $args, $columnList);
+			if($output->toBool()) $siteList = $output->data;
 
-            $oModuleModel = &getModel('module');
-            foreach($siteList as $key => $value)
-            {
-                $args->site_srl = $value->site_srl;
-                $list = $oModuleModel->getModuleSrlList($args);
+			$oModuleModel = &getModel('module');
+			foreach($siteList as $key => $value)
+			{
+				$args->site_srl = $value->site_srl;
+				$list = $oModuleModel->getModuleSrlList($args);
 
-                if(!is_array($list))
-                {
-                    $list = array($list);
-                }
+				if(!is_array($list))
+				{
+					$list = array($list);
+				}
 
-                foreach($list as $k => $v)
-                {
-                    if(!is_dir('./modules/' . $v->module))
-                    {
-                        unset($list[$k]);
-                    }
-                }
+				foreach($list as $k => $v)
+				{
+					if(!is_dir('./modules/' . $v->module))
+					{
+						unset($list[$k]);
+					}
+				}
 
-                if(!count($list))
-                {
-                    unset($siteList[$key]);
-                }
-            }
-            return $siteList;
-        }
+				if(!count($list))
+				{
+					unset($siteList[$key]);
+				}
+			}
+			return $siteList;
+		}
 
-        /**
-         * Return site count
+		/**
+		 * Return site count
 		 * @param string $date
 		 * @return int
-         */
+		 */
 		function getSiteCountByDate($date = '')
 		{
 			$args = new stdClass();
