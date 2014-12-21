@@ -20,7 +20,7 @@
 			<td>{zdate($memberInfo[last_login],"Y-m-d")}</td>
 		</tr>
 		<!--@end-->
-    </table>
+	</table>
 </div>
 <div class="btnArea" cond="$memberInfo['member_srl'] == $logged_info->member_srl">
 	<span class="btn" cond="$member_config->identifier == 'email_address'"><a href="{getUrl('act', 'dispMemberModifyEmailAddress')}">{$lang->cmd_modify_member_email_address}</a></span>

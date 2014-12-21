@@ -28,11 +28,11 @@
 <p style="margin:3px 10px;color:#666">{$lang->about_find_account_question}</p>
 <form action="./" method="post" class="ff" ruleset="@find_member_account_by_question">
 	<input type="hidden" name="module" value="member" />
-    <input type="hidden" name="mid" value="{$mid}" />
-    <input type="hidden" name="document_srl" value="{$document_srl}" />	
+	<input type="hidden" name="mid" value="{$mid}" />
+	<input type="hidden" name="document_srl" value="{$document_srl}" />	
 	<input type="hidden" name="act" value="procMemberFindAccountByQuestion" />
 	<input type="hidden" name="success_return_url" value="{getUrl('', 'act', 'dispMemberGetTempPassword')}" />
-    <input type="hidden" name="page" value="{$page}" />
+	<input type="hidden" name="page" value="{$page}" />
 	<ul>
 		<li cond="$identifier == 'user_id'">
 			<label for="user_id2">{$lang->user_id}</label>

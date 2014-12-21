@@ -4,89 +4,89 @@
 	 * admin view class of the menu module
 	 *
 	 * @author NHN (developers@xpressengine.com)
-         * @Adaptor DAOL Project (developer@daolcms.org)
+		 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @package /modules/menu
 	 * @version 0.1
 	 */
-    class menuAdminView extends menu {
+	class menuAdminView extends menu {
 		var $tmpMenu = null;
 
 		/**
 		 * Initialization
 		 * @return void
 		 */
-        function init() {
-            $this->setTemplatePath($this->module_path.'tpl');
-        }
+		function init() {
+			$this->setTemplatePath($this->module_path.'tpl');
+		}
 
 		/**
 		 * The first page of the menu admin
 		 * @return void
 		 */
-        function dispMenuAdminContent() {
-            // Get a list of registered menus
-            $obj->page = Context::get('page');
-            $obj->sort_index = 'listorder';
-            $obj->list_count = 20;
-            $obj->page_count = 20;
+		function dispMenuAdminContent() {
+			// Get a list of registered menus
+			$obj->page = Context::get('page');
+			$obj->sort_index = 'listorder';
+			$obj->list_count = 20;
+			$obj->page_count = 20;
 
-            $oMenuModel = &getAdminModel('menu');
-            $output = $oMenuModel->getMenuList($obj);
+			$oMenuModel = &getAdminModel('menu');
+			$output = $oMenuModel->getMenuList($obj);
 
-            Context::set('total_count', $output->total_count);
-            Context::set('total_page', $output->total_page);
-            Context::set('page', $output->page);
-            Context::set('menu_list', $output->data);
+			Context::set('total_count', $output->total_count);
+			Context::set('total_page', $output->total_page);
+			Context::set('page', $output->page);
+			Context::set('menu_list', $output->data);
 			Context::set('page_navigation', $output->page_navigation);
 
 			//Security
 			$security = new Security();
 			$security->encodeHTML('menu_list..title');
 
-            $this->setTemplateFile('index');
-        }
+			$this->setTemplateFile('index');
+		}
 
 		/**
 		 * Page to insert a menu
 		 * @return void
 		 */
-        function dispMenuAdminInsert() {
-            // Set the menu with menu information
-            $menu_srl = Context::get('menu_srl');
+		function dispMenuAdminInsert() {
+			// Set the menu with menu information
+			$menu_srl = Context::get('menu_srl');
 
-            if($menu_srl) {
-                // Get information of the menu
-                $oMenuModel = &getAdminModel('menu');
-                $menu_info = $oMenuModel->getMenu($menu_srl);
-                if($menu_info->menu_srl == $menu_srl) Context::set('menu_info', $menu_info);
-            }
+			if($menu_srl) {
+				// Get information of the menu
+				$oMenuModel = &getAdminModel('menu');
+				$menu_info = $oMenuModel->getMenu($menu_srl);
+				if($menu_info->menu_srl == $menu_srl) Context::set('menu_info', $menu_info);
+			}
 
-            $this->setTemplateFile('menu_insert');
-        }
+			$this->setTemplateFile('menu_insert');
+		}
 
 		/**
 		 * Menu admin page
 		 * @return void
 		 */
-        function dispMenuAdminManagement() {
-            // Get information of the menu
-            $menu_srl = Context::get('menu_srl');
+		function dispMenuAdminManagement() {
+			// Get information of the menu
+			$menu_srl = Context::get('menu_srl');
 
-            if(!$menu_srl) return $this->dispMenuAdminContent();
-            // Get information of the menu
-            $oMenuModel = &getAdminModel('menu');
-            $menu_info = $oMenuModel->getMenu($menu_srl);
-            if($menu_info->menu_srl != $menu_srl) return $this->dispMenuAdminContent();
+			if(!$menu_srl) return $this->dispMenuAdminContent();
+			// Get information of the menu
+			$oMenuModel = &getAdminModel('menu');
+			$menu_info = $oMenuModel->getMenu($menu_srl);
+			if($menu_info->menu_srl != $menu_srl) return $this->dispMenuAdminContent();
 
-            Context::set('menu_info', $menu_info);
+			Context::set('menu_info', $menu_info);
 
 			//Security
 			$security = new Security();
 			$security->encodeHTML('menu_info..title');
 
 			// Set the layout to be pop-up
-            $this->setTemplateFile('menu_management');
-        }
+			$this->setTemplateFile('menu_management');
+		}
 
 
 		/**
@@ -94,22 +94,22 @@
 		 * Perphaps this method not use
 		 * @return void
 		 */
-        function dispMenuAdminMidList() {
-            $oModuleModel = &getModel('module');
-            // Get a list of module categories
-            $module_category = $oModuleModel->getModuleCategories();
-            Context::set('module_category', $module_category);
-            // Get a list of modules
-            $module_list = $oModuleModel->getModuleList();
-            Context::set('module_list', $module_list);
-            // Get a list of mid
-            $args->module_category_srl = Context::get('module_category_srl');
-            $args->module = Context::get('target_module');
+		function dispMenuAdminMidList() {
+			$oModuleModel = &getModel('module');
+			// Get a list of module categories
+			$module_category = $oModuleModel->getModuleCategories();
+			Context::set('module_category', $module_category);
+			// Get a list of modules
+			$module_list = $oModuleModel->getModuleList();
+			Context::set('module_list', $module_list);
+			// Get a list of mid
+			$args->module_category_srl = Context::get('module_category_srl');
+			$args->module = Context::get('target_module');
 			$columnList = array('module_srl', 'module', 'module_category_srl', 'browser_title');
-            $mid_list = $oModuleModel->getMidList($args, $columnList);
-            Context::set('mid_list', $mid_list);
-            // Set the menu as a pop-up
-            $this->setLayoutFile('popup_layout');
+			$mid_list = $oModuleModel->getMidList($args, $columnList);
+			Context::set('mid_list', $mid_list);
+			// Set the menu as a pop-up
+			$this->setLayoutFile('popup_layout');
 			//Security
 			$security = new Security();
 			$security->encodeHTML('module_category..title');
@@ -118,8 +118,8 @@
 			$security->encodeHTML('mid_list..browser_title');
 
 			// Set a template file
-            $this->setTemplateFile('mid_list');
-        }
+			$this->setTemplateFile('mid_list');
+		}
 
 		/**
 		 * Site map admin menu index page
@@ -129,7 +129,7 @@
 		{
 			Context::loadLang(_XE_PATH_.'modules/document/lang/');
 			Context::loadLang(_XE_PATH_.'modules/layout/lang/');
-            $site_srl = Context::get('site_srl');
+			$site_srl = Context::get('site_srl');
 			$site_module_info = Context::get('site_module_info');
 
 			if(!$site_srl)
@@ -173,16 +173,16 @@
 					}
 				}
 			}
-            Context::set('menu_list', $menuList);
+			Context::set('menu_list', $menuList);
 
 			// get installed module list
 			$oPageController = &getController('page');	//for lang
 			$resultModuleList = $oMenuAdminModel->getModuleListInSitemap($site_srl);
-            Context::set('module_list', $resultModuleList);
+			Context::set('module_list', $resultModuleList);
 
 			$oLayoutModel = &getModel('layout');
 			$layoutList = $oLayoutModel->getLayoutList();
-            Context::set('layout_list', $layoutList);
+			Context::set('layout_list', $layoutList);
 
 			// choice theme file
 			$theme_file = _XE_PATH_.'files/theme/theme_info.php';
@@ -210,9 +210,9 @@
 					$groupList[$value->group_srl]->title = $value->title;
 				}
 			}
-            Context::set('group_list', $groupList);
+			Context::set('group_list', $groupList);
 
-            $this->setTemplateFile('sitemap');
+			$this->setTemplateFile('sitemap');
 		}
 
 		/**
@@ -271,5 +271,5 @@
 			}
 			return $arrangedMenuItemList;
 		}
-    }
+	}
 ?>

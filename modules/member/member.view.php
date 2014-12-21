@@ -1,29 +1,29 @@
 <?php
-    /**
-     * @class  memberView
-     * @author NHN (developers@xpressengine.com)
-     * @brief View class of member module
-     **/
+	/**
+	 * @class  memberView
+	 * @author NHN (developers@xpressengine.com)
+	 * @brief View class of member module
+	 **/
 
-    class memberView extends member {
+	class memberView extends member {
 
-        var $group_list = NULL; // /< Group list information
-        var $member_info = NULL; // /< Member information of the user
-        var $skin = 'default';
+		var $group_list = NULL; // /< Group list information
+		var $member_info = NULL; // /< Member information of the user
+		var $skin = 'default';
 
-        /**
-         * @brief Initialization
-         **/
-        function init() {
-            // Get the member configuration
-            $oMemberModel = &getModel('member');
-            $this->member_config = $oMemberModel->getMemberConfig();
-            Context::set('member_config', $this->member_config);
+		/**
+		 * @brief Initialization
+		 **/
+		function init() {
+			// Get the member configuration
+			$oMemberModel = &getModel('member');
+			$this->member_config = $oMemberModel->getMemberConfig();
+			Context::set('member_config', $this->member_config);
 			$oSecurity = new Security();
 			$oSecurity->encodeHTML('member_config.signupForm..');
 
-            $skin = $this->member_config->skin;
-            // Set the template path
+			$skin = $this->member_config->skin;
+			// Set the template path
 			if(!$skin)
 			{
 				$skin = 'default';
@@ -52,30 +52,30 @@
 				$this->module_info->layout_srl = $this->member_config->layout_srl;
 				$this->setLayoutPath($layout_info->path);
 			}
-        }
+		}
 
-        /**
-         * @brief Display member information
-         **/
-        function dispMemberInfo() {
-            $oMemberModel = &getModel('member');
-            $logged_info = Context::get('logged_info');
-            // Don't display member info to non-logged user
-            if(!$logged_info->member_srl) return $this->stop('msg_not_permitted');
+		/**
+		 * @brief Display member information
+		 **/
+		function dispMemberInfo() {
+			$oMemberModel = &getModel('member');
+			$logged_info = Context::get('logged_info');
+			// Don't display member info to non-logged user
+			if(!$logged_info->member_srl) return $this->stop('msg_not_permitted');
 
-            $member_srl = Context::get('member_srl');
-            if(!$member_srl && Context::get('is_logged')) {
-                $member_srl = $logged_info->member_srl;
-            } elseif(!$member_srl) {
-                return $this->dispMemberSignUpForm();
-            }
+			$member_srl = Context::get('member_srl');
+			if(!$member_srl && Context::get('is_logged')) {
+				$member_srl = $logged_info->member_srl;
+			} elseif(!$member_srl) {
+				return $this->dispMemberSignUpForm();
+			}
 
-            $site_module_info = Context::get('site_module_info');
+			$site_module_info = Context::get('site_module_info');
 			$columnList = array('member_srl', 'user_id', 'email_address', 'user_name', 'nick_name', 'homepage', 'blog', 'birthday', 'regdate', 'last_login', 'extra_vars');
-            $member_info = $oMemberModel->getMemberInfoByMemberSrl($member_srl, $site_module_info->site_srl, $columnList);
-            unset($member_info->password);
-            unset($member_info->email_id);
-            unset($member_info->email_host);
+			$member_info = $oMemberModel->getMemberInfoByMemberSrl($member_srl, $site_module_info->site_srl, $columnList);
+			unset($member_info->password);
+			unset($member_info->email_id);
+			unset($member_info->email_host);
 
 			if($logged_info->is_admin != 'Y' && ($member_info->member_srl != $logged_info->member_srl))
 			{
@@ -84,19 +84,19 @@
 				$member_info->email_address = substr_replace($member_info->email_address, $replaceStr, $start);
 			}
 
-            if(!$member_info->member_srl) return $this->dispMemberSignUpForm();
+			if(!$member_info->member_srl) return $this->dispMemberSignUpForm();
 			
 			Context::set('memberInfo', get_object_vars($member_info));
 
 			$extendForm = $oMemberModel->getCombineJoinForm($member_info);
-            unset($extendForm->find_member_account);
-            unset($extendForm->find_member_answer);
-            Context::set('extend_form_list', $extendForm);
+			unset($extendForm->find_member_account);
+			unset($extendForm->find_member_answer);
+			Context::set('extend_form_list', $extendForm);
 
 			$this->_getDisplayedMemberInfo($member_info, $extendForm, $this->member_config);
 
-            $this->setTemplateFile('member_info');
-        }
+			$this->setTemplateFile('member_info');
+		}
 
 		function _getDisplayedMemberInfo($memberInfo, $extendFormInfo, $memberConfig)
 		{
@@ -181,24 +181,24 @@
 			return $displayDatas;
 		}
 
-        /**
-         * @brief Display member join form
-         **/
-        function dispMemberSignUpForm() 
+		/**
+		 * @brief Display member join form
+		 **/
+		function dispMemberSignUpForm() 
 		{
 			//setcookie for redirect url in case of going to member sign up
 			setcookie("XE_REDIRECT_URL", $_SERVER['HTTP_REFERER']);
 
-            $member_config = $this->member_config;
+			$member_config = $this->member_config;
 
-            $oMemberModel = &getModel('member');
-            // Get the member information if logged-in
-            if($oMemberModel->isLogged()) return $this->stop('msg_already_logged');
-            // call a trigger (before) 
-            $trigger_output = ModuleHandler::triggerCall('member.dispMemberSignUpForm', 'before', $member_config);
-            if(!$trigger_output->toBool()) return $trigger_output;
-            // Error appears if the member is not allowed to join
-            if($member_config->enable_join != 'Y') return $this->stop('msg_signup_disabled');
+			$oMemberModel = &getModel('member');
+			// Get the member information if logged-in
+			if($oMemberModel->isLogged()) return $this->stop('msg_already_logged');
+			// call a trigger (before) 
+			$trigger_output = ModuleHandler::triggerCall('member.dispMemberSignUpForm', 'before', $member_config);
+			if(!$trigger_output->toBool()) return $trigger_output;
+			// Error appears if the member is not allowed to join
+			if($member_config->enable_join != 'Y') return $this->stop('msg_signup_disabled');
 
 			$oMemberAdminView = &getAdminView('member');
 			$formTags = $oMemberAdminView->_getMemberInputTag($member_info);
@@ -212,16 +212,16 @@
 
 			$this->addExtraFormValidatorMessage();
 
-            // Set a template file
-            $this->setTemplateFile('signup_form');
-        }
+			// Set a template file
+			$this->setTemplateFile('signup_form');
+		}
 
 
 		function dispMemberModifyInfoBefore()
 		{
 			$logged_info = Context::get('logged_info');
 			$oMemberModel = &getModel('member');
-            if(!$oMemberModel->isLogged() || empty($logged_info))
+			if(!$oMemberModel->isLogged() || empty($logged_info))
 			{
 				return $this->stop('msg_not_logged');
 			}
@@ -249,10 +249,10 @@
 			$this->setTemplateFile('rechecked_password');
 		}
 
-        /**
-         * @brief Modify member information
-         **/
-        function dispMemberModifyInfo() 
+		/**
+		 * @brief Modify member information
+		 **/
+		function dispMemberModifyInfo() 
 		{
 			if($_SESSION['rechecked_password_step'] != 'VALIDATE_PASSWORD')
 			{
@@ -261,41 +261,41 @@
 			}
 
 			$_SESSION['rechecked_password_step'] = 'INPUT_DATA';
-            
+			
 			$member_config = $this->member_config;
 
-            $oMemberModel = &getModel('member');
-            // A message appears if the user is not logged-in
-            if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
+			$oMemberModel = &getModel('member');
+			// A message appears if the user is not logged-in
+			if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
 
-            $logged_info = Context::get('logged_info');
-            $member_srl = $logged_info->member_srl;
+			$logged_info = Context::get('logged_info');
+			$member_srl = $logged_info->member_srl;
 
 			$columnList = array('member_srl', 'user_id', 'user_name', 'nick_name', 'email_address', 'find_account_answer', 'homepage', 'blog', 'birthday', 'allow_mailing');
-            $member_info = $oMemberModel->getMemberInfoByMemberSrl($member_srl, 0, $columnList);
-            $member_info->signature = $oMemberModel->getSignature($member_srl);
-            Context::set('member_info',$member_info);
+			$member_info = $oMemberModel->getMemberInfoByMemberSrl($member_srl, 0, $columnList);
+			$member_info->signature = $oMemberModel->getSignature($member_srl);
+			Context::set('member_info',$member_info);
 
-            // Get a list of extend join form
-            Context::set('extend_form_list', $oMemberModel->getCombineJoinForm($member_info));
+			// Get a list of extend join form
+			Context::set('extend_form_list', $oMemberModel->getCombineJoinForm($member_info));
 
-            // Editor of the module set for signing by calling getEditor
-            if($member_info->member_srl) {
-                $oEditorModel = &getModel('editor');
-                $option->primary_key_name = 'member_srl';
-                $option->content_key_name = 'signature';
-                $option->allow_fileupload = false;
-                $option->enable_autosave = false;
-                $option->enable_default_component = true;
-                $option->enable_component = false;
-                $option->resizable = false;
-                $option->disable_html = true;
-                $option->height = 200;
-                $option->skin = $member_config->signature_editor_skin;
-                $option->colorset = $member_config->sel_editor_colorset;
-                $editor = $oEditorModel->getEditor($member_info->member_srl, $option);
-                Context::set('editor', $editor);
-            }
+			// Editor of the module set for signing by calling getEditor
+			if($member_info->member_srl) {
+				$oEditorModel = &getModel('editor');
+				$option->primary_key_name = 'member_srl';
+				$option->content_key_name = 'signature';
+				$option->allow_fileupload = false;
+				$option->enable_autosave = false;
+				$option->enable_default_component = true;
+				$option->enable_component = false;
+				$option->resizable = false;
+				$option->disable_html = true;
+				$option->height = 200;
+				$option->skin = $member_config->signature_editor_skin;
+				$option->colorset = $member_config->sel_editor_colorset;
+				$editor = $oEditorModel->getEditor($member_info->member_srl, $option);
+				Context::set('editor', $editor);
+			}
 
 			$this->member_info = $member_info;
 
@@ -311,118 +311,118 @@
 
 			$this->addExtraFormValidatorMessage();
 
-            // Set a template file
-            $this->setTemplateFile('modify_info');
-        }
+			// Set a template file
+			$this->setTemplateFile('modify_info');
+		}
 
 
-        /**
-         * @brief Display documents written by the member
-         **/
-        function dispMemberOwnDocument() {
-            $oMemberModel = &getModel('member');
-            // A message appears if the user is not logged-in
-            if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
+		/**
+		 * @brief Display documents written by the member
+		 **/
+		function dispMemberOwnDocument() {
+			$oMemberModel = &getModel('member');
+			// A message appears if the user is not logged-in
+			if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
 
-            $logged_info = Context::get('logged_info');
-            $member_srl = $logged_info->member_srl;
+			$logged_info = Context::get('logged_info');
+			$member_srl = $logged_info->member_srl;
 
-            $module_srl = Context::get('module_srl');
-            Context::set('module_srl',Context::get('selected_module_srl'));
-            Context::set('search_target','member_srl');
-            Context::set('search_keyword',$member_srl);
+			$module_srl = Context::get('module_srl');
+			Context::set('module_srl',Context::get('selected_module_srl'));
+			Context::set('search_target','member_srl');
+			Context::set('search_keyword',$member_srl);
 
-            $oDocumentAdminView = &getAdminView('document');
-            $oDocumentAdminView->dispDocumentAdminList();
+			$oDocumentAdminView = &getAdminView('document');
+			$oDocumentAdminView->dispDocumentAdminList();
 
-            Context::set('module_srl', $module_srl);
-            $this->setTemplateFile('document_list');
-        }
+			Context::set('module_srl', $module_srl);
+			$this->setTemplateFile('document_list');
+		}
 
-        /**
-         * @brief Display documents scrapped by the member
-         **/
-        function dispMemberScrappedDocument() {
-            $oMemberModel = &getModel('member');
-            // A message appears if the user is not logged-in
-            if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
+		/**
+		 * @brief Display documents scrapped by the member
+		 **/
+		function dispMemberScrappedDocument() {
+			$oMemberModel = &getModel('member');
+			// A message appears if the user is not logged-in
+			if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
 
-            $logged_info = Context::get('logged_info');
-            $args->member_srl = $logged_info->member_srl;
-            $args->page = (int)Context::get('page');
+			$logged_info = Context::get('logged_info');
+			$args->member_srl = $logged_info->member_srl;
+			$args->page = (int)Context::get('page');
 
-            $output = executeQuery('member.getScrapDocumentList', $args);
-            Context::set('total_count', $output->total_count);
-            Context::set('total_page', $output->total_page);
-            Context::set('page', $output->page);
-            Context::set('document_list', $output->data);
-            Context::set('page_navigation', $output->page_navigation);
+			$output = executeQuery('member.getScrapDocumentList', $args);
+			Context::set('total_count', $output->total_count);
+			Context::set('total_page', $output->total_page);
+			Context::set('page', $output->page);
+			Context::set('document_list', $output->data);
+			Context::set('page_navigation', $output->page_navigation);
 
-            $this->setTemplateFile('scrapped_list');
-        }
+			$this->setTemplateFile('scrapped_list');
+		}
 
-        /**
-         * @brief Display documents saved by the member
-         **/
-        function dispMemberSavedDocument() {
-            $oMemberModel = &getModel('member');
-            // A message appears if the user is not logged-in
-            if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
-            // Get the saved document(module_srl is set to member_srl instead)
-            $logged_info = Context::get('logged_info');
-            $args->member_srl = $logged_info->member_srl;
-            $args->page = (int)Context::get('page');
+		/**
+		 * @brief Display documents saved by the member
+		 **/
+		function dispMemberSavedDocument() {
+			$oMemberModel = &getModel('member');
+			// A message appears if the user is not logged-in
+			if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
+			// Get the saved document(module_srl is set to member_srl instead)
+			$logged_info = Context::get('logged_info');
+			$args->member_srl = $logged_info->member_srl;
+			$args->page = (int)Context::get('page');
 			$args->statusList = array('TEMP');
 
-            $oDocumentModel = &getModel('document');
-            $output = $oDocumentModel->getDocumentList($args, true);
-            Context::set('total_count', $output->total_count);
-            Context::set('total_page', $output->total_page);
-            Context::set('page', $output->page);
-            Context::set('document_list', $output->data);
-            Context::set('page_navigation', $output->page_navigation);
+			$oDocumentModel = &getModel('document');
+			$output = $oDocumentModel->getDocumentList($args, true);
+			Context::set('total_count', $output->total_count);
+			Context::set('total_page', $output->total_page);
+			Context::set('page', $output->page);
+			Context::set('document_list', $output->data);
+			Context::set('page_navigation', $output->page_navigation);
 
-            $this->setTemplateFile('saved_list');
-        }
+			$this->setTemplateFile('saved_list');
+		}
 
-        /**
-         * @brief Display the login form 
-         **/
-        function dispMemberLoginForm() {
-            if(Context::get('is_logged')) {
-                Context::set('redirect_url', getNotEncodedUrl('act',''));
-                $this->setTemplatePath($this->module_path.'tpl');
-                $this->setTemplateFile('redirect.html');
-                return;
-            }
+		/**
+		 * @brief Display the login form 
+		 **/
+		function dispMemberLoginForm() {
+			if(Context::get('is_logged')) {
+				Context::set('redirect_url', getNotEncodedUrl('act',''));
+				$this->setTemplatePath($this->module_path.'tpl');
+				$this->setTemplateFile('redirect.html');
+				return;
+			}
 
 			// get member module configuration.
 			$oMemberModel = &getModel('member');
 			$config = $this->member_config;
 			Context::set('identifier', $config->identifier);
 
-            // Set a template file
-            Context::set('referer_url', htmlspecialchars($_SERVER['HTTP_REFERER']));
-            $this->setTemplateFile('login_form');
-        }
+			// Set a template file
+			Context::set('referer_url', htmlspecialchars($_SERVER['HTTP_REFERER']));
+			$this->setTemplateFile('login_form');
+		}
 
-        /**
-         * @brief Change the user password
-         **/
-        function dispMemberModifyPassword() 
+		/**
+		 * @brief Change the user password
+		 **/
+		function dispMemberModifyPassword() 
 		{
-            $oMemberModel = &getModel('member');
-            // A message appears if the user is not logged-in
-            if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
+			$oMemberModel = &getModel('member');
+			// A message appears if the user is not logged-in
+			if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
 
 			$memberConfig = $this->member_config;
 
-            $logged_info = Context::get('logged_info');
-            $member_srl = $logged_info->member_srl;
+			$logged_info = Context::get('logged_info');
+			$member_srl = $logged_info->member_srl;
 
 			$columnList = array('member_srl', 'user_id');
-            $member_info = $oMemberModel->getMemberInfoByMemberSrl($member_srl, 0, $columnList);
-            Context::set('member_info',$member_info);
+			$member_info = $oMemberModel->getMemberInfoByMemberSrl($member_srl, 0, $columnList);
+			Context::set('member_info',$member_info);
 
 			if($memberConfig->identifier == 'user_id')
 			{
@@ -434,25 +434,25 @@
 				Context::set('identifier', 'email_address');
 				Context::set('formValue', $member_info->email_address);
 			}
-            // Set a template file
-            $this->setTemplateFile('modify_password');
-        }
+			// Set a template file
+			$this->setTemplateFile('modify_password');
+		}
 
-        /**
-         * @brief Member withdrawl
-         **/
-        function dispMemberLeave() {
-            $oMemberModel = &getModel('member');
-            // A message appears if the user is not logged-in
-            if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
+		/**
+		 * @brief Member withdrawl
+		 **/
+		function dispMemberLeave() {
+			$oMemberModel = &getModel('member');
+			// A message appears if the user is not logged-in
+			if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
 
 			$memberConfig = $this->member_config;
 
-            $logged_info = Context::get('logged_info');
-            $member_srl = $logged_info->member_srl;
+			$logged_info = Context::get('logged_info');
+			$member_srl = $logged_info->member_srl;
 
-            $member_info = $oMemberModel->getMemberInfoByMemberSrl($member_srl);
-            Context::set('member_info',$member_info);
+			$member_info = $oMemberModel->getMemberInfoByMemberSrl($member_srl);
+			Context::set('member_info',$member_info);
 
 			if($memberConfig->identifier == 'user_id')
 			{
@@ -464,72 +464,72 @@
 				Context::set('identifier', 'email_address');
 				Context::set('formValue', $member_info->email_address);
 			}
-            // Set a template file
-            $this->setTemplateFile('leave_form');
-        }
+			// Set a template file
+			$this->setTemplateFile('leave_form');
+		}
 
-        /**
-         * @brief Member log-out
-         **/
-        function dispMemberLogout() {
-            $oMemberController = &getController('member');
-            $output = $oMemberController->procMemberLogout();
+		/**
+		 * @brief Member log-out
+		 **/
+		function dispMemberLogout() {
+			$oMemberController = &getController('member');
+			$output = $oMemberController->procMemberLogout();
 			if(!$output->redirect_url)
 				$this->setRedirectUrl(getNotEncodedUrl('act', ''));
 			else
 				$this->setRedirectUrl($output->redirect_url);
 		
 			return;
-        }
+		}
 
-        /**
-         * @brief Display a list of saved articles
+		/**
+		 * @brief Display a list of saved articles
 		 * @Deplicated - instead Document View - dispTempSavedList method use
-         **/
-        function dispSavedDocumentList() {
+		 **/
+		function dispSavedDocumentList() {
 			return new Object(0, 'Deplicated method');
-        }
+		}
 
-        /**
-         * @brief Find user ID and password
-         **/
-        function dispMemberFindAccount() {
-            if(Context::get('is_logged')) return $this->stop('already_logged');
+		/**
+		 * @brief Find user ID and password
+		 **/
+		function dispMemberFindAccount() {
+			if(Context::get('is_logged')) return $this->stop('already_logged');
 
 			$oMemberModel = &getModel('member');
 			$config = $this->member_config;
 			
 			Context::set('identifier', $config->identifier);
 
-            $this->setTemplateFile('find_member_account');
-        }
+			$this->setTemplateFile('find_member_account');
+		}
 
-        /**
-         * @brief Generate a temporary password
-         **/
-        function dispMemberGetTempPassword() {
-            if(Context::get('is_logged')) return $this->stop('already_logged');
+		/**
+		 * @brief Generate a temporary password
+		 **/
+		function dispMemberGetTempPassword() {
+			if(Context::get('is_logged')) return $this->stop('already_logged');
 
-            $user_id = Context::get('user_id');
-            $temp_password = $_SESSION['xe_temp_password_'.$user_id];
-            unset($_SESSION['xe_temp_password_'.$user_id]);
+			$user_id = Context::get('user_id');
+			$temp_password = $_SESSION['xe_temp_password_'.$user_id];
+			unset($_SESSION['xe_temp_password_'.$user_id]);
 
-            if(!$user_id||!$temp_password) return new Object(-1,'msg_invaild_request');
+			if(!$user_id||!$temp_password) return new Object(-1,'msg_invaild_request');
 
-            Context::set('temp_password', $temp_password);
+			Context::set('temp_password', $temp_password);
 
-            $this->setTemplateFile('find_temp_password');
-        }
+			$this->setTemplateFile('find_temp_password');
+		}
 
-        /**
-         * @brief Page of re-sending an authentication mail
-         **/
-        function dispMemberResendAuthMail() 
+		/**
+		 * @brief Page of re-sending an authentication mail
+		 **/
+		function dispMemberResendAuthMail() 
 		{
 			$authMemberSrl = $_SESSION['auth_member_srl'];
 			unset($_SESSION['auth_member_srl']);
 
-            if(Context::get('is_logged')) 
+			if(Context::get('is_logged')) 
 			{
 				return $this->stop('already_logged');
 			}
@@ -547,20 +547,20 @@
 			{
 				$this->setTemplateFile('resend_auth_mail');
 			}
-        }
+		}
 
-        /**
-         * @brief 이메일 주소를 기본 로그인 계정 사용시 이메일 주소 변경을 위한 화면 추가
-         **/
+		/**
+		 * @brief 이메일 주소를 기본 로그인 계정 사용시 이메일 주소 변경을 위한 화면 추가
+		 **/
 		function dispMemberModifyEmailAddress(){
-            if($_SESSION['rechecked_password_step'] != 'VALIDATE_PASSWORD' && $_SESSION['rechecked_password_step'] != 'INPUT_DATA')
-            {
-                Context::set('success_return_url', getUrl('', 'mid', Context::get('mid'), 'act', 'dispMemberModifyEmailAddress'));
-                $this->dispMemberModifyInfoBefore();
-                return;
-            }
-            
-            $_SESSION['rechecked_password_step'] = 'INPUT_DATA';
+			if($_SESSION['rechecked_password_step'] != 'VALIDATE_PASSWORD' && $_SESSION['rechecked_password_step'] != 'INPUT_DATA')
+			{
+				Context::set('success_return_url', getUrl('', 'mid', Context::get('mid'), 'act', 'dispMemberModifyEmailAddress'));
+				$this->dispMemberModifyInfoBefore();
+				return;
+			}
+			
+			$_SESSION['rechecked_password_step'] = 'INPUT_DATA';
 
 			$this->setTemplateFile('modify_email_address');
 		}
@@ -602,5 +602,5 @@
 
 			Context::addHtmlHeader($js_code);
 		}
-    }
+	}
 ?>
