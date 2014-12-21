@@ -4,30 +4,30 @@
 li { float:left; list-style:none; margin-right:5px; }
 
 img.bg_preview_color {
-    width:30px;
-    height:16px;
-    border:1px solid #000000;
-    background-color:#FFFFFF;
+	width:30px;
+	height:16px;
+	border:1px solid #000000;
+	background-color:#FFFFFF;
 }
 
 img.border_preview_color {
-    width:30px;
-    height:16px;
-    border:1px solid #EEEEEE;
-    background-color:#000000;
+	width:30px;
+	height:16px;
+	border:1px solid #EEEEEE;
+	background-color:#000000;
 }
 
 img.color_icon {
-    width:14px;
-    height:14px;
-    border:1px solid #FFFFFF;
+	width:14px;
+	height:14px;
+	border:1px solid #FFFFFF;
 }
 
 img.color_icon_over {
-    width:14px;
-    height:14px;
-    border:1px solid #000000;
-    cursor:pointer;
+	width:14px;
+	height:14px;
+	border:1px solid #000000;
+	cursor:pointer;
 }
 
 .editor_color_box { clear:both; height:65px; width:400px; border:1px solid #DDDDDD; padding:2px; }

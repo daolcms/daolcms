@@ -17,11 +17,11 @@ function getEmoticons(emoName) {
  * @brief Load callback
  */
 function completeGetEmoticons(ret_obj) {
-    var emoticons = ret_obj['emoticons'].split("\n");
-    var html = [];
-    for(var i=0;i<emoticons.length;i++) {
+	var emoticons = ret_obj['emoticons'].split("\n");
+	var html = [];
+	for(var i=0;i<emoticons.length;i++) {
 		html[html.length] = '<img src="./modules/editor/components/emoticon/tpl/images/'+emoticons[i]+'" class="emoticon" />';
-    }
+	}
 	jQuery('#emoticons').html(html.join('')).find('img.emoticon').click(insertEmoticon);
 }
 
