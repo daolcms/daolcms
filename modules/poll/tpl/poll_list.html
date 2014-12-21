@@ -88,8 +88,8 @@ xe.lang.msg_empty_search_keyword = '{$lang->msg_empty_search_keyword}';
 	<input type="hidden" name="error_return_url" value="" />
 	<input type="hidden" name="module" value="{$module}" />
 	<input type="hidden" name="act" value="{$act}" />
-	<input cond="$search_keyword" type="hidden" name="search_keyword" value="{$search_keyword}" />
-	<input cond="$search_target" type="hidden" name="search_target" value="{$search_target}" />
+  	<input cond="$search_keyword" type="hidden" name="search_keyword" value="{$search_keyword}" />
+  	<input cond="$search_target" type="hidden" name="search_target" value="{$search_target}" />
 
 	<a href="{getUrl('page', '')}" class="direction">&laquo; FIRST</a>
 	<block cond="$page_navigation->first_page + $page_navigation->page_count > $page_navigation->last_page && $page_navigation->page_count != $page_navigation->total_page">
