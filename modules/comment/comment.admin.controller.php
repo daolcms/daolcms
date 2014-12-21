@@ -7,14 +7,14 @@
 	 * @package /modules/comment
 	 * @version 0.1
 	 */
-    class commentAdminController extends comment {
+	class commentAdminController extends comment {
 
 		/**
 		 * Initialization
 		 * @return void
 		 */
-        function init() {
-        }
+		function init() {
+		}
 		
 	/**
 	* Modify comment(s) status to publish/unpublish if calling module is using Comment Approval System
@@ -158,16 +158,16 @@
 		 * Delete the selected comment from the administrator page
 		 * @return void
 		 */
-        function procCommentAdminDeleteChecked() {
+		function procCommentAdminDeleteChecked() {
 			$isTrash = Context::get('is_trash');
 
-            // Error display if none is selected
-            $cart = Context::get('cart');
-            if(!$cart) return $this->stop('msg_cart_is_null');
-            if(!is_array($cart)) $comment_srl_list= explode('|@|', $cart);
+			// Error display if none is selected
+			$cart = Context::get('cart');
+			if(!$cart) return $this->stop('msg_cart_is_null');
+			if(!is_array($cart)) $comment_srl_list= explode('|@|', $cart);
 			else $comment_srl_list = $cart;
-            $comment_count = count($comment_srl_list);
-            if(!$comment_count) return $this->stop('msg_cart_is_null');
+			$comment_count = count($comment_srl_list);
+			if(!$comment_count) return $this->stop('msg_cart_is_null');
 
 			$oCommentController = &getController('comment');
 			// begin transaction
@@ -224,8 +224,8 @@
 			$msgCode = '';
 			if($isTrash == 'true') $msgCode = 'success_trashed';
 			else $msgCode = 'success_deleted';
-            //$this->setMessage( sprintf(Context::getLang('msg_checked_comment_is_deleted'), $deleted_count) );
-            $this->setMessage($msgCode, 'info');
+			//$this->setMessage( sprintf(Context::getLang('msg_checked_comment_is_deleted'), $deleted_count) );
+			$this->setMessage($msgCode, 'info');
 
 			//set url params
 			$search_keyword = Context::get('search_keyword');
@@ -234,7 +234,7 @@
 
 			$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispCommentAdminList', 'search_keyword', $search_keyword, 'search_target', $search_target,'page',$page);
 			$this->setRedirectUrl($returnUrl);
-        }
+		}
 
 		/**
 		 * comment move to trash
@@ -272,16 +272,16 @@
 		 * Cancel the blacklist of abused comments reported by other users
 		 * @return void|object
 		 */
-        function procCommentAdminCancelDeclare() {
-            $comment_srl = trim(Context::get('comment_srl'));
+		function procCommentAdminCancelDeclare() {
+			$comment_srl = trim(Context::get('comment_srl'));
 
-            if($comment_srl) {
-                $args = new stdClass();
-                $args->comment_srl = $comment_srl;
-                $output = executeQuery('comment.deleteDeclaredComments', $args);
-                if(!$output->toBool()) return $output;
-            }
-        }
+			if($comment_srl) {
+				$args = new stdClass();
+				$args->comment_srl = $comment_srl;
+				$output = executeQuery('comment.deleteDeclaredComments', $args);
+				if(!$output->toBool()) return $output;
+			}
+		}
 
 		/**
 		 * Comment add to _SESSION
@@ -311,29 +311,29 @@
 		 * Delete all comments of the specific module
 		 * @return object
 		 */
-        function deleteModuleComments($module_srl) {
-            $args = new stdClass();
-            $args->module_srl = $module_srl;
-            $output = executeQuery('comment.deleteModuleComments', $args);
-            if(!$output->toBool()) return $output;
+		function deleteModuleComments($module_srl) {
+			$args = new stdClass();
+			$args->module_srl = $module_srl;
+			$output = executeQuery('comment.deleteModuleComments', $args);
+			if(!$output->toBool()) return $output;
 
-            $output = executeQuery('comment.deleteModuleCommentsList', $args);
+			$output = executeQuery('comment.deleteModuleCommentsList', $args);
 
-            //remove from cache
-            $oCacheHandler = &CacheHandler::getInstance('object');
-            if($oCacheHandler->isSupport())
-            {
-                // Invalidate newest comments. Per document cache is invalidated inside document admin controller.
-                $oCacheHandler->invalidateGroupKey('newestCommentsList');
-            }
-            return $output;
-        }
+			//remove from cache
+			$oCacheHandler = &CacheHandler::getInstance('object');
+			if($oCacheHandler->isSupport())
+			{
+				// Invalidate newest comments. Per document cache is invalidated inside document admin controller.
+				$oCacheHandler->invalidateGroupKey('newestCommentsList');
+			}
+			return $output;
+		}
 
-        /**
-         * Restore comment from trash module, called by trash module
+		/**
+		 * Restore comment from trash module, called by trash module
 		 * this method is passived
 		 * @return object
-         */
+		 */
 		function restoreTrash($originObject)
 		{
 			if(is_array($originObject)) $originObject = (object)$originObject;
@@ -376,5 +376,5 @@
 			$output = $oCommentController->deleteCommentLog($oComment->get('comment_srl'));
 			return $output;
 		}
-    }
+	}
 ?>

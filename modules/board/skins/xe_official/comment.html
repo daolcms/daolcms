@@ -16,9 +16,9 @@
 					<div class="indent" <!--@if($comment->get('depth'))--> style="margin-left:{($comment->get('depth'))*15}px" <!--@end-->>
 					
 					<div class="itemAside">
-                        <!--@if($comment->getProfileImage())-->
-                            <img src="{$comment->getProfileImage()}" alt="profile" class="profile" />
-                        <!--@end-->
+						<!--@if($comment->getProfileImage())-->
+							<img src="{$comment->getProfileImage()}" alt="profile" class="profile" />
+						<!--@end-->
 						<h4 class="author">
 						<!--@if(!$comment->member_srl)-->
 							<!--@if($comment->homepage)-->
@@ -50,7 +50,7 @@
 						
 					</div>
 	
-                    <div class="itemContent">
+					<div class="itemContent">
 					<!--@if(!$comment->isAccessible())-->
 						<form action="./" method="get" onsubmit="return procFilter(this, input_password)" class="secretMessage">
 						<input type="hidden" name="mid" value="{$mid}" />
@@ -93,7 +93,7 @@
 
 					<!--@end-->
 
-                    </div>
+					</div>
 					
 				</div>
 				<!--@if($comment->get('depth'))-->
@@ -104,19 +104,19 @@
 
 </div>
 
-    <!--@if($oDocument->comment_page_navigation)-->
-    <div class="pagination">
-        <a href="{getUrl('cpage',1)}#comment" class="prevEnd">{$lang->first_page}</a> 
-        <!--@while($page_no = $oDocument->comment_page_navigation->getNextPage())-->
-            <!--@if($cpage == $page_no)-->
-                <strong>{$page_no}</strong> 
-            <!--@else-->
-                <a href="{getUrl('cpage',$page_no)}#comment">{$page_no}</a>
-            <!--@end-->
-        <!--@end-->
-        <a href="{getUrl('cpage',$oDocument->comment_page_navigation->last_page)}#comment" class="nextEnd">{$lang->last_page}</a>
-    </div>
-    <!--@end-->
+	<!--@if($oDocument->comment_page_navigation)-->
+	<div class="pagination">
+		<a href="{getUrl('cpage',1)}#comment" class="prevEnd">{$lang->first_page}</a> 
+		<!--@while($page_no = $oDocument->comment_page_navigation->getNextPage())-->
+			<!--@if($cpage == $page_no)-->
+				<strong>{$page_no}</strong> 
+			<!--@else-->
+				<a href="{getUrl('cpage',$page_no)}#comment">{$page_no}</a>
+			<!--@end-->
+		<!--@end-->
+		<a href="{getUrl('cpage',$oDocument->comment_page_navigation->last_page)}#comment" class="nextEnd">{$lang->last_page}</a>
+	</div>
+	<!--@end-->
 
 </div>
 <!--@end-->

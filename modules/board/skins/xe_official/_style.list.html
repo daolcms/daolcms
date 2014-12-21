@@ -1,8 +1,8 @@
 <form action="./" method="get" class="boardListForm">
-    <fieldset>
-        <legend>List of Articles</legend>
+	<fieldset>
+		<legend>List of Articles</legend>
 
-        <table cellspacing="0" border="1" summary="List of Articles" class="boardList">
+		<table cellspacing="0" border="1" summary="List of Articles" class="boardList">
 			<thead>
 				<tr>
 					<!--// configure table theader -->
@@ -45,7 +45,7 @@
 							<!--@elseif($val->type == 'blamed_count')-->
 								<th scope="col"><a href="{getUrl('sort_index','blamed_count','order_type',$order_type)}">{$lang->blamed_count}<!--@if($sort_index=='blamed_count')--><img src="./img/common/{$order_icon}" alt="sort" width="5" height="3" class="sort" /><!--@end--></a></th>
 							<!--@elseif($val->type == 'last_post')-->
-                                <th scope="col"><a href="{getUrl('sort_index','last_update','order_type',$order_type)}">{$lang->last_post}<!--@if($sort_index=='last_update')--><img src="./img/common/{$order_icon}" alt="sort" width="5" height="3" class="sort" /><!--@end--></a></th>
+								<th scope="col"><a href="{getUrl('sort_index','last_update','order_type',$order_type)}">{$lang->last_post}<!--@if($sort_index=='last_update')--><img src="./img/common/{$order_icon}" alt="sort" width="5" height="3" class="sort" /><!--@end--></a></th>
 							<!--@end-->
 							<!--// enable user-defined sorting variables -->
 							<!--@else-->
@@ -113,17 +113,17 @@
 							<!--@elseif($val->type == 'blamed_count')-->
 								<td class="recommend">{$document->get('blamed_count')!=0?$document->get('blamed_count'):'&nbsp;'}</td>
 							<!--@elseif($val->type == 'last_post')-->
-                                <td class="lastReply">
-                                    <!--@if((int)($document->get('comment_count'))>0)-->
-                                        <a href="{$document->getPermanentUrl()}#comment" class="replyAnchor">{zdate($document->get('last_update'),'Y-m-d')} {zdate($document->get('last_update'),'H:i')}</a>
-                                        <!--@if($document->get('last_updater'))-->
-                                            <sub class="by">by</sub>
-                                            {htmlspecialchars($document->get('last_updater'))}
-                                        <!--@end-->
-                                    <!--@else-->
-                                        &nbsp;
-                                    <!--@end-->
-                                </td>
+								<td class="lastReply">
+									<!--@if((int)($document->get('comment_count'))>0)-->
+										<a href="{$document->getPermanentUrl()}#comment" class="replyAnchor">{zdate($document->get('last_update'),'Y-m-d')} {zdate($document->get('last_update'),'H:i')}</a>
+										<!--@if($document->get('last_updater'))-->
+											<sub class="by">by</sub>
+											{htmlspecialchars($document->get('last_updater'))}
+										<!--@end-->
+									<!--@else-->
+										&nbsp;
+									<!--@end-->
+								</td>
 							<!--@end-->
 	
 						<!--// display the extra variables -->
@@ -183,17 +183,17 @@
 							<!--@elseif($val->type == 'blamed_count')-->
 								<td class="recommend">{$document->get('blamed_count')!=0?$document->get('blamed_count'):'&nbsp;'}</td>
 							<!--@elseif($val->type == 'last_post')-->
-                                <td class="lastReply">
-                                    <!--@if((int)($document->get('comment_count'))>0)-->
-                                        <a href="{$document->getPermanentUrl()}#comment" class="replyAnchor">{zdate($document->get('last_update'),'Y-m-d')} {zdate($document->get('last_update'),'H:i')}</a>
-                                        <!--@if($document->get('last_updater'))-->
-                                            <sub class="by">by</sub>
-                                            {htmlspecialchars($document->get('last_updater'))}
-                                        <!--@end-->
-                                    <!--@else-->
-                                        &nbsp;
-                                    <!--@end-->
-                                </td>
+								<td class="lastReply">
+									<!--@if((int)($document->get('comment_count'))>0)-->
+										<a href="{$document->getPermanentUrl()}#comment" class="replyAnchor">{zdate($document->get('last_update'),'Y-m-d')} {zdate($document->get('last_update'),'H:i')}</a>
+										<!--@if($document->get('last_updater'))-->
+											<sub class="by">by</sub>
+											{htmlspecialchars($document->get('last_updater'))}
+										<!--@end-->
+									<!--@else-->
+										&nbsp;
+									<!--@end-->
+								</td>
 							<!--@end-->
 	
 						<!--// display the extra variables -->
@@ -207,8 +207,8 @@
 				
 			<!--@end-->
 			</tbody>
-        </table>
+		</table>
 		
-    </fieldset>
+	</fieldset>
 </form>
 
