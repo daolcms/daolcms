@@ -43,39 +43,39 @@ class pageMobile extends pageView {
 		// Arrange a widget ryeolro
 		if($this->module_info->mcontent)
 		{
-            $cache_file = sprintf("%sfiles/cache/page/%d.%s.m.cache.php", _XE_PATH_, $this->module_info->module_srl, Context::getLangType());
-            $interval = (int)($this->module_info->page_caching_interval);
-            if($interval>0) 
+			$cache_file = sprintf("%sfiles/cache/page/%d.%s.m.cache.php", _XE_PATH_, $this->module_info->module_srl, Context::getLangType());
+			$interval = (int)($this->module_info->page_caching_interval);
+			if($interval>0) 
 			{
-                if(!file_exists($cache_file) || filesize($cache_file) < 1)
+				if(!file_exists($cache_file) || filesize($cache_file) < 1)
 				{
 					$mtime = 0;
 				}
-                else
+				else
 				{
 					$mtime = filemtime($cache_file);
 				}
 
-                if($mtime + $interval*60 > time()) 
+				if($mtime + $interval*60 > time()) 
 				{
-                    $page_content = FileHandler::readFile($cache_file); 
+					$page_content = FileHandler::readFile($cache_file); 
 					$page_content = preg_replace('@<\!--#Meta:@', '<!--Meta:', $page_content);
-                } 
+				} 
 				else 
 				{
-                    $oWidgetController = &getController('widget');
-                    $page_content = $oWidgetController->transWidgetCode($this->module_info->mcontent);
-                    FileHandler::writeFile($cache_file, $page_content);
-                }
-            } 
+					$oWidgetController = &getController('widget');
+					$page_content = $oWidgetController->transWidgetCode($this->module_info->mcontent);
+					FileHandler::writeFile($cache_file, $page_content);
+				}
+			} 
 			else 
 			{
-                if(file_exists($cache_file))
+				if(file_exists($cache_file))
 				{
 					FileHandler::removeFile($cache_file);
 				}
-                $page_content = $this->module_info->mcontent;
-            }
+				$page_content = $this->module_info->mcontent;
+			}
 		}
 		else
 		{

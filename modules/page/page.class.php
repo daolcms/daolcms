@@ -1,39 +1,39 @@
 <?php
-    /**
-     * @class  page
-     * @author NHN (developers@xpressengine.com)
-     * @brief high class of the module page
-     **/
+	/**
+	 * @class  page
+	 * @author NHN (developers@xpressengine.com)
+	 * @brief high class of the module page
+	 **/
 
-    class page extends ModuleObject {
+	class page extends ModuleObject {
 
-        /**
-         * @brief Implement if additional tasks are necessary when installing
-         **/
-        function moduleInstall() {
-            // page generated from the cache directory to use
-            FileHandler::makeDir('./files/cache/page');
+		/**
+		 * @brief Implement if additional tasks are necessary when installing
+		 **/
+		function moduleInstall() {
+			// page generated from the cache directory to use
+			FileHandler::makeDir('./files/cache/page');
 
-            return new Object();
-        }
+			return new Object();
+		}
 
-        /**
-         * @brief a method to check if successfully installed
-         **/
-        function checkUpdate() {
+		/**
+		 * @brief a method to check if successfully installed
+		 **/
+		function checkUpdate() {
 			$output = executeQuery('page.pageTypeOpageCheck');
 			if ($output->toBool() && $output->data) return true;
 
 			$output = executeQuery('page.pageTypeNullCheck');
 			if ($output->toBool() && $output->data) return true;
 
-            return false;
-        }
+			return false;
+		}
 
-        /**
-         * @brief Execute update
-         **/
-        function moduleUpdate() {
+		/**
+		 * @brief Execute update
+		 **/
+		function moduleUpdate() {
 			// opage module instance update
 			$output = executeQueryArray('page.pageTypeOpageCheck');
 			if ($output->toBool() && count($output->data) > 0){
@@ -66,13 +66,13 @@
 				$skin_args->is_skin_fix = "Y";
 				$ouput = executeQuery('page.updateSkinFix', $skin_args);
 			}
-            return new Object(0,'success_updated');
-        }
+			return new Object(0,'success_updated');
+		}
 
-        /**
-         * @brief Re-generate the cache file
-         **/
-        function recompileCache() {
-        }
-    }
+		/**
+		 * @brief Re-generate the cache file
+		 **/
+		function recompileCache() {
+		}
+	}
 ?>

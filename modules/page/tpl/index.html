@@ -8,12 +8,12 @@
 	<input type="hidden" name="vid" value="{$vid}" />
 	<input type="hidden" name="act" value="dispPageAdminContent" />
 
-        <fieldset>
+		<fieldset>
 			{$lang->mid} <input type="text" name="s_mid" value="{htmlspecialchars($s_mid)}"  />
 			{$lang->browser_title} <input type="text" name="s_browser_title" value="{htmlspecialchars($s_browser_title)}"  />
-            <span class="button blue"><input type="submit" value="{$lang->cmd_search}" /></span>
-            <a href="{getUrl('s_mid','','s_browser_title','','page','')}" class="button black"><span>{$lang->cmd_cancel}</span></a>
-        </fieldset>
+			<span class="button blue"><input type="submit" value="{$lang->cmd_search}" /></span>
+			<a href="{getUrl('s_mid','','s_browser_title','','page','')}" class="button black"><span>{$lang->cmd_cancel}</span></a>
+		</fieldset>
 </form>
 
 <!-- 목록 -->
@@ -38,7 +38,7 @@
 						<option value="-1">{$lang->cmd_management}</option>
 						</select>
 					<input type="submit" name="go_button" id="go_button" value="GO" />
-        		</th>
+				</th>
 				<th scope="col">{$lang->page_type}</th>
 				<th scope="col">{$lang->mid}</th>
 				<th scope="col">{$lang->browser_title}</th>
@@ -80,10 +80,10 @@
 
 <!-- 버튼 -->
 <div class="btnArea">
-    <div class="etc">
-        <a href="{getUrl('','module','module','act','dispModuleAdminModuleSetup')}" onclick="doCartSetup(this.href); return false;" class="button green"><span>{$lang->cmd_setup}</span></a>
-        <a href="{getUrl('','module','module','act','dispModuleAdminModuleGrantSetup')}" onclick="doCartSetup(this.href); return false;" class="button blue"><span>{$lang->cmd_manage_grant}</span></a>
-    </div>
+	<div class="etc">
+		<a href="{getUrl('','module','module','act','dispModuleAdminModuleSetup')}" onclick="doCartSetup(this.href); return false;" class="button green"><span>{$lang->cmd_setup}</span></a>
+		<a href="{getUrl('','module','module','act','dispModuleAdminModuleGrantSetup')}" onclick="doCartSetup(this.href); return false;" class="button blue"><span>{$lang->cmd_manage_grant}</span></a>
+	</div>
 	<a href="{getUrl('act','dispPageAdminInsert','module_srl','')}" class="button black strong"><span>{$lang->cmd_page_create}</span></a>
 </div>
 
@@ -91,13 +91,13 @@
 
 <!-- 페이지 네비게이션 -->
 <div class="pagination">
-    <a href="{getUrl('page','','module_srl','')}" class="direction">&lsaquo; {$lang->first_page}</a>
-    <!--@while($page_no = $page_navigation->getNextPage())-->
-        <!--@if($page == $page_no)-->
-            <strong>{$page_no}</strong>
-        <!--@else-->
-            <a href="{getUrl('page',$page_no,'module_srl','')}">{$page_no}</a>
-        <!--@end-->
-    <!--@end-->
-    <a href="{getUrl('page',$page_navigation->last_page,'module_srl','')}" class="direction">{$lang->last_page} &rsaquo;</a>
+	<a href="{getUrl('page','','module_srl','')}" class="direction">&lsaquo; {$lang->first_page}</a>
+	<!--@while($page_no = $page_navigation->getNextPage())-->
+		<!--@if($page == $page_no)-->
+			<strong>{$page_no}</strong>
+		<!--@else-->
+			<a href="{getUrl('page',$page_no,'module_srl','')}">{$page_no}</a>
+		<!--@end-->
+	<!--@end-->
+	<a href="{getUrl('page',$page_navigation->last_page,'module_srl','')}" class="direction">{$lang->last_page} &rsaquo;</a>
 </div>
