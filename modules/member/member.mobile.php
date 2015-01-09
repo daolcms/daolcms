@@ -8,7 +8,7 @@ class memberMobile extends memberView
 	 */
 	var $memberInfo;
 
-    function init() 
+	function init() 
 	{
 		// Get the member configuration
 		$oMemberModel = &getModel('member');
@@ -45,7 +45,7 @@ class memberMobile extends memberView
 			}
 		}
 
-        $this->setTemplatePath($template_path);
+		$this->setTemplatePath($template_path);
 
 		$oLayoutModel = &getModel('layout');
 		$layout_info = $oLayoutModel->getLayout($this->member_config->mlayout_srl);

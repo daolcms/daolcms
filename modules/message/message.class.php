@@ -1,23 +1,23 @@
 <?php
-    /**
-     * @class  message
-     * @author NHN (developers@xpressengine.com)
-     * @brief high class of message module
-     **/
+	/**
+	 * @class  message
+	 * @author NHN (developers@xpressengine.com)
+	 * @brief high class of message module
+	 **/
 
-    class message extends ModuleObject {
+	class message extends ModuleObject {
 
-        /**
-         * @brief Implement if additional tasks are necessary when installing
-         **/
-        function moduleInstall() {
-            return new Object();
-        }
+		/**
+		 * @brief Implement if additional tasks are necessary when installing
+		 **/
+		function moduleInstall() {
+			return new Object();
+		}
 
-        /**
-         * @brief a method to check if successfully installed
-         **/
-        function checkUpdate() 
+		/**
+		 * @brief a method to check if successfully installed
+		 **/
+		function checkUpdate() 
 		{
 			$oModuleModel = &getModel('module');
 			$config = $oModuleModel->getModuleConfig('message');
@@ -31,13 +31,13 @@
 					if(is_dir($template_path)) return true;
 				}
 			}
-            return false;
-        }
+			return false;
+		}
 
-        /**
-         * @brief Execute update
-         **/
-        function moduleUpdate() 
+		/**
+		 * @brief Execute update
+		 **/
+		function moduleUpdate() 
 		{
 			$oModuleModel = &getModel('module');
 			$config = $oModuleModel->getModuleConfig('message');
@@ -56,13 +56,13 @@
 					}
 				}
 			}
-            return new Object();
-        }
+			return new Object();
+		}
 
-        /**
-         * @brief Re-generate the cache file
-         **/
-        function recompileCache() {
-        }
-    }
+		/**
+		 * @brief Re-generate the cache file
+		 **/
+		function recompileCache() {
+		}
+	}
 ?>

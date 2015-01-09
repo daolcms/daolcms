@@ -1,46 +1,46 @@
 <?php
-    /**
-     * @class  communicationAdminView
-     * @author NHN (developers@xpressengine.com)
-     * communication module of the admin view class
-     **/
+	/**
+	 * @class  communicationAdminView
+	 * @author NHN (developers@xpressengine.com)
+	 * communication module of the admin view class
+	 **/
 
-    class communicationAdminView extends communication {
+	class communicationAdminView extends communication {
 
-        /**
-         * Initialization
-         **/
-        function init() {
-        }
+		/**
+		 * Initialization
+		 **/
+		function init() {
+		}
 
-        /**
-         * configuration to manage messages and friends
+		/**
+		 * configuration to manage messages and friends
 		 * @return void
-         **/
-        function dispCommunicationAdminConfig() 
+		 **/
+		function dispCommunicationAdminConfig() 
 		{
-            // Creating an object
-            $oEditorModel = &getModel('editor');
-            $oModuleModel = &getModel('module');
-            $oLayoutModel = &getModel('layout');
-            $oCommunicationModel = &getModel('communication');
-            // get the configurations of communication module
-            Context::set('communication_config', $oCommunicationModel->getConfig() );
+			// Creating an object
+			$oEditorModel = &getModel('editor');
+			$oModuleModel = &getModel('module');
+			$oLayoutModel = &getModel('layout');
+			$oCommunicationModel = &getModel('communication');
+			// get the configurations of communication module
+			Context::set('communication_config', $oCommunicationModel->getConfig() );
 			// get a list of layout
 			Context::set('layout_list', $oLayoutModel->getLayoutList() );
-            // get a list of editor skins
-            Context::set('editor_skin_list', $oEditorModel->getEditorSkinList() );
-            // get a list of communication skins
-            Context::set('communication_skin_list', $oModuleModel->getSkins($this->module_path) );
-            // get a list of communication skins
-            Context::set('communication_mobile_skin_list', $oModuleModel->getSkins($this->module_path, 'm.skins') );
+			// get a list of editor skins
+			Context::set('editor_skin_list', $oEditorModel->getEditorSkinList() );
+			// get a list of communication skins
+			Context::set('communication_skin_list', $oModuleModel->getSkins($this->module_path) );
+			// get a list of communication skins
+			Context::set('communication_mobile_skin_list', $oModuleModel->getSkins($this->module_path, 'm.skins') );
 
-            // Get a layout list
-            $layout_list = $oLayoutModel->getLayoutList();
-            Context::set('layout_list', $layout_list);
+			// Get a layout list
+			$layout_list = $oLayoutModel->getLayoutList();
+			Context::set('layout_list', $layout_list);
 
-            $mlayout_list = $oLayoutModel->getLayoutList(0, 'M');
-            Context::set('mlayout_list', $mlayout_list);
+			$mlayout_list = $oLayoutModel->getLayoutList(0, 'M');
+			Context::set('mlayout_list', $mlayout_list);
 
 			$security = new Security();		
 			$security->encodeHTML('communication_config..');
@@ -54,9 +54,9 @@
 			Context::set('group_list', $group_list);
 
 			// specify a template
-            $this->setTemplatePath($this->module_path.'tpl');
-            $this->setTemplateFile('index');
-        }
+			$this->setTemplatePath($this->module_path.'tpl');
+			$this->setTemplateFile('index');
+		}
 
-    }
+	}
 ?>

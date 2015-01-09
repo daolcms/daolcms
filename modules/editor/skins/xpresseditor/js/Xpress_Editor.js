@@ -3898,7 +3898,7 @@ xe.XE_LineHeight = $.Class({
 
 		return false;
 	},
- 	_getLineWrapper : function(node){
+	_getLineWrapper : function(node){
 		var oTmpSelection = this.oApp.getEmptySelection();
 		oTmpSelection.selectNode(node);
 		var oLineInfo = oTmpSelection.getLineInfo();
@@ -3925,7 +3925,7 @@ xe.XE_LineHeight = $.Class({
 		}
 
 		return div;
- 	}
+	}
  });
 //}
 //{

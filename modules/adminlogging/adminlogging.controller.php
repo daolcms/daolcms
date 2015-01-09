@@ -7,17 +7,17 @@
 	 * @package /modules/adminlogging
 	 * @version 0.1
 	 */
-    class adminloggingController extends adminlogging {
+	class adminloggingController extends adminlogging {
 		/**
 		 * Initialization
 		 * @return void
 		 */
-        function init() {
-            // forbit access if the user is not an administrator
-            $oMemberModel = &getModel('member');
-            $logged_info = $oMemberModel->getLoggedInfo();
-            if($logged_info->is_admin!='Y') return $this->stop("msg_is_not_administrator");
-        }
+		function init() {
+			// forbit access if the user is not an administrator
+			$oMemberModel = &getModel('member');
+			$logged_info = $oMemberModel->getLoggedInfo();
+			if($logged_info->is_admin!='Y') return $this->stop("msg_is_not_administrator");
+		}
 
 		/**
 		 * Insert log
@@ -36,5 +36,5 @@
 
 			$output = executeQuery('adminlogging.insertLog', $args);
 		}
-    }
+	}
 ?>

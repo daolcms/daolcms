@@ -7,6 +7,6 @@
 	 * @package /modules/adminlogging
 	 * @version 0.1
 	 */
-    class adminloggingModel extends adminlogging
-    {
+	class adminloggingModel extends adminlogging
+	{
 	}

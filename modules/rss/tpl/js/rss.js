@@ -10,8 +10,8 @@ function doToggleRss(module_srl) {
 function doChangeIcon(ret_obj, response_tags) {
   var obj = document.getElementById('dotogglerss_'+ret_obj['module_srl']);
   if(ret_obj['open_total_feed'] == 'T_N') {
-    obj.className = "buttonSet buttonDisable";
+	obj.className = "buttonSet buttonDisable";
   } else {
-    obj.className = "buttonSet buttonActive"; 
+	obj.className = "buttonSet buttonActive"; 
   }
 }

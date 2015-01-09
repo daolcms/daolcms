@@ -1,7 +1,7 @@
 <form action="./" method="get" class="boardListForm">
-    <fieldset>
-        <legend>List of Articles</legend>
-        <table cellspacing="0" border="1" summary="List of Articles" class="boardList">
+	<fieldset>
+		<legend>List of Articles</legend>
+		<table cellspacing="0" border="1" summary="List of Articles" class="boardList">
 		<thead>
 			{@ $no_line_class = " no_line" }
 			<tr>
@@ -15,14 +15,14 @@
 				<th scope="col" class="title">
 					
 					<!--@if($module_info->use_category == "Y")-->
-                    <span class="jumpTo">
+					<span class="jumpTo">
 						<select name="category" id="board_category">
 							<option value="">{$lang->category}</option>
 							<!--@foreach($category_list as $val)-->
 							<option value="{$val->category_srl}" <!--@if($category==$val->category_srl)-->selected="selected"<!--@end-->>{str_repeat("&nbsp;&nbsp;",$val->depth)} {$val->title} <!--@if($val->document_count)-->({$val->document_count})<!--@end--></option>
 							<!--@end-->
 						</select>
-                        <button type="button" name="go_button" id="go_button" onclick="doChangeCategory(); return false;">Go</button>
+						<button type="button" name="go_button" id="go_button" onclick="doChangeCategory(); return false;">Go</button>
 					</span>
 					<!--@end-->
 					{$lang->topic}
@@ -35,13 +35,13 @@
 	
 		<tbody>
 	
-        <!--@if(!$document_list && !$notice_list)-->
-            <tr>
-                <td colspan="<!--@if($grant->manager)-->5<!--@else-->4<!--@end-->">
-                    {$lang->no_documents}
-                </td>
-            </tr>
-        <!--@else-->
+		<!--@if(!$document_list && !$notice_list)-->
+			<tr>
+				<td colspan="<!--@if($grant->manager)-->5<!--@else-->4<!--@end-->">
+					{$lang->no_documents}
+				</td>
+			</tr>
+		<!--@else-->
 
 		<!--@foreach($notice_list as $no => $document)-->
 			<tr class="notice">

@@ -55,7 +55,7 @@ jQuery(function($){
 
 			if (!used['@'+item.member_srl]) {
 				member_srls[member_srls.length] = item.member_srl;
-                used['@'+item.member_srl] = 1;
+				used['@'+item.member_srl] = 1;
 			}
 
 			link = request_uri+'index.php?mid='+current_mid+'&document_srl='+item.document_srl+'&page='+nav.cur_page;

@@ -84,7 +84,7 @@ $('.syncmember').hide();
  * 회원정보와 게시글/댓글등의 동기화 요청 및 결과 처리 함수
  **/
 function doSync(fo_obj) {
-    exec_xml(
+	exec_xml(
 		'importer',
 		'procImporterAdminSync', 
 		[],
@@ -93,7 +93,7 @@ function doSync(fo_obj) {
 			location.href = location.href;
 		}
 	);
-    return false;
+	return false;
 }
 
 /**
@@ -105,14 +105,14 @@ function doPreProcessing(form, formId) {
 	xml_file = form.elements['xml_file'].value;
 	type     = form.elements['type'].value;
 
-    if(!xml_file) return false;
+	if(!xml_file) return false;
 
 	// show modal window
 	$process = $('#process');
 	if(!$process.find('.bg').length) $process.prepend('<span class="bg" />').appendTo('body');
 	$('a[href="#process"].modalAnchor').trigger('open.mw');
 
-    exec_xml(
+	exec_xml(
 		'importer', // module
 		'procImporterAdminPreProcessing', // action
 		{type:type, xml_file:xml_file}, // parameters
@@ -152,12 +152,12 @@ function doPreProcessing(form, formId) {
 		doImport(formId);
 	}
 
-    return false;
+	return false;
 }
 
 /* @brief Start importing */
 function doImport(formId) {
-    var form = get_by_id('fo_process'), elems = form.elements, i, c, params={}, resp;
+	var form = get_by_id('fo_process'), elems = form.elements, i, c, params={}, resp;
 
 	for(i=0,c=elems.length; i < c; i++) {
 		params[elems[i].name] = elems[i].value;
@@ -216,17 +216,17 @@ function doImport(formId) {
 		}
 	}
 
-    show_waiting_message = false;
-    exec_xml(
+	show_waiting_message = false;
+	exec_xml(
 		'importer', // module
 		'procImporterAdminImport', // act
 		params,
 		on_complete, // callback
 		resp = ['error','message','type','total','cur','key'] // response tags
 	);
-    show_waiting_message = true;
+	show_waiting_message = true;
 
-    return false;
+	return false;
 }
 
 /* display progress */

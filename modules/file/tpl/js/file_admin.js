@@ -1,5 +1,5 @@
 function insertSelectedModule(id, module_srl, mid, browser_title) {
-    location.href = current_url.setQuery('module_srl',module_srl);
+	location.href = current_url.setQuery('module_srl',module_srl);
 }
 
 function getFileList() {
@@ -9,11 +9,11 @@ function getFileList() {
 		if(this.checked) cartList.push(this.value); 
 	});
 
-    var params = new Array();
-    var response_tags = ['error','message', 'file_list'];
+	var params = new Array();
+	var response_tags = ['error','message', 'file_list'];
 	params["file_srls"] = cartList.join(",");
 
-    exec_xml('file','procFileGetList',params, completeGetFileList, response_tags);
+	exec_xml('file','procFileGetList',params, completeGetFileList, response_tags);
 }
 
 function completeGetFileList(ret_obj, response_tags)

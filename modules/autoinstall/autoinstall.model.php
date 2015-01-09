@@ -1,9 +1,9 @@
 <?php
-    /**
-     * Model class of the autoinstall module
-     * @author NHN (developers@xpressengine.com)
-     **/
-    class autoinstallModel extends autoinstall {
+	/**
+	 * Model class of the autoinstall module
+	 * @author NHN (developers@xpressengine.com)
+	 **/
+	class autoinstallModel extends autoinstall {
 
 		/**
 		 * Get category information
@@ -11,26 +11,26 @@
 		 * @param int $category_srl The sequence of category to get information
 		 * @return object
 		 */
-        function getCategory($category_srl)
-        {
-            $args = new stdClass();
-            $args->category_srl = $category_srl;
-            $output = executeQueryArray("autoinstall.getCategory", $args);
-            if(!$output->data) return null;
-            return array_shift($output->data);
-        }
+		function getCategory($category_srl)
+		{
+			$args = new stdClass();
+			$args->category_srl = $category_srl;
+			$output = executeQueryArray("autoinstall.getCategory", $args);
+			if(!$output->data) return null;
+			return array_shift($output->data);
+		}
 
 		/**
 		 * Get packages information
 		 *
 		 * @return array
 		 */
-        function getPackages()
-        {
-            $output = executeQueryArray("autoinstall.getPackages");
-            if(!$output->data) return array();
-            return $output->data;
-        }
+		function getPackages()
+		{
+			$output = executeQueryArray("autoinstall.getPackages");
+			if(!$output->data) return array();
+			return $output->data;
+		}
 
 		/**
 		 * Get installed packages information
@@ -38,14 +38,14 @@
 		 * @param int $package_srl The sequence of package to get information
 		 * @return object
 		 */
-        function getInstalledPackage($package_srl)
-        {
-            $args = new stdClass();
-            $args->package_srl = $package_srl;
-            $output = executeQueryArray("autoinstall.getInstalledPackage", $args);
-            if(!$output->data) return null;
-            return array_shift($output->data);
-        }
+		function getInstalledPackage($package_srl)
+		{
+			$args = new stdClass();
+			$args->package_srl = $package_srl;
+			$output = executeQueryArray("autoinstall.getInstalledPackage", $args);
+			if(!$output->data) return null;
+			return array_shift($output->data);
+		}
 
 		/**
 		 * Get one package information
@@ -53,51 +53,51 @@
 		 * @param int $package_srl The sequence of package to get information
 		 * @return object
 		 */
-        function getPackage($package_srl)
-        {
-            $args = new stdClass();
-            $args->package_srl = $package_srl;
-            $output = executeQueryArray("autoinstall.getPackage", $args);
-            if(!$output->data) return null;
-            return array_shift($output->data);
-        }
+		function getPackage($package_srl)
+		{
+			$args = new stdClass();
+			$args->package_srl = $package_srl;
+			$output = executeQueryArray("autoinstall.getPackage", $args);
+			if(!$output->data) return null;
+			return array_shift($output->data);
+		}
 
 		/**
 		 * Get category list
 		 *
 		 * @return array
 		 */
-        function getCategoryList()
-        {
-            $output = executeQueryArray("autoinstall.getCategories");
-            if(!$output->toBool() || !$output->data) return array();
+		function getCategoryList()
+		{
+			$output = executeQueryArray("autoinstall.getCategories");
+			if(!$output->toBool() || !$output->data) return array();
 
-            $categoryList = array();
-            foreach($output->data as $category)
-            {
-                $category->children = array();
-                $categoryList[$category->category_srl] = $category;
-            }
+			$categoryList = array();
+			foreach($output->data as $category)
+			{
+				$category->children = array();
+				$categoryList[$category->category_srl] = $category;
+			}
 
-            $depth0 = array();
-            foreach($categoryList as $key => $category)
-            {
-                if($category->parent_srl)
-                {
-                    $categoryList[$category->parent_srl]->children[] =& $categoryList[$key];
-                }
-                else
-                {
-                    $depth0[] = $key;
-                }
-            }
-            $resultList = array();
-            foreach($depth0 as $category_srl)
-            {
-                $this->setDepth($categoryList[$category_srl], 0, $categoryList, $resultList);
-            }
-            return $resultList;
-        }
+			$depth0 = array();
+			foreach($categoryList as $key => $category)
+			{
+				if($category->parent_srl)
+				{
+					$categoryList[$category->parent_srl]->children[] =& $categoryList[$key];
+				}
+				else
+				{
+					$depth0[] = $key;
+				}
+			}
+			$resultList = array();
+			foreach($depth0 as $category_srl)
+			{
+				$this->setDepth($categoryList[$category_srl], 0, $categoryList, $resultList);
+			}
+			return $resultList;
+		}
 
 		/**
 		 * Get pcakge count in category
@@ -105,26 +105,26 @@
 		 * @param int $category_srl The sequence of category to get count
 		 * @return int
 		 */
-        function getPackageCount($category_srl)
-        {
-            $args = new stdClass();
-            $args->category_srl = $category_srl;
-            $output = executeQuery("autoinstall.getPackageCount", $args);
-            if(!$output->data) return 0;
-            return $output->data->count;
-        }
+		function getPackageCount($category_srl)
+		{
+			$args = new stdClass();
+			$args->category_srl = $category_srl;
+			$output = executeQuery("autoinstall.getPackageCount", $args);
+			if(!$output->data) return 0;
+			return $output->data->count;
+		}
 
 		/**
 		 * Get installed package count
 		 *
 		 * @return int
 		 */
-        function getInstalledPackageCount()
-        {
-            $output = executeQuery("autoinstall.getInstalledPackageCount", $args);
-            if(!$output->data) return 0;
-            return $output->data->count;
-        }
+		function getInstalledPackageCount()
+		{
+			$output = executeQuery("autoinstall.getInstalledPackageCount", $args);
+			if(!$output->data) return 0;
+			return $output->data->count;
+		}
 
 		/**
 		 * Set depth, children list and package count of category
@@ -135,33 +135,33 @@
 		 * @param array $resultList Final result list
 		 * @return string $siblingList Comma seperated list
 		 */
-        function setDepth(&$item, $depth, &$list, &$resultList)
-        {
-            $resultList[$item->category_srl] =& $item;
-            $item->depth = $depth;
-            $siblingList = $item->category_srl;
-            foreach($item->children as $child)
-            {
-                $siblingList .= ",".$this->setDepth($list[$child->category_srl], $depth+1, $list, $resultList);
-            }
-            if(count($item->children) < 1)
-            {
-                $item->nPackages = $this->getPackageCount($item->category_srl);
-            }
-            $item->childrenList = $siblingList;
-            return $siblingList;
-        }
+		function setDepth(&$item, $depth, &$list, &$resultList)
+		{
+			$resultList[$item->category_srl] =& $item;
+			$item->depth = $depth;
+			$siblingList = $item->category_srl;
+			foreach($item->children as $child)
+			{
+				$siblingList .= ",".$this->setDepth($list[$child->category_srl], $depth+1, $list, $resultList);
+			}
+			if(count($item->children) < 1)
+			{
+				$item->nPackages = $this->getPackageCount($item->category_srl);
+			}
+			$item->childrenList = $siblingList;
+			return $siblingList;
+		}
 
 		/**
 		 * Get lastest package information
 		 *
 		 * @return object Returns lastest package information. If no result returns null.
 		 */
-        function getLatestPackage() {
-            $output = executeQueryArray("autoinstall.getLatestPackage");
-            if(!$output->data) return null;
-            return array_shift($output->data);
-        }
+		function getLatestPackage() {
+			$output = executeQueryArray("autoinstall.getLatestPackage");
+			if(!$output->data) return null;
+			return array_shift($output->data);
+		}
 
 		/**
 		 * Get installed package informations
@@ -169,18 +169,18 @@
 		 * @param array $package_list Package sequence list to get information
 		 * @return array Returns array contains pacakge information. If no result returns empty array.
 		 */
-        function getInstalledPackages($package_list) {
-            $args = new stdClass();
-            $args->package_list = $package_list;
-            $output = executeQueryArray("autoinstall.getInstalledPackages", $args);
-            $result = array();
-            if(!$output->data) return $result;
-            foreach($output->data as $value)
-            {
-                $result[$value->package_srl] = $value;
-            }
-            return $result;
-        }
+		function getInstalledPackages($package_list) {
+			$args = new stdClass();
+			$args->package_list = $package_list;
+			$output = executeQueryArray("autoinstall.getInstalledPackages", $args);
+			$result = array();
+			if(!$output->data) return $result;
+			foreach($output->data as $value)
+			{
+				$result[$value->package_srl] = $value;
+			}
+			return $result;
+		}
 
 		/**
 		 * Get installed package list
@@ -188,14 +188,14 @@
 		 * @param int $page
 		 * @return Object
 		 */
-        function getInstalledPackageList($page)
-        {
-            $args = new stdClass();
-            $args->page = $page;
+		function getInstalledPackageList($page)
+		{
+			$args = new stdClass();
+			$args->page = $page;
 			$args->list_count = 10;
 			$args->page_count = 5;
-            $output = executeQueryArray("autoinstall.getInstalledPackageList", $args);
-            $res = array();
+			$output = executeQueryArray("autoinstall.getInstalledPackageList", $args);
+			$res = array();
 			if ($output->data)
 			{
 				foreach($output->data as $val)
@@ -203,9 +203,9 @@
 					$res[$val->package_srl] = $val;
 				}
 			}
-            $output->data = $res;
-            return $output;
-        }
+			$output->data = $res;
+			return $output;
+		}
 
 		/**
 		 * Get type using path
@@ -218,8 +218,8 @@
 			if(!$path) return null;
 			if($path == ".") return "core";
 			$path_array = explode("/", $path);
-            $target_name = array_pop($path_array);
-            $type = substr(array_pop($path_array), 0, -1);
+			$target_name = array_pop($path_array);
+			$type = substr(array_pop($path_array), 0, -1);
 			return $type;
 		}
 
@@ -266,7 +266,7 @@
 		function checkRemovable($path)
 		{
 			$path_array = explode("/", $path);
-            $target_name = array_pop($path_array);
+			$target_name = array_pop($path_array);
 			$oModule =& getModule($target_name, "class");
 			if(!$oModule) return false;
 			if(method_exists($oModule, "moduleUninstall")) return true;
@@ -304,8 +304,8 @@
 		 */
 		function getRemoveUrlByPackageSrl($packageSrl)
 		{
-            $ftp_info =  Context::getFTPInfo();
-            if (!$ftp_info->ftp_root_path) return;
+			$ftp_info =  Context::getFTPInfo();
+			if (!$ftp_info->ftp_root_path) return;
 			
 			if (!$packageSrl) return;
 
@@ -322,8 +322,8 @@
 		{
 			if (!$path) return;
 
-            $ftp_info =  Context::getFTPInfo();
-            if (!$ftp_info->ftp_root_path) return;
+			$ftp_info =  Context::getFTPInfo();
+			if (!$ftp_info->ftp_root_path) return;
 
 			$packageSrl = $this->getPackageSrlByPath($path);
 			if (!$packageSrl) return;

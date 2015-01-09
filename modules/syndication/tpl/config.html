@@ -11,83 +11,83 @@
 <form ruleset="insertService" action="./" method="post">
 	<input type="hidden" name="xe_validator_id" value="{$form_id}" />
 	<input type="hidden" name="act" value="procSyndicationAdminInsertConfig" />
-    <input type="hidden" name="year" value="{$year}" />
+	<input type="hidden" name="year" value="{$year}" />
 
-    <table cellspacing="0" class="rowTable">
-    <tr>
-        <th scope="row"><div>{$lang->help}</div></th>
-        <td>
-            <p>{$lang->about_syndication}</p>
-            <p><a href="http://webmastertool.naver.com/syndi/status.naver" target="_blank">http://webmastertool.naver.com/syndi/status.naver</a></p>
-        </td>
+	<table cellspacing="0" class="rowTable">
+	<tr>
+		<th scope="row"><div>{$lang->help}</div></th>
+		<td>
+			<p>{$lang->about_syndication}</p>
+			<p><a href="http://webmastertool.naver.com/syndi/status.naver" target="_blank">http://webmastertool.naver.com/syndi/status.naver</a></p>
+		</td>
 	</tr>
 
 	<tr>
-        <th scope="row"><div>{$lang->use}</div></th>
-        <td>
-            <select name="syndication_use">
-                <option value="Y" selected="selected"|cond="$syndication_use=='Y'">{$lang->use}</option>
-                <option value="N" selected="selected"|cond="$syndication_use=='N'">{$lang->notuse}</option>
-            </select>
-        <td>
+		<th scope="row"><div>{$lang->use}</div></th>
+		<td>
+			<select name="syndication_use">
+				<option value="Y" selected="selected"|cond="$syndication_use=='Y'">{$lang->use}</option>
+				<option value="N" selected="selected"|cond="$syndication_use=='N'">{$lang->notuse}</option>
+			</select>
+		<td>
 	</tr>
 	
-    <tr>
-        <th scope="row"><div>{$lang->my_syndication_url}</div></th>
-        <td>
-            http://<input type="text" id="site_url" name="site_url" value="{$site_url}" />
-            <span class="btn"><input type="button" value="{$lang->cmd_check_syndication_echo}" onclick="pingCheck(jQuery('#site_url').val())" /></span>
-            <p>{$lang->about_my_syndication_url}</p>
+	<tr>
+		<th scope="row"><div>{$lang->my_syndication_url}</div></th>
+		<td>
+			http://<input type="text" id="site_url" name="site_url" value="{$site_url}" />
+			<span class="btn"><input type="button" value="{$lang->cmd_check_syndication_echo}" onclick="pingCheck(jQuery('#site_url').val())" /></span>
+			<p>{$lang->about_my_syndication_url}</p>
 			<p class="ping_test_result"></p>
-        </td>
-    </tr>
-    
-    <tr>
-        <th scope="row"><div>{$lang->my_syndication_password}</div></th>
-        <td>
-            <input type="text" id="syndication_password" name="syndication_password" value="{$syndication_password}" />
-            <p>{$lang->about_my_syndication_password}</p>
-        </td>
-    </tr>
-    
-    <tr>
-        <th scope="row"><div>{$lang->naver_syndication_token}</div></th>
-        <td>
+		</td>
+	</tr>
+	
+	<tr>
+		<th scope="row"><div>{$lang->my_syndication_password}</div></th>
+		<td>
+			<input type="text" id="syndication_password" name="syndication_password" value="{$syndication_password}" />
+			<p>{$lang->about_my_syndication_password}</p>
+		</td>
+	</tr>
+	
+	<tr>
+		<th scope="row"><div>{$lang->naver_syndication_token}</div></th>
+		<td>
 			<input type="text" name="syndication_token" value="{$syndication_token}" id="syndication_token" style="width:90%"/>
-            <p>{$lang->about_syndication}</p>
-        </td>
-    </tr>
-    <tr>
-        <th scope="row"><div>{$lang->except_module}</div></th>
-        <td>
-            <select name="_except_module" id="_except_module" size="10" class="exceptModuleList">
-                {@$except_module_srls = array()}
-                <!--@foreach($except_module as $v)-->
-                {@$except_module_srls[] = $v->module_srl}
-                <option value="{$v->module_srl}">{$v->browser_title} ({$v->mid})</option>
-                <!--@end-->
-            </select>
-            <ul class="midCommand">
-                <li><span class="btn"><a href="{getUrl('','module','module','act','dispModuleSelectList','id','except_module')}" onclick="popopen(this.href, 'ModuleSelect');return false;" class="button blue">{$lang->cmd_insert}</a></span></li>
-                <li><span class="btn"><a href="#" onclick="removeExceptModule('except_module');return false;" class="button red">{$lang->cmd_delete}</a></span></li>
-            </ul>
-            <p>{$lang->about_except_module}</p>
-            <input type="hidden" name="except_module" id="except_module" value="{implode(',',$except_module_srls)}" />
-        </td>
-    </tr>
-    <tr>
-        <th colspan="2" class="button">
-            <span class="btn"><input type="submit" value="{$lang->cmd_apply}" accesskey="s" /></span>
-        </th>
-    </tr>
-    </table>
+			<p>{$lang->about_syndication}</p>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row"><div>{$lang->except_module}</div></th>
+		<td>
+			<select name="_except_module" id="_except_module" size="10" class="exceptModuleList">
+				{@$except_module_srls = array()}
+				<!--@foreach($except_module as $v)-->
+				{@$except_module_srls[] = $v->module_srl}
+				<option value="{$v->module_srl}">{$v->browser_title} ({$v->mid})</option>
+				<!--@end-->
+			</select>
+			<ul class="midCommand">
+				<li><span class="btn"><a href="{getUrl('','module','module','act','dispModuleSelectList','id','except_module')}" onclick="popopen(this.href, 'ModuleSelect');return false;" class="button blue">{$lang->cmd_insert}</a></span></li>
+				<li><span class="btn"><a href="#" onclick="removeExceptModule('except_module');return false;" class="button red">{$lang->cmd_delete}</a></span></li>
+			</ul>
+			<p>{$lang->about_except_module}</p>
+			<input type="hidden" name="except_module" id="except_module" value="{implode(',',$except_module_srls)}" />
+		</td>
+	</tr>
+	<tr>
+		<th colspan="2" class="button">
+			<span class="btn"><input type="submit" value="{$lang->cmd_apply}" accesskey="s" /></span>
+		</th>
+	</tr>
+	</table>
 </form>
 
 <div>
-    <h2>Ping Fail log</h2>
-    <ul>
-        <li loop="$ping_log=>$obj">
-            <span>{zdate($obj->regdate)}</span> / <span>{urldecode($obj->message)}</span>
-        </li>
+	<h2>Ping Fail log</h2>
+	<ul>
+		<li loop="$ping_log=>$obj">
+			<span>{zdate($obj->regdate)}</span> / <span>{urldecode($obj->message)}</span>
+		</li>
 	</ul>
 </div>

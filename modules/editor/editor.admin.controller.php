@@ -1,21 +1,21 @@
 <?php
-    /**
-     * @class  editorAdminController
-     * @author NHN (developers@xpressengine.com)
-     * @brief editor of the module admin controller class
-     **/
+	/**
+	 * @class  editorAdminController
+	 * @author NHN (developers@xpressengine.com)
+	 * @brief editor of the module admin controller class
+	 **/
 
-    class editorAdminController extends editor {
+	class editorAdminController extends editor {
 
-        /**
-         * @brief Initialization
-         **/
-        function init() {
-        }
+		/**
+		 * @brief Initialization
+		 **/
+		function init() {
+		}
 		
 		/**
-         * @brief 컴포넌트 사용설정, 목록 순서 변경
-         **/	
+		 * @brief 컴포넌트 사용설정, 목록 순서 변경
+		 **/	
 		function procEditorAdminCheckUseListOrder(){
 			$site_module_info = Context::get('site_module_info');
 			$enables = Context::get('enables');			
@@ -41,13 +41,13 @@
 			if(!$output->toBool()) return new Object();
 			
 			$oEditorController = &getController('editor');
-            $oEditorController->removeCache($site_module_info->site_srl);
+			$oEditorController->removeCache($site_module_info->site_srl);
 			$this->setRedirectUrl(Context::get('error_return_url'));
 		}
 		
 		/**
-         * @brief check use component
-         **/	
+		 * @brief check use component
+		 **/	
 		function editorCheckUse($componentList, $site_srl = 0){			
 			$args->site_srl = $site_srl;
 			
@@ -67,8 +67,8 @@
 		}
 		
 		/**
-         * @brief list order componet
-         **/
+		 * @brief list order componet
+		 **/
 		function editorListOrder($component_names, $site_srl = 0){		
 			$args->site_srl = $site_srl;
 			$list_order_num = '30';
@@ -91,40 +91,40 @@
 			return $output;
 		}
 
-        /**
-         * @brief Set components
-         **/
-        function procEditorAdminSetupComponent() {
-            $site_module_info = Context::get('site_module_info');
+		/**
+		 * @brief Set components
+		 **/
+		function procEditorAdminSetupComponent() {
+			$site_module_info = Context::get('site_module_info');
 
-            $component_name = Context::get('component_name');
-            $extra_vars = Context::getRequestVars();
-            unset($extra_vars->component_name);
-            unset($extra_vars->module);
-            unset($extra_vars->act);
-            unset($extra_vars->body);
+			$component_name = Context::get('component_name');
+			$extra_vars = Context::getRequestVars();
+			unset($extra_vars->component_name);
+			unset($extra_vars->module);
+			unset($extra_vars->act);
+			unset($extra_vars->body);
 
-            if($extra_vars->target_group) $extra_vars->target_group = explode('|@|', $extra_vars->target_group);
-            if($extra_vars->mid_list) $extra_vars->mid_list = explode('|@|', $extra_vars->mid_list);
+			if($extra_vars->target_group) $extra_vars->target_group = explode('|@|', $extra_vars->target_group);
+			if($extra_vars->mid_list) $extra_vars->mid_list = explode('|@|', $extra_vars->mid_list);
 
-            $args->component_name = $component_name;
-            $args->extra_vars = serialize($extra_vars);
-            $args->site_srl = (int)$site_module_info->site_srl;
+			$args->component_name = $component_name;
+			$args->extra_vars = serialize($extra_vars);
+			$args->site_srl = (int)$site_module_info->site_srl;
 
-            if(!$args->site_srl) $output = executeQuery('editor.updateComponent', $args);
-            else $output = executeQuery('editor.updateSiteComponent', $args);
-            if(!$output->toBool()) return $output;
+			if(!$args->site_srl) $output = executeQuery('editor.updateComponent', $args);
+			else $output = executeQuery('editor.updateSiteComponent', $args);
+			if(!$output->toBool()) return $output;
 
-            $oEditorController = &getController('editor');
-            $oEditorController->removeCache($args->site_srl);
+			$oEditorController = &getController('editor');
+			$oEditorController->removeCache($args->site_srl);
 
-            $this->setMessage('success_updated');
+			$this->setMessage('success_updated');
 			$this->setRedirectUrl(Context::get('error_return_url'));
-        }
+		}
 		
 		/**
-         * @brief Config components
-         **/
+		 * @brief Config components
+		 **/
 		 
 		function procEditorAdminGeneralConfig(){
 			$oModuleController = &getController('module');
@@ -145,28 +145,28 @@
 					
 		}
 
-        /**
-         * @brief Add a component to DB
-         **/
-        function insertComponent($component_name, $enabled = false, $site_srl = 0) {
-            if($enabled) $enabled = 'Y';
-            else $enabled = 'N';
+		/**
+		 * @brief Add a component to DB
+		 **/
+		function insertComponent($component_name, $enabled = false, $site_srl = 0) {
+			if($enabled) $enabled = 'Y';
+			else $enabled = 'N';
 
-            $args->component_name = $component_name;
-            $args->enabled = $enabled;
-            $args->site_srl = $site_srl;
-            // Check if the component exists
-            if(!$site_srl) $output = executeQuery('editor.isComponentInserted', $args);
-            else $output = executeQuery('editor.isSiteComponentInserted', $args);
-            if($output->data->count) return new Object(-1, 'msg_component_is_not_founded');
-            // Inert a component
-            $args->list_order = getNextSequence();
-            if(!$site_srl) $output = executeQuery('editor.insertComponent', $args);
-            else $output = executeQuery('editor.insertSiteComponent', $args);
+			$args->component_name = $component_name;
+			$args->enabled = $enabled;
+			$args->site_srl = $site_srl;
+			// Check if the component exists
+			if(!$site_srl) $output = executeQuery('editor.isComponentInserted', $args);
+			else $output = executeQuery('editor.isSiteComponentInserted', $args);
+			if($output->data->count) return new Object(-1, 'msg_component_is_not_founded');
+			// Inert a component
+			$args->list_order = getNextSequence();
+			if(!$site_srl) $output = executeQuery('editor.insertComponent', $args);
+			else $output = executeQuery('editor.insertSiteComponent', $args);
 
-            $oEditorController = &getController('editor');
-            $oEditorController->removeCache($site_srl);
-            return $output;
-        }
-    }
+			$oEditorController = &getController('editor');
+			$oEditorController->removeCache($site_srl);
+			return $output;
+		}
+	}
 ?>

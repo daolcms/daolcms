@@ -2,7 +2,7 @@
 
 <!--@if($oSourceComment->isExists())-->
 <div class="feedbackList">
-    <div class="item itemOnly">
+	<div class="item itemOnly">
 	
 		<div class="itemAside">
 			<h4 class="author"><a href="#popup_menu_area" class="member_{$oSourceComment->getMemberSrl()}" onclick="return false">{$oSourceComment->getNickName()}</a></h4>
@@ -18,7 +18,7 @@
 			{$oSourceComment->getContent(false)}
 		</div>
 
-    </div>
+	</div>
 </div>
 <!--@end-->
 
@@ -31,7 +31,7 @@
 
 <div class="boardWrite commentEditor">
 	
-    <div class="editor">{$oComment->getEditor()}</div>
+	<div class="editor">{$oComment->getEditor()}</div>
 	
 	<div class="editOption">
 	<!--@if(!$is_logged)-->

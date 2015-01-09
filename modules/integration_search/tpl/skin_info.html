@@ -7,8 +7,8 @@
 <input type="hidden" name="module" value="integration_search" />
 <input type="hidden" name="act" value="procIntegration_searchAdminInsertSkin" />
 
-    <h3 class="h3">{$lang->skin_default_info}</h3>
-    <div class="table">
+	<h3 class="h3">{$lang->skin_default_info}</h3>
+	<div class="table">
 		<table width="100%" border="1" cellspacing="0">
 			<tr>
 			<th scope="row">{$lang->skin}</th>
@@ -46,10 +46,10 @@
 		</tr>
 		</table>
 	</div>
-    <h3 class="h3">{$lang->extra_vars}</h3>
-    <div class="table">
-    	<table width="100%" border="1" cellspacing="0">
-    	<tr valign="top">
+	<h3 class="h3">{$lang->extra_vars}</h3>
+	<div class="table">
+		<table width="100%" border="1" cellspacing="0">
+		<tr valign="top">
 			<th scope="row">{$lang->colorset}</th>
 			<td>
 				<!--@foreach($skin_info->colorset as $key => $val)-->
@@ -68,15 +68,15 @@
 				</div>
 				<!--@end-->
 			</td>
-    	</tr>
-    	</table>
+		</tr>
+		</table>
 	</div>
 
-    <!--@foreach($skin_info->extra_vars as $key => $val)-->
+	<!--@foreach($skin_info->extra_vars as $key => $val)-->
 
-    <!--@if($val->group && ((!$group) || $group != $val->group))-->
-    {@$group = $val->group}
-    <div class="table">
+	<!--@if($val->group && ((!$group) || $group != $val->group))-->
+	{@$group = $val->group}
+	<div class="table">
 		<table width="100%" border="1" cellspacing="0">
 			<caption>{$group}</caption>
 		<!--@end-->
@@ -136,8 +136,8 @@
 		<!--@if($group)-->
 		</table>
 	</div>
-    <!--@end-->
-    <div class="btnArea">
+	<!--@end-->
+	<div class="btnArea">
 		<span class="btn"><input type="submit" value="{$lang->cmd_registration}" /></span>
 	</div>
 </form>

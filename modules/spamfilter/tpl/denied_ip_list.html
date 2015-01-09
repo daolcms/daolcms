@@ -7,7 +7,7 @@
 			<li><a href="{getUrl('','module','admin','act','dispSpamfilterAdminConfigBlock')}">{$lang->cmd_config_block}</a></li>
 		</ul>
 	</div>
-    <div class="table even">
+	<div class="table even">
 		<form action="./" method="post" class="form">
 		<input type="hidden" name="act" value="procSpamfilterAdminDeleteDeniedIP" />
 		<input type="hidden" name="module" value="spamfilter" />
@@ -19,18 +19,18 @@
 				</caption>
 				<thead>
 					<tr>
-    					<th scope="col">IP</th>
-    					<th scope="col">{$lang->description}</th>
-    					<th scope="col">{$lang->regdate}</th>
-    					<th scope="col"><input type="checkbox" name="ipaddress" title="Check All" /></th>
+						<th scope="col">IP</th>
+						<th scope="col">{$lang->description}</th>
+						<th scope="col">{$lang->regdate}</th>
+						<th scope="col"><input type="checkbox" name="ipaddress" title="Check All" /></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr loop="$ip_list => $ip_info">
-    					<td>{$ip_info->ipaddress}</td>
-    					<td>{$ip_info->description}</td>
-    					<td>{zdate($ip_info->regdate,'Y-m-d')}</td>
-    					<td><input type="checkbox" name="ipaddress[]" value="{$ip_info->ipaddress}" /></td>
+						<td>{$ip_info->ipaddress}</td>
+						<td>{$ip_info->description}</td>
+						<td>{zdate($ip_info->regdate,'Y-m-d')}</td>
+						<td><input type="checkbox" name="ipaddress[]" value="{$ip_info->ipaddress}" /></td>
 					</tr>
 				<tr cond="!$ip_list">
 					<td colspan="4" style="text-align:center">{$lang->no_data}</td>
@@ -38,7 +38,7 @@
 			</tbody>
 			</table>
 		</form>
-    </div>
+	</div>
 	<form action="./" method="post" class="form">
 		<input type="hidden" name="act" value="procSpamfilterAdminInsertDeniedIP" />
 		<input type="hidden" name="module" value="spamfilter" />

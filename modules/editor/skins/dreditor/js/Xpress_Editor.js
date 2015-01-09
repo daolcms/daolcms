@@ -3987,7 +3987,7 @@ xe.XE_LineHeight = jQuery.Class({
 
 		return false;
 	},
- 	_getLineWrapper : function(node){
+	_getLineWrapper : function(node){
 		var oTmpSelection = this.oApp.getEmptySelection();
 		oTmpSelection.selectNode(node);
 		var oLineInfo = oTmpSelection.getLineInfo();
@@ -4014,7 +4014,7 @@ xe.XE_LineHeight = jQuery.Class({
 		}
 
 		return div;
- 	}
+	}
  });
 //}
 //{
@@ -4965,38 +4965,38 @@ xe.XE_Hyperlink = jQuery.Class({
 		this.oSelection = this.oApp.getSelection();
 
 		//if(this._validateURL(sURL)){
-        var sTarget = "";
-        if(this.oCbNewWin.checked)
-            sTarget = "_blank";
-        else
-            sTarget = "_self";
+		var sTarget = "";
+		if(this.oCbNewWin.checked)
+			sTarget = "_blank";
+		else
+			sTarget = "_self";
 
-        if(this.oSelection.collapsed){
-            var str = "<a href='" + sURL + "' target="+sTarget+">" + sURL + "</a>";
-            this.oSelection.pasteHTML(str);
-        }else{
-            var nSession = Math.ceil(Math.random()*10000);
-            var arg = ( sURL == "" ? ["unlink"] : ["createLink", false, this.sATagMarker+nSession+sURL] );
-            this.oApp.exec("EXECCOMMAND", arg);
+		if(this.oSelection.collapsed){
+			var str = "<a href='" + sURL + "' target="+sTarget+">" + sURL + "</a>";
+			this.oSelection.pasteHTML(str);
+		}else{
+			var nSession = Math.ceil(Math.random()*10000);
+			var arg = ( sURL == "" ? ["unlink"] : ["createLink", false, this.sATagMarker+nSession+sURL] );
+			this.oApp.exec("EXECCOMMAND", arg);
 
-            this.oSelection.setFromSelection();
+			this.oSelection.setFromSelection();
 
-            var oDoc = this.oApp.getWYSIWYGDocument();
-            var aATags = oDoc.body.getElementsByTagName("A");
-            var nLen = aATags.length;
-            var rxMarker = new RegExp(this.sRXATagMarker+nSession, "i");
-            var elATag;
-            for(var i=0; i<nLen; i++){
-                elATag = aATags[i];
-                if(elATag.href && elATag.href.match(rxMarker)){
-                    elATag.href = elATag.href.replace(rxMarker, "");
-                    elATag.target = sTarget;
-                }
-            }
-        }
-        this.oApp.exec("HIDE_ACTIVE_LAYER");
+			var oDoc = this.oApp.getWYSIWYGDocument();
+			var aATags = oDoc.body.getElementsByTagName("A");
+			var nLen = aATags.length;
+			var rxMarker = new RegExp(this.sRXATagMarker+nSession, "i");
+			var elATag;
+			for(var i=0; i<nLen; i++){
+				elATag = aATags[i];
+				if(elATag.href && elATag.href.match(rxMarker)){
+					elATag.href = elATag.href.replace(rxMarker, "");
+					elATag.target = sTarget;
+				}
+			}
+		}
+		this.oApp.exec("HIDE_ACTIVE_LAYER");
 
-        setTimeout(jQuery.fnBind(function(){this.oSelection.select()}, this), 0);
+		setTimeout(jQuery.fnBind(function(){this.oSelection.select()}, this), 0);
 		//}else{
 			//alert(this.oApp.$MSG("XE_Hyperlink.invalidURL"));
 			//this.oLinkInput.focus();
@@ -5393,8 +5393,8 @@ xe.XE_XHTMLFormatter = $.Class({
 	TO_IR : function(sContent) {
 		var stack = [];
 
-        // remove xeHandled attrs
-        sContent = sContent.replace(/xeHandled="YES"/ig,'');
+		// remove xeHandled attrs
+		sContent = sContent.replace(/xeHandled="YES"/ig,'');
 
 
 		// remove all useless styles
@@ -5429,7 +5429,7 @@ xe.XE_XHTMLFormatter = $.Class({
 				return '<'+m1+' '+
 					m2.replace(regex_quote_attr, function(s0,s1,s2,s3){
 						if (s1) return s1;
-                        if(/^"/.test(s3)||/"$/.test(s3)) return s2+'='+s3;
+						if(/^"/.test(s3)||/"$/.test(s3)) return s2+'='+s3;
 						return s2+'="'+s3+'"';
 					}) + '>';
 			});

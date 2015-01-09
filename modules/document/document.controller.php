@@ -213,7 +213,7 @@ class documentController extends document {
 		if(!$output->toBool()) return $output;
 		// Register it if no given document_srl exists
 		if(!$obj->document_srl) $obj->document_srl = getNextSequence();
-        elseif(!checkUserSequence($obj->document_srl)) return new Object(-1, 'msg_not_permitted');
+		elseif(!checkUserSequence($obj->document_srl)) return new Object(-1, 'msg_not_permitted');
 
 		$oDocumentModel = &getModel('document');
 		// Set to 0 if the category_srl doesn't exist
@@ -308,13 +308,13 @@ class documentController extends document {
 		$output->add('document_srl',$obj->document_srl);
 		$output->add('category_srl',$obj->category_srl);
 		//remove from cache
-        $oCacheHandler = &CacheHandler::getInstance('object');
-        if($oCacheHandler->isSupport())
-        {
-            $cache_key = 'object:'.$obj->document_srl;
-            $oCacheHandler->delete($cache_key);
-            $oCacheHandler->invalidateGroupKey('documentList');
-        }
+		$oCacheHandler = &CacheHandler::getInstance('object');
+		if($oCacheHandler->isSupport())
+		{
+			$cache_key = 'object:'.$obj->document_srl;
+			$oCacheHandler->delete($cache_key);
+			$oCacheHandler->invalidateGroupKey('documentList');
+		}
 
 		return $output;
 	}
@@ -372,12 +372,12 @@ class documentController extends document {
 		if($obj->commentStatus == 'DENY') $this->_checkCommentStatusForOldVersion($obj);
 		if($obj->allow_trackback!='Y') $obj->allow_trackback = 'N';
 		if($obj->homepage) {
-            $obj->homepage = removeHackTag($obj->homepage);
-            if(!preg_match('/^[a-z]+:\/\//i',$obj->homepage))
-            {
-                $obj->homepage = 'http://'.$obj->homepage;
-            }
-        }
+			$obj->homepage = removeHackTag($obj->homepage);
+			if(!preg_match('/^[a-z]+:\/\//i',$obj->homepage))
+			{
+				$obj->homepage = 'http://'.$obj->homepage;
+			}
+		}
 
 		if($obj->notify_message != 'Y') $obj->notify_message = 'N';
 		// Serialize the $extra_vars
@@ -498,16 +498,16 @@ class documentController extends document {
 
 		$output->add('document_srl',$obj->document_srl);
 		//remove from cache
-        $oCacheHandler = &CacheHandler::getInstance('object');
-        if($oCacheHandler->isSupport())
-        {
-            $cache_key = 'object:'.$obj->document_srl;
-            $oCacheHandler->delete($cache_key);
-            $oCacheHandler->invalidateGroupKey('documentList');
-            //remove document item from cache
-            $cache_key = 'object_document_item:'.$obj->document_srl;
-            $oCacheHandler->delete($cache_key);
-        }
+		$oCacheHandler = &CacheHandler::getInstance('object');
+		if($oCacheHandler->isSupport())
+		{
+			$cache_key = 'object:'.$obj->document_srl;
+			$oCacheHandler->delete($cache_key);
+			$oCacheHandler->invalidateGroupKey('documentList');
+			//remove document item from cache
+			$cache_key = 'object_document_item:'.$obj->document_srl;
+			$oCacheHandler->delete($cache_key);
+		}
 
 		return $output;
 	}
@@ -592,10 +592,10 @@ class documentController extends document {
 		{
 			$cache_key = 'object:'.$document_srl;
 			$oCacheHandler->delete($cache_key);
-                        $oCacheHandler->invalidateGroupKey('documentList');
-                        $cache_key = 'object_document_item:'.$document_srl;
-                        $oCacheHandler->delete($cache_key);
-               }
+						$oCacheHandler->invalidateGroupKey('documentList');
+						$cache_key = 'object_document_item:'.$document_srl;
+						$oCacheHandler->delete($cache_key);
+			   }
 
 		return $output;
 	}
@@ -725,13 +725,13 @@ class documentController extends document {
 		// commit
 		$oDB->commit();
 
-                // Clear cache
-                $oCacheHandler = &CacheHandler::getInstance('object');
-                if($oCacheHandler->isSupport())
-                {
-                    $oCacheHandler->invalidateGroupKey('documentList');
-                }
-                
+				// Clear cache
+				$oCacheHandler = &CacheHandler::getInstance('object');
+				if($oCacheHandler->isSupport())
+				{
+					$oCacheHandler->invalidateGroupKey('documentList');
+				}
+				
 		return $output;
 	}
 
@@ -748,7 +748,7 @@ class documentController extends document {
 		// Call a trigger when the read count is updated (before)
 		$trigger_output = ModuleHandler::triggerCall('document.updateReadedCount', 'before', $oDocument);
 		if(!$trigger_output->toBool()) return $trigger_output;
-        
+		
 		// Pass if read count is increaded on the session information
 		if($_SESSION['readed_document'][$document_srl]) return false;
 
@@ -762,39 +762,39 @@ class documentController extends document {
 			$_SESSION['readed_document'][$document_srl] = true;
 			return false;
 		}
-        
+		
 		$oDB = DB::getInstance();
 		$oDB->begin();
-        
+		
 		// Update read counts
 		$args->document_srl = $document_srl;
 		$output = executeQuery('document.updateReadedCount', $args);
-        
+		
 		// Call a trigger when the read count is updated (after)
-		$outptrigger_outputut = ModuleHandler::triggerCall('document.updateReadedCount', 'after', $oDocument);
+		$trigger_output = ModuleHandler::triggerCall('document.updateReadedCount', 'after', $oDocument);
 		if(!$trigger_output->toBool())
 		{
 			$oDB->rollback();
 			return $trigger_output;
 		}
-        
+		
 		$oDB->commit();
 		
 		//remove from cache
-        $oCacheHandler = &CacheHandler::getInstance('object');
-        if($oCacheHandler->isSupport())
-        {
-            $cache_key = 'object:'.$document_srl;
-            $oCacheHandler->delete($cache_key);
-            $oCacheHandler->invalidateGroupKey('documentList');
-            //remove document item from cache
-            $cache_key = 'object_document_item:'.$document_srl;
-            $oCacheHandler->delete($cache_key);
-        }
-        
+		$oCacheHandler = &CacheHandler::getInstance('object');
+		if($oCacheHandler->isSupport())
+		{
+			$cache_key = 'object:'.$document_srl;
+			$oCacheHandler->delete($cache_key);
+			$oCacheHandler->invalidateGroupKey('documentList');
+			//remove document item from cache
+			$cache_key = 'object_document_item:'.$document_srl;
+			$oCacheHandler->delete($cache_key);
+		}
+		
 		// Register session
 		$_SESSION['readed_document'][$document_srl] = true;
-        
+		
 		return TRUE;
 	}
 
@@ -1030,7 +1030,7 @@ class documentController extends document {
 			$output->setMessage('success_blamed');
 			$output->add('blamed_count', $obj->after_point);
 		}
-        
+		
 		return $output;
 	}
 
@@ -1157,16 +1157,16 @@ class documentController extends document {
 		}
 
 		//remove from cache
-                $oCacheHandler = &CacheHandler::getInstance('object');
-                if($oCacheHandler->isSupport())
-                {
-                    $cache_key = 'object:'.$document_srl;
-                    $oCacheHandler->delete($cache_key);
-                    $oCacheHandler->invalidateGroupKey('documentList');
-                    //remove document item from cache
-                    $cache_key = 'object_document_item:'.$document_srl;
-                    $oCacheHandler->delete($cache_key);
-                }
+				$oCacheHandler = &CacheHandler::getInstance('object');
+				if($oCacheHandler->isSupport())
+				{
+					$cache_key = 'object:'.$document_srl;
+					$oCacheHandler->delete($cache_key);
+					$oCacheHandler->invalidateGroupKey('documentList');
+					//remove document item from cache
+					$cache_key = 'object_document_item:'.$document_srl;
+					$oCacheHandler->delete($cache_key);
+				}
 
 		return executeQuery('document.updateCommentCount', $args);
 	}

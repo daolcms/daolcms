@@ -4,8 +4,8 @@
 <input type="hidden" name="act" value="procDocumentInsertModuleConfig" />
 <input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
 	<input type="hidden" name="target_module_srl" value="{$module_info->module_srl?$module_info->module_srl:$module_srls}" />
-    <h3 class="h3">{$lang->document}</h3>
-    <div class="table">
+	<h3 class="h3">{$lang->document}</h3>
+	<div class="table">
 		<table width="100%" border="1" cellspacing="0">
 			<tr>    
 				<th scope="row"><label for="use_history">{$lang->history}</label></th>
@@ -40,7 +40,7 @@
 			</tr>
 		</table>
 	</div>
-    <div class="btnArea">
+	<div class="btnArea">
 		<span class="btn"><input type="submit" value="{$lang->cmd_save}"/></span>
 	</div>
 </form>

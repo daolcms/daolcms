@@ -7,34 +7,34 @@
 	 * @package /modules/comment
 	 * @version 0.1
 	 */
-    class commentModel extends comment {
+	class commentModel extends comment {
 		/**
 		 * Initialization
 		 * @return void
 		 */
-        function init() {
-        }
+		function init() {
+		}
 
 		/**
 		 * display the pop-up menu of the post
 		 * Print, scrap, vote-up(recommen), vote-down(non-recommend), report features added
 		 * @return void
 		 */
-        function getCommentMenu() {
-            // get the post's id number and the current login information
-            $comment_srl = Context::get('target_srl');
-            $mid = Context::get('cur_mid');
-            $logged_info = Context::get('logged_info');
-            $act = Context::get('cur_act');
+		function getCommentMenu() {
+			// get the post's id number and the current login information
+			$comment_srl = Context::get('target_srl');
+			$mid = Context::get('cur_mid');
+			$logged_info = Context::get('logged_info');
+			$act = Context::get('cur_act');
 
-            // array values for menu_list, "comment post, target, url"
-            $menu_list = array();
-            // call a trigger
-            ModuleHandler::triggerCall('comment.getCommentMenu', 'before', $menu_list);
+			// array values for menu_list, "comment post, target, url"
+			$menu_list = array();
+			// call a trigger
+			ModuleHandler::triggerCall('comment.getCommentMenu', 'before', $menu_list);
 
-            $oCommentController = &getController('comment');
-            // feature that only member can do
-            if($logged_info->member_srl) {
+			$oCommentController = &getController('comment');
+			// feature that only member can do
+			if($logged_info->member_srl) {
 
 				$oCommentModel = &getModel('comment');
 				$columnList = array('comment_srl', 'module_srl', 'member_srl', 'ipaddress');
@@ -55,35 +55,35 @@
 					$oCommentController->addCommentPopupMenu($url,'cmd_vote_down','','javascript');
 				}
 
-                // Add the report feature against abused posts
-                $url = sprintf("doCallModuleAction('comment','procCommentDeclare','%s')", $comment_srl);
-                $oCommentController->addCommentPopupMenu($url,'cmd_declare','','javascript');
-            }
-            // call a trigger (after)
-            ModuleHandler::triggerCall('comment.getCommentMenu', 'after', $menu_list);
-            // find a comment by IP matching if an administrator.
-            if($logged_info->is_admin == 'Y') {
-                $oCommentModel = &getModel('comment');
-                $oComment = $oCommentModel->getComment($comment_srl);
+				// Add the report feature against abused posts
+				$url = sprintf("doCallModuleAction('comment','procCommentDeclare','%s')", $comment_srl);
+				$oCommentController->addCommentPopupMenu($url,'cmd_declare','','javascript');
+			}
+			// call a trigger (after)
+			ModuleHandler::triggerCall('comment.getCommentMenu', 'after', $menu_list);
+			// find a comment by IP matching if an administrator.
+			if($logged_info->is_admin == 'Y') {
+				$oCommentModel = &getModel('comment');
+				$oComment = $oCommentModel->getComment($comment_srl);
 
-                if($oComment->isExists()) {
-                    // Find a post of the corresponding ip address
-                    $url = getUrl('','module','admin','act','dispCommentAdminList','search_target','ipaddress','search_keyword',$oComment->getIpAddress());
-                    $oCommentController->addCommentPopupMenu($url,'cmd_search_by_ipaddress',$icon_path,'TraceByIpaddress');
+				if($oComment->isExists()) {
+					// Find a post of the corresponding ip address
+					$url = getUrl('','module','admin','act','dispCommentAdminList','search_target','ipaddress','search_keyword',$oComment->getIpAddress());
+					$oCommentController->addCommentPopupMenu($url,'cmd_search_by_ipaddress',$icon_path,'TraceByIpaddress');
 
-                    $url = sprintf("var params = new Array(); params['ipaddress_list']='%s'; exec_xml('spamfilter', 'procSpamfilterAdminInsertDeniedIP', params, completeCallModuleAction)", $oComment->getIpAddress());
-                    $oCommentController->addCommentPopupMenu($url,'cmd_add_ip_to_spamfilter','','javascript');
-                }
-            }
-            // Changing a language of pop-up menu
-            $menus = Context::get('comment_popup_menu_list');
-            $menus_count = count($menus);
-            for($i=0;$i<$menus_count;$i++) {
-                $menus[$i]->str = Context::getLang($menus[$i]->str);
-            }
-            // get a list of final organized pop-up menus
-            $this->add('menus', $menus);
-        }
+					$url = sprintf("var params = new Array(); params['ipaddress_list']='%s'; exec_xml('spamfilter', 'procSpamfilterAdminInsertDeniedIP', params, completeCallModuleAction)", $oComment->getIpAddress());
+					$oCommentController->addCommentPopupMenu($url,'cmd_add_ip_to_spamfilter','','javascript');
+				}
+			}
+			// Changing a language of pop-up menu
+			$menus = Context::get('comment_popup_menu_list');
+			$menus_count = count($menus);
+			for($i=0;$i<$menus_count;$i++) {
+				$menus[$i]->str = Context::getLang($menus[$i]->str);
+			}
+			// get a list of final organized pop-up menus
+			$this->add('menus', $menus);
+		}
 
 
 		/**
@@ -92,33 +92,33 @@
 		 * @param int $comment_srl
 		 * @return bool
 		 */
-        function isGranted($comment_srl) {
-            return $_SESSION['own_comment'][$comment_srl];
-        }
+		function isGranted($comment_srl) {
+			return $_SESSION['own_comment'][$comment_srl];
+		}
 
 		/**
 		 * Returns the number of child comments
 		 * @param int $comment_srl
 		 * @return int
 		 */
-        function getChildCommentCount($comment_srl) {
-            $args = new stdClass();
-            $args->comment_srl = $comment_srl;
-            $output = executeQuery('comment.getChildCommentCount', $args);
-            return (int)$output->data->count;
-        }
+		function getChildCommentCount($comment_srl) {
+			$args = new stdClass();
+			$args->comment_srl = $comment_srl;
+			$output = executeQuery('comment.getChildCommentCount', $args);
+			return (int)$output->data->count;
+		}
 
 		/**
 		 * Returns the number of child comments
 		 * @param int $comment_srl
 		 * @return int
 		 */
-        function getChildComments($comment_srl) {
-            $args = new stdClass();
-            $args->comment_srl = $comment_srl;
-            $output = executeQueryArray('comment.getChildComments', $args);
-            return $output->data;
-        }
+		function getChildComments($comment_srl) {
+			$args = new stdClass();
+			$args->comment_srl = $comment_srl;
+			$output = executeQueryArray('comment.getChildComments', $args);
+			return $output->data;
+		}
 
 		/**
 		 * Get the comment
@@ -127,12 +127,12 @@
 		 * @param array $columnList
 		 * @return commentItem
 		 */
-        function getComment($comment_srl=0, $is_admin = false, $columnList = array()) {
-            $oComment = new commentItem($comment_srl, $columnList);
-            if($is_admin) $oComment->setGrant();
+		function getComment($comment_srl=0, $is_admin = false, $columnList = array()) {
+			$oComment = new commentItem($comment_srl, $columnList);
+			if($is_admin) $oComment->setGrant();
 
-            return $oComment;
-        }
+			return $oComment;
+		}
 
 		/**
 		 * Get the comment list(not paginating)
@@ -140,38 +140,38 @@
 		 * @param array $columnList
 		 * @return array
 		 */
-        function getComments($comment_srl_list, $columnList = array()) {
-            if(is_array($comment_srl_list)) $comment_srls = implode(',',$comment_srl_list);
-            // fetch from a database
-            $args = new stdClass();
-            $args->comment_srls = $comment_srls;
+		function getComments($comment_srl_list, $columnList = array()) {
+			if(is_array($comment_srl_list)) $comment_srls = implode(',',$comment_srl_list);
+			// fetch from a database
+			$args = new stdClass();
+			$args->comment_srls = $comment_srls;
 			$output = executeQuery('comment.getComments', $args, $columnList);
-            if(!$output->toBool()) return;
-            $comment_list = $output->data;
-            if(!$comment_list) return;
-            if(!is_array($comment_list)) $comment_list = array($comment_list);
+			if(!$output->toBool()) return;
+			$comment_list = $output->data;
+			if(!$comment_list) return;
+			if(!is_array($comment_list)) $comment_list = array($comment_list);
 
-            $comment_count = count($comment_list);
-            foreach($comment_list as $key => $attribute) {
-                if(!$attribute->comment_srl) continue;
-                $oComment = null;
-                $oComment = new commentItem();
-                $oComment->setAttribute($attribute);
-                if($is_admin) $oComment->setGrant();
+			$comment_count = count($comment_list);
+			foreach($comment_list as $key => $attribute) {
+				if(!$attribute->comment_srl) continue;
+				$oComment = null;
+				$oComment = new commentItem();
+				$oComment->setAttribute($attribute);
+				if($is_admin) $oComment->setGrant();
 
-                $result[$attribute->comment_srl] = $oComment;
-            }
-            return $result;
-        }
+				$result[$attribute->comment_srl] = $oComment;
+			}
+			return $result;
+		}
 
 		/**
 		 * Get the total number of comments in corresponding with document_srl.
 		 * @param int $document_srl
 		 * @return int
 		 */
-        function getCommentCount($document_srl) {
-            $args = new stdClass();
-            $args->document_srl = $document_srl;
+		function getCommentCount($document_srl) {
+			$args = new stdClass();
+			$args->document_srl = $document_srl;
 		
 		// get the number of comments on the document module
 		$oDocumentModel = &getModel('document');
@@ -189,10 +189,10 @@
 			$args->status = 1;
 		}
 
-            $output = executeQuery('comment.getCommentCount', $args);
-            $total_count = $output->data->count;
-            return (int)$total_count;
-        }
+			$output = executeQuery('comment.getCommentCount', $args);
+			$total_count = $output->data->count;
+			return (int)$total_count;
+		}
 
 		/**
 		 * Get the total number of comments in corresponding with document_srl.
@@ -200,15 +200,15 @@
 		 * @param array $moduleSrlList
 		 * @return int
 		 */
-        function getCommentCountByDate($date = '', $moduleSrlList = array()) {
+		function getCommentCountByDate($date = '', $moduleSrlList = array()) {
 			if($date) $args->regDate = date('Ymd', strtotime($date));
 			if(count($moduleSrlList)>0) $args->module_srl = $moduleSrlList;
 
-            $output = executeQuery('comment.getCommentCount', $args);
+			$output = executeQuery('comment.getCommentCount', $args);
 			if(!$output->toBool()) return 0;
 
 			return $output->data->count;
-        }
+		}
 
 		/**
 		 * Get the total number of comments in corresponding with module_srl.
@@ -216,9 +216,9 @@
 		 * @param bool $published
 		 * @return int
 		 */
-        function getCommentAllCount($module_srl,$published=null) {
-            $args = new stdClass();
-            $args->module_srl = $module_srl;
+		function getCommentAllCount($module_srl,$published=null) {
+			$args = new stdClass();
+			$args->module_srl = $module_srl;
 			
 			if(is_null($published))
 			{
@@ -244,8 +244,8 @@
 			$output = executeQuery('comment.getCommentCount', $args);
 			$total_count = $output->data->count;
 
-            return (int)$total_count;
-        }
+			return (int)$total_count;
+		}
 
 		/**
 		 * Get the module info without duplication
@@ -275,18 +275,18 @@
 		 * @param array $columnList
 		 * @return array
 		 */
-        function getNewestCommentList($obj, $columnList = array()) {
-            if($obj->mid) {
-                $oModuleModel = &getModel('module');
-                $obj->module_srl = $oModuleModel->getModuleSrlByMid($obj->mid);
-                unset($obj->mid);
-            }
-            // check if module_srl is an arrary.
-            $args = new stdClass();
-            if(is_array($obj->module_srl)) $args->module_srl = implode(',', $obj->module_srl);
-            else $args->module_srl = $obj->module_srl;
-            $args->document_srl = $obj->document_srl;
-            $args->list_count = $obj->list_count;
+		function getNewestCommentList($obj, $columnList = array()) {
+			if($obj->mid) {
+				$oModuleModel = &getModel('module');
+				$obj->module_srl = $oModuleModel->getModuleSrlByMid($obj->mid);
+				unset($obj->mid);
+			}
+			// check if module_srl is an arrary.
+			$args = new stdClass();
+			if(is_array($obj->module_srl)) $args->module_srl = implode(',', $obj->module_srl);
+			else $args->module_srl = $obj->module_srl;
+			$args->document_srl = $obj->document_srl;
+			$args->list_count = $obj->list_count;
 			// cache controll
 			$oCacheHandler = &CacheHandler::getInstance('object');
 			if($oCacheHandler->isSupport()){
@@ -312,24 +312,24 @@
 				$output = executeQuery('comment.getNewestCommentList', $args, $columnList);
 				if($oCacheHandler->isSupport()) $oCacheHandler->put($cache_key,$output);
 			}
-            if(!$output->toBool()) return $output;
+			if(!$output->toBool()) return $output;
 
-            $comment_list = $output->data;
-            if($comment_list) {
-                if(!is_array($comment_list)) $comment_list = array($comment_list);
-                $comment_count = count($comment_list);
-                foreach($comment_list as $key => $attribute) {
-                    if(!$attribute->comment_srl) continue;
-                    $oComment = null;
-                    $oComment = new commentItem();
-                    $oComment->setAttribute($attribute);
+			$comment_list = $output->data;
+			if($comment_list) {
+				if(!is_array($comment_list)) $comment_list = array($comment_list);
+				$comment_count = count($comment_list);
+				foreach($comment_list as $key => $attribute) {
+					if(!$attribute->comment_srl) continue;
+					$oComment = null;
+					$oComment = new commentItem();
+					$oComment->setAttribute($attribute);
 
-                    $result[$key] = $oComment;
-                }
-                $output->data = $result;
-            }
-            return $result;
-        }
+					$result[$key] = $oComment;
+				}
+				$output->data = $result;
+			}
+			return $result;
+		}
 
 		/**
 		 * Get a comment list of the doc in corresponding woth document_srl.
@@ -339,19 +339,19 @@
 		 * @param int $count
 		 * @return object
 		 */
-        function getCommentList($document_srl, $page = 0, $is_admin = false, $count = 0) {
-                if(!isset($document_srl)) return;
-        	// cache controll
-                $oCacheHandler = &CacheHandler::getInstance('object');
-                if($oCacheHandler->isSupport()){
-                        $object_key = 'object:'.$document_srl.'_'.$page.'_'.($is_admin ? 'Y' : 'N') .'_' . $count;
-                        $cache_key = $oCacheHandler->getGroupKey('commentList_' . $document_srl, $object_key);
-                        $output = $oCacheHandler->get($cache_key);
-                }
-        	if(!$output){
-                    // get the number of comments on the document module
+		function getCommentList($document_srl, $page = 0, $is_admin = false, $count = 0) {
+				if(!isset($document_srl)) return;
+			// cache controll
+				$oCacheHandler = &CacheHandler::getInstance('object');
+				if($oCacheHandler->isSupport()){
+						$object_key = 'object:'.$document_srl.'_'.$page.'_'.($is_admin ? 'Y' : 'N') .'_' . $count;
+						$cache_key = $oCacheHandler->getGroupKey('commentList_' . $document_srl, $object_key);
+						$output = $oCacheHandler->get($cache_key);
+				}
+			if(!$output){
+					// get the number of comments on the document module
 	            $oDocumentModel = &getModel('document');
-                    $columnList = array('document_srl', 'module_srl', 'comment_count');
+					$columnList = array('document_srl', 'module_srl', 'comment_count');
 	            $oDocument = $oDocumentModel->getDocument($document_srl, false, true, $columnList);
 	            // return if no doc exists.
 	            if(!$oDocument->isExists()) return;
@@ -397,10 +397,10 @@
 	            //insert in cache
 	            if($oCacheHandler->isSupport()) $oCacheHandler->put($cache_key,$output);
 
-        	}
+			}
 
-            return $output;
-        }
+			return $output;
+		}
 
 		/**
 		 * Update a list of comments in corresponding with document_srl
@@ -409,61 +409,61 @@
 		 * @param int $document_srl
 		 * @return void
 		 */
-        function fixCommentList($module_srl, $document_srl) {
-            // create a lock file to prevent repeated work when performing a batch job
-            $lock_file = "./files/cache/tmp/lock.".$document_srl;
-            if(file_exists($lock_file) && filemtime($lock_file)+60*60*10<time()) return;
-            FileHandler::writeFile($lock_file, '');
-            // get a list
+		function fixCommentList($module_srl, $document_srl) {
+			// create a lock file to prevent repeated work when performing a batch job
+			$lock_file = "./files/cache/tmp/lock.".$document_srl;
+			if(file_exists($lock_file) && filemtime($lock_file)+60*60*10<time()) return;
+			FileHandler::writeFile($lock_file, '');
+			// get a list
 			$args = new stdClass();
-            $args->document_srl = $document_srl;
-            $args->list_order = 'list_order';
-            $output = executeQuery('comment.getCommentList', $args);
-            if(!$output->toBool()) return $output;
+			$args->document_srl = $document_srl;
+			$args->list_order = 'list_order';
+			$output = executeQuery('comment.getCommentList', $args);
+			if(!$output->toBool()) return $output;
 
-            $source_list = $output->data;
-            if(!is_array($source_list)) $source_list = array($source_list);
-            // Sort comments by the hierarchical structure
-            $comment_count = count($source_list);
+			$source_list = $output->data;
+			if(!is_array($source_list)) $source_list = array($source_list);
+			// Sort comments by the hierarchical structure
+			$comment_count = count($source_list);
 
-            $root = NULL;
-            $list = NULL;
-            $comment_list = array();
-            // get the log-in information for logged-in users
-            $logged_info = Context::get('logged_info');
-            // generate a hierarchical structure of comments for loop
-            for($i=$comment_count-1;$i>=0;$i--) {
-                $comment_srl = $source_list[$i]->comment_srl;
-                $parent_srl = $source_list[$i]->parent_srl;
-                if(!$comment_srl) continue;
-                // generate a list
-                $list[$comment_srl] = $source_list[$i];
+			$root = NULL;
+			$list = NULL;
+			$comment_list = array();
+			// get the log-in information for logged-in users
+			$logged_info = Context::get('logged_info');
+			// generate a hierarchical structure of comments for loop
+			for($i=$comment_count-1;$i>=0;$i--) {
+				$comment_srl = $source_list[$i]->comment_srl;
+				$parent_srl = $source_list[$i]->parent_srl;
+				if(!$comment_srl) continue;
+				// generate a list
+				$list[$comment_srl] = $source_list[$i];
 
-                if($parent_srl) {
-                    $list[$parent_srl]->child[] = &$list[$comment_srl];
-                } else {
-                    $root->child[] = &$list[$comment_srl];
-                }
-            }
-            $this->_arrangeComment($comment_list, $root->child, 0, null);
-            // insert values to the database
-            if(count($comment_list)) {
-                foreach($comment_list as $comment_srl => $item) {
-                    $comment_args = new stdClass();
-                    $comment_args->comment_srl = $comment_srl;
-                    $comment_args->document_srl = $document_srl;
-                    $comment_args->head = $item->head;
-                    $comment_args->arrange = $item->arrange;
-                    $comment_args->module_srl = $module_srl;
-                    $comment_args->regdate = $item->regdate;
-                    $comment_args->depth = $item->depth;
+				if($parent_srl) {
+					$list[$parent_srl]->child[] = &$list[$comment_srl];
+				} else {
+					$root->child[] = &$list[$comment_srl];
+				}
+			}
+			$this->_arrangeComment($comment_list, $root->child, 0, null);
+			// insert values to the database
+			if(count($comment_list)) {
+				foreach($comment_list as $comment_srl => $item) {
+					$comment_args = new stdClass();
+					$comment_args->comment_srl = $comment_srl;
+					$comment_args->document_srl = $document_srl;
+					$comment_args->head = $item->head;
+					$comment_args->arrange = $item->arrange;
+					$comment_args->module_srl = $module_srl;
+					$comment_args->regdate = $item->regdate;
+					$comment_args->depth = $item->depth;
 
-                    executeQuery('comment.insertCommentList', $comment_args);
-                }
-            }
-            // remove the lock file if successful.
-            FileHandler::removeFile($lock_file);
-        }
+					executeQuery('comment.insertCommentList', $comment_args);
+				}
+			}
+			// remove the lock file if successful.
+			FileHandler::removeFile($lock_file);
+		}
 
 		/**
 		 * Relocate comments in the hierarchical structure
@@ -473,25 +473,25 @@
 		 * @param object $parent
 		 * @return void
 		 */
-        function _arrangeComment(&$comment_list, $list, $depth, $parent = null) {
-            if(!count($list)) return;
-            foreach($list as $key => $val) {
+		function _arrangeComment(&$comment_list, $list, $depth, $parent = null) {
+			if(!count($list)) return;
+			foreach($list as $key => $val) {
 
-                if($parent) $val->head = $parent->head;
-                else $val->head = $val->comment_srl;
-                $val->arrange = count($comment_list)+1;
+				if($parent) $val->head = $parent->head;
+				else $val->head = $val->comment_srl;
+				$val->arrange = count($comment_list)+1;
 
-                if($val->child) {
-                    $val->depth = $depth;
-                    $comment_list[$val->comment_srl] = $val;
-                    $this->_arrangeComment($comment_list,$val->child,$depth+1, $val);
-                    unset($val->child);
-                } else {
-                    $val->depth = $depth;
-                    $comment_list[$val->comment_srl] = $val;
-                }
-            }
-        }
+				if($val->child) {
+					$val->depth = $depth;
+					$comment_list[$val->comment_srl] = $val;
+					$this->_arrangeComment($comment_list,$val->child,$depth+1, $val);
+					unset($val->child);
+				} else {
+					$val->depth = $depth;
+					$comment_list[$val->comment_srl] = $val;
+				}
+			}
+		}
 
 		/**
 		 * Get all the comments in time decending order(for administrators)
@@ -499,16 +499,16 @@
 		 * @param array $columnList
 		 * @return object
 		 */
-        function getTotalCommentList($obj, $columnList = array()) {
-            $query_id = 'comment.getTotalCommentList';
-            // Variables
-            $args = new stdClass();
-            $args->sort_index = 'list_order';
-            $args->page = $obj->page?$obj->page:1;
-            $args->list_count = $obj->list_count?$obj->list_count:20;
-            $args->page_count = $obj->page_count?$obj->page_count:10;
-            $args->s_module_srl = $obj->module_srl;
-            $args->exclude_module_srl = $obj->exclude_module_srl;
+		function getTotalCommentList($obj, $columnList = array()) {
+			$query_id = 'comment.getTotalCommentList';
+			// Variables
+			$args = new stdClass();
+			$args->sort_index = 'list_order';
+			$args->page = $obj->page?$obj->page:1;
+			$args->list_count = $obj->list_count?$obj->list_count:20;
+			$args->page_count = $obj->page_count?$obj->page_count:10;
+			$args->s_module_srl = $obj->module_srl;
+			$args->exclude_module_srl = $obj->exclude_module_srl;
 			
 			// check if module is using comment validation system
 			$oCommentController = &getController("comment");
@@ -518,50 +518,50 @@
 				$args->s_is_published = 1;
 			}
 			
-            // Search options
-            $search_target = $obj->search_target?$obj->search_target:trim(Context::get('search_target'));
-            $search_keyword = $obj->search_keyword?$obj->search_keyword:trim(Context::get('search_keyword'));
-            if($search_target && $search_keyword) {
-                switch($search_target) {
-                    case 'content' :
-                            if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
-                            $args->s_content = $search_keyword;
-                        break;
-                    case 'user_id' :
-                            if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
-                            $args->s_user_id = $search_keyword;
-                            $query_id = 'comment.getTotalCommentListWithinMember';
-                            $args->sort_index = 'comments.list_order';
-                        break;
-                    case 'user_name' :
-                            if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
-                            $args->s_user_name = $search_keyword;
-                        break;
-                    case 'nick_name' :
-                            if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
-                            $args->s_nick_name = $search_keyword;
-                        break;
-                    case 'email_address' :
-                            if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
-                            $args->s_email_address = $search_keyword;
-                        break;
-                    case 'homepage' :
-                            if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
-                            $args->s_homepage = $search_keyword;
-                        break;
-                    case 'regdate' :
-                            $args->s_regdate = $search_keyword;
-                        break;
-                    case 'last_update' :
-                            $args->s_last_upate = $search_keyword;
-                        break;
-                    case 'ipaddress' :
-                            $args->s_ipaddress= $search_keyword;
-                        break;
-                    case 'is_secret' :
-                            $args->s_is_secret= $search_keyword;
+			// Search options
+			$search_target = $obj->search_target?$obj->search_target:trim(Context::get('search_target'));
+			$search_keyword = $obj->search_keyword?$obj->search_keyword:trim(Context::get('search_keyword'));
+			if($search_target && $search_keyword) {
+				switch($search_target) {
+					case 'content' :
+							if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
+							$args->s_content = $search_keyword;
 						break;
-                    case 'is_published' :
+					case 'user_id' :
+							if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
+							$args->s_user_id = $search_keyword;
+							$query_id = 'comment.getTotalCommentListWithinMember';
+							$args->sort_index = 'comments.list_order';
+						break;
+					case 'user_name' :
+							if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
+							$args->s_user_name = $search_keyword;
+						break;
+					case 'nick_name' :
+							if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
+							$args->s_nick_name = $search_keyword;
+						break;
+					case 'email_address' :
+							if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
+							$args->s_email_address = $search_keyword;
+						break;
+					case 'homepage' :
+							if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
+							$args->s_homepage = $search_keyword;
+						break;
+					case 'regdate' :
+							$args->s_regdate = $search_keyword;
+						break;
+					case 'last_update' :
+							$args->s_last_upate = $search_keyword;
+						break;
+					case 'ipaddress' :
+							$args->s_ipaddress= $search_keyword;
+						break;
+					case 'is_secret' :
+							$args->s_is_secret= $search_keyword;
+						break;
+					case 'is_published' :
 							if($search_keyword == 'Y')
 							{
 								$args->s_is_published = 1;
@@ -570,105 +570,105 @@
 							{
 								$args->s_is_published = 0;
 							}
-                        break;
+						break;
 					case 'module': 
 						$args->s_module_srl = (int)$search_keyword;
 						break;
-                    case 'member_srl' :
-                            $args->{"s_".$search_target} = (int)$search_keyword;
-                        break;
-                }
-            }
-            // comment.getTotalCommentList query execution
-            $output = executeQueryArray($query_id, $args, $columnList);
-            // return when no result or error occurance
-            if(!$output->toBool()||!count($output->data)) return $output;
-            foreach($output->data as $key => $val) {
-                unset($_oComment);
-                $_oComment = new CommentItem(0);
-                $_oComment->setAttribute($val);
-                $output->data[$key] = $_oComment;
-            }
+					case 'member_srl' :
+							$args->{"s_".$search_target} = (int)$search_keyword;
+						break;
+				}
+			}
+			// comment.getTotalCommentList query execution
+			$output = executeQueryArray($query_id, $args, $columnList);
+			// return when no result or error occurance
+			if(!$output->toBool()||!count($output->data)) return $output;
+			foreach($output->data as $key => $val) {
+				unset($_oComment);
+				$_oComment = new CommentItem(0);
+				$_oComment->setAttribute($val);
+				$output->data[$key] = $_oComment;
+			}
 
-            return $output;
-        }
+			return $output;
+		}
 
 		/**
 		 * Get all the comment count in time decending order(for administrators)
 		 * @param object $obj
 		 * @return int
 		 */
-        function getTotalCommentCount($obj) {
-            $query_id = 'comment.getTotalCommentCountByGroupStatus';
-            // Variables
-            $args = new stdClass();
-            $args->s_module_srl = $obj->module_srl;
-            $args->exclude_module_srl = $obj->exclude_module_srl;
-            // Search options
-            $search_target = $obj->search_target?$obj->search_target:trim(Context::get('search_target'));
-            $search_keyword = $obj->search_keyword?$obj->search_keyword:trim(Context::get('search_keyword'));
-            if($search_target && $search_keyword) {
-                switch($search_target) {
-                    case 'content' :
-                            if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
-                            $args->s_content = $search_keyword;
-                        break;
-                    case 'user_id' :
-                            if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
-                            $args->s_user_id = $search_keyword;
-                            $query_id = 'comment.getTotalCommentCountWithinMemberByGroupStatus';
-                        break;
-                    case 'user_name' :
-                            if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
-                            $args->s_user_name = $search_keyword;
-                        break;
-                    case 'nick_name' :
-                            if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
-                            $args->s_nick_name = $search_keyword;
-                        break;
-                    case 'email_address' :
-                            if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
-                            $args->s_email_address = $search_keyword;
-                        break;
-                    case 'homepage' :
-                            if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
-                            $args->s_homepage = $search_keyword;
-                        break;
-                    case 'regdate' :
-                            $args->s_regdate = $search_keyword;
-                        break;
-                    case 'last_update' :
-                            $args->s_last_upate = $search_keyword;
-                        break;
-                    case 'ipaddress' :
-                            $args->s_ipaddress= $search_keyword;
-                        break;
-                    case 'is_secret' :
-                            $args->s_is_secret= $search_keyword;
-                        break;
-                    case 'member_srl' :
-                            $args->{"s_".$search_target} = (int)$search_keyword;
-                        break;
-                }
-            }
-            $output = executeQueryArray($query_id, $args);
-            // return when no result or error occurance
-            if(!$output->toBool()||!count($output->data)) return $output;
+		function getTotalCommentCount($obj) {
+			$query_id = 'comment.getTotalCommentCountByGroupStatus';
+			// Variables
+			$args = new stdClass();
+			$args->s_module_srl = $obj->module_srl;
+			$args->exclude_module_srl = $obj->exclude_module_srl;
+			// Search options
+			$search_target = $obj->search_target?$obj->search_target:trim(Context::get('search_target'));
+			$search_keyword = $obj->search_keyword?$obj->search_keyword:trim(Context::get('search_keyword'));
+			if($search_target && $search_keyword) {
+				switch($search_target) {
+					case 'content' :
+							if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
+							$args->s_content = $search_keyword;
+						break;
+					case 'user_id' :
+							if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
+							$args->s_user_id = $search_keyword;
+							$query_id = 'comment.getTotalCommentCountWithinMemberByGroupStatus';
+						break;
+					case 'user_name' :
+							if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
+							$args->s_user_name = $search_keyword;
+						break;
+					case 'nick_name' :
+							if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
+							$args->s_nick_name = $search_keyword;
+						break;
+					case 'email_address' :
+							if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
+							$args->s_email_address = $search_keyword;
+						break;
+					case 'homepage' :
+							if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
+							$args->s_homepage = $search_keyword;
+						break;
+					case 'regdate' :
+							$args->s_regdate = $search_keyword;
+						break;
+					case 'last_update' :
+							$args->s_last_upate = $search_keyword;
+						break;
+					case 'ipaddress' :
+							$args->s_ipaddress= $search_keyword;
+						break;
+					case 'is_secret' :
+							$args->s_is_secret= $search_keyword;
+						break;
+					case 'member_srl' :
+							$args->{"s_".$search_target} = (int)$search_keyword;
+						break;
+				}
+			}
+			$output = executeQueryArray($query_id, $args);
+			// return when no result or error occurance
+			if(!$output->toBool()||!count($output->data)) return $output;
 
-            return $output->data;
-        }
+			return $output->data;
+		}
 
 		/**
 		 * Return a configuration of comments for each module
 		 * @param int $module_srl
 		 * @return object
 		 */
-        function getCommentConfig($module_srl) {
-            $oModuleModel = &getModel('module');
-            $comment_config = $oModuleModel->getModulePartConfig('comment', $module_srl);
-            if(!isset($comment_config->comment_count)) $comment_config->comment_count = 50;
-            return $comment_config;
-        }
+		function getCommentConfig($module_srl) {
+			$oModuleModel = &getModel('module');
+			$comment_config = $oModuleModel->getModulePartConfig('comment', $module_srl);
+			if(!isset($comment_config->comment_count)) $comment_config->comment_count = 50;
+			return $comment_config;
+		}
 
 		/**
 		 * Return a list of voting member
@@ -683,12 +683,12 @@
 			if($point != -1) $point = 1;
 
 			$oCommentModel = &getModel('comment');
-            $oComment = $oCommentModel->getComment($comment_srl, false, false);
+			$oComment = $oCommentModel->getComment($comment_srl, false, false);
 			$module_srl = $oComment->get('module_srl');
 			if(!$module_srl) return new Object(-1, 'msg_invalid_request');
 
 			$oModuleModel = &getModel('module');
-            $comment_config = $oModuleModel->getModulePartConfig('comment',$module_srl);
+			$comment_config = $oModuleModel->getModulePartConfig('comment',$module_srl);
 			$args = new stdClass();
 			if($point == -1){
 				if($comment_config->use_vote_down!='S') return new Object(-1, 'msg_invalid_request');
@@ -724,5 +724,5 @@
 				return array('Y'=>'Secret', 'N'=>'Public');
 			else return $lang->secret_name_list;
 		}
-    }
+	}
 ?>

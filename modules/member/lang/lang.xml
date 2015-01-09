@@ -803,6 +803,20 @@
 			<value xml:lang="tr"><![CDATA[Son Giriş Tarihi (basit)]]></value>
 			<value xml:lang="vi"><![CDATA[Đăng nhập ít nhất]]></value>
 		</item>
+		<item name="birthday">
+			<value xml:lang="ko"><![CDATA[생일]]></value>
+			<value xml:lang="en"><![CDATA[Birthday]]></value>
+			<value xml:lang="jp"><![CDATA[誕生日]]></value>
+			<value xml:lang="zh-CN"><![CDATA[生日]]></value>
+			<value xml:lang="zh-TW"><![CDATA[生日]]></value>
+			<value xml:lang="fr"><![CDATA[Anniversaire]]></value>
+			<value xml:lang="de"><![CDATA[Geburtstag]]></value>
+			<value xml:lang="ru"><![CDATA[Дата рождения]]></value>
+			<value xml:lang="es"><![CDATA[Fecha de Nacimiento]]></value>
+			<value xml:lang="tr"><![CDATA[Doğum günü]]></value>
+			<value xml:lang="vi"><![CDATA[Sinh nhật]]></value>
+			<value xml:lang="mn"><![CDATA[Төрсөн өдөр]]></value>
+		</item>	
 		<item name="extra_vars">
 			<value xml:lang="ko"><![CDATA[확장변수]]></value>
 			<value xml:lang="en"><![CDATA[Extra Vars]]></value>
@@ -1576,7 +1590,7 @@
 	</item>
 	<item name="about_rechecked_password">
 		<value xml:lang="ko"><![CDATA[회원의 정보를 안전하게 보호하기 위해 비밀번호를 다시 한번 확인 합니다.]]></value>
-        <value xml:lang="en"><![CDATA[Confirm your password before editing account information.]]></value>
+		<value xml:lang="en"><![CDATA[Confirm your password before editing account information.]]></value>
 	</item>
 	<item name="about_user_id">
 		<value xml:lang="ko"><![CDATA[회원 ID는 3~20자 사이의 영문+숫자로 이루어져야 하며 영문으로 시작해야 합니다.]]></value>
@@ -2217,10 +2231,10 @@ Bạn có thể quản lý thành viên bằng cách tạo những nhóm mới, 
 		<value xml:lang="zh-TW"><![CDATA[可設定密碼更新週期，將會定期通知更換密碼。 (設為零則不使用)]]></value>
 		<value xml:lang="tr"><![CDATA[Eğer buna bir değer biçerseniz, şifrenizi belirli aralıklarla değiştirmeniz konusunda bildirim alacaksanız (eğer 0 olarak ayarlandıysa, devredışıdır)]]></value>
 	</item>
-    <item name="msg_change_password_date">
-        <value xml:lang="ko"><![CDATA[%s일 동안 비밀번호를 변경하지 않았습니다. 개인정보 보호를 위하여 비밀번호를 변경해야 합니다.]]></value>
-        <value xml:lang="en"><![CDATA[You have not changed the password during %s days. For personal information protection, you need to change the password.]]></value>
-    </item>
+	<item name="msg_change_password_date">
+		<value xml:lang="ko"><![CDATA[%s일 동안 비밀번호를 변경하지 않았습니다. 개인정보 보호를 위하여 비밀번호를 변경해야 합니다.]]></value>
+		<value xml:lang="en"><![CDATA[You have not changed the password during %s days. For personal information protection, you need to change the password.]]></value>
+	</item>
 	<item name="login_trial_limit1">
 		<value xml:lang="ko"><![CDATA[로그인 시도 횟수 제한 횟수]]></value>
 		<value xml:lang="en"><![CDATA[Sign in trial limit]]></value>

@@ -6,9 +6,9 @@
 <h2 class="h2">{$lang->cmd_find_member_account_with_email}</h2>
 <p>{$lang->about_find_member_account}</p>
 <form action="{getUrl('')}" method="get" class="form" onsubmit="return procFilter(this, find_member_account)">
-    <input type="hidden" name="mid" value="{$mid}" />
-    <input type="hidden" name="document_srl" value="{$document_srl}" />
-    <input type="hidden" name="page" value="{$page}" />
+	<input type="hidden" name="mid" value="{$mid}" />
+	<input type="hidden" name="document_srl" value="{$document_srl}" />
+	<input type="hidden" name="page" value="{$page}" />
 	<ul>
 		<li>
 			<p class="q"><label for="cpw">{$lang->email_address}</label></p>
@@ -24,11 +24,11 @@
 <p>{$lang->about_find_account_question}</p>
 <form action="{getUrl('')}" method="get" class="form" ruleset="@find_member_account_by_question">
 	<input type="hidden" name="module" value="member" />
-    <input type="hidden" name="mid" value="{$mid}" />
-    <input type="hidden" name="document_srl" value="{$document_srl}" />	
+	<input type="hidden" name="mid" value="{$mid}" />
+	<input type="hidden" name="document_srl" value="{$document_srl}" />	
 	<input type="hidden" name="act" value="procMemberFindAccountByQuestion" />
 	<input type="hidden" name="success_return_url" value="{getUrl('', 'act', 'dispMemberGetTempPassword')}" />
-    <input type="hidden" name="page" value="{$page}" />
+	<input type="hidden" name="page" value="{$page}" />
 	<ul>
 		<li cond="$identifier == 'user_id'">
 			<p class="q"><label for="cpw">{$lang->user_id}</label></p>

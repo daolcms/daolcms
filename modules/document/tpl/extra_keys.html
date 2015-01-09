@@ -3,21 +3,21 @@
 <!--%import("filter/delete_extra_var.xml")-->
 
 <!--@if($selected_var_idx && $extra_keys[$selected_var_idx])-->
-    {@ $selected_var = $extra_keys[$selected_var_idx] }
+	{@ $selected_var = $extra_keys[$selected_var_idx] }
 <!--@end-->
 <div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
 <p>{$XE_VALIDATOR_MESSAGE}</p>
 </div>
 
 <!--@if($type == 'insertExtraForm' || $selected_var_idx)-->
-    <form ruleset="insertExtraVar" action="./" method="post">
+	<form ruleset="insertExtraVar" action="./" method="post">
 	<input type="hidden" name="module" value="document" />
-    <input type="hidden" name="act" value="procDocumentAdminInsertExtraVar" />
-    <input type="hidden" name="module_srl" value="{$module_srl}" />
-    <input type="hidden" name="var_idx" value="{$selected_var_idx}" />
-    <input type="hidden" name="success_return_url" value="{getUrl('type', '')}" />
+	<input type="hidden" name="act" value="procDocumentAdminInsertExtraVar" />
+	<input type="hidden" name="module_srl" value="{$module_srl}" />
+	<input type="hidden" name="var_idx" value="{$selected_var_idx}" />
+	<input type="hidden" name="success_return_url" value="{getUrl('type', '')}" />
 
-        <h3 class="h3">{$lang->extra_vars} {$selected_var_idx}</h3>
+		<h3 class="h3">{$lang->extra_vars} {$selected_var_idx}</h3>
 		<div class="table">
 			<table width="100%" border="1" cellspacing="0">
 				<tr>
@@ -73,7 +73,7 @@
 	</form>
 <!--@else-->
 
-    <h3 class="h3">{$lang->extra_vars}</h3>
+	<h3 class="h3">{$lang->extra_vars}</h3>
 	<div class="table">
 		<table width="100%" border="1" cellspacing="0">
 			<thead>

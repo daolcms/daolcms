@@ -9,12 +9,12 @@
 <!--%load_js_plugin("ui.tree")-->
 
 <script type="text/javascript">
-    var alertImageOnly = "{$lang->alert_image_only}";
+	var alertImageOnly = "{$lang->alert_image_only}";
 </script>
 
 <div class="menuManagement">
 
-    <!--@if($module == 'admin')-->
+	<!--@if($module == 'admin')-->
 	<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
 		<p>{$XE_VALIDATOR_MESSAGE}</p>
 	</div>
@@ -43,22 +43,22 @@
 		</div>
 	</form>
 
-    <!--@else-->
-        <div class="table">
-        	<table width="100%" border="1" cellspacing="0">
-        		<tr>
-        			<th scope="col">{$lang->title}</th>
-        			<td >
-        				{$menu_info->title}
-       				</td>
-       			</tr>
-        		<tr>
-        			<th scope="col">{$lang->menu_management}</th>
-        			<td >{nl2br($lang->about_menu_management)}</td>
-       			</tr>
+	<!--@else-->
+		<div class="table">
+			<table width="100%" border="1" cellspacing="0">
+				<tr>
+					<th scope="col">{$lang->title}</th>
+					<td >
+						{$menu_info->title}
+					</td>
+				</tr>
+				<tr>
+					<th scope="col">{$lang->menu_management}</th>
+					<td >{nl2br($lang->about_menu_management)}</td>
+				</tr>
 			</table>
 		</div>
-    <!--@end-->
+	<!--@end-->
 
 
 	<form ruleset="insertMenuItem" id="fo_menu" action="./" method="post" enctype="multipart/form-data">

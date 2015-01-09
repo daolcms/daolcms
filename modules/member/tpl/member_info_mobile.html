@@ -8,7 +8,7 @@
 <load target="css/msignup.css" />
 <div class="bd">
 	<h2 class="h2">{$lang->cmd_view_member_info}</h2>
-    <h3 class="h3">{$lang->member_default_info}</h3>
+	<h3 class="h3">{$lang->member_default_info}</h3>
 	<form action="" method="post">
 	<fieldset class="sn">
 		<ul>
@@ -37,7 +37,7 @@
 		</ul>
 	</fieldset>
 	<!--@if($extend_form_list)-->
-    <h3 class="h3">{$lang->member_extend_info}</h3>
+	<h3 class="h3">{$lang->member_extend_info}</h3>
 	<fieldset class="sn">
 		<ul>
 			<!--@foreach($extend_form_list as $key => $val)-->
@@ -62,10 +62,10 @@
 				<!--@end-->
 				</li>
 			<!--@end-->
-    <!--@end-->
+	<!--@end-->
 		</ul>
 	</fieldset>
-    <!--@end-->
+	<!--@end-->
 		<div class="cm">
 			<li>
 				<!--@if($member_info->member_srl == $logged_info->member_srl)-->
@@ -76,5 +76,5 @@
 				<a href="{getUrl('act','','member_srl','')}" class="bn"><span>{$lang->cmd_back}</span></a>
 			</li>
 		</div>
-    </form>
+	</form>
 </div>

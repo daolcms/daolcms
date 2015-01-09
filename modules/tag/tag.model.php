@@ -1,66 +1,66 @@
 <?php
-    /**
-     * @class  tagModel
-     * @author NHN (developers@xpressengine.com)
-     * @brief tag model class of the module
-     **/
+	/**
+	 * @class  tagModel
+	 * @author NHN (developers@xpressengine.com)
+	 * @brief tag model class of the module
+	 **/
 
-    class tagModel extends tag {
+	class tagModel extends tag {
 
-        /**
-         * @brief Initialization
-         **/
-        function init() {
-        }
+		/**
+		 * @brief Initialization
+		 **/
+		function init() {
+		}
 
-        /**
-         * @brief Imported Tag List
-         * Many of the specified module in order to extract the number of tags
-         **/
-        function getTagList($obj) {
-            if($obj->mid) {
-                $oModuleModel = &getModel('module');
-                $obj->module_srl = $oModuleModel->getModuleSrlByMid($obj->mid);
-                unset($obj->mid);
-            }
-            // Module_srl passed the array may be a check whether the array
-            if(is_array($obj->module_srl)) $args->module_srl = implode(',', $obj->module_srl);
-            else $args->module_srl = $obj->module_srl;
-            $args->list_count = $obj->list_count;
-            $args->count = $obj->sort_index;
+		/**
+		 * @brief Imported Tag List
+		 * Many of the specified module in order to extract the number of tags
+		 **/
+		function getTagList($obj) {
+			if($obj->mid) {
+				$oModuleModel = &getModel('module');
+				$obj->module_srl = $oModuleModel->getModuleSrlByMid($obj->mid);
+				unset($obj->mid);
+			}
+			// Module_srl passed the array may be a check whether the array
+			if(is_array($obj->module_srl)) $args->module_srl = implode(',', $obj->module_srl);
+			else $args->module_srl = $obj->module_srl;
+			$args->list_count = $obj->list_count;
+			$args->count = $obj->sort_index;
 
-            $output = executeQueryArray('tag.getTagList', $args);
-            if(!$output->toBool()) return $output;
+			$output = executeQueryArray('tag.getTagList', $args);
+			if(!$output->toBool()) return $output;
 
-            return $output;
-        }
+			return $output;
+		}
 
 
-        /**
-         * @brief document_srl the import tag
-         **/
+		/**
+		 * @brief document_srl the import tag
+		 **/
 		function getDocumentSrlByTag($obj){
 			if(is_array($obj->module_srl)) $args->module_srl = implode(',', $obj->module_srl);
-            else $args->module_srl = $obj->module_srl;
+			else $args->module_srl = $obj->module_srl;
 
 			$args->tag = $obj->tag;
 			$output = executeQueryArray('tag.getDocumentSrlByTag', $args);
-            if(!$output->toBool()) return $output;
+			if(!$output->toBool()) return $output;
 
-            return $output;
+			return $output;
 		}
 
-        /**
-         * @brief document used in the import tag
-         **/
+		/**
+		 * @brief document used in the import tag
+		 **/
 		function getDocumentsTagList($obj){
 			if(is_array($obj->document_srl)) $args->document_srl = implode(',', $obj->document_srl);
-            else $args->document_srl = $obj->document_srl;
+			else $args->document_srl = $obj->document_srl;
 
-            $output = executeQueryArray('tag.getDocumentsTagList', $args);
-            if(!$output->toBool()) return $output;
+			$output = executeQueryArray('tag.getDocumentsTagList', $args);
+			if(!$output->toBool()) return $output;
 
-            return $output;
+			return $output;
 		}
 
 		/**
@@ -82,5 +82,5 @@
 			$output = $this->getDocumentsTagList($args);
 			return $output;
 		}
-    }
+	}
 ?>

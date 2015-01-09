@@ -462,7 +462,7 @@
 		 */
 		function checkQueryCacheFile($query_id,$xml_file){
 			// first try finding cache file
-			$cache_file = sprintf('%s%s%s.%s.%s.cache.php', _XE_PATH_, $this->cache_file, $query_id, __ZBXE_VERSION__, $this->db_type);
+			$cache_file = sprintf('%s%s%s.%s.%s.cache.php', _XE_PATH_, $this->cache_file, $query_id, __DAOL_VERSION__, $this->db_type);
 
 			if(file_exists($cache_file)) $cache_time = filemtime($cache_file);
 			else $cache_time = -1;

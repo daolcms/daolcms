@@ -13,11 +13,11 @@
 	<p>{$XE_VALIDATOR_MESSAGE}</p>
 </div>
 <form ruleset="@insertMember" id="fo_insert_member" class="form" action="./" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="act" value="procMemberModifyInfo" />
-    <input type="hidden" name="module" value="member" />
-    <input type="hidden" name="member_srl" value="{$member_info->member_srl}" />
-    <input type="hidden" name="signature" value="{htmlspecialchars($member_info->signature)}" />
-    <input type="hidden" name="page" value="{$page}" />
+	<input type="hidden" name="act" value="procMemberModifyInfo" />
+	<input type="hidden" name="module" value="member" />
+	<input type="hidden" name="member_srl" value="{$member_info->member_srl}" />
+	<input type="hidden" name="signature" value="{htmlspecialchars($member_info->signature)}" />
+	<input type="hidden" name="page" value="{$page}" />
 	<ul>
 		<li>
 			<p class="q">{$identifierForm->title} <em style="color:red">*</em></p>
@@ -54,17 +54,17 @@
 </form>
 <script type="text/javascript">
 (function($){
-    $(function(){
-        var option = { changeMonth: true, changeYear: true, gotoCurrent: false,yearRange:'-100:+10', dateFormat:'yy-mm-dd', onSelect:function(){
+	$(function(){
+		var option = { changeMonth: true, changeYear: true, gotoCurrent: false,yearRange:'-100:+10', dateFormat:'yy-mm-dd', onSelect:function(){
 
-            $(this).prev('input[type="hidden"]').val(this.value.replace(/-/g,""))}
-        };
-        $.extend(option,$.datepicker.regional['{$lang_type}']);
-        $(".inputDate").datepicker(option);
+			$(this).prev('input[type="hidden"]').val(this.value.replace(/-/g,""))}
+		};
+		$.extend(option,$.datepicker.regional['{$lang_type}']);
+		$(".inputDate").datepicker(option);
 		$(".dateRemover").click(function() {
 			$(this).prevAll('input').val('');
 			return false;});
-    });
+	});
 })(jQuery);
 </script>
 <include target="./common_footer.html" />

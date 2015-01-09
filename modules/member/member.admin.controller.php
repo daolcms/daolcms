@@ -1,35 +1,36 @@
 <?php
-    /**
-     * @class  memberAdminController
-     * @author NHN (developers@xpressengine.com)
-     * member module of the admin controller class
-     **/
+	/**
+	 * @class  memberAdminController
+	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
+	 * member module of the admin controller class
+	 **/
 
-    class memberAdminController extends member {
+	class memberAdminController extends member {
 
-        /**
-         * Initialization
+		/**
+		 * Initialization
 		 * @return void
-         **/
-        function init() {
-        }
+		 **/
+		function init() {
+		}
 
-        /**
-         * Add a user (Administrator)
+		/**
+		 * Add a user (Administrator)
 		 * @return void|Object (void : success, Object : fail)
-         **/
-        function procMemberAdminInsert() {
-           // if(Context::getRequestMethod() == "GET") return new Object(-1, "msg_invalid_request");
-            // Extract the necessary information in advance
+		 **/
+		function procMemberAdminInsert() {
+		   // if(Context::getRequestMethod() == "GET") return new Object(-1, "msg_invalid_request");
+			// Extract the necessary information in advance
 			$logged_info = Context::get('logged_info');
 			if($logged_info->is_admin != 'Y' || !checkCSRF())
 			{
 				return new Object(-1, 'msg_invalid_request');
 			}
 	
-            $args = Context::gets('member_srl','email_address','find_account_answer', 'allow_mailing','allow_message','denied','is_admin','description','group_srl_list','limit_date');
-            $oMemberModel = &getModel ('member');
-            $config = $oMemberModel->getMemberConfig ();
+			$args = Context::gets('member_srl','email_address','find_account_answer', 'allow_mailing','allow_message','denied','is_admin','description','group_srl_list','limit_date');
+			$oMemberModel = &getModel ('member');
+			$config = $oMemberModel->getMemberConfig ();
 			$getVars = array();
 			if ($config->signupForm){
 				foreach($config->signupForm as $formInfo) {
@@ -58,7 +59,7 @@
 			unset($all_args->password);
 			unset($all_args->password2);
 			unset($all_args->reset_password);
-            
+			
 			// Add extra vars after excluding necessary information from all the requested arguments
 			$extra_vars = delObjectVars($all_args, $args);
 			$args->extra_vars = serialize($extra_vars);
@@ -118,30 +119,30 @@
 
 			$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispMemberAdminList');
 			$this->setRedirectUrl($returnUrl);
-        }
+		}
 
-        /**
-         * Delete a user (Administrator)
+		/**
+		 * Delete a user (Administrator)
 		 * @return void|Object (void : success, Object : fail)
-         **/
-        function procMemberAdminDelete() {
-            // Separate all the values into DB entries and others
-            $member_srl = Context::get('member_srl');
+		 **/
+		function procMemberAdminDelete() {
+			// Separate all the values into DB entries and others
+			$member_srl = Context::get('member_srl');
 
-            $oMemberController = &getController('member');
-            $output = $oMemberController->deleteMember($member_srl);
-            if(!$output->toBool()) return $output;
+			$oMemberController = &getController('member');
+			$output = $oMemberController->deleteMember($member_srl);
+			if(!$output->toBool()) return $output;
 
-            $this->add('page',Context::get('page'));
-            $this->setMessage("success_deleted");
-        }
+			$this->add('page',Context::get('page'));
+			$this->setMessage("success_deleted");
+		}
 
-        /**
-         * Set config of member
+		/**
+		 * Set config of member
 		 * @return void|Object (void : success, Object : fail)
-         **/
+		 **/
 		function procMemberAdminInsertConfig(){
-            $input_args = Context::gets(
+			$input_args = Context::gets(
 				'enable_join',
 				'enable_confirm',
 				'webmaster_name',
@@ -159,18 +160,18 @@
 				'colorset',
 				'mlayout_srl',
 				'mskin',
-                'profile_image', 'profile_image_max_width', 'profile_image_max_height',
-                'image_name', 'image_name_max_width', 'image_name_max_height',
-                'image_mark', 'image_mark_max_width', 'image_mark_max_height',
+				'profile_image', 'profile_image_max_width', 'profile_image_max_height',
+				'image_name', 'image_name_max_width', 'image_name_max_height',
+				'image_mark', 'image_mark_max_width', 'image_mark_max_height',
 				'signature_editor_skin', 'sel_editor_colorset'
-            );
+			);
 
 			$list_order = Context::get('list_order');
 			$usable_list = Context::get('usable_list');
 			$all_args = Context::getRequestVars();
 
 			$oModuleController = &getController('module');
-            $oMemberModel = &getModel('member');
+			$oMemberModel = &getModel('member');
 
 			// default setting start
 			$args = $input_args;
@@ -337,12 +338,12 @@
 			return $list_order;
 		}
 
-        /**
-         * Create ruleset file of signup
+		/**
+		 * Create ruleset file of signup
 		 * @param object $signupForm (user define signup form)
 		 * @param string $agreement
 		 * @return void
-         **/
+		 **/
 		function _createSignupRuleset($signupForm, $agreement = null){
 			$xml_file = './files/ruleset/insertMember.xml';
 			$buff = '<?xml version="1.0" encoding="utf-8"?>' . PHP_EOL
@@ -382,7 +383,7 @@
 			}
 
 			$xml_buff = sprintf($buff, implode(PHP_EOL, $fields));
-            FileHandler::writeFile($xml_file, $xml_buff);
+			FileHandler::writeFile($xml_file, $xml_buff);
 			unset($xml_buff);
 
 			$validator   = new Validator($xml_file);
@@ -390,11 +391,11 @@
 			$validator->getJsPath();
 		}
 
-        /**
-         * Create ruleset file of login
+		/**
+		 * Create ruleset file of login
 		 * @param string $identifier (login identifier)
 		 * @return void
-         **/
+		 **/
 		function _createLoginRuleset($identifier){
 			$xml_file = './files/ruleset/login.xml';
 			$buff = '<?xml version="1.0" encoding="utf-8"?>'
@@ -410,18 +411,18 @@
 			$fields[] = '<field name="password" required="true" />';
 
 			$xml_buff = sprintf($buff, implode('', $fields));
-            Filehandler::writeFile($xml_file, $xml_buff);
+			Filehandler::writeFile($xml_file, $xml_buff);
 
 			$validator   = new Validator($xml_file);
 			$validator->setCacheDir('files/cache');
 			$validator->getJsPath();
 		}
 
-        /**
-         * Create ruleset file of find account
+		/**
+		 * Create ruleset file of find account
 		 * @param string $identifier (login identifier)
 		 * @return void
-         **/
+		 **/
 		function _createFindAccountByQuestion($identifier){
 			$xml_file = './files/ruleset/find_member_account_by_question.xml';
 			$buff = '<?xml version="1.0" encoding="utf-8"?>'
@@ -440,90 +441,90 @@
 			$fields[] = '<field name="find_account_answer" required="true" length=":250"/>';
 
 			$xml_buff = sprintf($buff, implode('', $fields));
-            Filehandler::writeFile($xml_file, $xml_buff);
+			Filehandler::writeFile($xml_file, $xml_buff);
 
 			$validator   = new Validator($xml_file);
 			$validator->setCacheDir('files/cache');
 			$validator->getJsPath();
 		}
 
-        /**
-         * Add a user group
+		/**
+		 * Add a user group
 		 * @return void|Object (void : success, Object : fail)
-         **/
-        function procMemberAdminInsertGroup() {
-            $args = Context::gets('title','description','is_default','image_mark');
-            $output = $this->insertGroup($args);
-            if(!$output->toBool()) return $output;
+		 **/
+		function procMemberAdminInsertGroup() {
+			$args = Context::gets('title','description','is_default','image_mark');
+			$output = $this->insertGroup($args);
+			if(!$output->toBool()) return $output;
 
-            $this->add('group_srl','');
-            $this->add('page',Context::get('page'));
-            $this->setMessage('success_registed');
+			$this->add('group_srl','');
+			$this->add('page',Context::get('page'));
+			$this->setMessage('success_registed');
 
 			$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispMemberAdminGroupList');
 			$this->setRedirectUrl($returnUrl);
-        }
+		}
 
-        /**
-         * Update user group information
+		/**
+		 * Update user group information
 		 * @return void|Object (void : success, Object : fail)
-         **/
-        function procMemberAdminUpdateGroup() {
-            $group_srl = Context::get('group_srl');
+		 **/
+		function procMemberAdminUpdateGroup() {
+			$group_srl = Context::get('group_srl');
 
 			$args = Context::gets('group_srl','title','description','is_default','image_mark');
 			$args->site_srl = 0;
 			$output = $this->updateGroup($args);
 			if(!$output->toBool()) return $output;
 
-            $this->add('group_srl','');
-            $this->add('page',Context::get('page'));
-            $this->setMessage('success_updated');
+			$this->add('group_srl','');
+			$this->add('page',Context::get('page'));
+			$this->setMessage('success_updated');
 
 			$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispMemberAdminGroupList');
 			$this->setRedirectUrl($returnUrl);
-        }
+		}
 
-        /**
-         * Update user group information
+		/**
+		 * Update user group information
 		 * @return void|Object (void : success, Object : fail)
-         **/
-        function procMemberAdminDeleteGroup() {
-            $group_srl = Context::get('group_srl');
+		 **/
+		function procMemberAdminDeleteGroup() {
+			$group_srl = Context::get('group_srl');
 
 			$output = $this->deleteGroup($group_srl);
 			if(!$output->toBool()) return $output;
 
-            $this->add('group_srl','');
-            $this->add('page',Context::get('page'));
-            $this->setMessage('success_deleted');
+			$this->add('group_srl','');
+			$this->add('page',Context::get('page'));
+			$this->setMessage('success_deleted');
 
 			$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispMemberAdminGroupList');
 			$this->setRedirectUrl($returnUrl);
-        }
+		}
 
-        /**
-         * Add a join form
+		/**
+		 * Add a join form
 		 * @return void|Object (void : success, Object : fail)
-         **/
-        function procMemberAdminInsertJoinForm() 
+		 **/
+		function procMemberAdminInsertJoinForm() 
 		{
-            $args->member_join_form_srl = Context::get('member_join_form_srl');
+			$args->member_join_form_srl = Context::get('member_join_form_srl');
 
-            $args->column_type = Context::get('column_type');
-            $args->column_name = strtolower(Context::get('column_id'));
-            $args->column_title = Context::get('column_title');
-            $args->default_value = explode("\n", str_replace("\r", '', Context::get('default_value')));
-            $args->required = Context::get('required');
+			$args->column_type = Context::get('column_type');
+			$args->column_name = strtolower(Context::get('column_id'));
+			$args->column_title = Context::get('column_title');
+			$args->default_value = explode("\n", str_replace("\r", '', Context::get('default_value')));
+			$args->required = Context::get('required');
 			$args->is_active = (isset($args->required));
-            if(!in_array(strtoupper($args->required), array('Y','N')))$args->required = 'N';
-            $args->description = Context::get('description') ? Context::get('description') : '';
-            // Default values
-            if(in_array($args->column_type, array('checkbox','select','radio')) && count($args->default_value) ) {
-                $args->default_value = serialize($args->default_value);
-            } else {
-                $args->default_value = '';
-            }
+			if(!in_array(strtoupper($args->required), array('Y','N')))$args->required = 'N';
+			$args->description = Context::get('description') ? Context::get('description') : '';
+			// Default values
+			if(in_array($args->column_type, array('checkbox','select','radio')) && count($args->default_value) ) {
+				$args->default_value = serialize($args->default_value);
+			} else {
+				$args->default_value = '';
+			}
 
 			// Check ID duplicated
 			$oMemberModel = &getModel('member');
@@ -536,17 +537,17 @@
 					return new Object(-1,'msg_exists_user_id');
 				}
 			}
-            // Fix if member_join_form_srl exists. Add if not exists.
-            $isInsert;
+			// Fix if member_join_form_srl exists. Add if not exists.
+			$isInsert;
 			if(!$args->member_join_form_srl){
 				$isInsert = true;
 				$args->list_order = $args->member_join_form_srl = getNextSequence();
-                $output = executeQuery('member.insertJoinForm', $args);
-            }else{
-                $output = executeQuery('member.updateJoinForm', $args);
-            }
+				$output = executeQuery('member.insertJoinForm', $args);
+			}else{
+				$output = executeQuery('member.updateJoinForm', $args);
+			}
 
-            if(!$output->toBool()) return $output;
+			if(!$output->toBool()) return $output;
 
 			// memberConfig update
 			$signupItem->name = $args->column_name;
@@ -574,18 +575,18 @@
 			$oModuleController = &getController('module');
 			$output = $oModuleController->updateModuleConfig('member', $config);
 
-            $this->setMessage('success_registed');
+			$this->setMessage('success_registed');
 
 			$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispMemberAdminJoinFormList');
 			$this->setRedirectUrl($returnUrl);
-        }
+		}
 
-        /**
-         * Delete a join form
+		/**
+		 * Delete a join form
 		 * @return void
-         **/
+		 **/
 		function procMemberAdminDeleteJoinForm(){
-            $member_join_form_srl = Context::get('member_join_form_srl');
+			$member_join_form_srl = Context::get('member_join_form_srl');
 			$this->deleteJoinForm($member_join_form_srl);
 
 			$oMemberModel = &getModel('member');
@@ -602,35 +603,35 @@
 			$output = $oModuleController->updateModuleConfig('member', $config);
 		}
 
-        /**
-         * Move up/down the member join form and modify it
+		/**
+		 * Move up/down the member join form and modify it
 		 * @deprecated
 		 * @return void
-         **/
-        function procMemberAdminUpdateJoinForm() {
-            $member_join_form_srl = Context::get('member_join_form_srl');
-            $mode = Context::get('mode');
+		 **/
+		function procMemberAdminUpdateJoinForm() {
+			$member_join_form_srl = Context::get('member_join_form_srl');
+			$mode = Context::get('mode');
 
-            switch($mode) {
-                case 'up' :
-                        $output = $this->moveJoinFormUp($member_join_form_srl);
-                        $msg_code = 'success_moved';
-                    break;
-                case 'down' :
-                        $output = $this->moveJoinFormDown($member_join_form_srl);
-                        $msg_code = 'success_moved';
-                    break;
-                case 'delete' :
-                        $output = $this->deleteJoinForm($member_join_form_srl);
-                        $msg_code = 'success_deleted';
-                    break;
-                case 'update' :
-                    break;
-            }
-            if(!$output->toBool()) return $output;
+			switch($mode) {
+				case 'up' :
+						$output = $this->moveJoinFormUp($member_join_form_srl);
+						$msg_code = 'success_moved';
+					break;
+				case 'down' :
+						$output = $this->moveJoinFormDown($member_join_form_srl);
+						$msg_code = 'success_moved';
+					break;
+				case 'delete' :
+						$output = $this->deleteJoinForm($member_join_form_srl);
+						$msg_code = 'success_deleted';
+					break;
+				case 'update' :
+					break;
+			}
+			if(!$output->toBool()) return $output;
 
-            $this->setMessage($msg_code);
-        }
+			$this->setMessage($msg_code);
+		}
 
 		/**
 		 * selected member manager layer in dispAdminList 
@@ -641,8 +642,8 @@
 			$groups = $var->groups;
 			$members = $var->member_srls;
 
-            $oDB = &DB::getInstance();
-            $oDB->begin();
+			$oDB = &DB::getInstance();
+			$oDB->begin();
 
 			$oMemberController = &getController('member');
 			foreach($members as $key=>$member_srl){
@@ -706,72 +707,72 @@
 			$this->setRedirectUrl($returnUrl);
 		}
 
-        /**
-         * Delete the selected members
+		/**
+		 * Delete the selected members
 		 * @return void|Object (void : success, Object : fail)
-         */
-        function procMemberAdminDeleteMembers() {
-            $target_member_srls = Context::get('target_member_srls');
-            if(!$target_member_srls) return new Object(-1, 'msg_invalid_request');
-            $member_srls = explode(',', $target_member_srls);
-            $oMemberController = &getController('member');
+		 */
+		function procMemberAdminDeleteMembers() {
+			$target_member_srls = Context::get('target_member_srls');
+			if(!$target_member_srls) return new Object(-1, 'msg_invalid_request');
+			$member_srls = explode(',', $target_member_srls);
+			$oMemberController = &getController('member');
 
-            foreach($member_srls as $member) {
-                $output = $oMemberController->deleteMember($member);
-                if(!$output->toBool()) {
-                    $this->setMessage('failed_deleted');
-                    return $output;
-                }
-            }
+			foreach($member_srls as $member) {
+				$output = $oMemberController->deleteMember($member);
+				if(!$output->toBool()) {
+					$this->setMessage('failed_deleted');
+					return $output;
+				}
+			}
 
-            $this->setMessage('success_deleted');
-        }
+			$this->setMessage('success_deleted');
+		}
 
-        /**
-         * Update a group of selected memebrs
+		/**
+		 * Update a group of selected memebrs
 		 * @return void|Object (void : success, Object : fail)
-         **/
-        function procMemberAdminUpdateMembersGroup() {
-            $member_srl = Context::get('member_srl');
-            if(!$member_srl) return new Object(-1,'msg_invalid_request');
-            $member_srls = explode(',',$member_srl);
+		 **/
+		function procMemberAdminUpdateMembersGroup() {
+			$member_srl = Context::get('member_srl');
+			if(!$member_srl) return new Object(-1,'msg_invalid_request');
+			$member_srls = explode(',',$member_srl);
 
-            $group_srl = Context::get('group_srls');
-            if(!is_array($group_srl)) $group_srls = explode('|@|', $group_srl);
+			$group_srl = Context::get('group_srls');
+			if(!is_array($group_srl)) $group_srls = explode('|@|', $group_srl);
 			else $group_srls = $group_srl;
 
-            $oDB = &DB::getInstance();
-            $oDB->begin();
-            // Delete a group of selected members
-            $args->member_srl = $member_srl;
-            $output = executeQuery('member.deleteMembersGroup', $args);
-            if(!$output->toBool()) {
-                $oDB->rollback();
-                return $output;
-            }
-            // Add to a selected group
-            $group_count = count($group_srls);
-            $member_count = count($member_srls);
-            for($j=0;$j<$group_count;$j++) {
-                $group_srl = (int)trim($group_srls[$j]);
-                if(!$group_srl) continue;
-                for($i=0;$i<$member_count;$i++) {
-                    $member_srl = (int)trim($member_srls[$i]);
-                    if(!$member_srl) continue;
+			$oDB = &DB::getInstance();
+			$oDB->begin();
+			// Delete a group of selected members
+			$args->member_srl = $member_srl;
+			$output = executeQuery('member.deleteMembersGroup', $args);
+			if(!$output->toBool()) {
+				$oDB->rollback();
+				return $output;
+			}
+			// Add to a selected group
+			$group_count = count($group_srls);
+			$member_count = count($member_srls);
+			for($j=0;$j<$group_count;$j++) {
+				$group_srl = (int)trim($group_srls[$j]);
+				if(!$group_srl) continue;
+				for($i=0;$i<$member_count;$i++) {
+					$member_srl = (int)trim($member_srls[$i]);
+					if(!$member_srl) continue;
 
-                    $args = null;
-                    $args->member_srl = $member_srl;
-                    $args->group_srl = $group_srl;
+					$args = null;
+					$args->member_srl = $member_srl;
+					$args->group_srl = $group_srl;
 
-                    $output = executeQuery('member.addMemberToGroup', $args);
-                    if(!$output->toBool()) {
-                        $oDB->rollback();
-                        return $output;
-                    }
-                }
-            }
-            $oDB->commit();
-            $this->setMessage('success_updated');
+					$output = executeQuery('member.addMemberToGroup', $args);
+					if(!$output->toBool()) {
+						$oDB->rollback();
+						return $output;
+					}
+				}
+			}
+			$oDB->commit();
+			$this->setMessage('success_updated');
 
 			if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))) {
 				global $lang;
@@ -783,14 +784,14 @@
 				Context::close();
 				exit;
 			}
-        }
+		}
 
-        /**
-         * Add a denied ID
+		/**
+		 * Add a denied ID
 		 * @return void
-         **/
-        function procMemberAdminInsertDeniedID() {
-            $user_ids = Context::get('user_id');
+		 **/
+		function procMemberAdminInsertDeniedID() {
+			$user_ids = Context::get('user_id');
 
 			$user_ids = explode(',',$user_ids);
 			$success_ids = array();
@@ -804,12 +805,12 @@
 
 			$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispMemberAdminDeniedIDList');
 			$this->setRedirectUrl($returnUrl);
-        }
+		}
 
-        /**
-         * Add a denied nick name
+		/**
+		 * Add a denied nick name
 		 * @return void
-         **/
+		 **/
 		function procMemberAdminUpdateDeniedNickName()
 		{
 			$nick_name = Context::get('nick_name');
@@ -842,127 +843,127 @@
 			}
 		}
 
-        /**
-         * Update denied ID
+		/**
+		 * Update denied ID
 		 * @return void|Object (void : success, Object : fail)
-         **/
-        function procMemberAdminUpdateDeniedID() {
-            $user_id = Context::get('user_id');
-            $mode = Context::get('mode');
+		 **/
+		function procMemberAdminUpdateDeniedID() {
+			$user_id = Context::get('user_id');
+			$mode = Context::get('mode');
 
-            switch($mode) {
-                case 'delete' :
-                        $output = $this->deleteDeniedID($user_id);
-                        if(!$output->toBool()) return $output;
-                        $msg_code = 'success_deleted';
-                    break;
-            }
+			switch($mode) {
+				case 'delete' :
+						$output = $this->deleteDeniedID($user_id);
+						if(!$output->toBool()) return $output;
+						$msg_code = 'success_deleted';
+					break;
+			}
 
-            $this->add('page',Context::get('page'));
-            $this->setMessage($msg_code);
-        }
+			$this->add('page',Context::get('page'));
+			$this->setMessage($msg_code);
+		}
 
-        /**
-         * Add an administrator
+		/**
+		 * Add an administrator
 		 * @param object $args
 		 * @return object (info of added member)
-         **/
-        function insertAdmin($args) {
-            // Assign an administrator
-            $args->is_admin = 'Y';
-            // Get admin group and set
-            $oMemberModel = &getModel('member');
-            $admin_group = $oMemberModel->getAdminGroup();
-            $args->group_srl_list = $admin_group->group_srl;
+		 **/
+		function insertAdmin($args) {
+			// Assign an administrator
+			$args->is_admin = 'Y';
+			// Get admin group and set
+			$oMemberModel = &getModel('member');
+			$admin_group = $oMemberModel->getAdminGroup();
+			$args->group_srl_list = $admin_group->group_srl;
 
-            $oMemberController = &getController('member');
-            return $oMemberController->insertMember($args);
-        }
+			$oMemberController = &getController('member');
+			return $oMemberController->insertMember($args);
+		}
 
-        /**
-         * Change the group values of member
+		/**
+		 * Change the group values of member
 		 * @param int $source_group_srl
 		 * @param int $target_group_srl
 		 * @return Object
-         **/
-        function changeGroup($source_group_srl, $target_group_srl) {
-            $args->source_group_srl = $source_group_srl;
-            $args->target_group_srl = $target_group_srl;
+		 **/
+		function changeGroup($source_group_srl, $target_group_srl) {
+			$args->source_group_srl = $source_group_srl;
+			$args->target_group_srl = $target_group_srl;
 
-            return executeQuery('member.changeGroup', $args);
-        }
+			return executeQuery('member.changeGroup', $args);
+		}
 
-        /**
-         * find_account_answerInsert a group
+		/**
+		 * find_account_answerInsert a group
 		 * @param object $args
 		 * @return Object
-         **/
-        function insertGroup($args) {
-            if(!$args->site_srl) $args->site_srl = 0;
-            // Check the value of is_default. 
-            if($args->is_default!='Y') {
+		 **/
+		function insertGroup($args) {
+			if(!$args->site_srl) $args->site_srl = 0;
+			// Check the value of is_default. 
+			if($args->is_default!='Y') {
 				$args->is_default = 'N';
 			} else {
-				 $output = executeQuery('member.updateGroupDefaultClear', $args);
-				 if(!$output->toBool()) return $output;
+				$output = executeQuery('member.updateGroupDefaultClear', $args);
+				if(!$output->toBool()) return $output;
 			}
 			
 			if(!isset($args->list_order) || $args->list_order=='') {
 				$args->list_order = $args->group_srl;
 			}
 			
-			if (!$args->group_srl) $args->group_srl = getNextSequence();
-            return executeQuery('member.insertGroup', $args);
-        }
+			if(!$args->group_srl) $args->group_srl = getNextSequence();
+			return executeQuery('member.insertGroup', $args);
+		}
 
-        /**
-         * Modify Group Information
+		/**
+		 * Modify Group Information
 		 * @param object $args
 		 * @return Object
-         **/
-        function updateGroup($args) {
-            // Check the value of is_default. 
+		 **/
+		function updateGroup($args) {
+			// Check the value of is_default. 
 			if(!$args->group_srl) return new Object(-1, 'lang->msg_not_founded');
-            if($args->is_default!='Y') {
+			if($args->is_default!='Y') {
 				$args->is_default = 'N';
 			} else {
 				 $output = executeQuery('member.updateGroupDefaultClear', $args);
 				 if(!$output->toBool()) return $output;
 			}
 
-            return executeQuery('member.updateGroup', $args);
-        }
+			return executeQuery('member.updateGroup', $args);
+		}
 
-        /**
-         * Delete a Group
+		/**
+		 * Delete a Group
 		 * @param int $group_srl
 		 * @param int $site_srl
 		 * @return Object
-         **/
-        function deleteGroup($group_srl, $site_srl = 0) {
-            // Create a member model object
-            $oMemberModel = &getModel('member');
-            // Check the group_srl (If is_default == 'Y', it cannot be deleted)
+		 **/
+		function deleteGroup($group_srl, $site_srl = 0) {
+			// Create a member model object
+			$oMemberModel = &getModel('member');
+			// Check the group_srl (If is_default == 'Y', it cannot be deleted)
 			$columnList = array('group_srl', 'is_default');
-            $group_info = $oMemberModel->getGroup($group_srl, $columnList);
+			$group_info = $oMemberModel->getGroup($group_srl, $columnList);
 
-            if(!$group_info) return new Object(-1, 'lang->msg_not_founded');
-            if($group_info->is_default == 'Y') return new Object(-1, 'msg_not_delete_default');
-            // Get groups where is_default == 'Y'
+			if(!$group_info) return new Object(-1, 'lang->msg_not_founded');
+			if($group_info->is_default == 'Y') return new Object(-1, 'msg_not_delete_default');
+			// Get groups where is_default == 'Y'
 			$columnList = array('site_srl', 'group_srl');
-            $default_group = $oMemberModel->getDefaultGroup($site_srl, $columnList);
-            $default_group_srl = $default_group->group_srl;
-            // Change to default_group_srl
-            $this->changeGroup($group_srl, $default_group_srl);
+			$default_group = $oMemberModel->getDefaultGroup($site_srl, $columnList);
+			$default_group_srl = $default_group->group_srl;
+			// Change to default_group_srl
+			$this->changeGroup($group_srl, $default_group_srl);
 
-            $args->group_srl = $group_srl;
-            return executeQuery('member.deleteGroup', $args);
-        }
+			$args->group_srl = $group_srl;
+			return executeQuery('member.deleteGroup', $args);
+		}
 
-        /**
-         * Set group config
+		/**
+		 * Set group config
 		 * @return void
-         **/
+		 **/
 		function procMemberAdminGroupConfig() {
 			$vars = Context::getRequestVars();	
 
@@ -998,11 +999,11 @@
 			$this->setRedirectUrl($returnUrl);
 		}
 
-        /**
-         * Set group order
+		/**
+		 * Set group order
 		 * @return void
-         **/
-        function procMemberAdminUpdateGroupOrder() {
+		 **/
+		function procMemberAdminUpdateGroupOrder() {
 			$vars = Context::getRequestVars();
 			
 			foreach($vars->group_srls as $key => $val){
@@ -1012,21 +1013,21 @@
 			}
 
 			$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispMemberAdminGroupList'));
-        }
+		}
 
-        /**
-         * Register denied ID
+		/**
+		 * Register denied ID
 		 * @param string $user_id
 		 * @param string $description
 		 * @return Object
-         **/
-        function insertDeniedID($user_id, $description = '') {
-            $args->user_id = $user_id;
-            $args->description = $description;
-            $args->list_order = -1*getNextSequence();
+		 **/
+		function insertDeniedID($user_id, $description = '') {
+			$args->user_id = $user_id;
+			$args->description = $description;
+			$args->list_order = -1*getNextSequence();
 
-            return executeQuery('member.insertDeniedID', $args);
-        }
+			return executeQuery('member.insertDeniedID', $args);
+		}
 
 		function insertDeniedNickName($nick_name, $description = '')
 		{
@@ -1036,121 +1037,121 @@
 			return executeQuery('member.insertDeniedNickName', $args);
 		}
 
-        /**
-         * delete a denied id
+		/**
+		 * delete a denied id
 		 * @param string $user_id
 		 * @return object
-         **/
-        function deleteDeniedID($user_id) {
-            $args->user_id = $user_id;
-            return executeQuery('member.deleteDeniedID', $args);
-        }
-
-        /**
-         * delete a denied nick name
-		 * @param string $nick_name
-		 * @return object
-         **/
-		function deleteDeniedNickName($nick_name)
-		{
-            $args->nick_name = $nick_name;
-            return executeQuery('member.deleteDeniedNickName', $args);
+		 **/
+		function deleteDeniedID($user_id) {
+			$args->user_id = $user_id;
+			return executeQuery('member.deleteDeniedID', $args);
 		}
 
-        /**
-         * Delete a join form
+		/**
+		 * delete a denied nick name
+		 * @param string $nick_name
+		 * @return object
+		 **/
+		function deleteDeniedNickName($nick_name)
+		{
+			$args->nick_name = $nick_name;
+			return executeQuery('member.deleteDeniedNickName', $args);
+		}
+
+		/**
+		 * Delete a join form
 		 * @param int $member_join_form_srl
 		 * @return Object
-         **/
-        function deleteJoinForm($member_join_form_srl) {
-            $args->member_join_form_srl = $member_join_form_srl;
-            $output = executeQuery('member.deleteJoinForm', $args);
-            return $output;
-        }
+		 **/
+		function deleteJoinForm($member_join_form_srl) {
+			$args->member_join_form_srl = $member_join_form_srl;
+			$output = executeQuery('member.deleteJoinForm', $args);
+			return $output;
+		}
 
-        /**
-         * Move up a join form
+		/**
+		 * Move up a join form
 		 * @deprecated
 		 * @param int $member_join_form_srl
 		 * @return Object
-         **/
-        function moveJoinFormUp($member_join_form_srl) {
-            $oMemberModel = &getModel('member');
-            // Get information of the join form
-            $args->member_join_form_srl = $member_join_form_srl;
-            $output = executeQuery('member.getJoinForm', $args);
+		 **/
+		function moveJoinFormUp($member_join_form_srl) {
+			$oMemberModel = &getModel('member');
+			// Get information of the join form
+			$args->member_join_form_srl = $member_join_form_srl;
+			$output = executeQuery('member.getJoinForm', $args);
 
-            $join_form = $output->data;
-            $list_order = $join_form->list_order;
-            // Get a list of all join forms
-            $join_form_list = $oMemberModel->getJoinFormList();
-            $join_form_srl_list = array_keys($join_form_list);
-            if(count($join_form_srl_list)<2) return new Object();
+			$join_form = $output->data;
+			$list_order = $join_form->list_order;
+			// Get a list of all join forms
+			$join_form_list = $oMemberModel->getJoinFormList();
+			$join_form_srl_list = array_keys($join_form_list);
+			if(count($join_form_srl_list)<2) return new Object();
 
-            $prev_member_join_form = NULL;
-            foreach($join_form_list as $key => $val) {
-                if($val->member_join_form_srl == $member_join_form_srl) break;
-                $prev_member_join_form = $val;
-            }
-            // Return if no previous join form exists
-            if(!$prev_member_join_form) return new Object();
-            // Information of the join form
-            $cur_args->member_join_form_srl = $member_join_form_srl;
-            $cur_args->list_order = $prev_member_join_form->list_order;
-            // Information of the target join form
-            $prev_args->member_join_form_srl = $prev_member_join_form->member_join_form_srl;
-            $prev_args->list_order = $list_order;
-            // Execute Query
-            $output = executeQuery('member.updateMemberJoinFormListorder', $cur_args);
-            if(!$output->toBool()) return $output;
+			$prev_member_join_form = NULL;
+			foreach($join_form_list as $key => $val) {
+				if($val->member_join_form_srl == $member_join_form_srl) break;
+				$prev_member_join_form = $val;
+			}
+			// Return if no previous join form exists
+			if(!$prev_member_join_form) return new Object();
+			// Information of the join form
+			$cur_args->member_join_form_srl = $member_join_form_srl;
+			$cur_args->list_order = $prev_member_join_form->list_order;
+			// Information of the target join form
+			$prev_args->member_join_form_srl = $prev_member_join_form->member_join_form_srl;
+			$prev_args->list_order = $list_order;
+			// Execute Query
+			$output = executeQuery('member.updateMemberJoinFormListorder', $cur_args);
+			if(!$output->toBool()) return $output;
 
-            executeQuery('member.updateMemberJoinFormListorder', $prev_args);
-            if(!$output->toBool()) return $output;
+			executeQuery('member.updateMemberJoinFormListorder', $prev_args);
+			if(!$output->toBool()) return $output;
 
-            return new Object();
-        }
+			return new Object();
+		}
 
-        /**
-         * Move down a join form
+		/**
+		 * Move down a join form
 		 * @deprecated
 		 * @param int $member_join_form_srl
 		 * @return Object
-         **/
-        function moveJoinFormDown($member_join_form_srl) {
-            $oMemberModel = &getModel('member');
-            // Get information of the join form
-            $args->member_join_form_srl = $member_join_form_srl;
-            $output = executeQuery('member.getJoinForm', $args);
+		 **/
+		function moveJoinFormDown($member_join_form_srl) {
+			$oMemberModel = &getModel('member');
+			// Get information of the join form
+			$args->member_join_form_srl = $member_join_form_srl;
+			$output = executeQuery('member.getJoinForm', $args);
 
-            $join_form = $output->data;
-            $list_order = $join_form->list_order;
-            // Get information of all join forms
-            $join_form_list = $oMemberModel->getJoinFormList();
-            $join_form_srl_list = array_keys($join_form_list);
-            if(count($join_form_srl_list)<2) return new Object();
+			$join_form = $output->data;
+			$list_order = $join_form->list_order;
+			// Get information of all join forms
+			$join_form_list = $oMemberModel->getJoinFormList();
+			$join_form_srl_list = array_keys($join_form_list);
+			if(count($join_form_srl_list)<2) return new Object();
 
-            for($i=0;$i<count($join_form_srl_list);$i++) {
-                if($join_form_srl_list[$i]==$member_join_form_srl) break;
-            }
+			for($i=0;$i<count($join_form_srl_list);$i++) {
+				if($join_form_srl_list[$i]==$member_join_form_srl) break;
+			}
 
-            $next_member_join_form_srl = $join_form_srl_list[$i+1];
-            // Return if no previous join form exists
-            if(!$next_member_join_form_srl) return new Object();
-            $next_member_join_form = $join_form_list[$next_member_join_form_srl];
-            // Information of the join form
-            $cur_args->member_join_form_srl = $member_join_form_srl;
-            $cur_args->list_order = $next_member_join_form->list_order;
-            // Information of the target join form
-            $next_args->member_join_form_srl = $next_member_join_form->member_join_form_srl;
-            $next_args->list_order = $list_order;
-            // Execute Query
-            $output = executeQuery('member.updateMemberJoinFormListorder', $cur_args);
-            if(!$output->toBool()) return $output;
+			$next_member_join_form_srl = $join_form_srl_list[$i+1];
+			// Return if no previous join form exists
+			if(!$next_member_join_form_srl) return new Object();
+			$next_member_join_form = $join_form_list[$next_member_join_form_srl];
+			// Information of the join form
+			$cur_args->member_join_form_srl = $member_join_form_srl;
+			$cur_args->list_order = $next_member_join_form->list_order;
+			// Information of the target join form
+			$next_args->member_join_form_srl = $next_member_join_form->member_join_form_srl;
+			$next_args->list_order = $list_order;
+			// Execute Query
+			$output = executeQuery('member.updateMemberJoinFormListorder', $cur_args);
+			if(!$output->toBool()) return $output;
 
-            $output = executeQuery('member.updateMemberJoinFormListorder', $next_args);
-            if(!$output->toBool()) return $output;
+			$output = executeQuery('member.updateMemberJoinFormListorder', $next_args);
+			if(!$output->toBool()) return $output;
 
-            return new Object();
-        }
-    }
+			return new Object();
+		}
+	}
 ?>

@@ -1,5 +1,4 @@
 <load target="js/member_admin.js" />
-<load target="js/krzip_search.js" />
 <!--%load_js_plugin("ui.datepicker")-->
 <script type="text/javascript" >
 	xe.lang.deleteProfileImage = '{$lang->msg_delete_extend_form}';
@@ -112,16 +111,16 @@
 </form>
 <script type="text/javascript">
 (function($){
-    $(function(){
-        var option = { changeMonth: true, changeYear: true, gotoCurrent: false,yearRange:'-100:+10', dateFormat:'yy-mm-dd', onSelect:function(){
+	$(function(){
+		var option = { changeMonth: true, changeYear: true, gotoCurrent: false,yearRange:'-100:+10', dateFormat:'yy-mm-dd', onSelect:function(){
 
-            $(this).prev('input[type="hidden"]').val(this.value.replace(/-/g,""))}
-        };
-        $.extend(option,$.datepicker.regional['{$lang_type}']);
-        $(".inputDate").datepicker(option);
+			$(this).prev('input[type="hidden"]').val(this.value.replace(/-/g,""))}
+		};
+		$.extend(option,$.datepicker.regional['{$lang_type}']);
+		$(".inputDate").datepicker(option);
 		$(".dateRemover").click(function() {
 			$(this).prevAll('input').val('');
 			return false;});
-    });
+	});
 })(jQuery);
 </script>

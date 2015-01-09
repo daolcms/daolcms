@@ -1,6 +1,6 @@
 <!--#include("header.html")-->
 	<div id="body">
-<!--#include("progress_menu.html")-->
+	<!--#include("progress_menu.html")-->
 	<span class="dummy"></span>
 	<div id="content">
 		<div class="table">
@@ -12,8 +12,8 @@
 						<td><!--@if($val)-->{$lang->enable}<!--@else--><strong>{$lang->disable}</strong>
 						<br />{$lang->install_checklist_desc[$key]}<!--@end--></td>
 						<p cond="$key == 'php_version' && $phpversion_warning === true">
-                           {$lang->install_checklist_desc['php_version_warning']} <a href="http://php.net/eol.php" target="_blank">[{$lang->install_checklist_desc['php_more']}]</a>
-                        </p>
+						   {$lang->install_checklist_desc['php_version_warning']} <a href="http://php.net/eol.php" target="_blank">[{$lang->install_checklist_desc['php_more']}]</a>
+						</p>
 					</tr>
 					<!--@end-->
 				</tbody>
@@ -22,7 +22,7 @@
 		</div>
 		<div class="ibtnArea">
 			<div class="fLeft">
-				<span class="ibtn icon"><span class="back"></span> <a href="{getUrl('')}">{$lang->cmd_back}</a></span>
+				<span class="ibtn icon"><span class="back"></span> <a href="{getUrl('', 'act', 'dispInstallLicenseAgreement')}">{$lang->cmd_back}</a></span>
 			</div>
 			<div class="fRight">
 				<span class="ibtn icon"><span class="check"></span><!--@if($install_enable)--><a href="{getUrl('','act','dispInstallSelectDB')}">{$lang->cmd_install_next}</a><!--@else--><a href="{getUrl('','act',$act)}">{$lang->cmd_install_fix_checklist}</a><!--@end--></span>

@@ -45,6 +45,7 @@
 		 * Check SSL
 		 *
 		 * @return bool If using ssl returns true, otherwise returns false.
+		 * @deprecated
 		 */
 		function isSsl()
 		{

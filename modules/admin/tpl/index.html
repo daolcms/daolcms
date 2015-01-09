@@ -3,6 +3,21 @@
 <div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
 <p>{$XE_VALIDATOR_MESSAGE}</p>
 </div>
+	<!--@if(!$isLicenseAgreement)-->
+	<form action="./" method="post" class="message info">
+		<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin')}" />
+		<input type="hidden" name="module" value="install" />
+		<input type="hidden" name="act" value="procInstallLicenseAggrement" />
+		<input type="hidden" name="license_agreement" value="Y" />
+		<input type="hidden" name="XE_VALIDATOR_ID" value="modules/admin/tpl/index/1">
+		
+		<h2>{$lang->license_agreement}</h2>
+		<p>{$lang->license}</p>
+		<div class="btnArea">
+			<span class="btn"><button type="submit" name="is_agree" value="">{$lang->cmd_license_agree}</button></span>
+		</div>
+	</form>
+	<!--@end-->
 	<!--@if($addTables || $needUpdate)-->
 	<div class="message update">
 		<h2 cond="$needUpdate && $addTables">{$lang->need_update_and_table}</h2>
@@ -68,11 +83,11 @@
 				<li cond="!is_array($latestCommentList) || count($latestCommentList) < 1">{$lang->no_data}</li>
 			</ul>
 		</div>
-        <div class="portlet">
-            <h2>{$lang->newest_news}</h2>
-            <img class="zbxe_widget_output" widget="content" skin="admin_rss" colorset="white" content_type="rss" list_type="normal" tab_type="none" markup_type="list" page_count="1" new_window="Y" option_view="title,regdate" show_browser_title="N" show_comment_count="N" show_trackback_count="N" show_category="N" show_icon="N" order_target="list_order" order_type="desc" thumbnail_type="crop" rss_url0="http://www.daolcms.org/releases/rss" />
-        </div>
-    </div>
+		<div class="portlet">
+			<h2>{$lang->newest_news}</h2>
+			<img class="zbxe_widget_output" widget="content" skin="admin_rss" colorset="white" content_type="rss" list_type="normal" tab_type="none" markup_type="list" page_count="1" new_window="Y" option_view="title,regdate" show_browser_title="N" show_comment_count="N" show_trackback_count="N" show_category="N" show_icon="N" order_target="list_order" order_type="desc" thumbnail_type="crop" rss_url0="http://www.daolcms.org/releases/rss" />
+		</div>
+	</div>
 </div>
 <include target="./_spShortcut.html" />
 <include target="./_spFooter.html" />

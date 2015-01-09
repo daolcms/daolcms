@@ -132,7 +132,7 @@
 			<option loop="$search_option=>$key,$val" value="{$key}" selected="selected"|cond="$search_target==$key">{$val}</option>
 		</select>
 		<span class="btn"><button type="submit" onclick="xGetElementById('board_search').submit();return false;">{$lang->cmd_search}</button></span>
-        <span class="btn" cond="$last_division"><a href="{getUrl('page',1,'document_srl','','division',$last_division,'last_division','')}">{$lang->cmd_search_next}</a></span>
+		<span class="btn" cond="$last_division"><a href="{getUrl('page',1,'document_srl','','division',$last_division,'last_division','')}">{$lang->cmd_search_next}</a></span>
 	</form>
 	<a href="{getUrl('act','dispBoardTagList')}" class="tagSearch" title="{$lang->tag}">{$lang->tag}</a>
 </div>

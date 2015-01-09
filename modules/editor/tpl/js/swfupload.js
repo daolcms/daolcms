@@ -417,20 +417,20 @@ SWFUpload.prototype.displayDebugInfo = function () {
 */
 // Public: (Deprecated) addSetting adds a setting value. If the value given is undefined or null then the default_value is used.
 SWFUpload.prototype.addSetting = function (name, value, default_value) {
-    if (value == undefined) {
-        return (this.settings[name] = default_value);
-    } else {
-        return (this.settings[name] = value);
+	if (value == undefined) {
+		return (this.settings[name] = default_value);
+	} else {
+		return (this.settings[name] = value);
 	}
 };
 
 // Public: (Deprecated) getSetting gets a setting. Returns an empty string if the setting was not found.
 SWFUpload.prototype.getSetting = function (name) {
-    if (this.settings[name] != undefined) {
-        return this.settings[name];
+	if (this.settings[name] != undefined) {
+		return this.settings[name];
 	}
 
-    return "";
+	return "";
 };
 
 
