@@ -22,7 +22,7 @@
 	/**
 	 * Display the version info of DAOL CMS.
 	 */
-	define('__DAOL_VERSION__', '1.0.0.7');
+	define('__DAOL_VERSION__', '1.0.0.8');
 	/**
 	 * Display XE's full version.
 	 */
