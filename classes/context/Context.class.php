@@ -951,14 +951,58 @@ class Context {
 		$xml_obj = $oXml->parse();
 
 		$params = $xml_obj->methodcall->params;
-		unset($params->node_name);
+		unset($params->node_name, $params->attrs, $params->body);
 
-		unset($params->attrs);
-		if(!count($params)) return;
-		foreach($params as $key => $obj) {
-			$val = $this->_filterRequestVar($key, $obj->body,0);
-			$this->set($key, $val, true);
+		if(!count(get_object_vars($params))) return;
+		foreach($params as $key => $val) {
+			$this->set($key, $this->_filterXmlVars($key, $val), TRUE);
 		}
+	}
+
+	/**
+	 * Filter xml variables
+	 *
+	 * @param string $key Variable key
+	 * @param object $val Variable value
+	 * @return mixed filtered value
+	 */
+	function _filterXmlVars($key, $val)
+	{
+		if(is_array($val))
+		{
+			$stack = array();
+			foreach($val as $k => $v)
+			{
+				$stack[$k] = $this->_filterXmlVars($k, $v);
+			}
+			return $stack;
+		}
+
+		$body = $val->body;
+		unset($val->node_name, $val->attrs, $val->body);
+		if(!count(get_object_vars($val)))
+		{
+			return $this->_filterRequestVar($key, $body, 0);
+		}
+		$stack = new stdClass();
+		foreach($val as $k => $v)
+		{
+			$output = $this->_filterXmlVars($k, $v);
+			if(is_object($v) && $v->attrs->type == 'array')
+			{
+				$output = array($output);
+			}
+			if($k == 'value' && (is_array($v) || $v->attrs->type == 'array'))
+			{
+				return $output;
+			}
+			$stack->{$k} = $output;
+		}
+		if(!count(get_object_vars($stack)))
+		{
+			return NULL;
+		}
+		return $stack;
 	}
 
 	/**
