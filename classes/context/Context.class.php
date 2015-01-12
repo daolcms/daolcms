@@ -361,8 +361,8 @@ class Context {
 		if(!$db_info->use_ssl) $db_info->use_ssl = 'none';
 		$this->set('_use_ssl', $db_info->use_ssl);
 
-		if($db_info->http_port)  $self->set('_http_port', $db_info->http_port);
-		if($db_info->https_port) $self->set('_https_port', $db_info->https_port);
+		$self->set('_http_port', ($db_info->http_port) ? $db_info->http_port : NULL);
+		$self->set('_https_port', ($db_info->https_port) ? $db_info->https_port : NULL);
 
 		$self->setDBInfo($db_info);
 	}
