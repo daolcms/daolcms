@@ -518,4 +518,7 @@
 		<value xml:lang="jp"><![CDATA[選択ファイル]]></value>
 		<value xml:lang="zh-TW"><![CDATA[所選擇的附檔]]></value>
 	</item>
+	<item name="msg_not_allowed_filetype">
+		<value xml:lang="ko"><![CDATA[업로드할 수 없는 파일 형식입니다.]]></value>
+	</item>
 </lang>
