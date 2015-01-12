@@ -986,9 +986,13 @@ class Context {
 			{
 				$result[$k] = !preg_match('/^[0-9,]+$/', $v) ? (int)$v : $v;
 			}
-			elseif($key === 'mid' || $key === 'vid' || $key === 'search_keyword')
+			elseif($key === 'mid' || $key === 'search_keyword')
 			{
 				$result[$k] = htmlspecialchars($v);
+			}
+			elseif($key === 'vid')
+			{
+				$result[$k] = urlencode($v);
 			}
 			else
 			{
