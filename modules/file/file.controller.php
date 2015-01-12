@@ -734,11 +734,6 @@
 			// Success returned if no attachement exists
 			if(!is_array($file_list)||!count($file_list)) return new Object();
 			
-			// Remove from the DB
-			$args->upload_target_srl = $upload_target_srl;
-			$output = executeQuery('file.deleteFiles', $args);
-			if(!$output->toBool()) return $output;
-			
 			// Delete the file
 			$path = array();
 			$file_count = count($file_list);
@@ -749,6 +744,12 @@
 				$path_info = pathinfo($uploaded_filename);
 				if(!in_array($path_info['dirname'], $path)) $path[] = $path_info['dirname'];
 			}
+
+			// Remove from the DB
+			$args->upload_target_srl = $upload_target_srl;
+			$output = executeQuery('file.deleteFiles', $args);
+			if(!$output->toBool()) return $output;
+
 			// Remove a file directory of the document
 			for($i=0, $c=count($path); $i<$c; $i++)
 			{
