@@ -986,7 +986,10 @@
 			$args->member_srl = $member_srl;
 			$args->auth_key = $auth_key;
 			$output = executeQuery('member.getAuthMail', $args);
-			if(!$output->toBool() || $output->data->auth_key != $auth_key) return $this->stop('msg_invalid_auth_key');
+			if(!$output->toBool() || $output->data->auth_key != $auth_key) {
+				if(strlen($output->data->auth_key) !== strlen($auth_key)) executeQuery('member.deleteAuthMail', $args);
+				return $this->stop('msg_invalid_auth_key');
+			}
 			// If credentials are correct, change the password to a new one
 			if ($output->data->is_register == 'Y') {
 				$args->password = $output->data->new_password;
@@ -2228,7 +2231,10 @@
 			$args->member_srl = $member_srl;
 			$args->auth_key = $auth_key;
 			$output = executeQuery('member.getAuthMail', $args);
-			if(!$output->toBool() || $output->data->auth_key != $auth_key) return $this->stop('msg_invalid_modify_email_auth_key');
+			if(!$output->toBool() || $output->data->auth_key != $auth_key) {
+				if(strlen($output->data->auth_key) !== strlen($auth_key)) executeQuery('member.deleteAuthChangeEmailAddress', $args);
+				return $this->stop('msg_invalid_modify_email_auth_key');
+			}
 
 			$newEmail = $output->data->user_id;
 			$args->email_address = $newEmail;
