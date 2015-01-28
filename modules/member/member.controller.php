@@ -634,9 +634,9 @@
 			
 			// Get file information
 			list($width, $height, $type, $attrs) = @getimagesize($target_file);
-			if(IMG_PNG == $type) $ext = 'png';
-			elseif(IMG_JPG == $type) $ext = 'jpg';
-			elseif(IMG_GIF == $type) $ext = 'gif';
+			if(IMAGETYPE_PNG == $type) $ext = 'png';
+			elseif(IMAGETYPE_JPEG == $type) $ext = 'jpg';
+			elseif(IMAGETYPE_GIF == $type) $ext = 'gif';
 			else {
 				return;
 			}
