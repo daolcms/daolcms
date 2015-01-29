@@ -267,7 +267,7 @@
 			}
 			// Include the cache file if it is valid and then return $layout_info variable
 			if(!$layout_srl){
-				$cache_file = $this->getLayoutCache($layout, Context::getLangType());
+				$cache_file = $this->getLayoutCache($layout, Context::getLangType(), $layout_type);
 			}else{
 				$cache_file = $this->getUserLayoutCache($layout_srl, Context::getLangType());
 			}
@@ -676,8 +676,13 @@
 		 * @param string $lang_type
 		 * @return string
 		 **/
-		function getLayoutCache($layout_name,$lang_type){
-			return sprintf("./files/cache/layout/%s.%s.cache.php",$layout_name,$lang_type);
+		function getLayoutCache($layout_name,$lang_type,$layout_type='P'){
+			if($layout_type=='P'){
+				return sprintf("%sfiles/cache/layout/%s.%s.cache.php", _XE_PATH_, $layout_name,$lang_type);
+			}
+			else {
+				return sprintf("%sfiles/cache/layout/m.%s.%s.cache.php", _XE_PATH_, $layout_name,$lang_type);
+			}
 		}
 
 		/**
