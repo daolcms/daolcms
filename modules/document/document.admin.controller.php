@@ -75,7 +75,7 @@
 				unset($obj);
 				$obj = $oDocument->getObjectVars();
 
-				// ISSUE https://github.com/xpressengine/xe-core/issues/32
+				// Fix multiple languages problems when moving the article
 				$args_doc_origin->document_srl = $document_srl;
 				$output_ori = executeQuery('document.getDocument', $args_doc_origin, array('content'));              
 				$obj->content = $output_ori->data->content;
