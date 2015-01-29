@@ -607,7 +607,16 @@ function doDocumentSelect(document_srl, module) {
 	// 게시글을 가져와서 등록하기
 	switch(module) {
 		case 'page' :
-			opener.location.href = opener.current_url.setQuery('document_srl', document_srl).setQuery('act', 'dispPageAdminContentModify');
+			var url = opener.current_url;
+			url = url.setQuery('document_srl', document_srl);
+			
+			if(url.getQuery('act') === 'dispPageAdminMobileContentModify') {
+				url = url.setQuery('act', 'dispPageAdminMobileContentModify');
+			}
+			else {
+				url = url.setQuery('act', 'dispPageAdminContentModify');
+			}
+			opener.location.href = url;
 			break;
 		default :
 			opener.location.href = opener.current_url.setQuery('document_srl', document_srl).setQuery('act', 'dispBoardWrite');
