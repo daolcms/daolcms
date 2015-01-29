@@ -1271,13 +1271,15 @@ class Context {
 		$_use_ssl = $self->get('_use_ssl');
 		if($_use_ssl == 'always') {
 			$query = $self->getRequestUri(ENFORCE_SSL, $domain).$query;
+		}
 		// optional SSL use
-		} elseif($_use_ssl == 'optional') {
-			$ssl_mode = RELEASE_SSL;
+		elseif($_use_ssl == 'optional') {
+			$ssl_mode = (($self->get('module') === 'admin') || ($get_vars['module'] === 'admin') || (isset($get_vars['act']) && $self->isExistsSSLAction($get_vars['act']))) ? ENFORCE_SSL : RELEASE_SSL;
 			if($get_vars['act'] && $self->isExistsSSLAction($get_vars['act'])) $ssl_mode = ENFORCE_SSL;
 			$query = $self->getRequestUri($ssl_mode, $domain).$query;
+		}
 		// no SSL
-		} else {
+		else {
 			// currently on SSL but target is not based on SSL
 			if($_SERVER['HTTPS']=='on' ) $query = $self->getRequestUri(ENFORCE_SSL, $domain).$query;
 
