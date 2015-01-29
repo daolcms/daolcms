@@ -2,6 +2,7 @@
 	/**
 	 * @class  pageAdminController
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief page of the module admin controller class
 	 **/
 
