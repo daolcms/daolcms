@@ -271,12 +271,10 @@
 				unset($formTag);
 				$inputTag = '';
 				$formTag->title = ($formInfo->isDefaultForm) ? $lang->{$formInfo->name} : $formInfo->title;
-				if($isAdmin)
-				{
+				if($isAdmin){
 					if($formInfo->mustRequired) $formTag->title = $formTag->title.' <em style="color:red">*</em>';
 				}
-				else
-				{
+				else{
 					if ($formInfo->required && $formInfo->name != 'password') $formTag->title = $formTag->title.' <em style="color:red">*</em>';
 				}
 				$formTag->name = $formInfo->name;
@@ -287,10 +285,12 @@
 						if($formInfo->name == 'profile_image'){
 							$target = $memberInfo['profile_image'];
 							$functionName = 'doDeleteProfileImage';
-						}elseif($formInfo->name == 'image_name'){
+						}
+						elseif($formInfo->name == 'image_name'){
 							$target = $memberInfo['image_name'];
 							$functionName = 'doDeleteImageName';
-						}elseif($formInfo->name == 'image_mark'){
+						}
+						elseif($formInfo->name == 'image_mark'){
 							$target = $memberInfo['image_mark'];
 							$functionName = 'doDeleteImageMark';
 						}
@@ -303,7 +303,8 @@
 												,$functionName
 												,$memberInfo['member_srl']
 												,$lang->cmd_delete);
-						}else{
+						}
+						else{
 							$inputTag = sprintf('<input type="hidden" name="__%s_exist" value="false" />', $formInfo->name);
 						}
 						$inputTag .= sprintf('<p class="a"><input type="file" name="%s" id="%s" value="" /></p><p><span class="desc">%s : %dpx, %s : %dpx</span></p>'
@@ -313,14 +314,16 @@
 											 ,$member_config->{$formInfo->name.'_max_width'}
 											 ,$lang->{$formInfo->name.'_max_height'}
 											 ,$member_config->{$formInfo->name.'_max_height'});
-					}//end imageType
+					}
+					//end imageType
 					elseif($formInfo->name == 'birthday'){
 						$formTag->type = 'date';
 						$inputTag = sprintf('<input type="hidden" name="birthday" id="date_birthday" value="%s" /><input type="text" class="inputDate" id="birthday" value="%s" /> <input type="button" value="%s" class="dateRemover" />'
 								,$memberInfo['birthday']
 								,zdate($memberInfo['birthday'], 'Y-m-d', false)
 								,$lang->cmd_delete);
-					}elseif($formInfo->name == 'find_account_question'){
+					}
+					elseif($formInfo->name == 'find_account_question'){
 						$formTag->type = 'select';
 						$inputTag = '<select name="find_account_question" id="find_account_question" style="width:290px; display:block;">%s</select>';
 						$optionTag = array();
@@ -334,14 +337,16 @@
 						}
 						$inputTag = sprintf($inputTag, implode('', $optionTag));
 						$inputTag .= '<input type="text" name="find_account_answer" id="find_account_answer" title="'.Context::getLang('find_account_answer').'" value="'.$memberInfo['find_account_answer'].'" class="inputText long tall" />';
-					}else{
+					}
+					else{
 						$formTag->type = 'text';
 						$inputTag = sprintf('<input type="text" name="%s" id="%s" value="%s" class="inputText long tall" />'
 									,$formInfo->name
 									,$formInfo->name
 									,$memberInfo[$formInfo->name]);
 					}
-				}//end isDefaultForm
+				}
+				//end isDefaultForm
 				else{
 					$extendForm = $extend_form_list[$formInfo->member_join_form_srl];
 					$replace = array('column_name' => $extendForm->column_name,
@@ -351,14 +356,17 @@
 					$formTag->type = $extendForm->column_type;
 					if($extendForm->column_type == 'text' || $extendForm->column_type == 'homepage' || $extendForm->column_type == 'email_address'){
 						$template = '<input type="text" name="%column_name%" id="%column_name%" value="%value%" />';
-					}elseif($extendForm->column_type == 'tel'){
+					}
+					elseif($extendForm->column_type == 'tel'){
 						$extentionReplace = array('tel_0' => $extendForm->value[0],
 												  'tel_1' => $extendForm->value[1],
 												  'tel_2' => $extendForm->value[2]);
 						$template = '<input type="text" name="%column_name%[]" value="%tel_0%" size="4" maxlength="4" style="width:30px" />-<input type="text" name="%column_name%[]" value="%tel_1%" size="4" maxlength="4" style="width:30px" />-<input type="text" name="%column_name%[]" value="%tel_2%" size="4" maxlength="4" style="width:30px" />';
-					}elseif($extendForm->column_type == 'textarea'){
+					}
+					elseif($extendForm->column_type == 'textarea'){
 						$template = '<textarea name="%column_name%" rows="8" cols="42">%value%</textarea>';
-					}elseif($extendForm->column_type == 'checkbox'){
+					}
+					elseif($extendForm->column_type == 'checkbox'){
 						$template = '';
 						if($extendForm->default_value){
 							$__i = 0;
@@ -369,7 +377,8 @@
 								$__i++;
 							}
 						}
-					}elseif($extendForm->column_type == 'radio'){
+					}
+					elseif($extendForm->column_type == 'radio'){
 						$template = '';
 						if($extendForm->default_value){
 							$template = '<ul class="radio">%s</ul>';
@@ -384,6 +393,7 @@
 					}elseif($extendForm->column_type == 'select'){
 						$template = '<select name="'.$formInfo->name.'" id="'.$formInfo->name.'">%s</select>';
 						$optionTag = array();
+						$optionTag[] = sprintf('<option value="">%s</option>', $lang->cmd_select);
 						if($extendForm->default_value){
 							foreach($extendForm->default_value as $v){
 								if($v == $extendForm->value) $selected = 'selected="selected"';
@@ -395,12 +405,15 @@
 							}
 						}
 						$template = sprintf($template, implode('', $optionTag));
-					}elseif($extendForm->column_type == 'kr_zip'){
+					}
+					elseif($extendForm->column_type == 'kr_zip'){
 						$krzipModel = &getModel('krzip');
 						$template = $krzipModel->getKrzipCodeSearchHtml($extendForm->column_name, $extendForm->value);
-					}elseif($extendForm->column_type == 'jp_zip'){
+					}
+					elseif($extendForm->column_type == 'jp_zip'){
 						$template = '<input type="text" name="%column_name%" id="%column_name%" value="%value%" />';
-					}elseif($extendForm->column_type == 'date'){
+					}
+					elseif($extendForm->column_type == 'date'){
 						$extentionReplace = array('date' => zdate($extendForm->value, 'Y-m-d'),
 												  'cmd_delete' => $lang->cmd_delete);
 						$template = '<input type="hidden" name="%column_name%" id="date_%column_name%" value="%value%" /><input type="text" class="inputDate" value="%date%" readonly="readonly" /> <input type="button" value="%cmd_delete%" class="dateRemover" />';
@@ -444,7 +457,8 @@
 			if($group_srl && $this->group_list[$group_srl]) {
 				Context::set('selected_group', $this->group_list[$group_srl]);
 				$this->setTemplateFile('group_update_form');
-			} else {
+			}
+			else {
 				$this->setTemplateFile('group_list');
 			}			
 			$output = $oModuleModel->getModuleFileBoxList();			
