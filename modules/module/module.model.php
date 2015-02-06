@@ -340,33 +340,41 @@
 		/**
 		 * @brief Get a list of all triggers on the trigger_name
 		 **/
-		function getTriggers($trigger_name, $called_position) {
-			 // cache controll
-			$oCacheHandler = &CacheHandler::getInstance('object');
-			if($oCacheHandler->isSupport()){
-					$cache_key = 'object:'.$trigger_name.'_'.$called_position;
-					$output = $oCacheHandler->get($cache_key);
+		function getTriggers($trigger_name, $called_position){
+			if(is_null($GLOBALS['__triggers__'])){
+				$triggers = FALSE;
+				$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+				if($oCacheHandler->isSupport()){
+					$cache_key = 'triggers';
+					$triggers = $oCacheHandler->get($cache_key);
+				}
+				if($triggers === FALSE){
+					$output = executeQueryArray('module.getTriggers');
+					$triggers = $output->data;
+					if($output->toBool() && $oCacheHandler->isSupport()){
+						$oCacheHandler->put($cache_key, $triggers);
+					}
+				}
+				foreach($triggers as $item){
+					$GLOBALS['__triggers__'][$item->trigger_name][$item->called_position][] = $item;
+				}
 			}
-			if(!$output) {
-				$args->trigger_name = $trigger_name;
-				$args->called_position = $called_position;
-				$output = executeQueryArray('module.getTriggers',$args);
-				if($oCacheHandler->isSupport()) $oCacheHandler->put($cache_key,$output);
-			}
-			return $output->data;
+			
+			return $GLOBALS['__triggers__'][$trigger_name][$called_position];
 		}
 
 		/**
 		 * @brief Get specific triggers from the trigger_name
 		 **/
 		function getTrigger($trigger_name, $module, $type, $called_method, $called_position) {
-			$args->trigger_name = $trigger_name;
-			$args->module = $module;
-			$args->type = $type;
-			$args->called_method = $called_method;
-			$args->called_position = $called_position;
-			$output = executeQuery('module.getTrigger',$args);
-			return $output->data;
+			$triggers = $this->getTriggers($trigger_name, $called_position);
+			foreach($triggers as $item){
+				if($item->module == $module && $item->type == $type && $item->called_method == $called_method){
+					return $item;
+				}
+			}
+			
+			return NULL;
 		}
 
 		/**
