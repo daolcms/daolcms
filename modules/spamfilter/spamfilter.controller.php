@@ -46,19 +46,17 @@ class spamfilterController extends spamfilter
 		$output = $oFilterModel->isDeniedIP();
 		if(!$output->toBool()) return $output;
 		// Check if there is a ban on the word
-		if($is_logged)
-		{
+		$text = '';
+		if($is_logged){
 			$text = $obj->title . ' ' . $obj->content . ' ' . $obj->tags;
 		}
-		else
-		{
+		else{
 			$text = $obj->title . ' ' . $obj->content . ' ' . $obj->nick_name . ' ' . $obj->homepage . ' ' . $obj->tags;
 		}
 		$output = $oFilterModel->isDeniedWord($text);
 		if(!$output->toBool()) return $output;
 		// Check the specified time beside the modificaiton time
-		if($obj->document_srl == 0)
-		{
+		if($obj->document_srl == 0){
 			$output = $oFilterModel->checkLimited();
 			if(!$output->toBool()) return $output;
 		}
@@ -71,16 +69,14 @@ class spamfilterController extends spamfilter
 	/**
 	 * @brief The routine process to check the time it takes to store a comment, and to ban IP/word
 	 */
-	function triggerInsertComment(&$obj)
-	{
+	function triggerInsertComment(&$obj){
 		if($_SESSION['avoid_log']) return new Object();
 		// Check the login status, login information, and permission
 		$is_logged = Context::get('is_logged');
 		$logged_info = Context::get('logged_info');
 		$grant = Context::get('grant');
 		// In case logged in, check if it is an administrator
-		if($is_logged)
-		{
+		if($is_logged){
 			if($logged_info->is_admin == 'Y') return new Object();
 			if($grant->manager) return new Object();
 		}
@@ -90,12 +86,17 @@ class spamfilterController extends spamfilter
 		$output = $oFilterModel->isDeniedIP();
 		if(!$output->toBool()) return $output;
 		// Check if there is a ban on the word
-		$text = $obj->content;
+		$text = '';
+		if($is_logged){
+			$text = $obj->content;
+		}
+		else{
+			$text = $obj->content . ' ' . $obj->nick_name . ' ' . $obj->homepage;
+		}
 		$output = $oFilterModel->isDeniedWord($text);
 		if(!$output->toBool()) return $output;
 		// If the specified time check is not modified
-		if(!$obj->__isupdate)
-		{
+		if(!$obj->__isupdate){
 			$output = $oFilterModel->checkLimited();
 			if(!$output->toBool()) return $output;
 		}
