@@ -388,44 +388,52 @@
 			$option->colorset = $config->sel_editor_colorset;
 			// Permission check for file upload
 			$option->allow_fileupload = false;
-			if(count($config->upload_file_grant)) {
-				foreach($group_list as $group_srl => $group_info) {
-					if(in_array($group_srl, $config->upload_file_grant)) {
+			if($logged_info->is_admin=='Y') $option->allow_fileupload = true;
+			elseif(count($config->upload_file_grant)){
+				foreach($group_list as $group_srl => $group_info){
+					if(in_array($group_srl, $config->upload_file_grant)){
 						$option->allow_fileupload = true;
 						break;
 					}
 				}
-			} else $option->allow_fileupload = true;
+			}
+			else $option->allow_fileupload = true;
 			// Permission check for using default components
 			$option->enable_default_component = false;
-			if(count($config->enable_default_component_grant)) {
-				foreach($group_list as $group_srl => $group_info) {
-					if(in_array($group_srl, $config->enable_default_component_grant)) {
+			if($logged_info->is_admin=='Y') $option->enable_default_component = true;
+			elseif(count($config->enable_default_component_grant)){
+				foreach($group_list as $group_srl => $group_info){
+					if(in_array($group_srl, $config->enable_default_component_grant)){
 						$option->enable_default_component = true;
 						break;
 					}
 				}
-			} else $option->enable_default_component = true;
+			}
+			else $option->enable_default_component = true;
 			// Permisshion check for using extended components
 			$option->enable_component = false;
-			if(count($config->enable_component_grant)) {
-				foreach($group_list as $group_srl => $group_info) {
-					if(in_array($group_srl, $config->enable_component_grant)) {
+			if($logged_info->is_admin=='Y') $option->enable_component = true;
+			elseif(count($config->enable_component_grant)){
+				foreach($group_list as $group_srl => $group_info){
+					if(in_array($group_srl, $config->enable_component_grant)){
 						$option->enable_component = true;
 						break;
 					}
 				}
-			} else $option->enable_component = true;
+			}
+			else $option->enable_component = true;
 			// HTML editing privileges
 			$enable_html = false;
-			if(count($config->enable_html_grant)) {
-				foreach($group_list as $group_srl => $group_info) {
-					if(in_array($group_srl, $config->enable_html_grant)) {
+			if($logged_info->is_admin=='Y') $option->enable_html = true;
+			elseif(count($config->enable_html_grant)){
+				foreach($group_list as $group_srl => $group_info){
+					if(in_array($group_srl, $config->enable_html_grant)){
 						$enable_html = true;
 						break;
 					}
 				}
-			} else $enable_html = true;
+			}
+			else $enable_html = true;
 
 			if($enable_html) $option->disable_html = false;
 			else $option->disable_html = true;
