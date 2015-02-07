@@ -286,12 +286,13 @@ class HTMLDisplayHandler {
 	 **/
 	function _loadJSCSS()
 	{
-		$oContext  =& Context::getInstance();
+		$oContext  = Context::getInstance();
 		$lang_type =  Context::getLangType();
 
 		// add common JS/CSS files
 		if(__DEBUG__) {
 			$oContext->loadFile(array('./common/js/jquery.js', 'head', '', -100000), true);
+			$oContext->loadFile(array('./common/js/modernizr.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/x.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/common.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/js_app.js', 'head', '', -100000), true);
