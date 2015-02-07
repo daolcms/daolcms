@@ -741,7 +741,10 @@ class documentController extends document {
 	 * @param documentItem $oDocument
 	 * @return bool|void
 	 */
-	function updateReadedCount(&$oDocument) {
+	function updateReadedCount(&$oDocument){
+		// Pass if Crawler access
+		if(isCrawler()) return false;
+		
 		$document_srl = $oDocument->document_srl;
 		$member_srl = $oDocument->get('member_srl');
 		$logged_info = Context::get('logged_info');
