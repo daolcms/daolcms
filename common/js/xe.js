@@ -1669,23 +1669,72 @@ function arr2obj(arr) {
 $.exec_json = function(action,data,func){
 	if(typeof(data) == 'undefined') data = {};
 	action = action.split(".");
-	if(action.length == 2){
+	if(action.length == 2) {
+		// The cover can be disturbing if it consistently blinks (because ajax call usually takes very short time). So make it invisible for the 1st 0.5 sec and then make it visible.
+		var timeoutId = $(".wfsr").data('timeout_id');
+
+		if(timeoutId) clearTimeout(timeoutId);
+
+		$(".wfsr").css('opacity', 0.0);
+		$(".wfsr").data('timeout_id', setTimeout(function(){
+			$(".wfsr").css('opacity', '');
+		}, 1000));
+
 		if(show_waiting_message) $(".wfsr").html(waiting_message).show();
 
 		$.extend(data,{module:action[0],act:action[1]});
+
 		if(typeof(xeVid)!='undefined') $.extend(data,{vid:xeVid});
-		$.ajax({
-			type:"POST"
-			,dataType:"json"
-			,url:request_uri
-			,contentType:"application/json"
-			,data:$.param(data)
-			,success : function(data){
-				$(".wfsr").hide().trigger('cancel_confirm');
-				if(data.error > 0) alert(data.message);
-				if($.isFunction(func)) func(data);
-			}
-		});
+
+		try {
+			$.ajax({
+				type: "POST",
+				dataType: "json",
+				url: request_uri,
+				contentType: "application/json",
+				data: $.param(data),
+				success: function(data) {
+					$(".wfsr").hide().trigger('cancel_confirm');
+					if(data.error != '0' && data.error > -1000) {
+						if(data.error == -1 && data.message == 'msg_is_not_administrator') {
+							alert('You are not logged in as an administrator');
+							if($.isFunction(callback_error)) callback_error(data);
+
+							return;
+						} else {
+							alert(data.message);
+							if($.isFunction(callback_error)) callback_error(data);
+
+							return;
+						}
+					}
+
+					if($.isFunction(callback_sucess)) callback_sucess(data);
+				},
+				error: function(xhr, textStatus) {
+					$(".wfsr").hide();
+
+					var msg = '';
+
+					if (textStatus == 'parsererror') {
+						msg  = 'The result is not valid JSON :\n-------------------------------------\n';
+
+						if(xhr.responseText === "") return;
+
+						msg += xhr.responseText.replace(/<[^>]+>/g, '');
+					} else {
+						msg = textStatus;
+					}
+
+					try{
+						console.log(msg);
+					} catch(ee){}
+				}
+			});
+		} catch(e) {
+			alert(e);
+			return;
+		}
 	}
 };
 
@@ -1696,20 +1745,52 @@ $.fn.exec_html = function(action,data,type,func,args){
 	var self = $(this);
 	action = action.split(".");
 	if(action.length == 2){
+		var timeoutId = $(".wfsr").data('timeout_id');
+		if(timeoutId) clearTimeout(timeoutId);
+		$(".wfsr").css('opacity', 0.0);
+		$(".wfsr").data('timeout_id', setTimeout(function(){
+			$(".wfsr").css('opacity', '');
+		}, 1000));
 		if(show_waiting_message) $(".wfsr").html(waiting_message).show();
 
 		$.extend(data,{module:action[0],act:action[1]});
-		$.ajax({
-			type:"POST"
-			,dataType:"html"
-			,url:request_uri
-			,data:$.param(data)
-			,success : function(html){
-				$(".wfsr").hide().trigger('cancel_confirm');
-				self[type](html);
-				if($.isFunction(func)) func(args);
-			}
-		});
+		try {
+			$.ajax({
+				type:"POST",
+				dataType:"html",
+				url:request_uri,
+				data:$.param(data),
+				success : function(html){
+					$(".wfsr").hide().trigger('cancel_confirm');
+					self[type](html);
+					if($.isFunction(func)) func(args);
+				},
+				error: function(xhr, textStatus) {
+					$(".wfsr").hide();
+
+					var msg = '';
+
+					if (textStatus == 'parsererror') {
+						msg  = 'The result is not valid page :\n-------------------------------------\n';
+
+						if(xhr.responseText === "") return;
+
+						msg += xhr.responseText.replace(/<[^>]+>/g, '');
+					} else {
+						msg = textStatus;
+					}
+
+					try{
+						console.log(msg);
+					} catch(ee){}
+				}
+
+			});
+
+		} catch(e) {
+			alert(e);
+			return;
+		}
 	}
 };
 
