@@ -8,7 +8,7 @@
 	 * @package /modules/admin
 	 * @version 0.1
 	 */
-	class adminAdminView extends admin {
+	class adminAdminView extends admin{
 		/**
 		 * layout list
 		 * @var array
@@ -24,7 +24,7 @@
 		 * Initilization
 		 * @return void
 		 */
-		function init() {
+		function init(){
 			// forbit access if the user is not an administrator
 			$oMemberModel = &getModel('member');
 			$logged_info = $oMemberModel->getLoggedInfo();
@@ -61,8 +61,7 @@
 		 * check easy install
 		 * @return void
 		 */
-		function checkEasyinstall()
-		{
+		function checkEasyinstall(){
 			$lastTime = (int)FileHandler::readFile($this->easyinstallCheckFile);
 			if ($lastTime > time() - 60*60*24*30) return;
 
@@ -75,15 +74,13 @@
 			$lUpdateDoc = $xml_lUpdate->parse($buff);
 			$updateDate = $lUpdateDoc->response->updatedate->body;
 
-			if (!$updateDate)
-			{
+			if (!$updateDate){
 				$this->_markingCheckEasyinstall();
 				return;
 			}
 
 			$item = $oAutoinstallModel->getLatestPackage();
-			if(!$item || $item->updatedate < $updateDate)
-			{
+			if(!$item || $item->updatedate < $updateDate){
 				$oController = &getAdminController('autoinstall');
 				$oController->_updateinfo();
 			}
@@ -94,8 +91,7 @@
 		 * update easy install file content
 		 * @return void
 		 */
-		function _markingCheckEasyinstall()
-		{
+		function _markingCheckEasyinstall(){
 			$currentTime = time();
 			FileHandler::writeFile($this->easyinstallCheckFile, $currentTime);
 		}
@@ -105,8 +101,7 @@
 		 * Setting admin logo, newest news setting
 		 * @return void
 		 */
-		function makeGnbUrl($module = 'admin')
-		{
+		function makeGnbUrl($module = 'admin'){
 			global $lang;
 
 			$oAdminAdminModel   = &getAdminModel('admin');
@@ -125,28 +120,23 @@
 
 			$currentAct   = Context::get('act');
 			$subMenuTitle = '';
-			foreach((array)$moduleActionInfo->menu as $key=>$value)
-			{
-				if(isset($value->acts) && is_array($value->acts) && in_array($currentAct, $value->acts))
-				{
+			foreach((array)$moduleActionInfo->menu as $key=>$value){
+				if(isset($value->acts) && is_array($value->acts) && in_array($currentAct, $value->acts)){
 					$subMenuTitle = $value->title;
 					break;
 				}
 			}
 
 			$parentSrl = 0;
-			foreach((array)$menu->list as $parentKey=>$parentMenu)
-			{
+			foreach((array)$menu->list as $parentKey=>$parentMenu){
 				if(!is_array($parentMenu['list']) || !count($parentMenu['list'])) continue;
-				if($parentMenu['href'] == '#' && count($parentMenu['list'])) {
+				if($parentMenu['href'] == '#' && count($parentMenu['list'])){
 					$firstChild = current($parentMenu['list']);
 					$menu->list[$parentKey]['href'] = $firstChild['href'];
 				}
 
-				foreach($parentMenu['list'] as $childKey=>$childMenu)
-				{
-					if($subMenuTitle == $childMenu['text'])
-					{
+				foreach($parentMenu['list'] as $childKey=>$childMenu){
+					if($subMenuTitle == $childMenu['text']){
 						$parentSrl = $childMenu['parent_srl'];
 						break;
 					}
@@ -177,7 +167,7 @@
 		 * Display Super Admin Dashboard
 		 * @return void
 		 */
-		function dispAdminIndex() {
+		function dispAdminIndex(){
 			// Get statistics
 			$args = new stdClass();
 			$args->date = date("Ymd000000", time()-60*60*24);
@@ -224,10 +214,8 @@
 			$columnList = array('comment_srl', 'module_srl', 'document_srl', 'content', 'nick_name', 'member_srl');
 			$args->list_count = 5;
 			$output = $oCommentModel->getNewestCommentList($args, $columnList);
-			if(is_array($output))
-			{
-				foreach($output AS $key=>$value)
-				{
+			if(is_array($output)){
+				foreach($output AS $key=>$value){
 					$value->content = strip_tags($value->content);
 				}
 			}
@@ -237,18 +225,14 @@
 			// Get list of modules
 			$oModuleModel = &getModel('module');
 			$module_list = $oModuleModel->getModuleList();
-			if(is_array($module_list))
-			{
+			if(is_array($module_list)){
 				$needUpdate = false;
 				$addTables = false;
-				foreach($module_list AS $key=>$value)
-				{
-					if($value->need_install)
-					{
+				foreach($module_list AS $key=>$value){
+					if($value->need_install){
 						$addTables = true;
 					}
-					if($value->need_update)
-					{
+					if($value->need_update){
 						$needUpdate = true;
 					}
 				}
@@ -277,7 +261,7 @@
 		 * Display Configuration(settings) page
 		 * @return void
 		 */
-		function dispAdminConfigGeneral() {
+		function dispAdminConfigGeneral(){
 		    Context::loadLang('modules/install/lang');
 
 			$db_info = Context::getDBInfo();
@@ -324,7 +308,7 @@
 		 * Display FTP Configuration(settings) page
 		 * @return void
 		 */
-		function dispAdminConfigFtp() {
+		function dispAdminConfigFtp(){
 		    Context::loadLang('modules/install/lang');
 
 			$ftp_info = Context::getFTPInfo();
@@ -333,8 +317,8 @@
 
 			$this->setTemplateFile('config_ftp');
 
-//			$security = new Security();
-//			$security->encodeHTML('ftp_info..');
+			//$security = new Security();
+			//$security->encodeHTML('ftp_info..');
 
 		}
 
@@ -342,8 +326,7 @@
 		 * Display Admin Menu Configuration(settings) page
 		 * @return void
 		 */
-		function dispAdminSetup()
-		{
+		function dispAdminSetup(){
 			$oModuleModel = &getModel('module');
 			$configObject = $oModuleModel->getModuleConfig('admin');
 
@@ -411,8 +394,7 @@
 			 * Retrun server environment to XML string
 			 * @return object
 			*/
-			function dispAdminViewServerEnv()
-			{
+			function dispAdminViewServerEnv(){
 				$info = array();
 		  
 				$oAdminModel = getAdminModel('admin');
@@ -420,65 +402,72 @@
 				$tmp = explode("&", $envInfo);
 				$arrInfo = array();
 				$xe_check_env = array();
-				foreach($tmp as $value) {
+				foreach($tmp as $value){
 					$arr = explode("=", $value);
-					if($arr[0]=="type") {
+					if($arr[0]=="type"){
 						continue;
-					}elseif($arr[0]=="phpext" ) {
+					}
+					elseif($arr[0]=="phpext" ){
 						$str = urldecode($arr[1]);
 						$xe_check_env[$arr[0]]= str_replace("|", ", ", $str);
-					} elseif($arr[0]=="module" ) {
+					}
+					elseif($arr[0]=="module" ){
 						$str = urldecode($arr[1]);
 						$arrModuleName = explode("|", $str);
 						$oModuleModel = getModel("module");
 						$mInfo = array();	
-						foreach($arrModuleName as $moduleName) {
+						foreach($arrModuleName as $moduleName){
 							$moduleInfo = $oModuleModel->getModuleInfoXml($moduleName);
 							$mInfo[] = "{$moduleName}({$moduleInfo->version})";
 						}
 						$xe_check_env[$arr[0]]= join(", ", $mInfo);
-					} elseif($arr[0]=="addon") {
+					}
+					elseif($arr[0]=="addon"){
 						$str = urldecode($arr[1]);
 						$arrAddonName = explode("|", $str);
 						$oAddonModel = getAdminModel("addon");
 						$mInfo = array();	
-						foreach($arrAddonName as $addonName) {
+						foreach($arrAddonName as $addonName){
 							$addonInfo = $oAddonModel->getAddonInfoXml($addonName);
 							$mInfo[] = "{$addonName}({$addonInfo->version})";
 						}
 						$xe_check_env[$arr[0]]= join(", ", $mInfo);
-					} elseif($arr[0]=="widget") {
+					}
+					elseif($arr[0]=="widget"){
 						$str = urldecode($arr[1]);
 						$arrWidgetName = explode("|", $str);
 						$oWidgetModel = getModel("widget");
 						$mInfo = array();	
-						foreach($arrWidgetName as $widgetName) {
+						foreach($arrWidgetName as $widgetName){
 							$widgetInfo = $oWidgetModel->getWidgetInfo($widgetName);
 							$mInfo[] = "{$widgetName}({$widgetInfo->version})";
 						}
 						$xe_check_env[$arr[0]]= join(", ", $mInfo);
-					} elseif($arr[0]=="widgetstyle") {
+					}
+					elseif($arr[0]=="widgetstyle"){
 						$str = urldecode($arr[1]);
 						$arrWidgetstyleName = explode("|", $str);
 						$oWidgetModel = getModel("widget");
 						$mInfo = array();	
-						foreach($arrWidgetstyleName as $widgetstyleName) {
+						foreach($arrWidgetstyleName as $widgetstyleName){
 							$widgetstyleInfo = $oWidgetModel->getWidgetStyleInfo($widgetstyleName);
 							$mInfo[] = "{$widgetstyleName}({$widgetstyleInfo->version})";
 						}
 						$xe_check_env[$arr[0]]= join(", ", $mInfo);
 		  
-					} elseif($arr[0]=="layout") {
+					}
+					elseif($arr[0]=="layout"){
 						$str = urldecode($arr[1]);
 						$arrLayoutName = explode("|", $str);
 						$oLayoutModel = getModel("layout");
 						$mInfo = array();	
-						foreach($arrLayoutName as $layoutName) {
+						foreach($arrLayoutName as $layoutName){
 							$layoutInfo = $oLayoutModel->getLayoutInfo($layoutName);
 							$mInfo[] = "{$layoutName}({$layoutInfo->version})";
 						}
 						$xe_check_env[$arr[0]]= join(", ", $mInfo);
-					} else {
+					}
+					else{
 						$xe_check_env[$arr[0]] = urldecode($arr[1]);
 					}
 				}
@@ -493,11 +482,11 @@
 		  
 				$str_info = "[DAOL Server Environment " . date("Y-m-d") . "]\n\n";
 				$str_info .= "realpath : ".realpath('./')."\n";
-				foreach( $info as $key=>$value )
-				{
-					if( is_array( $value ) == false ) {
+				foreach( $info as $key=>$value ){
+					if( is_array( $value ) == false ){
 						$str_info .= "{$key} : {$value}\n";
-					} else {
+					}
+					else{
 						//$str_info .= "\n{$key} \n";
 						foreach( $value as $key2=>$value2 )
 							$str_info .= "{$key2} : {$value2}\n";
