@@ -574,25 +574,30 @@
 			return $output->data->count;
 		}
 
-		function getFaviconUrl()
-		{
-			return $this->iconUrlCheck('favicon.ico','faviconSample.png');
+		function getFaviconUrl($default = true){
+			return $this->iconUrlCheck('favicon.ico','faviconSample.png', $default);
 		}
 
-		function getMobileIconUrl()
-		{
-			return $this->iconUrlCheck('mobicon.png','mobiconSample.png');
+		function getMobileIconUrl($default = true){
+			return $this->iconUrlCheck('mobicon.png','mobiconSample.png', $default);
 		}
 
-		function iconUrlCheck($iconname,$default_icon_name)
-		{
-			$file_exsit = FileHandler::readFile(_XE_PATH_.'files/attach/xeicon/'.$iconname);
-			if(!$file_exsit){
-				$icon_url = './modules/admin/tpl/img/'.$default_icon_name;
-			} else {
-				$default_url = Context::getDefaultUrl();
-				$icon_url = $default_url.'files/attach/xeicon/'.$iconname;
+		function iconUrlCheck($iconname, $default_icon_name, $default){
+			$site_info = Context::get('site_module_info');
+			$virtual_site = '';
+			if($site_info->site_srl){
+				$virtual_site = $site_info->site_srl . '/';
 			}
+
+			$file_exsit = FileHandler::readFile(_XE_PATH_ . 'files/attach/xeicon/' . $virtual_site . $iconname);
+			if(!$file_exsit && $default === true){
+				$icon_url = './modules/admin/tpl/img/' . $default_icon_name;
+			}
+			elseif($file_exsit){
+				$default_url = Context::getDefaultUrl();
+				$icon_url = $default_url . 'files/attach/xeicon/' . $virtual_site . $iconname;
+			}
+			
 			return $icon_url;
 		}
 	}
