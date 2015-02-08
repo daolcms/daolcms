@@ -680,16 +680,15 @@
 			return $output;
 		}
 
-	/**
-	* Remove all comment relation log
-	* @return Object
-	*/
-	function deleteCommentLog($args)
-	{
-		$this->_deleteDeclaredComments($args);
-		$this->_deleteVotedComments($args);
-		return new Object(0, 'success');
-	}
+		/**
+		* Remove all comment relation log
+		* @return Object
+		*/
+		function deleteCommentLog($args){
+			$this->_deleteDeclaredComments($args);
+			$this->_deleteVotedComments($args);
+			return new Object(0, 'success');
+		}
 
 		/**
 		 * Remove all comments of the article
