@@ -13,7 +13,9 @@ class VirtualXMLDisplayHandler {
 		$message = $oModule->getMessage();
 		$redirect_url = $oModule->get('redirect_url');
 		$request_uri = Context::get('xeRequestURI');
-		$request_url = Context::get('xeVirtualRequestUrl');
+		$request_url = Context::getRequestUri();
+		$output = new stdClass();
+		
 		if(substr($request_url,-1)!='/') $request_url .= '/';
 
 		if($error === 0) {
