@@ -4,12 +4,22 @@ if(!defined('__XE__')) exit();
 /**
  * @file blogapicounter.addon.php
  * @author NAVER (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  * @brief Add blogAPI
  *
  * It enables to write a post by using an external tool such as ms live writer, firefox performancing, zoundry and so on.
  * It should be called before executing the module(before_module_proc). If not, it is forced to shut down.
  * */
 // Insert a rsd tag when called_position is after_module_proc
+if($called_position == 'after_module_proc')
+{
+	// Create rsd address of the current module
+	$site_module_info = Context::get('site_module_info');
+	$rsd_url = getFullSiteUrl($site_module_info->domain, '', 'mid', $this->module_info->mid, 'act', 'api');
+	// Insert rsd tag into the header
+	Context::addHtmlHeader("    " . '<link rel="EditURI" type="application/rsd+xml" title="RSD" href="' . $rsd_url . '" />');
+}
+// If act isnot api, just return
 if($called_position == 'after_module_proc')
 {
 	// Create rsd address of the current module
@@ -27,8 +37,10 @@ if($_REQUEST['act'] != 'api')
 // Read func file
 require_once(_XE_PATH_ . 'addons/blogapi/blogapi.func.php');
 
+$xml = $GLOBALS['HTTP_RAW_POST_DATA'];
+
 // If HTTP_RAW_POST_DATA is NULL, Print error message
-if(!$GLOBALS['HTTP_RAW_POST_DATA'])
+if(!$xml)
 {
 	$content = getXmlRpcFailure(1, 'Invalid Method Call');
 	printContent($content);
@@ -36,7 +48,14 @@ if(!$GLOBALS['HTTP_RAW_POST_DATA'])
 
 // xmlprc parsing
 // Parse the requested xmlrpc
-$xml = new SimpleXMLElement($GLOBALS['HTTP_RAW_POST_DATA']);
+if(Security::detectingXEE($xml))
+{
+	header("HTTP/1.0 400 Bad Request");
+	exit;
+}
+
+if(version_compare(PHP_VERSION, '5.2.11', '<=')) libxml_disable_entity_loader(true);
+$xml = new SimpleXMLElement($xml, LIBXML_NONET | LIBXML_NOENT);
 
 $method_name = (string)$xml->methodName;
 $params = $xml->params->param;
@@ -515,12 +534,12 @@ if($called_position == 'before_module_proc')
 <?xml version="1.0" ?>
 <rsd version="1.0" xmlns="http://archipelago.phrasewise.com/rsd" >
 <service>
-	<engineName>XpressEngine</engineName>
-	<engineLink>http://www.xpressengine.com/ </engineLink>
-	<homePageLink>{$homepagelink}</homePageLink>
-	<apis>
-		<api name="MetaWeblog" preferred="true" apiLink="{$api_url}" blogID="" />
-	</apis>
+    <engineName>DAOL CMS</engineName>
+    <engineLink>http://www.daolcms.org/ </engineLink>
+    <homePageLink>{$homepagelink}</homePageLink>
+    <apis>
+        <api name="MetaWeblog" preferred="true" apiLink="{$api_url}" blogID="" />
+    </apis>
 </service>
 </rsd>
 RSDContent;
