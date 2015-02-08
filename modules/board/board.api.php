@@ -7,10 +7,10 @@
 
 	class boardAPI extends board {
 
-/* do not use dispBoardContent .
+	/* do not use dispBoardContent .
 		function dispBoardContent(&$oModule) {
 		}
-*/
+	*/
 
 		/**
 		 * @brief notice list
@@ -48,7 +48,7 @@
 		/**
 		 * @brief category list
 		 **/
-		function dispBoardCatogoryList(&$oModule) {
+		function dispBoardCategoryList(&$oModule) {
 			$oModule->add('category_list',Context::get('category_list'));
 		}
 
@@ -95,9 +95,16 @@
 
 
 		function arrangeContent($content) {
-			$output = null;
+			$oBoardView = getView('board');
+			$output = new stdClass;
 			if($content){			
 				$output = $content->gets('document_srl','category_srl','member_srl','nick_name','user_id','user_name','title','content','tags','readed_count','voted_count','blamed_count','comment_count','regdate','last_update','extra_vars','status');
+				
+				if(!$oBoardView->grant->view){
+					unset($output->content);
+					unset($output->tags);
+					unset($output->extra_vars);
+				}
 				
 				$t_width  = Context::get('thumbnail_width');
 				$t_height = Context::get('thumbnail_height');
