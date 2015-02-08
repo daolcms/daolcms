@@ -2,6 +2,7 @@
 	/**
 	 * @class  communicationController
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * communication module of the Controller class
 	 **/
 
