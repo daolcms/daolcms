@@ -720,30 +720,30 @@
 			$this->domain = $domain;
 		}
 		function setLink($url){
-			$this->add('url',strip_tags($url));
+			$this->add('url',$url);
 		}
 		function setTitle($title){
-			$this->add('title',strip_tags($title));
+			$this->add('title',$title);
 		}
 
 		function setThumbnail($thumbnail){
 			$this->add('thumbnail',$thumbnail);
 		}
 		function setContent($content){
-			$this->add('content',removeHackTag($content));
+			$this->add('content',$content);
 		}
 		function setRegdate($regdate){
-			$this->add('regdate',strip_tags($regdate));
+			$this->add('regdate',$regdate);
 		}
 		function setNickName($nick_name){
-			$this->add('nick_name',strip_tags($nick_name));
+			$this->add('nick_name',$nick_name);
 		}
 		// Save author's homepage url. By misol
 		function setAuthorSite($site_url){
-			$this->add('author_site',strip_tags($site_url));
+			$this->add('author_site',$site_url);
 		}
 		function setCategory($category){
-			$this->add('category',strip_tags($category));
+			$this->add('category',$category);
 		}
 		function getBrowserTitle(){
 			return $this->browser_title;

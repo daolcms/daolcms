@@ -825,20 +825,6 @@
 
 		// xmp tag 확인 및 추가
 		$content = checkXmpTag($content);
-		$content = blockWidgetCode($content);
-		
-		return $content;
-	}
-	
-	/**
-	 * blocking widget code
-	 *
-	 * @param string $content Taget content
-	 * @return string
-	 **/
-	function blockWidgetCode($content){
-		$content = preg_replace('/(<(?:img|div)(?:[^>]*))(widget)(?:(=([^>]*?)>))/is', '$1blocked-widget$3', $content);
-		
 		return $content;
 	}
 
