@@ -17,7 +17,7 @@
 		 * @brief insert borad module
 		 **/
 		function procBoardAdminInsertBoard($args = null) {
-			// igenerate module model/controller object
+			// generate module model/controller object
 			$oModuleController = &getController('module');
 			$oModuleModel = &getModel('module');
 

@@ -98,7 +98,7 @@
 		}
 
 		/**
-		 * Send a message (DB controll)
+		 * Send a message (DB control)
 		 * @param int $sender_srl member_srl of sender
 		 * @param int $receiver_srl member_srl of receiver_srl
 		 * @param string $title
