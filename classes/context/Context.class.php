@@ -8,6 +8,7 @@ define('RELEASE_SSL',2);
  * It has dual method structure, easy-to use methods which can be called as Context::methodname(),and methods called with static object.
  *
  * @author NHN (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  */
 class Context {
 
@@ -947,8 +948,15 @@ class Context {
 	 */
 	function _setXmlRpcArgument() {
 		if($this->getRequestMethod() != 'XMLRPC') return;
+		
+		$xml = $GLOBALS['HTTP_RAW_POST_DATA'];
+		if(Security::detectingXEE($xml)){
+			header("HTTP/1.0 400 Bad Request");
+			exit;
+		}
+		
 		$oXml = new XmlParser();
-		$xml_obj = $oXml->parse();
+		$xml_obj = $oXml->parse($xml);
 
 		$params = $xml_obj->methodcall->params;
 		unset($params->node_name, $params->attrs, $params->body);
