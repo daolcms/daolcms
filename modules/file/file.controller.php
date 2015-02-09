@@ -2,6 +2,7 @@
 	/**
 	 * Controller class of the file module
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 **/
 	class fileController extends file {
 
