@@ -218,51 +218,8 @@
 						}
 					}
 				}
-
-				// history
-				if($xml_obj->history) {
-					if(!is_array($xml_obj->history)) $history[] = $xml_obj->history;
-					else $history = $xml_obj->history;
-
-					foreach($history as $item) {
-						$obj = new stdClass();
-
-						if($item->author) {
-							(!is_array($item->author)) ? $obj->author_list[] = $item->author : $obj->author_list = $item->author;
-
-							foreach($obj->author_list as $author) {
-								$author_obj = new stdClass();
-								$author_obj->name = $author->name->body;
-								$author_obj->email_address = $author->attrs->email_address;
-								$author_obj->homepage = $author->attrs->link;
-								$obj->author[] = $author_obj;
-							}
-						}
-
-						$obj->name = $item->name->body;
-						$obj->email_address = $item->attrs->email_address;
-						$obj->homepage = $item->attrs->link;
-						$obj->version = $item->attrs->version;
-						$obj->date = $item->attrs->date;
-						$obj->description = $item->description->body;
-
-						if($item->log) {
-							(!is_array($item->log)) ? $obj->log[] = $item->log : $obj->log = $item->log;
-
-							foreach($obj->log as $log) {
-								$log_obj = new stdClass();
-								$log_obj->text = $log->body;
-								$log_obj->link = $log->attrs->link;
-								$obj->logs[] = $log_obj;
-							}
-						}
-
-						$addon_info->history[] = $obj;
-					}
-				}
-
-
-			} else {
+			}
+			else {
 				// addon format 0.1
 				$addon_info = new stdClass();
 				$addon_info->addon_name = $addon;
