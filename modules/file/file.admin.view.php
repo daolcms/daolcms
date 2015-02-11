@@ -2,6 +2,7 @@
 	/**
 	 * Admin view of the module class file
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 **/
 	class fileAdminView extends file {
 
@@ -167,8 +168,8 @@
 			// Set a template
 			$security = new Security();
 			$security->encodeHTML('file_list..');
-			$security->encodeHTML('module_list..');				
-
+			$security->encodeHTML('module_list..');
+			
 			$this->setTemplatePath($this->module_path.'tpl');
 			$this->setTemplateFile('file_list');
 
@@ -183,6 +184,10 @@
 			$oFileModel = &getModel('file');
 			$config = $oFileModel->getFileConfig();
 			Context::set('config',$config);
+			$iniPostMaxSize = FileHandler::returnbytes(ini_get('post_max_size'));
+			$iniUploadMaxSize = $FileHandler::returnbytes(ini_get('upload_max_filesize'));
+			$iniMinSize = min($iniPostMaxSize, $iniUploadMaxSize);
+			Context::set('upload_max_filesize',FileHandler::returnbytes($iniMinSize));
 			// Set a template file
 			$this->setTemplatePath($this->module_path.'tpl');
 			$this->setTemplateFile('adminConfig');

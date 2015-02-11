@@ -473,14 +473,13 @@ class FileHandler {
 	 * @param $val Size in string (ex., 10, 10K, 10M, 10G )
 	 * @return int converted size
 	 */
-	function returnBytes($val)
-	{
-		$val = trim($val);
-		$last = strtolower(substr($val, -1));
-		if($last == 'g') $val *= 1024*1024*1024;
-		else if($last == 'm') $val *= 1024*1024;
-		else if($last == 'k') $val *= 1024;
-		else $val *= 1;
+	function returnBytes($val){
+		$unit = strtoupper(substr($val, -1));
+		switch ($unit){
+			case 'G': $val *= 1024;
+			case 'M': $val *= 1024;
+			case 'K': $val *= 1024;
+		}
 
 		return $val;
 	}

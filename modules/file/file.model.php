@@ -2,6 +2,7 @@
 	/**
 	 * Model class of the file module
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 **/
 	class fileModel extends file {
 
@@ -216,7 +217,9 @@
 			
 			$logged_info = Context::get('logged_info');
 			if($logged_info->is_admin == 'Y') {
-				$size = preg_replace('/[a-z]/is', '', ini_get('upload_max_filesize'));
+				$iniPostMaxSize = FileHandler::returnbytes(ini_get('post_max_size'));
+				$iniUploadMaxSize = FileHandler::returnbytes(ini_get('upload_max_filesize'));
+				$size = min($iniPostMaxSize, $iniUploadMaxSize) / 1048576;
 				$file_config->allowed_attach_size = $size;
 				$file_config->allowed_filesize = $size;
 				$file_config->allowed_filetypes = '*.*';
