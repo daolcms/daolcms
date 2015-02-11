@@ -2,6 +2,7 @@
 	/**
 	 * @class  pollController
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief Controller class for poll module
 	 **/
 
