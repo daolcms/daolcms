@@ -20,7 +20,8 @@
 		 **/
 		function procCommunicationUpdateAllowMessage() {
 			if(!Context::get('is_logged')) return new Object(-1, 'msg_not_logged');
-
+			
+			$args = new stdClass();
 			$args->allow_message = Context::get('allow_message');
 			if(!in_array($args->allow_message, array('Y','N','F'))) $args->allow_message = 'Y';
 
@@ -202,6 +203,7 @@
 			$message = $oCommunicationModel->getSelectedMessage($message_srl);
 			if(!$message || $message->message_type != 'R') return new Object(-1,'msg_invalid_request');
 
+			$args = new stdClass();
 			$args->message_srl = $message_srl;
 			$args->receiver_srl = $logged_info->member_srl;
 			$output = executeQuery('communication.setMessageStored', $args);
@@ -237,6 +239,7 @@
 					break;
 			}
 			// Delete
+			$args = new stdClass();
 			$args->message_srl = $message_srl;
 			$output = executeQuery('communication.deleteMessage', $args);
 			if(!$output->toBool()) return $output;
@@ -272,6 +275,7 @@
 			}
 			if(!count($target)) return new Object(-1,'msg_cart_is_null');
 			// Delete
+			$args = new stdClass();
 			$args->message_srls = implode(',',$target);
 			$args->message_type = $message_type;
 
@@ -299,6 +303,7 @@
 			$target_srl = (int)trim(Context::get('target_srl'));
 			if(!$target_srl) return new Object(-1,'msg_invalid_request');
 			// Variable
+			$args = new stdClass();
 			$args->friend_srl = getNextSequence();
 			$args->list_order = $args->friend_srl * -1;
 			$args->friend_group_srl = Context::get('friend_group_srl');
@@ -357,6 +362,7 @@
 			}
 			if(!count($target)) return new Object(-1,'msg_cart_is_null');
 			// Variables
+			$args = new stdClass();
 			$args->friend_srls = implode(',',$target);
 			$args->member_srl = $logged_info->member_srl;
 			$args->friend_group_srl = Context::get('target_friend_group_srl');
@@ -397,6 +403,7 @@
 			}
 			if(!count($target)) return new Object(-1,'msg_cart_is_null');
 			// Delete
+			$args = new stdClass();
 			$args->friend_srls = implode(',',$target);
 			$args->member_srl = $logged_info->member_srl;
 			$output = executeQuery('communication.deleteFriend', $args);
@@ -417,6 +424,7 @@
 			if(!Context::get('is_logged')) return new Object(-1, 'msg_not_logged');
 			$logged_info = Context::get('logged_info');
 			// Variables
+			$args = new stdClass();
 			$args->friend_group_srl = trim(Context::get('friend_group_srl'));
 			$args->member_srl = $logged_info->member_srl;
 			$args->title = Context::get('title'); 
@@ -470,6 +478,7 @@
 			if(!Context::get('is_logged')) return new Object(-1, 'msg_not_logged');
 			$logged_info = Context::get('logged_info');
 			// Variables
+			$args = new stdClass();
 			$args->friend_group_srl= Context::get('friend_group_srl');
 			$args->member_srl = $logged_info->member_srl;
 			$args->title = Context::get('title'); 
@@ -491,6 +500,7 @@
 			if(!Context::get('is_logged')) return new Object(-1, 'msg_not_logged');
 			$logged_info = Context::get('logged_info');
 			// Variables
+			$args = new stdClass();
 			$args->friend_group_srl = Context::get('friend_group_srl');
 			$args->member_srl = $logged_info->member_srl;
 			$output = executeQuery('communication.deleteFriendGroup', $args);
@@ -505,6 +515,7 @@
 		 * @return Object
 		 **/
 		function setMessageReaded($message_srl) {
+			$args = new stdClass();
 			$args->message_srl = $message_srl;
 			$args->related_srl = $message_srl;
 			return executeQuery('communication.setMessageReaded', $args);

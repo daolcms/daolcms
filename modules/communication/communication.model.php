@@ -22,6 +22,9 @@
 			$oModuleModel = &getModel('module');
 			$communication_config = $oModuleModel->getModuleConfig('communication');
 
+			if(!is_object($communication_config)){
+				$communication_config = new stdClass();
+			}
 			if(!$communication_config->skin) $communication_config->skin = 'default';
 			if(!$communication_config->colorset) $communication_config->colorset = 'white';
 			if(!$communication_config->editor_skin) $communication_config->editor_skin = 'default';
@@ -128,6 +131,7 @@
 		function getSelectedMessage($message_srl, $columnList = array()) {
 			$logged_info = Context::get('logged_info');
 
+			$args = new stdClass();
 			$args->message_srl = $message_srl;
 			$output = executeQuery('communication.getMessage',$args, $columnList);
 			$message = $output->data;
@@ -159,6 +163,8 @@
 		 **/
 		function getNewMessage($columnList = array()) {
 			$logged_info = Context::get('logged_info');
+			
+			$args = new stdClass();
 			$args->receiver_srl = $logged_info->member_srl;
 			$args->readed = 'N';
 
@@ -180,6 +186,7 @@
 		 **/
 		function getMessages($message_type = "R", $columnList = array()) {
 			$logged_info = Context::get('logged_info');
+			$args = new stdClass();
 
 			switch($message_type) {
 				case 'R' :
@@ -216,6 +223,7 @@
 		function getFriends($friend_group_srl = 0, $columnList = array()) {
 			$logged_info = Context::get('logged_info');
 
+			$args = new stdClass();
 			$args->friend_group_srl = $friend_group_srl;
 			$args->member_srl = $logged_info->member_srl;
 			// Other variables
@@ -235,6 +243,7 @@
 		function isAddedFriend($member_srl) {
 			$logged_info = Context::get('logged_info');
 
+			$args = new stdClass();
 			$args->member_srl = $logged_info->member_srl;
 			$args->target_srl = $member_srl;
 			$output = executeQuery('communication.isAddedFriend', $args);
@@ -249,6 +258,7 @@
 		function getFriendGroupInfo($friend_group_srl) {
 			$logged_info = Context::get('logged_info');
 
+			$args = new stdClass();
 			$args->member_srl = $logged_info->member_srl;
 			$args->friend_group_srl = $friend_group_srl;
 
@@ -262,6 +272,8 @@
 		 **/
 		function getFriendGroups() {
 			$logged_info = Context::get('logged_info');
+			
+			$args = new stdClass();
 			$args->member_srl = $logged_info->member_srl;
 
 			$output = executeQueryArray('communication.getFriendGroups', $args);
@@ -278,8 +290,10 @@
 		function isFriend($target_srl) {
 			$logged_info = Context::get('logged_info');
 
+			$args = new stdClass();
 			$args->member_srl = $target_srl;
 			$args->target_srl = $logged_info->member_srl;
+			
 			$output = executeQuery('communication.isAddedFriend', $args);
 			if($output->data->count) return true;
 			return false;
