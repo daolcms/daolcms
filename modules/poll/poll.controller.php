@@ -16,7 +16,7 @@
 		/**
 		 * @brief after a qeustion is created in the popup window, register the question during the save time
 		 **/
-		function procInsert() {
+		function procPollInsert() {
 			$stop_date = Context::get('stop_date');
 			if($stop_date < date("Ymd")) $stop_date = date("YmdHis", time()+60*60*24*365);
 
