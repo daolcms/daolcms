@@ -3,6 +3,7 @@
 	 * The model class of integration module
 	 *
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 **/
 
 	class integration_searchModel extends module {
@@ -176,7 +177,7 @@
 				// Videos
 				} elseif(preg_match('/\.(swf|flv|wmv|avi|mpg|mpeg|asx|asf|mp3)$/i', $val->source_filename)) {
 					$obj->type = 'multimedia';
-					$obj->src = sprintf('<script type="text/javascript">displayMultimedia("%s",120,120);</script>', $obj->download_url);
+					$obj->src = sprintf('<script type="text/javascript">displayMultimedia("%s",120,120);</script>', $val->uploaded_filename);
 				// Others
 				} else {
 					$obj->type = 'binary';
