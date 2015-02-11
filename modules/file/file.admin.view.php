@@ -185,7 +185,7 @@
 			$config = $oFileModel->getFileConfig();
 			Context::set('config',$config);
 			$iniPostMaxSize = FileHandler::returnbytes(ini_get('post_max_size'));
-			$iniUploadMaxSize = $FileHandler::returnbytes(ini_get('upload_max_filesize'));
+			$iniUploadMaxSize = FileHandler::returnbytes(ini_get('upload_max_filesize'));
 			$iniMinSize = min($iniPostMaxSize, $iniUploadMaxSize);
 			Context::set('upload_max_filesize',FileHandler::returnbytes($iniMinSize));
 			// Set a template file
