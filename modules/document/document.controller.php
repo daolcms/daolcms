@@ -401,7 +401,7 @@ class documentController extends document {
 		// If an author is identical to the modifier or history is used, use the logged-in user's information.
 		if(Context::get('is_logged')) {
 			$logged_info = Context::get('logged_info');
-			if( $bUseHistory !== TRUE || $source_obj->get('member_srl')==$logged_info->member_srl) {
+			if($source_obj->get('member_srl')==$logged_info->member_srl){
 				$obj->member_srl = $logged_info->member_srl;
 				$obj->user_name = htmlspecialchars_decode($logged_info->user_name);
 				$obj->nick_name = htmlspecialchars_decode($logged_info->nick_name);
