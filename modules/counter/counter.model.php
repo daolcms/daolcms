@@ -22,6 +22,7 @@
 		 * @return bool
 		 **/
 		function isLogged($site_srl=0) {
+			$args = new stdClass();
 			$args->regdate = date("Ymd");
 			$args->ipaddress = $_SERVER['REMOTE_ADDR'];
 			$args->site_srl = $site_srl;
@@ -36,6 +37,7 @@
 		 * @return bool
 		 **/
 		function isInsertedTodayStatus($site_srl=0) {
+			$args = new stdClass();
 			$args->regdate = date("Ymd");
 			if($site_srl) {
 				$args->site_srl = $site_srl;
@@ -55,6 +57,7 @@
 		 **/
 		function getStatus($selected_date, $site_srl = 0) {
 			// If more than one date logs are selected
+			$args = new stdClass();
 			if(is_array($selected_date)) {
 				$date_count = count($selected_date);
 				$args->regdate = implode(',',$selected_date);
@@ -98,6 +101,7 @@
 				case 'year' :
 						// Get a date to start counting
 						if($site_srl) {
+							$args = new stdClass();
 							$args->site_srl = $site_srl;
 							$output = executeQuery('counter.getSiteStartLogDate', $args);
 						} else {
@@ -106,7 +110,7 @@
 						$start_year = substr($output->data->regdate,0,4);
 						if(!$start_year) $start_year = date("Y");
 						for($i=$start_year;$i<=date("Y");$i++) {
-							unset($args);
+							$args = new stdClass();
 							$args->start_date = sprintf('%04d0000', $i);
 							$args->end_date = sprintf('%04d1231', $i);
 							if($site_srl) {
@@ -135,7 +139,7 @@
 						$thisWeek[] = date("Ymd",$time);
 						asort($thisWeek);
 						foreach($thisWeek as $day) {
-							unset($args);
+							$args = new stdClass();
 							$args->start_date = $day;
 							$args->end_date = $day;
 							if($site_srl) {
@@ -153,7 +157,7 @@
 				case 'month' :
 						$year = substr($selected_date, 0, 4);
 						for($i=1;$i<=12;$i++) {
-							unset($args);
+							$args = new stdClass();
 							$args->start_date = sprintf('%04d%02d00', $year, $i);
 							$args->end_date = sprintf('%04d%02d31', $year, $i);
 							if($site_srl) {
@@ -170,7 +174,7 @@
 					break;
 				case 'hour' :
 						for($i=0;$i<24;$i++) {
-							unset($args);
+							$args = new stdClass();
 							$args->start_date = sprintf('%08d%02d0000', $selected_date, $i);
 							$args->end_date = sprintf('%08d%02d5959', $selected_date, $i);
 							if($site_srl) {
@@ -191,7 +195,7 @@
 						$month = substr($selected_date, 4, 2);
 						$end_day = date('t', mktime(0,0,0,$month,1,$year));
 						for($i=1;$i<=$end_day;$i++) {
-							unset($args);
+							$args = new stdClass();
 							$args->start_date = sprintf('%04d%02d%02d', $year, $month, $i);
 							$args->end_date = sprintf('%04d%02d%02d', $year, $month, $i);
 							if($site_srl) {

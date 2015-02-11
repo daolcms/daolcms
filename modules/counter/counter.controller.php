@@ -64,6 +64,7 @@
 		 * @return Object result of count query
 		 **/
 		function insertLog($site_srl=0) {
+			$args = new stdClass();
 			$args->regdate = date("YmdHis");
 			$args->user_agent = substr ($_SERVER['HTTP_USER_AGENT'], 0, 250);
 			$args->site_srl = $site_srl;
@@ -77,16 +78,13 @@
 		 * @return void
 		 **/
 		function insertUniqueVisitor($site_srl=0) {
+			$args = new stdClass();
+			$args->regdate = '0,' . date('Ymd');
 			if($site_srl) {
-				$args->regdate = '0';
 				$args->site_srl = $site_srl;
 				$output = executeQuery('counter.updateSiteCounterUnique', $args);
-				$args->regdate = date('Ymd');
-				$output = executeQuery('counter.updateSiteCounterUnique', $args);
-			} else {
-				$args->regdate = '0';
-				$output = executeQuery('counter.updateCounterUnique', $args);
-				$args->regdate = date('Ymd');
+			}
+			else {
 				$output = executeQuery('counter.updateCounterUnique', $args);
 			}
 		}
@@ -119,6 +117,7 @@
 		 * @return void
 		 **/
 		function insertTotalStatus($site_srl=0) {
+			$args = new stdClass();
 			$args->regdate = 0;
 			if($site_srl) {
 				$args->site_srl = $site_srl;
@@ -136,6 +135,7 @@
 		 * @return void
 		 **/
 		function insertTodayStatus($regdate = 0, $site_srl=0) {
+			$args = new stdClass();
 			if($regdate) $args->regdate = $regdate;
 			else $args->regdate = date("Ymd");
 			if($site_srl) {
@@ -162,6 +162,7 @@
 		 * @return void
 		 **/
 		function deleteSiteCounterLogs($site_srl) {
+			$args = new stdClass();
 			$args->site_srl = $site_srl;
 			executeQuery('counter.deleteSiteCounter',$args);
 			executeQuery('counter.deleteSiteCounterLog',$args);
