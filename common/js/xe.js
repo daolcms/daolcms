@@ -1666,10 +1666,10 @@ function arr2obj(arr) {
 /**
  * @brief exec_json (exec_xml와 같은 용도)
  **/
-$.exec_json = function(action,data,func){
+$.exec_json = window.exec_json = function(action, data, callback_sucess, callback_error){
 	if(typeof(data) == 'undefined') data = {};
 	action = action.split(".");
-	if(action.length == 2) {
+	if(action.length == 2){
 		// The cover can be disturbing if it consistently blinks (because ajax call usually takes very short time). So make it invisible for the 1st 0.5 sec and then make it visible.
 		var timeoutId = $(".wfsr").data('timeout_id');
 
