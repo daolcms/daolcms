@@ -1058,7 +1058,7 @@ class documentController extends document {
 		if($_SESSION['declared_document'][$document_srl]) return new Object(-1, 'failed_declared');
 
 		// Check if previously reported
-		$args = new stdClass()
+		$args = new stdClass();
 		$args->document_srl = $document_srl;
 		$output = executeQuery('document.getDeclaredDocument', $args);
 		if(!$output->toBool()) return $output;
