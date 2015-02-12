@@ -3,6 +3,7 @@
 	 * Model class of counter module
 	 *
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 **/
 
 	class counterModel extends counter {
