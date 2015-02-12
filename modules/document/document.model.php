@@ -29,13 +29,12 @@
 		 * @param array $documentSrls
 		 * @return object
 		 */
-		function getDocumentExtraVarsFromDB($documentSrls)
-		{
-			if(!is_array($documentSrls) || count($documentSrls) == 0)
-			{
+		function getDocumentExtraVarsFromDB($documentSrls){
+			if(!is_array($documentSrls) || count($documentSrls) == 0){
 				return new Object(-1, 'msg_invalid_request');
 			}
 
+			$args = new stdClass()
 			$args->document_srl = $documentSrls;
 			$output = executeQueryArray('document.getDocumentExtraVars', $args);
 			return $output;
@@ -143,9 +142,11 @@
 			if(is_array($document_srls)) {
 				$list_count = count($document_srls);
 				$document_srls = implode(',',$document_srls);
-			} else {
+			}
+			else {
 				$list_count = 1;
 			}
+			$args = new stdClass()
 			$args->document_srls = $document_srls;
 			$args->list_count = $list_count;
 			$args->order_type = 'asc';
@@ -232,6 +233,7 @@
 					$keys = array_keys($output->data);
 					$virtual_number = $keys[0];
 
+					$traget_args = new stdClass()
 					$target_args->document_srls = implode(',',$target_srls);
 					$target_args->list_order = $args->sort_index;
 					$target_args->order_type = $args->order_type;
@@ -300,6 +302,7 @@
 		 * @return object|void
 		 */
 		function getNoticeList($obj, $columnList = array()) {
+			$args = new stdClass()
 			$args->module_srl = $obj->module_srl;
 			$args->category_srl= $obj->category_srl;
 			$output = executeQueryArray('document.getNoticeList', $args, $columnList);
@@ -334,7 +337,8 @@
 		 */
 		function getExtraKeys($module_srl) {
 			if(is_null($GLOBALS['XE_EXTRA_KEYS'][$module_srl])) {
-				$oExtraVar = &ExtraVar::getInstance($module_srl);
+				$oExtraVar = ExtraVar::getInstance($module_srl);
+				$obj = new stdClass()
 				$obj->module_srl = $module_srl;
 				$obj->sort_index = 'var_idx';
 				$obj->order = 'asc';
@@ -342,14 +346,11 @@
 				
 				// correcting index order
 				$isFixed = FALSE;
-				if(is_array($output->data))
-				{
+				if(is_array($output->data)){
 					$prevIdx = 0;
-					foreach($output->data as $no => $value)
-					{
+					foreach($output->data as $no => $value){
 						// case first
-						if($prevIdx == 0 && $value->idx != 1)
-						{
+						if($prevIdx == 0 && $value->idx != 1){
 							$args = new stdClass();
 							$args->module_srl = $module_srl;
 							$args->var_idx = $value->idx;
@@ -496,6 +497,7 @@
 		 */
 		function getDocumentCount($module_srl, $search_obj = NULL) {
 			// Additional search options
+			$search_obj = new stdClass()
 			$args->module_srl = $module_srl;
 			$args->s_title = $search_obj->s_title;
 			$args->s_content = $search_obj->s_content;
@@ -596,6 +598,7 @@
 		 * @return object
 		 */
 		function getCategory($category_srl, $columnList = array()) {
+			$args =new stdClass();
 			$args->category_srl = $category_srl;
 			$output = executeQuery('document.getCategory', $args, $columnList);
 
@@ -619,6 +622,7 @@
 		 * @return bool
 		 */
 		function getCategoryChlidCount($category_srl) {
+			$args =new stdClass();
 			$args->category_srl = $category_srl;
 			$output = executeQuery('document.getChildCategoryCount',$args);
 			if($output->data->count > 0) return true;
@@ -822,6 +826,7 @@
 			if(!$GLOBALS['__document_config__']) {
 				$oModuleModel = &getModel('module');
 				$config = $oModuleModel->getModuleConfig('document');
+				if(!$config) $config = new stdClass();
 				if(!$config->thumbnail_type) $config->thumbnail_type = 'crop';
 				$GLOBALS['__document_config__'] = $config;
 			}
@@ -1131,23 +1136,19 @@
 		 * @param bool $load_extra_vars
 		 * @return object
 		 */
-		function _setSortIndex($obj, $load_extra_vars)
-		{
+		function _setSortIndex($obj, $load_extra_vars){
 			$sortIndex = $obj->sort_index;
 			$isExtraVars = false;
-			if(!in_array($sortIndex, array('list_order','regdate','last_update','update_order','readed_count','voted_count','blamed_count','comment_count','trackback_count','uploaded_count','title','category_srl')))
-			{
+			if(!in_array($sortIndex, array('list_order','regdate','last_update','update_order','readed_count','voted_count','blamed_count','comment_count','trackback_count','uploaded_count','title','category_srl'))){
 				// get module_srl extra_vars list
-				if ($load_extra_vars)
-				{
+				if ($load_extra_vars){
+					$extra_args = new stdClass();
 					$extra_args->module_srl = $obj->module_srl;
 					$extra_output = executeQueryArray('document.getGroupsExtraVars', $extra_args);
-					if (!$extra_output->data || !$extra_output->toBool())
-					{
+					if (!$extra_output->data || !$extra_output->toBool()){
 						$sortIndex = 'list_order';
 					}
-					else
-					{
+					else{
 						$check_array = array();
 						foreach($extra_output->data as $val){
 							$check_array[] = $val->eid;
@@ -1159,6 +1160,7 @@
 				else
 					$sortIndex = 'list_order';
 			}
+			$returnObj = new stdClass();
 			$returnObj->sort_index = $sortIndex;
 			$returnObj->isExtraVars = $isExtraVars;
 
@@ -1175,9 +1177,9 @@
 		 * @param bool $use_division
 		 * @return void
 		 */
-		function _setSearchOption($searchOpt, &$args, &$query_id, &$use_division)
-		{
+		function _setSearchOption($searchOpt, &$args, &$query_id, &$use_division){
 			// Variable check
+			$args = new stdClass();
 			$args->category_srl = $searchOpt->category_srl?$searchOpt->category_srl:null;
 			$args->order_type = $searchOpt->order_type;
 			$args->page = $searchOpt->page?$searchOpt->page:1;
@@ -1214,8 +1216,7 @@
 
 			// only admin document list, temp document showing
 			if($searchOpt->statusList) $args->statusList = $searchOpt->statusList;
-			else
-			{
+			else{
 				if($logged_info->is_admin == 'Y' && !$searchOpt->module_srl)
 					$args->statusList = array($this->getConfigStatus('secret'), $this->getConfigStatus('public'), $this->getConfigStatus('temp'));
 				else
@@ -1308,12 +1309,10 @@
 				}
 			}
 
-			if ($sort_check->isExtraVars)
-			{
+			if ($sort_check->isExtraVars){
 				$query_id = 'document.getDocumentListExtraSort';
 			}
-			else
-			{
+			else{
 				/**
 				 * list_order asc sort of division that can be used only when
 				 */
@@ -1322,25 +1321,23 @@
 				/**
 				 * If it is true, use_division changed to use the document division
 				 */
-				if($use_division) {
+				if($use_division){
 					// Division begins
 					$division = (int)Context::get('division');
 
 					// order by list_order and (module_srl===0 or module_srl may count), therefore case table full scan
-					if($args->sort_index == 'list_order' && ($args->exclude_module_srl === '0' || count(explode(',', $args->module_srl)) > 5))
-					{
+					if($args->sort_index == 'list_order' && ($args->exclude_module_srl === '0' || count(explode(',', $args->module_srl)) > 5)){
 						$listSqlID = 'document.getDocumentListUseIndex';
 						$divisionSqlID = 'document.getDocumentDivisionUseIndex';
 					}
-					else
-					{
+					else{
 						$listSqlID = 'document.getDocumentList';
 						$divisionSqlID = 'document.getDocumentDivision';
 					}
 
 					// If you do not value the best division top
-					if(!$division)
-					{
+					if(!$division){
+						$division_args = new stdClass();
 						$division_args->module_srl = $args->module_srl;
 						$division_args->exclude_module_srl = $args->exclude_module_srl;
 						$division_args->list_count = 1;
@@ -1361,7 +1358,8 @@
 					$last_division = (int)Context::get('last_division');
 
 					// Division after division from the 5000 value of the specified Wanted
-					if(!$last_division) {
+					if(!$last_division){
+						$last_division_args = new stdClass();
 						$last_division_args->module_srl = $args->module_srl;
 						$last_division_args->exclude_module_srl = $args->exclude_module_srl;
 						$last_division_args->list_count = 1;
@@ -1378,8 +1376,7 @@
 					}
 
 					// Make sure that after last_division article
-					if($last_division)
-					{
+					if($last_division){
 						$last_division_args = new stdClass();
 						$last_division_args->module_srl = $args->module_srl;
 						$last_division_args->exclude_module_srl = $args->exclude_module_srl;

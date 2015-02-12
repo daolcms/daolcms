@@ -73,12 +73,13 @@
 			if(!$this->document_srl) return;
 
 			// cache controll
-			$oCacheHandler = &CacheHandler::getInstance('object');
+			$oCacheHandler = CacheHandler::getInstance('object');
 			if($oCacheHandler->isSupport() && !count($this->columnList)){
 					$cache_key = 'object_document_item:'.$this->document_srl;
 					$output = $oCacheHandler->get($cache_key);
 			}
 			if(!$output) {
+				$args = new stdClass()
 				$args->document_srl = $this->document_srl;
 				$output = executeQuery('document.getDocument', $args, $this->columnList);
 				//insert in cache
@@ -133,16 +134,15 @@
 			return false;
 		}
 
-		function setGrant() {
+		function setGrant(){
 			$_SESSION['own_document'][$this->document_srl] = true;
 		}
 
-		function isAccessible() {
+		function isAccessible(){
 			return $_SESSION['accessible'][$this->document_srl]==true?true:false;
 		}
 
-		function allowComment()
-		{
+		function allowComment(){
 			// init write, document is not exists. so allow comment status is true
 			if(!$this->isExists()) return true;
 
@@ -153,25 +153,21 @@
 			static $allow_trackback_status = null;
 			if(is_null($allow_trackback_status)) {
 				// Check the tarckback module exist
-				if(!getClass('trackback'))
-				{
+				if(!getClass('trackback')){
 					   $allow_trackback_status = false;
 				}
-				else
-				{
+				else{
 					// If the trackback module is configured to be disabled, do not allow. Otherwise, check the setting of each module.
 					$oModuleModel = getModel('module');
 					$trackback_config = $oModuleModel->getModuleConfig('trackback');
 
-					if(!$trackback_config)
-					{
+					if(!$trackback_config){
 					   $trackback_config = new stdClass();
 					}
 
 					if(!isset($trackback_config->enable_trackback)) $trackback_config->enable_trackback = 'Y';
 					if($trackback_config->enable_trackback != 'Y') $allow_trackback_status = false;
-					else
-					{
+					else{
 					   $module_srl = $this->get('module_srl');
 					   // Check settings of each module
 					   $module_config = $oModuleModel->getModulePartConfig('trackback', $module_srl);

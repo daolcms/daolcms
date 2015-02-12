@@ -49,12 +49,13 @@
 		function moveDocumentModule($document_srl_list, $module_srl, $category_srl) {
 			if(!count($document_srl_list)) return;
 
-			$oDocumentModel = &getModel('document');
-			$oDocumentController = &getController('document');
+			$oDocumentModel = getModel('document');
+			$oDocumentController = getController('document');
 
 			$oDB = &DB::getInstance();
 			$oDB->begin();
 
+			$triggerObj = new stdClass();
 			$triggerObj->document_srls = implode(',',$document_srl_list);
 			$triggerObj->module_srl = $module_srl;
 			$triggerObj->category_srl = $category_srl;
@@ -133,6 +134,7 @@
 
 			}
 
+			$args = new stdClass();
 			$args->document_srls = implode(',',$document_srl_list);
 			$args->module_srl = $module_srl;
 			// move the comment
@@ -205,6 +207,7 @@
 			$oDB = &DB::getInstance();
 			$oDB->begin();
 
+			$triggerObj = new stdClass();
 			$triggerObj->document_srls = implode(',',$document_srl_list);
 			$triggerObj->module_srl = $module_srl;
 			$triggerObj->category_srl = $category_srl;
@@ -392,6 +395,7 @@
 		 * @return object
 		 */
 		function deleteModuleDocument($module_srl) {
+			$args = new stdClass();
 			$args->module_srl = $module_srl;
 			$oDocumentModel = &getModel('document');
 			$args->module_srl = $module_srl;
@@ -495,6 +499,7 @@
 			$desc = Context::get('desc') ? Context::get('desc') : '';
 			$search = Context::get('search');
 			$eid = Context::get('eid');
+			$obj = new stdClass();
 
 			if(!$module_srl || !$name || !$eid) return new Object(-1,'msg_invalid_request');
 			// set the max value if idx is not specified
@@ -563,6 +568,7 @@
 			else $new_idx = $var_idx+1;
 			if($new_idx<1) return new Object(-1,'msg_invalid_request');
 
+			$args = new stdClass();
 			$args->module_srl = $module_srl;
 			$args->var_idx = $new_idx;
 			$output = executeQuery('document.getDocumentExtraKeys', $args);
@@ -572,6 +578,7 @@
 
 			// update immediately if there is no idx to change
 			if(!$extra_keys[$new_idx]) {
+				$args = new stdClass();
 				$args->module_srl = $module_srl;
 				$args->var_idx = $var_idx;
 				$args->new_idx = $new_idx;
@@ -581,6 +588,7 @@
 				if(!$output->toBool()) return $output;
 			// replace if exists
 			} else {
+				$args = new stdClass();
 				$args->module_srl = $module_srl;
 				$args->var_idx = $new_idx;
 				$args->new_idx = -10000;
@@ -728,6 +736,7 @@
 			$oDocument = $oDocumentModel->getDocument($originObject->document_srl);
 			// If the post was not temorarily saved, set the attachment's status to be valid
 			if($oDocument->hasUploadedFiles() && $originObject->member_srl != $originObject->module_srl) {
+				$args = new stdClass();
 				$args->upload_target_srl = $oDocument->document_srl;
 				$args->isvalid = 'Y';
 				$output = executeQuery('file.updateFileValid', $args);
