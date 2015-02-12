@@ -1162,7 +1162,7 @@ class documentController extends document {
 	 * @return object
 	 */
 	function updateCommentCount($document_srl, $comment_count, $last_updater, $comment_inserted = false) {
-		$args = new stdClass()
+		$args = new stdClass();
 		$args->document_srl = $document_srl;
 		$args->comment_count = $comment_count;
 
@@ -1274,7 +1274,7 @@ class documentController extends document {
 	 * @return object
 	 */
 	function deleteCategory($category_srl) {
-		$args = new stdClass()
+		$args = new stdClass();
 		$args->category_srl = $category_srl;
 		$oDocumentModel = &getModel('document');
 		$category_info = $oDocumentModel->getCategory($category_srl);
@@ -1288,7 +1288,7 @@ class documentController extends document {
 
 		$this->makeCategoryFile($category_info->module_srl);
 		// Update category_srl of the documents in the same category to 0
-		$args = new stdClass()
+		$args = new stdClass();
 		$args->target_category_srl = 0;
 		$args->source_category_srl = $category_srl;
 		$output = executeQuery('document.updateDocumentCategory', $args);
@@ -1302,7 +1302,7 @@ class documentController extends document {
 	 * @return object
 	 */
 	function deleteModuleCategory($module_srl) {
-		$args = new stdClass()
+		$args = new stdClass();
 		$args->module_srl = $module_srl;
 		$output = executeQuery('document.deleteModuleCategory', $args);
 		return $output;
@@ -1634,7 +1634,7 @@ class documentController extends document {
 		$xml_file = sprintf("./files/cache/document_category/%s.xml.php", $module_srl);
 		$php_file = sprintf("./files/cache/document_category/%s.php", $module_srl);
 		// Get a category list
-		$args = new stdClass()
+		$args = new stdClass();
 		$args->module_srl = $module_srl;
 		$args->sort_index = 'list_order';
 		$output = executeQuery('document.getCategoryList', $args);
@@ -1860,7 +1860,7 @@ class documentController extends document {
 		$document_popup_menu_list = Context::get('document_popup_menu_list');
 		if(!is_array($document_popup_menu_list)) $document_popup_menu_list = array();
 
-		$obj = new stdClass()
+		$obj = new stdClass();
 		$obj->url = $url;
 		$obj->str = $str;
 		$obj->icon = $icon;
@@ -2019,7 +2019,7 @@ class documentController extends document {
 			$msg_code = 'success_deleted';
 		}
 		elseif($type == 'trash') {
-			$args = new stdClass()
+			$args = new stdClass();
 			$args->description = $message_content;
 
 			$oDB = &DB::getInstance();
@@ -2055,7 +2055,7 @@ class documentController extends document {
 		if(preg_match('/^([0-9,]+)$/',$module_srl)) $module_srl = explode(',',$module_srl);
 		else $module_srl = array($module_srl);
 
-		$document_config = new stdClass()
+		$document_config = new stdClass();
 		$document_config->use_history = Context::get('use_history');
 		if(!$document_config->use_history) $document_config->use_history = 'N';
 
