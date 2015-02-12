@@ -4,6 +4,7 @@
 	 * Document the module's admin model class
 	 *
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @package /modules/document
 	 * @version 0.1
 	 */
