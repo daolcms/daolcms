@@ -121,7 +121,7 @@
 				$document_config = $oModuleModel->getModulePartConfig('document', $current_module_srl);
 			}
 			if(!$document_config){
-				$document_config = new stdClass()
+				$document_config = new stdClass();
 			}
 			if(!isset($document_config->use_history)) $document_config->use_history = 'N';
 			Context::set('document_config', $document_config);
@@ -146,7 +146,7 @@
 			if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
 			// Get the saved document (module_srl is set to member_srl instead)
 			$logged_info = Context::get('logged_info');
-			$args = new stdClass()
+			$args = new stdClass();
 			$args->member_srl = $logged_info->member_srl;
 			$args->statusList = array($this->getConfigStatus('temp'));
 			$args->page = (int)Context::get('page');

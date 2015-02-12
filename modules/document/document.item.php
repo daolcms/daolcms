@@ -79,7 +79,7 @@
 					$output = $oCacheHandler->get($cache_key);
 			}
 			if(!$output) {
-				$args = new stdClass()
+				$args = new stdClass();
 				$args->document_srl = $this->document_srl;
 				$output = executeQuery('document.getDocument', $args, $this->columnList);
 				//insert in cache

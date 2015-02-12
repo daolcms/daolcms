@@ -35,7 +35,7 @@
 				return new Object(-1, 'msg_invalid_request');
 			}
 
-			$args = new stdClass()
+			$args = new stdClass();
 			$args->document_srl = $documentSrls;
 			$output = executeQueryArray('document.getDocumentExtraVars', $args);
 			return $output;
@@ -147,7 +147,7 @@
 			else {
 				$list_count = 1;
 			}
-			$args = new stdClass()
+			$args = new stdClass();
 			$args->document_srls = $document_srls;
 			$args->list_count = $list_count;
 			$args->order_type = 'asc';
@@ -234,7 +234,7 @@
 					$keys = array_keys($output->data);
 					$virtual_number = $keys[0];
 
-					$traget_args = new stdClass()
+					$traget_args = new stdClass();
 					$target_args->document_srls = implode(',',$target_srls);
 					$target_args->list_order = $args->sort_index;
 					$target_args->order_type = $args->order_type;
@@ -303,7 +303,7 @@
 		 * @return object|void
 		 */
 		function getNoticeList($obj, $columnList = array()) {
-			$args = new stdClass()
+			$args = new stdClass();
 			$args->module_srl = $obj->module_srl;
 			$args->category_srl= $obj->category_srl;
 			$output = executeQueryArray('document.getNoticeList', $args, $columnList);
@@ -339,7 +339,7 @@
 		function getExtraKeys($module_srl) {
 			if(is_null($GLOBALS['XE_EXTRA_KEYS'][$module_srl])) {
 				$oExtraVar = ExtraVar::getInstance($module_srl);
-				$obj = new stdClass()
+				$obj = new stdClass();
 				$obj->module_srl = $module_srl;
 				$obj->sort_index = 'var_idx';
 				$obj->order = 'asc';
@@ -498,7 +498,7 @@
 		 */
 		function getDocumentCount($module_srl, $search_obj = NULL) {
 			// Additional search options
-			$search_obj = new stdClass()
+			$search_obj = new stdClass();
 			$args->module_srl = $module_srl;
 			$args->s_title = $search_obj->s_title;
 			$args->s_content = $search_obj->s_content;
