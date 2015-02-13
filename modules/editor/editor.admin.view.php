@@ -2,6 +2,7 @@
 	/**
 	 * @class  editorAdminView
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief editor admin view of the module class
 	 **/
 
@@ -23,10 +24,14 @@
 			$site_srl = (int)$site_module_info->site_srl;			
 			
 			// Get a type of component
-			$oEditorModel = &getModel('editor');
-			$oModuleModel = &getModel('module');
+			$oEditorModel = getModel('editor');
+			$oModuleModel = getModel('module');
 			$editor_config = $oModuleModel->getModuleConfig('editor');		
 
+			if(!$editor_config){
+				$editor_config = new stdClass();
+			}
+		
 			//editor_config init
 			if(!$editor_config->editor_height) $editor_config->editor_height = 400;
 			if(!$editor_config->comment_editor_height) $editor_config->comment_editor_height = 100;
@@ -44,6 +49,7 @@
 			for($i=0,$c=count($contents);$i<$c;$i++) {
 				$style = $contents[$i];
 				$info = $oModuleModel->loadSkinInfo($this->module_path,$style,'styles');
+				$content_style_list[$style] = new stdClass();
 				$content_style_list[$style]->title = $info->title;
 			}			
 			
@@ -96,8 +102,9 @@
 			$group_list = $oMemberModel->getGroups($site_srl);
 			Context::set('group_list', $group_list);
 			// Get a mid list
-			$oModuleModel = &getModel('module');
+			$oModuleModel = getModel('module');
 
+			$args =new stdClass();
 			$args->site_srl = $site_srl;
 			$columnList = array('module_srl', 'mid', 'module_category_srl', 'browser_title');
 			$mid_list = $oModuleModel->getMidList($args, $columnList);

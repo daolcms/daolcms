@@ -34,7 +34,7 @@
 			$oModuleModel = &getModel('module');
 			$editor_default_config = $oModuleModel->getModuleConfig('editor');
 
-			if(!is_object($editor_config)) $editor_config = null;
+			if(!is_object($editor_config)) $editor_config = new stdClass();
 
 			if(!is_array($editor_config->enable_html_grant)) $editor_config->enable_html_grant = array();
 			if(!is_array($editor_config->enable_comment_html_grant)) $editor_config->enable_comment_html_grant = array();
@@ -314,6 +314,8 @@
 		function getModuleEditor($type = 'document', $module_srl, $upload_target_srl, $primary_key_name, $content_key_name) {
 			// Get editor settings of the module
 			$editor_config = $this->getEditorConfig($module_srl);
+			
+			$config = new stdClass();
 			// Configurations listed according to a type
 			if($type == 'document') {
 				$config->editor_skin = $editor_config->editor_skin;
@@ -327,7 +329,8 @@
 				$config->enable_html_grant = $editor_config->enable_html_grant;
 				$config->editor_height = $editor_config->editor_height;
 				$config->enable_autosave = $editor_config->enable_autosave;
-			} else {
+			}
+			else {
 				$config->editor_skin = $editor_config->comment_editor_skin;
 				$config->content_style = $editor_config->comment_content_style;
 				$config->content_font = $editor_config->content_font;
@@ -348,6 +351,7 @@
 				$group_list = array();
 			}
 			// Pre-set option variables of editor
+			$option = new stdClass();
 			$option->skin = $config->editor_skin;
 			$option->content_style = $config->content_style;
 			$option->content_font = $config->content_font;
@@ -419,6 +423,7 @@
 		 * @brief Get information which has been auto-saved
 		 **/
 		function getSavedDoc($upload_target_srl) {
+			$auto_save_args = new stdClass();
 			// Find a document by using member_srl for logged-in user and ipaddress for non-logged user
 			if(Context::get('is_logged')) {
 				$logged_info = Context::get('logged_info');
@@ -573,6 +578,7 @@
 		 * @brief Get xml and db information of the component
 		 **/
 		function getComponent($component_name, $site_srl = 0) {
+			$args = new stdClass();
 			$args->component_name = $component_name;
 
 			if($site_srl) {

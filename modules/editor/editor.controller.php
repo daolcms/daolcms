@@ -2,6 +2,7 @@
 	/**
 	 * @class  editor
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief editor module's controller class
 	 **/
 
@@ -98,19 +99,15 @@
 
 			$grants = array('enable_html_grant','enable_comment_html_grant','upload_file_grant','comment_upload_file_grant','enable_default_component_grant','enable_comment_default_component_grant','enable_component_grant','enable_comment_component_grant');
 
-			foreach($grants as $key)
-			{
+			foreach($grants as $key){
 				$grant = Context::get($key);
-				if(!$grant)
-				{
+				if(!$grant){
 					$editor_config->{$key} = array();
 				}
-				else if(is_array($grant)) 
-				{
+				else if(is_array($grant)) {
 					$editor_config->{$key} = $grant;
 				}
-				else
-				{
+				else{
 					$editor_config->{$key} = explode('|@|', $grant);
 				}
 			}
@@ -217,7 +214,8 @@
 			if(Context::get('is_logged')) {
 				$logged_info = Context::get('logged_info');
 				$args->member_srl = $logged_info->member_srl;
-			} else {
+			}
+			else{
 				$args->ipaddress = $_SERVER['REMOTE_ADDR'];
 			}
 			// Get the current module if module_srl doesn't exist
@@ -266,10 +264,12 @@
 		 * Based on the current logged-in user
 		 **/
 		function deleteSavedDoc($mode = false) {
+			$args = new stdClass();
 			if(Context::get('is_logged')) {
 				$logged_info = Context::get('logged_info');
 				$args->member_srl = $logged_info->member_srl;
-			} else {
+			}
+			else {
 				$args->ipaddress = $_SERVER['REMOTE_ADDR'];
 			}
 			$args->module_srl = Context::get('module_srl');
@@ -283,7 +283,7 @@
 			$saved_doc = $output->data;
 			if(!$saved_doc) return;
 
-			$oDocumentModel = &getModel('document');
+			$oDocumentModel = getModel('document');
 			$oSaved = $oDocumentModel->getDocument($saved_doc->document_srl);
 			if(!$oSaved->isExists()) {
 				if($mode) {
@@ -308,14 +308,15 @@
 		 * For the editor component list, use a caching file because of DB query and Xml parsing
 		 **/
 		function makeCache($filter_enabled = true, $site_srl) {
-			$oEditorModel = &getModel('editor');
+			$oEditorModel = getModel('editor');
 
 			if($filter_enabled) $args->enabled = "Y";
 
 			if($site_srl) {
 				$args->site_srl = $site_srl;
 				$output = executeQuery('editor.getSiteComponentList', $args);
-			} else $output = executeQuery('editor.getComponentList', $args);
+			}
+			else $output = executeQuery('editor.getComponentList', $args);
 			$db_list = $output->data;
 			// Get a list of files
 			$downloaded_list = FileHandler::readDir(_XE_PATH_.'modules/editor/components');
@@ -329,6 +330,7 @@
 			}
 			// Get xml information for looping DB list
 			if(!is_array($db_list)) $db_list = array($db_list);
+			$component_list = new stdClass();
 			foreach($db_list as $component) {
 				if(in_array($component->component_name, array('colorpicker_text','colorpicker_bg'))) continue;
 

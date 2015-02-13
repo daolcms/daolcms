@@ -2,6 +2,7 @@
 	/**
 	 * @class  editorView
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief view class of the editor module
 	 **/
 
@@ -95,6 +96,7 @@
 			for($i=0,$c=count($contents);$i<$c;$i++) {
 				$style = $contents[$i];
 				$info = $oModuleModel->loadSkinInfo($this->module_path,$style,'styles');
+				$content_style_list[$style] = new stdClass();
 				$content_style_list[$style]->title = $info->title;
 			}			
 			Context::set('content_style_list', $content_style_list);
@@ -134,9 +136,10 @@
 		}
 
 		function dispEditorConfigPreview() {
-			$oEditorModel = &getModel('editor');
+			$oEditorModel = getModel('editor');
 			$config = $oEditorModel->getEditorConfig();
 
+			$option = new stdClass();
 			$option->allow_fileupload = false;
 			$option->content_style = $config->content_style;
 			$option->content_font = $config->content_font;
@@ -154,6 +157,7 @@
 
 			Context::set('editor', $editor);
 
+			$option_com = new stdClass();
 			$option_com->allow_fileupload = false;
 			$option_com->content_style = $config->content_style;
 			$option_com->content_font = $config->content_font;
