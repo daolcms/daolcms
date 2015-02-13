@@ -2,6 +2,7 @@
 	/**
 	 * Admin model class of the file module
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 **/
 	class fileAdminModel extends file {
 
@@ -61,6 +62,7 @@
 		 * @return Object Object contains query result
 		 **/
 		function getFileList($obj, $columnList = array()) {
+			$args = new stdClass();
 			$this->_makeSearchParam($obj, $args);
 
 			// Set valid/invalid state

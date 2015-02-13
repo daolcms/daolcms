@@ -115,7 +115,8 @@
 			if(FileHandler::createImageFile($source_src,$output_src,$width,$height,'','ratio')){
 				$output->info = getimagesize($output_src);	
 				$output->src = $output_src;
-			}else{
+			}
+			else{
 				return new Object(-1,'msg_invalid_request');
 			}
 
@@ -271,14 +272,16 @@
 			header("Content-Transfer-Encoding: binary\n"); 
 
 			// if file size is lager than 10MB, use fread function (#18675748)
-			if (filesize($uploaded_filename) > 1024 * 1024) {
+			if (filesize($uploaded_filename) > 1024 * 1024){
 				while(!feof($fp)) echo fread($fp, 1024);
 				fclose($fp);
-			} else {
+			}
+			else{
 				fpassthru($fp); 
 			}
 
 			// Increase download_count
+			$args = new stdClass();
 			$args->file_srl = $file_srl;
 			executeQuery('file.updateFileDownloadCount', $args);
 			// Call a trigger (after)
@@ -311,7 +314,7 @@
 			$srls = explode(',',$file_srl);
 			if(!count($srls)) return;
 
-			for($i=0;$i<count($srls);$i++) {
+			for($i=0;$i<count($srls);$i++){
 				$srl = (int)$srls[$i];
 				if(!$srl) continue;
 
@@ -337,8 +340,7 @@
 		 *
 		 * @return Object
 		 **/
-		function procFileGetList()
-		{
+		function procFileGetList(){
 			if(!Context::get('is_logged')) return new Object(-1,'msg_not_permitted');
 			$fileSrls = Context::get('file_srls');
 			if($fileSrls) $fileSrlList = explode(',', $fileSrls);
@@ -349,18 +351,15 @@
 				$fileList = $oFileModel->getFile($fileSrlList);
 				if(!is_array($fileList)) $fileList = array($fileList);
 
-				if(is_array($fileList))
-				{
-					foreach($fileList AS $key=>$value)
-					{
+				if(is_array($fileList)){
+					foreach($fileList AS $key=>$value){
 						$value->human_file_size = FileHandler::filesize($value->file_size);
 						if($value->isvalid=='Y') $value->validName = $lang->is_valid;
 						else $value->validName = $lang->is_stand_by;
 					}
 				}
 			}
-			else
-			{
+			else{
 				$fileList = array();
 				$this->setMessage($lang->no_files);
 			}
@@ -484,6 +483,9 @@
 		 * @return void
 		 **/
 		function setUploadInfo($editor_sequence, $upload_target_srl=0) {
+			if(!isset($_SESSION['upload_info'][$editor_sequence])){
+				$_SESSION['upload_info'][$editor_sequence] = new stdClass();
+			}
 			$_SESSION['upload_info'][$editor_sequence]->enabled = true;
 			$_SESSION['upload_info'][$editor_sequence]->upload_target_srl = $upload_target_srl;
 		}
@@ -496,6 +498,7 @@
 		 * @return Object
 		 **/
 		function setFilesValid($upload_target_srl) {
+			$args = new stdClass();
 			$args->upload_target_srl = $upload_target_srl;
 			return executeQuery('file.updateFileValid', $args);
 		}
@@ -539,7 +542,7 @@
 			if(!$output->toBool()) return $output;
 			
 			// A workaround for Firefox upload bug
-			if (preg_match('/^=\?UTF-8\?B\?(.+)\?=$/i', $file_info['name'], $match)) {
+			if (preg_match('/^=\?UTF-8\?B\?(.+)\?=$/i', $file_info['name'], $match)){
 				$file_info['name'] = base64_decode(strtr($match[1], ':', '/'));
 			}
 
@@ -551,18 +554,16 @@
 					$config = $oFileModel->getFileConfig($module_srl);
 
 					// check file type
-					if(isset($config->allowed_filetypes) && $config->allowed_filetypes !== '*.*')
-					{
+					if(isset($config->allowed_filetypes) && $config->allowed_filetypes !== '*.*'){
 						$filetypes = explode(';', $config->allowed_filetypes);
 						$ext = array();
-						foreach($filetypes as $item) {
+						foreach($filetypes as $item){
 							$item = explode('.', $item);
 							$ext[] = strtolower($item[1]);
 						}
 						$uploaded_ext = explode('.', $file_info['name']);
 						$uploaded_ext = strtolower(array_pop($uploaded_ext));
-						if(!in_array($uploaded_ext, $ext))
-						{
+						if(!in_array($uploaded_ext, $ext)){
 							return $this->stop('msg_not_allowed_filetype');
 						}
 					}
@@ -594,12 +595,13 @@
 				$_filename = md5(crypt(rand(1000000,900000), rand(0,100))).'.'.$ext;
 				$filename  = $path.$_filename;
 				$idx = 1;
-				while(file_exists($filename)) {
+				while(file_exists($filename)){
 					$filename = $path.preg_replace('/\.([a-z0-9]+)$/i','_'.$idx.'.$1',$_filename);
 					$idx++;
 				}
 				$direct_download = 'Y';
-			} else {
+			}
+			else{
 				$path = sprintf("./files/attach/binaries/%s/%s", $module_srl, getNumberingPath($upload_target_srl,3));
 				$filename = $path.md5(crypt(rand(1000000,900000), rand(0,100)));
 				$direct_download = 'N';
@@ -613,7 +615,8 @@
 					$filename = $path. md5(crypt(rand(1000000,900000).$file_info['name'])).'.'.$ext;
 					@copy($file_info['tmp_name'], $filename);
 				}
-			} else {
+			}
+			else{
 				if(!@move_uploaded_file($file_info['tmp_name'], $filename)) {
 					$filename = $path. md5(crypt(rand(1000000,900000).$file_info['name'])).'.'.$ext;
 					if(!@move_uploaded_file($file_info['tmp_name'], $filename))  return new Object(-1,'msg_file_upload_error');
@@ -681,19 +684,17 @@
 		 * @param int $file_srl Sequence of file to delete
 		 * @return Object
 		 **/
-		function deleteFile($file_srl)
-		{
+		function deleteFile($file_srl){
 			if(!$file_srl) return;
 
 			$srls = explode(',',$file_srl);
 			if(!count($srls)) return;
 
-			for($i=0, $c=count($srls); $i<$c; $i++)
-			{
+			for($i=0, $c=count($srls); $i<$c; $i++){
 				$srl = (int)$srls[$i];
 				if(!$srl) continue;
 
-				$args = null;
+				$args = new stdClass();
 				$args->file_srl = $srl;
 				$output = executeQuery('file.getFile', $args);
 				if(!$output->toBool()) continue;
@@ -726,8 +727,7 @@
 		 * @param int $upload_target_srl Upload target srl to delete files
 		 * @return Object
 		 **/
-		function deleteFiles($upload_target_srl)
-		{
+		function deleteFiles($upload_target_srl){
 			// Get a list of attachements
 			$oFileModel = &getModel('file');
 			$columnList = array('file_srl', 'uploaded_filename', 'module_srl');
@@ -738,7 +738,7 @@
 			// Delete the file
 			$path = array();
 			$file_count = count($file_list);
-			for($i=0;$i<$file_count;$i++) {
+			for($i=0;$i<$file_count;$i++){
 				$this->deleteFile($file_list[$i]->file_srl);
 				
 				$uploaded_filename = $file_list[$i]->uploaded_filename;
@@ -747,13 +747,13 @@
 			}
 
 			// Remove from the DB
+			$args = new stdClass();
 			$args->upload_target_srl = $upload_target_srl;
 			$output = executeQuery('file.deleteFiles', $args);
 			if(!$output->toBool()) return $output;
 
 			// Remove a file directory of the document
-			for($i=0, $c=count($path); $i<$c; $i++)
-			{
+			for($i=0, $c=count($path); $i<$c; $i++){
 				FileHandler::removeBlankDir($path[$i]);
 			}
 

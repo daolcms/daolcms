@@ -21,6 +21,7 @@
 		 **/
 		function deleteModuleFiles($module_srl) {
 			// Get a full list of attachments
+			$args = new stdClass();
 			$args->module_srl = $module_srl;
 			$columnList = array('file_srl', 'uploaded_filename');
 			$output = executeQueryArray('file.getModuleFiles',$args, $columnList);
@@ -85,6 +86,7 @@
 		 **/
 		function procFileAdminInsertConfig() {
 			// Get configurations (using module model object)
+			$config = new stdClass();
 			$config->allowed_filesize = Context::get('allowed_filesize');
 			$config->allowed_attach_size = Context::get('allowed_attach_size');
 			$config->allowed_filetypes = str_replace(' ', '', Context::get('allowed_filetypes'));
