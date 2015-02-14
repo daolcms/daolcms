@@ -14,7 +14,7 @@
 		/**
 		 * @brief Initialization
 		 **/
-		function init() {
+		function init(){
 			// Error occurs if already installed
 			if(Context::isInstalled()) {
 				return new Object(-1, 'msg_already_installed');
@@ -28,8 +28,7 @@
 		 * @brief cubrid db setting wrapper, becase Server Side Validator...
 		 * Server Side Validatro can use only one proc, one ruleset
 		 **/
-		function procCubridDBSetting()
-		{
+		function procCubridDBSetting(){
 			return $this->_procDBSetting();
 		}
 
@@ -37,8 +36,7 @@
 		 * @brief firebird db setting wrapper, becase Server Side Validator...
 		 * Server Side Validatro can use only one proc, one ruleset
 		 **/
-		function procFirebirdDBSetting()
-		{
+		function procFirebirdDBSetting(){
 			return $this->_procDBSetting();
 		}
 
@@ -46,8 +44,7 @@
 		 * @brief mssql db setting wrapper, becase Server Side Validator...
 		 * Server Side Validatro can use only one proc, one ruleset
 		 **/
-		function procMssqlDBSetting()
-		{
+		function procMssqlDBSetting(){
 			return $this->_procDBSetting();
 		}
 
@@ -55,8 +52,7 @@
 		 * @brief mysql db setting wrapper, becase Server Side Validator...
 		 * Server Side Validatro can use only one proc, one ruleset
 		 **/
-		function procMysqlDBSetting()
-		{
+		function procMysqlDBSetting(){
 			return $this->_procDBSetting();
 		}
 
@@ -64,8 +60,7 @@
 		 * @brief postgresql db setting wrapper, becase Server Side Validator...
 		 * Server Side Validatro can use only one proc, one ruleset
 		 **/
-		function procPostgresqlDBSetting()
-		{
+		function procPostgresqlDBSetting(){
 			return $this->_procDBSetting();
 		}
 
@@ -73,18 +68,18 @@
 		 * @brief sqlite db setting wrapper, becase Server Side Validator...
 		 * Server Side Validatro can use only one proc, one ruleset
 		 **/
-		function procSqliteDBSetting()
-		{
+		function procSqliteDBSetting(){
 			return $this->_procDBSetting();
 		}
 
 		/**
 		 * @brief division install step... DB Config temp file create
 		 **/
-		function _procDBSetting() {
+		function _procDBSetting(){
 			// Get DB-related variables
 			$con_string = Context::gets('db_type','db_port','db_hostname','db_userid','db_password','db_database','db_table_prefix');
 
+			$db_info = new stdClass();
 			$db_info->master_db = get_object_vars($con_string);
 			$db_info->slave_db[] = get_object_vars($con_string);
 
@@ -117,7 +112,7 @@
 		/**
 		 * @brief division install step... rewrite, time_zone Config temp file create
 		 **/
-		function procConfigSetting() {
+		function procConfigSetting(){
 			// Get variables
 			$config_info = Context::gets('use_rewrite','time_zone');
 			if($config_info->use_rewrite!='Y') $config_info->use_rewrite = 'N';
@@ -135,16 +130,16 @@
 		/**
 		 * @brief Install with received information
 		 **/
-		function procInstall() {
+		function procInstall(){
 			// Check if it is already installed
 			if(Context::isInstalled()) return new Object(-1, 'msg_already_installed');
 			// Assign a temporary administrator when installing
+			$logged_info = new stdClass();
 			$logged_info->is_admin = 'Y';
 			Context::set('logged_info', $logged_info);
 
 			// check install config
-			if (Context::get('install_config'))
-			{
+			if (Context::get('install_config')){
 				$db_info = $this->_makeDbInfoByInstallConfig();
 			}
 
@@ -163,12 +158,12 @@
 			// When installing firebire DB, transaction will not be used
 			if($db_info->db_type != "firebird") $oDB->begin();
 			// Install all the modules
-			try {
+			try{
 				$oDB->begin();
 				$this->installDownloadedModule();
 				$oDB->commit();
 			}
-			catch(Exception $e) {
+			catch(Exception $e){
 				$oDB->rollback();
 				return new Object(-1, $e->getMessage());
 			}
@@ -203,8 +198,8 @@
 		/**
 		 * @brief Make DB Information by Install Config
 		 **/
-		function _makeDbInfoByInstallConfig()
-		{
+		function _makeDbInfoByInstallConfig(){
+			$db_info = new stdClass();
 			$db_info->master_db['db_type'] = Context::get('db_type');
 			$db_info->master_db['db_port'] = Context::get('db_port');
 			$db_info->master_db['db_hostname'] = Context::get('db_hostname');
@@ -224,7 +219,7 @@
 		/**
 		 * @brief Set FTP Information
 		 **/
-		function procInstallFTP() {
+		function procInstallFTP(){
 			if(Context::isInstalled()) return new Object(-1, 'msg_already_installed');
 			$ftp_info = Context::gets('ftp_host', 'ftp_user','ftp_password','ftp_port','ftp_root_path');
 			$ftp_info->ftp_port = (int)$ftp_info->ftp_port;
@@ -233,6 +228,7 @@
 			if(!$ftp_info->ftp_root_path) $ftp_info->ftp_root_path = '/';
 
 			$buff = '<?php if(!defined("__ZBXE__")) exit();'."\n";
+			$buff[] = "\$ftp_info = new stdClass();";
 			foreach($ftp_info as $key => $val) {
 				$buff .= sprintf("\$ftp_info->%s = '%s';\n", $key, str_replace("'","\\'",$val));
 			}

@@ -2,6 +2,7 @@
 	/**
 	 * @class  installAdminController
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief admin controller class of the install module
 	 **/
 
@@ -11,13 +12,13 @@
 		/**
 		 * @brief Initialization
 		 **/
-		function init() {
+		function init(){
 		}
 
 		/**
 		 * @brief Install the module
 		 **/
-		function procInstallAdminInstall() {
+		function procInstallAdminInstall(){
 			$module_name = Context::get('module_name');
 			if(!$module_name) return new object(-1, 'invalid_request');
 
@@ -30,7 +31,7 @@
 		/**
 		 * @brief Upate the module
 		 **/
-		function procInstallAdminUpdate() {
+		function procInstallAdminUpdate(){
 			set_time_limit(0);
 			$module_name = Context::get('module_name');
 			if(!$module_name) return new object(-1, 'invalid_request');
@@ -45,7 +46,7 @@
 		/**
 		 * @brief Change settings
 		 **/
-		function procInstallAdminSaveTimeZone() {
+		function procInstallAdminSaveTimeZone(){
 			$use_rewrite = Context::get('use_rewrite');
 			if($use_rewrite!='Y') $use_rewrite = 'N';
 
@@ -76,8 +77,7 @@
 
 			$admin_ip_list = preg_replace("/[\r|\n|\r\n]+/",",",$admin_ip_list);
 			$admin_ip_list = preg_replace("/\s+/","",$admin_ip_list);
-			if(preg_match('/(<\?|<\?php|\?>)/xsm', $admin_ip_list))
-			{
+			if(preg_match('/(<\?|<\?php|\?>)/xsm', $admin_ip_list)){
 				$admin_ip_list = '';
 			}
 
@@ -103,9 +103,10 @@
 			unset($db_info->lang_type);
 			Context::setDBInfo($db_info);
 
-			$oInstallController = &getController('install');
+			$oInstallController = getController('install');
 			$oInstallController->makeConfigFile();
 
+			$site_args = new stdClass();
 			$site_args->site_srl = 0;
 			$site_args->index_module_srl = Context::get('index_module_srl');
 			$site_args->default_language = Context::get('change_lang_type');
@@ -116,14 +117,14 @@
 			$this->setMessage('success_updated');
 		}
 
-		function procInstallAdminRemoveFTPInfo() {
+		function procInstallAdminRemoveFTPInfo(){
 			$ftp_config_file = Context::getFTPConfigFile();
 			if(file_exists($ftp_config_file)) unlink($ftp_config_file);
 			if($_SESSION['ftp_password']) unset($_SESSION['ftp_password']);
 			$this->setMessage('success_deleted');
 		}
 
-		function procInstallAdminSaveFTPInfo() {
+		function procInstallAdminSaveFTPInfo(){
 			$ftp_info = Context::getFTPInfo();
 			$ftp_info->ftp_user = Context::get('ftp_user');
 			$ftp_info->ftp_port = Context::get('ftp_port');
@@ -144,10 +145,9 @@
 			}
 
 			$buff = '<?php if(!defined("__ZBXE__")) exit();'."\n";
-			foreach($ftp_info as $key => $val) {
+			foreach($ftp_info as $key => $val){
 				if(!$val) continue;
-				if(preg_match('/(<\?|<\?php|\?>|fputs|fopen|fwrite|fgets|fread|\/\*|\*\/|chr\()/xsm', preg_replace('/\s/', '', $val)))
-				{
+				if(preg_match('/(<\?|<\?php|\?>|fputs|fopen|fwrite|fgets|fread|\/\*|\*\/|chr\()/xsm', preg_replace('/\s/', '', $val))){
 					continue;
 				}
 				$buff .= sprintf("\$ftp_info->%s = '%s';\n", $key, str_replace("'","\\'",$val));
@@ -168,6 +168,7 @@
 			$this->saveLangSelected($selected_lang);
 
 			//모듈 설정 저장(썸네일, 풋터스크립트)
+			$config = new stdClass();
 			$config->thumbnail_type = Context::get('thumbnail_type');
 			$config->htmlFooter = Context::get('htmlFooter');
 			$this->setModulesConfig($config);
@@ -202,7 +203,7 @@
 
 		/* 썸내일 보여주기 방식 변경.*/
 		function setModulesConfig($config){
-
+			$args = new stdClass();
 			if(!$config->thumbnail_type || $config->thumbnail_type != 'ratio' ) $args->thumbnail_type = 'crop';
 			else $args->thumbnail_type = 'ratio';
 
