@@ -8,14 +8,12 @@
 	 */
 
 	//php 5.4 이상에서 WARNING 표시 문제 수정
-	if(version_compare(PHP_VERSION, '5.4.0', '<'))
-		{
-	@error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING);
-		}
-	else
-		{
-	@error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING ^ E_STRICT);
-		}
+	if(version_compare(PHP_VERSION, '5.4.0', '<')){
+		@error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING);
+	}
+	else{
+		@error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING ^ E_STRICT);
+	}
 
 	if(!defined('__ZBXE__')) exit();
 
@@ -45,7 +43,8 @@
 
 	if(file_exists(_XE_PATH_.'config/package.inc.php')) {
 		require _XE_PATH_.'config/package.inc.php';
-	} else {
+	}
+	else {
 		/**
 		 * Package type
 		 */
@@ -82,12 +81,11 @@
 	 * define('__ENABLE_PHPUNIT_TEST__', 0);
 	 * define('__PROXY_SERVER__', 'http://domain:port/path');
 	 */
-	if(file_exists(_XE_PATH_.'config/config.user.inc.php')) {
+	if(file_exists(_XE_PATH_.'config/config.user.inc.php')){
 		require _XE_PATH_.'config/config.user.inc.php';
 	}
 
-	if(!defined('__DEBUG__'))
-	{
+	if(!defined('__DEBUG__')){
 		/**
 		 * output debug message(bit value)
 		 *
@@ -101,8 +99,7 @@
 		define('__DEBUG__', 0);
 	}
 
-	if(!defined('__DEBUG_OUTPUT__'))
-	{
+	if(!defined('__DEBUG_OUTPUT__')){
 		/**
 		 * output location of debug message
 		 *
@@ -115,8 +112,7 @@
 		define('__DEBUG_OUTPUT__', 0);
 	}
 
-	if(!defined('__DEBUG_PROTECT__'))
-	{
+	if(!defined('__DEBUG_PROTECT__')){
 		/**
 		 * output comments of the firePHP console and browser
 		 *
@@ -128,16 +124,14 @@
 		define('__DEBUG_PROTECT__', 1);
 	}
 
-	if(!defined('__DEBUG_PROTECT_IP__'))
-	{
+	if(!defined('__DEBUG_PROTECT_IP__')){
 		/**
 		 * Set a ip address to allow debug
 		 */
 		define('__DEBUG_PROTECT_IP__', '127.0.0.1');
 	}
 
-	if(!defined('__DEBUG_DB_OUTPUT__'))
-	{
+	if(!defined('__DEBUG_DB_OUTPUT__')){
 		/**
 		 * DB error message definition
 		 *
@@ -149,8 +143,7 @@
 		define('__DEBUG_DB_OUTPUT__', 0);
 	}
 
-	if(!defined('__LOG_SLOW_QUERY__'))
-	{
+	if(!defined('__LOG_SLOW_QUERY__')){
 		/**
 		 * Query log for only timeout query among DB queries
 		 *
@@ -163,8 +156,7 @@
 		define('__LOG_SLOW_QUERY__', 0);
 	}
 
-	if(!defined('__DEBUG_QUERY__'))
-	{
+	if(!defined('__DEBUG_QUERY__')){
 		/**
 		 * Leave DB query information
 		 *
@@ -176,8 +168,7 @@
 		define('__DEBUG_QUERY__', 0);
 	}
 
-	if(!defined('__OB_GZHANDLER_ENABLE__'))
-	{
+	if(!defined('__OB_GZHANDLER_ENABLE__')){
 		/**
 		 * option to enable/disable a compression feature using ob_gzhandler
 		 *
@@ -190,8 +181,7 @@
 		define('__OB_GZHANDLER_ENABLE__', 1);
 	}
 
-	if(!defined('__ENABLE_PHPUNIT_TEST__'))
-	{
+	if(!defined('__ENABLE_PHPUNIT_TEST__')){
 		/**
 		 * decide to use/not use the php unit test (Path/tests/index.php)
 		 *
@@ -203,8 +193,7 @@
 		define('__ENABLE_PHPUNIT_TEST__', 0);
 	}
 
-	if(!defined('__PROXY_SERVER__'))
-	{
+	if(!defined('__PROXY_SERVER__')){
 		/**
 		 * __PROXY_SERVER__ has server information to request to the external through the target server
 		 * FileHandler:: getRemoteResource uses the constant
@@ -218,8 +207,7 @@
 	}
 
 	// Set Timezone as server time
-	if(version_compare(PHP_VERSION, '5.3.0') >= 0)
-	{
+	if(version_compare(PHP_VERSION, '5.3.0') >= 0){
 		date_default_timezone_set(@date_default_timezone_get());
 	}
 
