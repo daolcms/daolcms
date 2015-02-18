@@ -974,13 +974,10 @@ class Context {
 	 * @param object $val Variable value
 	 * @return mixed filtered value
 	 */
-	function _filterXmlVars($key, $val)
-	{
-		if(is_array($val))
-		{
+	function _filterXmlVars($key, $val){
+		if(is_array($val)){
 			$stack = array();
-			foreach($val as $k => $v)
-			{
+			foreach($val as $k => $v){
 				$stack[$k] = $this->_filterXmlVars($k, $v);
 			}
 			return $stack;
@@ -988,26 +985,21 @@ class Context {
 
 		$body = $val->body;
 		unset($val->node_name, $val->attrs, $val->body);
-		if(!count(get_object_vars($val)))
-		{
+		if(!count(get_object_vars($val))){
 			return $this->_filterRequestVar($key, $body, 0);
 		}
 		$stack = new stdClass();
-		foreach($val as $k => $v)
-		{
+		foreach($val as $k => $v){
 			$output = $this->_filterXmlVars($k, $v);
-			if(is_object($v) && $v->attrs->type == 'array')
-			{
+			if(is_object($v) && $v->attrs->type == 'array'){
 				$output = array($output);
 			}
-			if($k == 'value' && (is_array($v) || $v->attrs->type == 'array'))
-			{
+			if($k == 'value' && (is_array($v) || $v->attrs->type == 'array')){
 				return $output;
 			}
 			$stack->{$k} = $output;
 		}
-		if(!count(get_object_vars($stack)))
-		{
+		if(!count(get_object_vars($stack))){
 			return NULL;
 		}
 		return $stack;
@@ -1024,34 +1016,27 @@ class Context {
 	 */
 	function _filterRequestVar($key, $val, $do_stripslashes = 1) {
 		$isArray = TRUE;
-		if(!is_array($val))
-		{
+		if(!is_array($val)){
 			$isArray = FALSE;
 			$val = array($val);
 		}
 
 		$result = array();
-		foreach($val as $k => $v)
-		{
+		foreach($val as $k => $v){
 			$k = htmlentities($k);
-			if($key === 'page' || $key === 'cpage' || substr($key, -3) === 'srl')
-			{
+			if($key === 'page' || $key === 'cpage' || substr($key, -3) === 'srl'){
 				$result[$k] = !preg_match('/^[0-9,]+$/', $v) ? (int)$v : $v;
 			}
-			elseif($key === 'mid' || $key === 'search_keyword')
-			{
+			elseif($key === 'mid' || $key === 'search_keyword'){
 				$result[$k] = htmlspecialchars($v);
 			}
-			elseif($key === 'vid')
-			{
+			elseif($key === 'vid'){
 				$result[$k] = urlencode($v);
 			}
-			else
-			{
+			else{
 				$result[$k] = $v;
 				
-				if($do_stripslashes && version_compare(PHP_VERSION, '5.9.0', '<') && get_magic_quotes_gpc())
-				{
+				if($do_stripslashes && version_compare(PHP_VERSION, '5.9.0', '<') && get_magic_quotes_gpc()){
 					$result[$k] = stripslashes($result[$k]);
 				}
 
@@ -1069,7 +1054,7 @@ class Context {
 	 *
 	 * @return bool True: exists, False: otherwise
 	 */
-	function isUploaded() {
+	function isUploaded(){
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 		return $self->is_uploaded;
 	}
@@ -1079,19 +1064,20 @@ class Context {
 	 *
 	 * @return void
 	 */
-	function _setUploadedArgument() {
+	function _setUploadedArgument(){
 		if($this->getRequestMethod() != 'POST') return;
 		if(!preg_match('/multipart\/form-data/i',$_SERVER['CONTENT_TYPE'])) return;
 		if(!$_FILES) return;
 
-		foreach($_FILES as $key => $val) {
+		foreach($_FILES as $key => $val){
 			$tmp_name = $val['tmp_name'];
 			if(!is_array($tmp_name)){
 				if(!$tmp_name || !is_uploaded_file($tmp_name)) continue;
 				$val['name'] = htmlspecialchars($val['name']);
 				$this->set($key, $val, true);
 				$this->is_uploaded = true;
-			}else {
+			}
+			else{
 				for($i=0;$i< count($tmp_name);$i++){
 					if($val['size'][$i] > 0){
 						$file['name']=$val['name'][$i];
@@ -1111,7 +1097,7 @@ class Context {
 	 * Return request method
 	 * @return string Request method type. (Optional - GET|POST|XMLRPC|JSON)
 	 */
-	function getRequestMethod() {
+	function getRequestMethod(){
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 		return $self->request_method;
 	}
@@ -1120,14 +1106,12 @@ class Context {
 	 * Return request URL
 	 * @return string request URL
 	 */
-	function getRequestUrl() {
+	function getRequestUrl(){
 		static $url = null;
-		if(is_null($url)) {
+		if(is_null($url)){
 			$url = Context::getRequestUri();
-			if(count($_GET))
-			{
-				foreach($_GET as $key => $val)
-				{
+			if(count($_GET)){
+				foreach($_GET as $key => $val){
 					$vars[] = $key . '=' . ($val ? urlencode(Context::convertEncodingStr($val)) : '');
 				}
 				$url .= '?' . join('&', $vars);
@@ -1146,7 +1130,7 @@ class Context {
 	 * @param bool $autoEncode If true, url encode automatically, detailed. Use this option, $encode value should be true
 	 * @return string URL
 	 */
-	function getUrl($num_args=0, $args_list=array(), $domain = null, $encode = true, $autoEncode = false) {
+	function getUrl($num_args=0, $args_list=array(), $domain = null, $encode = true, $autoEncode = false){
 		static $site_module_info = null;
 		static $current_info = null;
 
