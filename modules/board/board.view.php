@@ -180,12 +180,10 @@
 			/**
 			 * if the document exists, then get the document information
 			 **/
-			if($document_srl) {
+			if($document_srl){
 				$oDocument = $oDocumentModel->getDocument($document_srl, false, true); 
-
 				// if the document is existed
-				if($oDocument->isExists()) {
-
+				if($oDocument->isExists()){
 					// if the module srl is not consistent
 					if($oDocument->get('module_srl')!=$this->module_info->module_srl ) return $this->stop('msg_invalid_request');
 
@@ -197,17 +195,24 @@
 						$logged_info = Context::get('logged_info');
 						if($oDocument->get('member_srl')!=$logged_info->member_srl) $oDocument = $oDocumentModel->getDocument(0);
 					}
-
+					
+					// if the document is TEMP saved, check Grant
+					if($oDocument->getStatus() == 'TEMP'){
+						if(!$oDocument->isGranted()){
+							$oDocument = $oDocumentModel->getDocument(0);
+						}
+					}
+				}
 				// if the document is not existed, then alert a warning message
-				} else {
+				else {
 					Context::set('document_srl','',true);
 					$this->alertMessage('msg_not_founded');
 				}
-
+			}
 			/**
 			 * if the document is not existed, get an empty document
 			 **/
-			} else {
+			else {
 				$oDocument = $oDocumentModel->getDocument(0);
 			}
 
