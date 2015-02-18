@@ -3,6 +3,7 @@
 	 * function library files for convenience
 	 *
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	**/
 
 	if(!defined('__XE__') && !defined('__ZBXE__')) exit();
@@ -91,7 +92,7 @@
 	 * @param string $kind admin, null
 	 * @return mixed Module instance
 	 */
-	function &getModule($module_name, $type = 'view', $kind = ''){
+	function getModule($module_name, $type = 'view', $kind = ''){
 		return ModuleHandler::getModuleInstance($module_name, $type, $kind);
 	}
 
@@ -101,7 +102,7 @@
 	 * @param string $module_name The module name to get a controller instance
 	 * @return mixed Module controller instance
 	 */
-	function &getController($module_name){
+	function getController($module_name){
 		return getModule($module_name, 'controller');
 	}
 
@@ -111,7 +112,7 @@
 	 * @param string $module_name The module name to get a admin controller instance
 	 * @return mixed Module admin controller instance
 	 **/
-	function &getAdminController($module_name){
+	function getAdminController($module_name){
 		return getModule($module_name, 'controller','admin');
 	}
 
@@ -121,7 +122,7 @@
 	 * @param string $module_name The module name to get a view instance
 	 * @return mixed Module view instance
 	 **/
-	function &getView($module_name){
+	function getView($module_name){
 		return getModule($module_name, 'view');
 	}
 
@@ -131,7 +132,7 @@
 	 * @param string $module_name The module name to get a mobile instance
 	 * @return mixed Module mobile instance
 	 **/
-	function &getMobile($module_name){
+	function getMobile($module_name){
 		return getModule($module_name, 'mobile');
 	}
 
@@ -141,7 +142,7 @@
 	 * @param string $module_name The module name to get a admin view instance
 	 * @return mixed Module admin view instance
 	 **/
-	function &getAdminView($module_name){
+	function getAdminView($module_name){
 		return getModule($module_name, 'view','admin');
 	}
 
@@ -151,7 +152,7 @@
 	 * @param string $module_name The module name to get a model instance
 	 * @return mixed Module model instance
 	 **/
-	function &getModel($module_name){
+	function getModel($module_name){
 		return getModule($module_name, 'model');
 	}
 
@@ -161,7 +162,7 @@
 	 * @param string $module_name The module name to get a admin model instance
 	 * @return mixed Module admin model instance
 	 **/
-	function &getAdminModel($module_name){
+	function getAdminModel($module_name){
 		return getModule($module_name, 'model','admin');
 	}
 
@@ -171,7 +172,7 @@
 	 * @param string $module_name The module name to get a api instance
 	 * @return mixed Module api class instance
 	 **/
-	function &getAPI($module_name){
+	function getAPI($module_name){
 		return getModule($module_name, 'api');
 	}
 
@@ -181,7 +182,7 @@
 	 * @param string $module_name The module name to get a wap instance
 	 * @return mixed Module wap class instance
 	 **/
-	function &getWAP($module_name){
+	function getWAP($module_name){
 		return getModule($module_name, 'wap');
 	}
 
@@ -191,7 +192,7 @@
 	 * @param string $module_name The module name to get a class instance
 	 * @return mixed Module class instance
 	 **/
-	function &getClass($module_name){
+	function getClass($module_name){
 		return getModule($module_name, 'class');
 	}
 
@@ -205,7 +206,7 @@
 	 * @return object Query result data
 	 **/
 	function executeQuery($query_id, $args = null, $arg_columns = null){
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		return $oDB->executeQuery($query_id, $args, $arg_columns);
 	}
 
@@ -220,7 +221,7 @@
 	 * @return object Query result data
 	 **/
 	function executeQueryArray($query_id, $args = null, $arg_columns = null){
-		$oDB = &DB::getInstance();
+		$oDB = DB::getInstance();
 		$output = $oDB->executeQuery($query_id, $args, $arg_columns);
 		if(!is_array($output->data) && count($output->data) > 0){
 			$output->data = array($output->data);
@@ -739,7 +740,7 @@
 		$del = array_keys($del_vars);
 		if(!count($target)||!count($del)) return $target_obj;
 
-		$return_obj = NULL;
+		$return_obj = new stdClass();
 
 		$target_count = count($target);
 		for($i = 0; $i < $target_count; $i++){
