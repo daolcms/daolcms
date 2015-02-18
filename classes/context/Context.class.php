@@ -230,7 +230,7 @@ class Context {
 		$this->loadLang(_XE_PATH_.'modules/module/lang');
 
 		// set session handler
-		if(Context::isInstalled() && $this->db_info->use_db_session == 'Y') {
+		if(Context::isInstalled() && $this->db_info->use_db_session == 'Y'){
 			$oSessionModel = &getModel('session');
 			$oSessionController = &getController('session');
 			session_set_save_handler(
@@ -247,20 +247,19 @@ class Context {
 		session_start();
 
 		// set authentication information in Context and session
-		if(Context::isInstalled()) {
+		if(Context::isInstalled()){
 			$oModuleModel = &getModel('module');
 			$oModuleModel->loadModuleExtends();
 
 			$oMemberModel = &getModel('member');
 			$oMemberController = &getController('member');
 
-			if($oMemberController && $oMemberModel)
-			{
+			if($oMemberController && $oMemberModel){
 				// if signed in, validate it.
-				if($oMemberModel->isLogged()) {
+				if($oMemberModel->isLogged()){
 					$oMemberController->setSessionInfo();
 				}
-				elseif($_COOKIE['xeak']) { // check auto sign-in
+				elseif($_COOKIE['xeak']){ // check auto sign-in
 					$oMemberController->doAutologin();
 				}
 
@@ -280,23 +279,26 @@ class Context {
 		// set locations for javascript use
 		$url = array();
 		$current_url = Context::getRequestUri();
-		if($_SERVER['REQUEST_METHOD'] == 'GET') {
-			if($this->get_vars) {
-				foreach($this->get_vars as $key=>$val) {
-					if(is_array($val)&&count($val)) {
-						foreach($val as $k => $v) {
+		if($_SERVER['REQUEST_METHOD'] == 'GET'){
+			if($this->get_vars){
+				foreach($this->get_vars as $key=>$val){
+					if(is_array($val)&&count($val)){
+						foreach($val as $k => $v){
 							$url .= ($url?'&':'').$key.'['.$k.']='.urlencode($v);
 						}
-					} elseif ($val) {
+					}
+					elseif ($val){
 						$url .= ($url?'&':'').$key.'='.urlencode($val);
 					}
 				}
 				$current_url = Context::getRequestUri();
 				if($url) $current_url .= '?' . join('&', $url);
-			} else {
+			}
+			else{
 				$current_url = $this->getUrl();
 			}
-		} else {
+		}
+		else{
 			$current_url = Context::getRequestUri();
 		}
 		$this->set('current_url', $current_url);
@@ -322,7 +324,7 @@ class Context {
 	 *
 	 * @return void
 	 */
-	function loadDBInfo() {
+	function loadDBInfo(){
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 
 		if(!$self->isInstalled()) return;
@@ -331,7 +333,7 @@ class Context {
 		if(is_readable($config_file)) include($config_file);
 
 				// If master_db information does not exist, the config file needs to be updated
-				if(!isset($db_info->master_db)) {
+				if(!isset($db_info->master_db)){
 					$db_info->master_db = array();
 					$db_info->master_db["db_type"] = $db_info->db_type; unset($db_info->db_type);
 					$db_info->master_db["db_port"] = $db_info->db_port; unset($db_info->db_port);
@@ -351,8 +353,7 @@ class Context {
 					$oInstallController->makeConfigFile();
 				}
 		
-		if(!$db_info->use_prepared_statements) 
-		{
+		if(!$db_info->use_prepared_statements){
 			$db_info->use_prepared_statements = 'Y';
 		}
 				
@@ -377,7 +378,7 @@ class Context {
 	 *
 	 * @return string DB's db_type
 	 */
-	function getDBType() {
+	function getDBType(){
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 		return $self->db_info->master_db["db_type"];
 	}
@@ -388,7 +389,7 @@ class Context {
 	 * @param object $db_info DB information
 	 * @return void
 	 */
-	function setDBInfo($db_info) {
+	function setDBInfo($db_info){
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 		$self->db_info = $db_info;
 	}
@@ -398,7 +399,7 @@ class Context {
 	 *
 	 * @return object DB information
 	 */
-	function getDBInfo() {
+	function getDBInfo(){
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 		return $self->db_info;
 	}
@@ -408,8 +409,7 @@ class Context {
 	 *
 	 * @return object SSL status (Optional - none|always|optional) 
 	 */
-	function getSslStatus()
-	{
+	function getSslStatus(){
 		$dbInfo = Context::getDBInfo();
 		return $dbInfo->use_ssl;
 	}
@@ -419,7 +419,7 @@ class Context {
 	 *
 	 * @return string Default URL
 	 */
-	function getDefaultUrl() {
+	function getDefaultUrl(){
 		$db_info = Context::getDBInfo();
 		return $db_info->default_url;
 	}
