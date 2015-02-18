@@ -8,33 +8,31 @@
 	if(!defined('__XE__') && !defined('__ZBXE__')) exit();
 
 	// define clone for php5
-	if (version_compare(phpversion(), '5.0') < 0) {
+	if (version_compare(phpversion(), '5.0') < 0){
 		eval('
-			function clone($object) {
+			function clone($object){
 			return $object;
 			}
 		');
 	}
 
 	// define an empty function to avoid errors when iconv function doesn't exist
-	if(!function_exists('iconv')) {
+	if(!function_exists('iconv')){
 		eval('
-			function iconv($in_charset, $out_charset, $str) {
+			function iconv($in_charset, $out_charset, $str){
 				return $str;
 			}
 		');
 	}
 
-	if ( !function_exists('htmlspecialchars_decode') )
-	{
+	if (!function_exists('htmlspecialchars_decode')){
 		/**
 		 * Decode html special characters
 		 *
 		 * @param string $text
 		 * @return string
 		 */
-		function htmlspecialchars_decode($text)
-		{
+		function htmlspecialchars_decode($text){
 			return strtr($text, array_flip(get_html_translation_table(HTML_SPECIALCHARS)));
 		}
 	}
@@ -93,7 +91,7 @@
 	 * @param string $kind admin, null
 	 * @return mixed Module instance
 	 */
-	function &getModule($module_name, $type = 'view', $kind = '') {
+	function &getModule($module_name, $type = 'view', $kind = ''){
 		return ModuleHandler::getModuleInstance($module_name, $type, $kind);
 	}
 
@@ -103,7 +101,7 @@
 	 * @param string $module_name The module name to get a controller instance
 	 * @return mixed Module controller instance
 	 */
-	function &getController($module_name) {
+	function &getController($module_name){
 		return getModule($module_name, 'controller');
 	}
 
@@ -113,7 +111,7 @@
 	 * @param string $module_name The module name to get a admin controller instance
 	 * @return mixed Module admin controller instance
 	 **/
-	function &getAdminController($module_name) {
+	function &getAdminController($module_name){
 		return getModule($module_name, 'controller','admin');
 	}
 
@@ -123,7 +121,7 @@
 	 * @param string $module_name The module name to get a view instance
 	 * @return mixed Module view instance
 	 **/
-	function &getView($module_name) {
+	function &getView($module_name){
 		return getModule($module_name, 'view');
 	}
 
@@ -133,7 +131,7 @@
 	 * @param string $module_name The module name to get a mobile instance
 	 * @return mixed Module mobile instance
 	 **/
-	function &getMobile($module_name) {
+	function &getMobile($module_name){
 		return getModule($module_name, 'mobile');
 	}
 
@@ -143,7 +141,7 @@
 	 * @param string $module_name The module name to get a admin view instance
 	 * @return mixed Module admin view instance
 	 **/
-	function &getAdminView($module_name) {
+	function &getAdminView($module_name){
 		return getModule($module_name, 'view','admin');
 	}
 
@@ -153,7 +151,7 @@
 	 * @param string $module_name The module name to get a model instance
 	 * @return mixed Module model instance
 	 **/
-	function &getModel($module_name) {
+	function &getModel($module_name){
 		return getModule($module_name, 'model');
 	}
 
@@ -163,7 +161,7 @@
 	 * @param string $module_name The module name to get a admin model instance
 	 * @return mixed Module admin model instance
 	 **/
-	function &getAdminModel($module_name) {
+	function &getAdminModel($module_name){
 		return getModule($module_name, 'model','admin');
 	}
 
@@ -173,7 +171,7 @@
 	 * @param string $module_name The module name to get a api instance
 	 * @return mixed Module api class instance
 	 **/
-	function &getAPI($module_name) {
+	function &getAPI($module_name){
 		return getModule($module_name, 'api');
 	}
 
@@ -183,7 +181,7 @@
 	 * @param string $module_name The module name to get a wap instance
 	 * @return mixed Module wap class instance
 	 **/
-	function &getWAP($module_name) {
+	function &getWAP($module_name){
 		return getModule($module_name, 'wap');
 	}
 
@@ -193,7 +191,7 @@
 	 * @param string $module_name The module name to get a class instance
 	 * @return mixed Module class instance
 	 **/
-	function &getClass($module_name) {
+	function &getClass($module_name){
 		return getModule($module_name, 'class');
 	}
 
@@ -206,7 +204,7 @@
 	 * @param string[] $arg_columns Column list
 	 * @return object Query result data
 	 **/
-	function executeQuery($query_id, $args = null, $arg_columns = null) {
+	function executeQuery($query_id, $args = null, $arg_columns = null){
 		$oDB = &DB::getInstance();
 		return $oDB->executeQuery($query_id, $args, $arg_columns);
 	}
@@ -221,7 +219,7 @@
 	 * @param string[] $arg_columns Column list
 	 * @return object Query result data
 	 **/
-	function executeQueryArray($query_id, $args = null, $arg_columns = null) {
+	function executeQueryArray($query_id, $args = null, $arg_columns = null){
 		$oDB = &DB::getInstance();
 		$output = $oDB->executeQuery($query_id, $args, $arg_columns);
 		if(!is_array($output->data) && count($output->data) > 0){
@@ -236,7 +234,7 @@
 	 * @see DB::getNextSequence()
 	 * @return int
 	 **/
-	function getNextSequence() {
+	function getNextSequence(){
 		$oDB = DB::getInstance();
 		$seq = $oDB->getNextSequence();
 		setUserSequence($seq);
@@ -249,7 +247,7 @@
 	* @param int $seq sequence number
 	* @return void
 	*/
-	function setUserSequence($seq) {
+	function setUserSequence($seq){
 		$arr_seq = array();
 		if(isset($_SESSION['seq'])) {
 			$arr_seq = $_SESSION['seq'];
@@ -264,12 +262,11 @@
 	* @param int $seq sequence number
 	* @return boolean
 	*/
-	function checkUserSequence($seq) {
-		if(!isset($_SESSION['seq'])) {
+	function checkUserSequence($seq){
+		if(!isset($_SESSION['seq'])){
 			return false;
 		}
-		if(!in_array($seq, $_SESSION['seq']))
-		{
+		if(!in_array($seq, $_SESSION['seq'])){
 			return false;
 		}
 
@@ -289,7 +286,7 @@
 	 *
 	 * @return string
 	 **/
-	function getUrl() {
+	function getUrl(){
 		$num_args  = func_num_args();
 		$args_list = func_get_args();
 
@@ -305,7 +302,7 @@
 	 * @see getUrl()
 	 * @return string
 	 */
-	function getNotEncodedUrl() {
+	function getNotEncodedUrl(){
 		$num_args = func_num_args();
 		$args_list = func_get_args();
 
@@ -321,7 +318,7 @@
 	 * @see getUrl()
 	 * @return string
 	 */
-	function getAutoEncodedUrl() {
+	function getAutoEncodedUrl(){
 		$num_args = func_num_args();
 		$args_list = func_get_args();
 
@@ -336,7 +333,7 @@
 	 *
 	 * @return string
 	 **/
-	function getFullUrl() {
+	function getFullUrl(){
 		$num_args = func_num_args();
 		$args_list = func_get_args();
 		$request_uri = Context::getRequestUri();
@@ -355,7 +352,7 @@
 	 *
 	 * @return string
 	 **/
-	function getNotEncodedFullUrl() {
+	function getNotEncodedFullUrl(){
 		$num_args = func_num_args();
 		$args_list = func_get_args();
 		$request_uri = Context::getRequestUri();
@@ -376,7 +373,7 @@
 	 * 
 	 * @return string
 	 **/
-	function getSiteUrl() {
+	function getSiteUrl(){
 		$num_args = func_num_args();
 		$args_list = func_get_args();
 
@@ -394,7 +391,7 @@
 	 * 
 	 * @return string
 	 **/
-	function getNotEncodedSiteUrl() {
+	function getNotEncodedSiteUrl(){
 		$num_args = func_num_args();
 		$args_list = func_get_args();
 
@@ -411,7 +408,7 @@
 	 *
 	 * @return string
 	 **/
-	function getFullSiteUrl() {
+	function getFullSiteUrl(){
 		$num_args = func_num_args();
 		$args_list = func_get_args();
 
@@ -435,7 +432,7 @@
 	 * @param string $domain
 	 * @return bool
 	 **/
-	function isSiteID($domain) {
+	function isSiteID($domain){
 		return preg_match('/^([a-z0-9\_]+)$/i', $domain);
 	}
 
@@ -447,12 +444,10 @@
 	 * @param string $tail Tail to put in the end of the string after trimming
 	 * @return string
 	 **/
-	function cut_str($string, $cut_size = 0, $tail = '...')
-	{
+	function cut_str($string, $cut_size = 0, $tail = '...'){
 		if($cut_size < 1 || !$string) return $string;
 
-		if($GLOBALS['use_mb_strimwidth'] || function_exists('mb_strimwidth'))
-		{
+		if($GLOBALS['use_mb_strimwidth'] || function_exists('mb_strimwidth')){
 			$GLOBALS['use_mb_strimwidth'] = TRUE; 
 			return mb_strimwidth($string, 0, $cut_size + 4, $tail, 'utf-8');
 		}
@@ -465,29 +460,25 @@
 		$char_count = 0;
 
 		$idx = 0;
-		while($idx < $string_length && $char_count < $cut_size && $char_width <= $max_width) {
+		while($idx < $string_length && $char_count < $cut_size && $char_width <= $max_width){
 			$c = ord(substr($string, $idx,1));
 			$char_count++;
-			if($c < 128) 
-			{
+			if($c < 128) {
 				$char_width += (int)$chars[$c-32];
 				$idx++;
 			}
-			else if(191 < $c && $c < 224)
-			{
+			else if(191 < $c && $c < 224){
 				$char_width += $chars[4];
 				$idx += 2;
 			}
-			else
-			{
+			else{
 				$char_width += $chars[0];
 				$idx += 3;
 			}
 		}
 
 		$output = substr($string, 0, $idx);
-		if(strlen($output) < $string_length)
-		{
+		if(strlen($output) < $string_length){
 			$output .= $tail;
 		}
 
@@ -499,7 +490,7 @@
 	 *
 	 * @return int
 	 */
-	function zgap() {
+	function zgap(){
 		$time_zone = $GLOBALS['_time_zone'];
 		if($time_zone < 0) $to = -1; else $to = 1;
 		$t_hour = substr($time_zone, 1, 2) * $to;
@@ -523,7 +514,7 @@
 	 * @param string $str Time value in format of YYYYMMDDHHIISS
 	 * @return int
 	 **/
-	function ztime($str) {
+	function ztime($str){
 		if(!$str) return;
 		$hour = (int)substr($str,8,2);
 		$min = (int)substr($str,10,2);
@@ -531,9 +522,10 @@
 		$year = (int)substr($str,0,4);
 		$month = (int)substr($str,4,2);
 		$day = (int)substr($str,6,2);
-		if(strlen($str) <= 8) {
+		if(strlen($str) <= 8){
 			$gap = 0;
-		} else {
+		}
+		else{
 			$gap = zgap();
 		}
 
@@ -547,7 +539,7 @@
 	 * @param string $format If gap is within a day, returns this format.
 	 * @return string
 	 **/
-	function getTimeGap($date, $format = 'Y.m.d') {
+	function getTimeGap($date, $format = 'Y.m.d'){
 		$gap = time() + zgap() - ztime($date);
 
 		$lang_time_gap = Context::getLang('time_gap');
@@ -566,7 +558,7 @@
 	 * @param boot $short If set, returns short string
 	 * @return string
 	 **/
-	function getMonthName($month, $short = true) {
+	function getMonthName($month, $short = true){
 		$short_month = array('','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
 		$long_month = array('','January','February','March','April','May','June','July','August','September','October','November','December');
 		return !$short?$long_month[$month]:$short_month[$month];
@@ -580,12 +572,12 @@
 	 * @param bool $conversion Means whether to convert automatically according to the language
 	 * @return string
 	 **/
-	function zdate($str, $format = 'Y-m-d H:i:s', $conversion=true) {
+	function zdate($str, $format = 'Y-m-d H:i:s', $conversion=true){
 		// return null if no target time is specified
 		if(!$str) return;
 		// convert the date format according to the language
-		if($conversion == true) {
-			switch(Context::getLangType()) {
+		if($conversion == true){
+			switch(Context::getLangType()){
 				case 'en' :
 				case 'es' :
 						if($format == 'Y-m-d') $format = 'M d, Y';
@@ -602,7 +594,7 @@
 		}
 
 		// If year value is less than 1970, handle it separately.
-		if((int)substr($str,0,4) < 1970) {
+		if((int)substr($str,0,4) < 1970){
 			$hour  = (int)substr($str,8,2);
 			$min   = (int)substr($str,10,2);
 			$sec   = (int)substr($str,12,2);
@@ -631,7 +623,8 @@
 			);
 
 			$string = strtr($format, $trans);
-		} else {
+		}
+		else{
 			// if year value is greater than 1970, get unixtime by using ztime() for date() function's argument. 
 			$string = date($format, ztime($str));
 		}
@@ -649,9 +642,9 @@
 	 * @param string $email The email
 	 * @return string
 	 */
-	function getEncodeEmailAddress($email) {
+	function getEncodeEmailAddress($email){
 	    $return = '';
-		for ($i=0,$c=strlen($email);$i<$c;$i++) {
+		for ($i=0,$c=strlen($email);$i<$c;$i++){
 			$return .= '&#' . (rand(0,1)==0 ? ord($email[$i]) : 'X'.dechex(ord($email[$i]))) . ';';
 		}
 		return $return;
@@ -668,7 +661,7 @@
 	 * @param string $file Target file name
 	 * @return void
 	 **/
-	function debugPrint($debug_output = null, $display_option = true, $file = '_debug_message.php') {
+	function debugPrint($debug_output = null, $display_option = true, $file = '_debug_message.php'){
 		if(!(__DEBUG__ & 1)) return;
 
 		static $firephp;
@@ -677,37 +670,34 @@
 		$file_name = array_pop(explode(DIRECTORY_SEPARATOR, $first['file']));
 		$line_num = $first['line'];
 
-		if(__DEBUG_OUTPUT__ == 2 && version_compare(PHP_VERSION, '6.0.0') === -1) {
+		if(__DEBUG_OUTPUT__ == 2 && version_compare(PHP_VERSION, '6.0.0') === -1){
 			if(!isset($firephp)) $firephp = FirePHP::getInstance(true);
-			if(function_exists("memory_get_usage"))
-			{
+			if(function_exists("memory_get_usage")){
 				$label = sprintf('[%s:%d] (m:%s)', $file_name, $line_num, FileHandler::filesize(memory_get_usage()));
 			}
-			else
-			{
+			else{
 				$label = sprintf('[%s:%d] ', $file_name, $line_num);
 			}
 			// Check a FirePHP option
 			if($display_option === 'TABLE') $label = $display_option;
 			// Check if the IP specified by __DEBUG_PROTECT__ option is same as the access IP.
-			if(__DEBUG_PROTECT__ === 1 && __DEBUG_PROTECT_IP__ != $_SERVER['REMOTE_ADDR']) {
+			if(__DEBUG_PROTECT__ === 1 && __DEBUG_PROTECT_IP__ != $_SERVER['REMOTE_ADDR']){
 				$debug_output = 'The IP address is not allowed. Change the value of __DEBUG_PROTECT_IP__ into your IP address in config/config.user.inc.php or config/config.inc.php';
 				$label = null;
 			}
 
 			$firephp->fb($debug_output, $label);
 
-		} else {
-			if(__DEBUG_PROTECT__ === 1 && __DEBUG_PROTECT_IP__ != $_SERVER['REMOTE_ADDR']) {
+		}
+		else{
+			if(__DEBUG_PROTECT__ === 1 && __DEBUG_PROTECT_IP__ != $_SERVER['REMOTE_ADDR']){
 				return;
 			}
 			$debug_file = _XE_PATH_.'files/'.$file;
-			if(function_exists("memory_get_usage"))
-			{
+			if(function_exists("memory_get_usage")){
 				$debug_output = sprintf("[%s %s:%d] - mem(%s)\n%s\n", date('Y-m-d H:i:s'), $file_name, $line_num, FileHandler::filesize(memory_get_usage()), print_r($debug_output, true));
 			}
-			else
-			{
+			else{
 				$debug_output = sprintf("[%s %s:%d]\n%s\n", date('Y-m-d H:i:s'), $file_name, $line_num, print_r($debug_output, true));
 			}
 
@@ -726,7 +716,7 @@
 	 *
 	 * @return float
 	 **/
-	function getMicroTime() {
+	function getMicroTime(){
 		list($time1, $time2) = explode(' ', microtime());
 		return (float)$time1 + (float)$time2;
 	}
@@ -738,7 +728,7 @@
 	 * @param object $del_obj Object vars to delete from the original object
 	 * @return object
 	 **/
-	function delObjectVars($target_obj, $del_obj) {
+	function delObjectVars($target_obj, $del_obj){
 		if(!is_object($target_obj)) return;
 		if(!is_object($del_obj)) return;
 
@@ -752,7 +742,7 @@
 		$return_obj = NULL;
 
 		$target_count = count($target);
-		for($i = 0; $i < $target_count; $i++) {
+		for($i = 0; $i < $target_count; $i++){
 			$target_key = $target[$i];
 			if(!in_array($target_key, $del)) $return_obj->{$target_key} = $target_obj->{$target_key};
 		}
@@ -769,7 +759,7 @@
 	 * @param int $line
 	 * @return void
 	 **/
-	function handleError($errno, $errstr, $file, $line) {
+	function handleError($errno, $errstr, $file, $line){
 		if(!__DEBUG__) return;
 		$errors = array(E_USER_ERROR, E_ERROR, E_PARSE);
 		if(!in_array($errno, $errors)) return;
@@ -786,7 +776,7 @@
 	 * @param int $no A given number
 	 * @param int $size A given digits
 	 **/
-	function getNumberingPath($no, $size=3) {
+	function getNumberingPath($no, $size=3){
 		$mod = pow(10, $size);
 		$output = sprintf('%0'.$size.'d/', $no%$mod);
 		if($no >= $mod) $output .= getNumberingPath((int)$no/$mod, $size);
@@ -799,7 +789,7 @@
 	 * @param string $str The url
 	 * @return string
 	 **/
-	function url_decode($str) {
+	function url_decode($str){
 		return preg_replace('/%u([[:alnum:]]{4})/', '&#x\\1;',$str);
 	}
 
@@ -809,7 +799,7 @@
 	 * @param string $content Taget content
 	 * @return string
 	 **/
-	function removeHackTag($content) {
+	function removeHackTag($content){
 		require_once(_XE_PATH_.'classes/security/EmbedFilter.class.php');
 		$oEmbedFilter = EmbedFilter::getInstance();
 		$oEmbedFilter->check($content);
@@ -848,7 +838,7 @@
 	 * @param string $content Target content
 	 * @return string
 	 **/
-	function checkXmpTag($content) {
+	function checkXmpTag($content){
 		$content = preg_replace('@<(/?)xmp.*?>@i', '<\1xmp>', $content);
 
 		if(($start_xmp = strrpos($content, '<xmp>')) !==false) {
@@ -865,7 +855,7 @@
 	 * @param array $match
 	 * @return string
 	 */
-	function removeSrcHack($match) {
+	function removeSrcHack($match){
 		$tag = strtolower($match[2]);
 
 		// xmp tag 정리
@@ -887,29 +877,24 @@
 			}
 		}
 
-		if(isset($attrs['style']) && preg_match('@(?:/\*|\*/|\n|:\s*expression\s*\()@i', $attrs['style'])) {
+		if(isset($attrs['style']) && preg_match('@(?:/\*|\*/|\n|:\s*expression\s*\()@i', $attrs['style'])){
 			unset($attrs['style']);
 		}
 
 		$attr = array();
-		foreach($attrs as $name=>$val) {
-			if($tag == 'object' || $tag == 'embed' || $tag == 'a')
-			{
+		foreach($attrs as $name=>$val){
+			if($tag == 'object' || $tag == 'embed' || $tag == 'a'){
 				$attribute = strtolower(trim($name));
-				if($attribute == 'data' || $attribute == 'src' || $attribute == 'href')
-				{
-					if(strpos(strtolower($val), 'data:') === 0)
-					{
+				if($attribute == 'data' || $attribute == 'src' || $attribute == 'href'){
+					if(strpos(strtolower($val), 'data:') === 0){
 						continue;
 					}
 				}
 			}
 
-			if($tag == 'img')
-			{
+			if($tag == 'img'){
 				$attribute = strtolower(trim($name));
-				if(strpos(strtolower($val), 'data:') === 0)
-				{
+				if(strpos(strtolower($val), 'data:') === 0){
 					continue;
 				}
 			}
@@ -922,14 +907,14 @@
 	}
 
 	// convert hexa value to RGB
-	if(!function_exists('hexrgb')) {
+	if(!function_exists('hexrgb')){
 		/**
 		 * Convert hexa value to RGB
 		 *
 		 * @param string $hexstr
 		 * @return array
 		 */
-		function hexrgb($hexstr) {
+		function hexrgb($hexstr){
 		  $int = hexdec($hexstr);
 
 		  return array('red' => 0xFF & ($int >> 0x10),
@@ -946,14 +931,14 @@
 	 * @param string $password
 	 * @return string
 	 **/
-	function mysql_pre4_hash_password($password) {
+	function mysql_pre4_hash_password($password){
 		$nr = 1345345333;
 		$add = 7;
 		$nr2 = 0x12345671;
 
 		settype($password, "string");
 
-		for ($i=0; $i<strlen($password); $i++) {
+		for ($i=0; $i<strlen($password); $i++){
 			if ($password[$i] == ' ' || $password[$i] == '\t') continue;
 			$tmp = ord($password[$i]);
 			$nr ^= ((($nr & 63) + $add) * $tmp) + ($nr << 8);
@@ -974,7 +959,7 @@
 	 *
 	 * @return string
 	 **/
-	function getScriptPath() {
+	function getScriptPath(){
 		static $url = null;
 		if($url == null) $url = preg_replace('/\/tools\//i','/',preg_replace('/index.php$/i','',str_replace('\\','/',$_SERVER['SCRIPT_NAME'])));
 		return $url;
@@ -985,8 +970,7 @@
 	 *
 	 * @return string
 	 **/
-	function getRequestUriByServerEnviroment()
-	{
+	function getRequestUriByServerEnviroment(){
 		return removeHackTag($_SERVER['REQUEST_URI']);
 	}
 
@@ -998,16 +982,16 @@
 	 * @param string $source
 	 * @return string
 	 **/
-	function utf8RawUrlDecode ($source) {
+	function utf8RawUrlDecode ($source){
 		$decodedStr = '';
 		$pos = 0;
 		$len = strlen ($source);
-		while ($pos < $len) {
+		while ($pos < $len){
 			$charAt = substr ($source, $pos, 1);
-			if ($charAt == '%') {
+			if ($charAt == '%'){
 				$pos++;
 				$charAt = substr ($source, $pos, 1);
-				if ($charAt == 'u') {
+				if ($charAt == 'u'){
 					// we got a unicode character
 					$pos++;
 					$unicodeHexVal = substr ($source, $pos, 4);
@@ -1015,13 +999,14 @@
 					$decodedStr .= _code2utf($unicode);
 					$pos += 4;
 				}
-				else {
+				else{
 					// we have an escaped ascii character
 					$hexVal = substr ($source, $pos, 2);
 					$decodedStr .= chr (hexdec ($hexVal));
 					$pos += 2;
 				}
-			} else {
+			}
+			else{
 				$decodedStr .= $charAt;
 				$pos++;
 			}
@@ -1051,7 +1036,7 @@
 	 * @param bool $urldecode
 	 * @return bool|string
 	 */
-	function detectUTF8($string, $return_convert = false, $urldecode = true) {
+	function detectUTF8($string, $return_convert = false, $urldecode = true){
 		if($urldecode) $string = urldecode($string);
 
 		$sample = iconv('utf-8', 'utf-8', $string);
@@ -1070,8 +1055,8 @@
 	 * @param mixed $data
 	 * @return string
 	 */
-	function json_encode2($data) {
-		switch (gettype($data)) {
+	function json_encode2($data){
+		switch (gettype($data)){
 			case 'boolean':
 			  return $data?'true':'false';
 			case 'integer':
@@ -1084,15 +1069,15 @@
 			case 'array':
 			  $rel = false; // relative array?
 			  $key = array_keys($data);
-			  foreach ($key as $v) {
-				if (!is_int($v)) {
+			  foreach ($key as $v){
+				if (!is_int($v)){
 				  $rel = true;
 				  break;
 				}
 			  }
 
 			  $arr = array();
-			  foreach ($data as $k=>$v) {
+			  foreach ($data as $k=>$v){
 				$arr[] = ($rel?'"'.strtr($k, array('\\'=>'\\\\','"'=>'\\"')).'":':'').json_encode2($v);
 			  }
 
@@ -1108,14 +1093,14 @@
 	 * @param string $agent if set, use this value instead HTTP_USER_AGENT
 	 * @return bool
 	 */
-	function isCrawler($agent = null) {
+	function isCrawler($agent = null){
 		if(!$agent) $agent = $_SERVER['HTTP_USER_AGENT'];
 		$check_agent = array('bot', 'spider', 'google', 'yahoo', 'daum', 'teoma', 'fish', 'hanrss', 'facebook');
 		$check_ip = array(
 			'211.245.21.11*' /* mixsh */
 		);
 
-		foreach($check_agent as $str) {
+		foreach($check_agent as $str){
 			if(stristr($agent, $str) != FALSE) return true;
 		}
 
@@ -1136,20 +1121,16 @@
 	 * @param int $writer_member_srl
 	 * @return void
 	 */
-	function stripEmbedTagForAdmin(&$content, $writer_member_srl)
-	{
+	function stripEmbedTagForAdmin(&$content, $writer_member_srl){
 		if(!Context::get('is_logged')) return;
 		$oModuleModel = &getModel('module');
 		$logged_info = Context::get('logged_info');
 
-		if($writer_member_srl != $logged_info->member_srl && ($logged_info->is_admin == "Y" || $oModuleModel->isSiteAdmin($logged_info)) )
-		{   
-			if($writer_member_srl)
-			{
+		if($writer_member_srl != $logged_info->member_srl && ($logged_info->is_admin == "Y" || $oModuleModel->isSiteAdmin($logged_info))){   
+			if($writer_member_srl){
 				$oMemberModel =& getModel('member');
 				$member_info = $oMemberModel->getMemberInfoByMemberSrl($writer_member_srl);
-				if($member_info->is_admin == "Y")
-				{
+				if($member_info->is_admin == "Y"){
 					return;
 				}
 			}
@@ -1167,31 +1148,25 @@
 	 *
 	 * @return void
 	 */
-	function requirePear()
-	{
-		if(version_compare(PHP_VERSION, "5.3.0") < 0)
-		{
+	function requirePear(){
+		if(version_compare(PHP_VERSION, "5.3.0") < 0){
 			set_include_path(_XE_PATH_."libs/PEAR");	
 		}
-		else
-		{
+		else{
 			set_include_path(_XE_PATH_."libs/PEAR.1.9.5");	
 
 		}
 	}
 
-	function checkCSRF()
-	{
-		if($_SERVER['REQUEST_METHOD'] != 'POST')
-		{
+	function checkCSRF(){
+		if($_SERVER['REQUEST_METHOD'] != 'POST'){
 			return false;
 		}
 
 		// exception blog api write
 		$act = Context::get('act');
 		$actList = array('rss'=>1, 'atom'=>1, 'api'=>1);
-		if(isset($actList[$act]))
-		{
+		if(isset($actList[$act])){
 			return true;
 		}
 
@@ -1201,18 +1176,14 @@
 		$oModuleModel = &getModel('module');
 		$siteModuleInfo = $oModuleModel->getDefaultMid();
 
-		if($siteModuleInfo->site_srl == 0)
-		{
-			if(!strstr(strtolower($defaultUrl), strtolower($referer['host'])))
-			{
+		if($siteModuleInfo->site_srl == 0){
+			if(!strstr(strtolower($defaultUrl), strtolower($referer['host']))){
 				return false;
 			}
 		}
-		else
-		{
+		else{
 			$virtualSiteInfo = $oModuleModel->getSiteInfo($siteModuleInfo->site_srl);
-			if(strtolower($virtualSiteInfo->domain) != strtolower(Context::get('vid'))  && !strstr(strtolower($virtualSiteInfo->domain), strtolower($referer['host'])))
-			{
+			if(strtolower($virtualSiteInfo->domain) != strtolower(Context::get('vid'))  && !strstr(strtolower($virtualSiteInfo->domain), strtolower($referer['host']))){
 				return false;
 			}
 		}
@@ -1225,8 +1196,7 @@
 	 *
 	 * @return void
 	 */
-	function htmlHeader()
-	{
+	function htmlHeader(){
 		echo <<<HTMLHEADER
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="ko" xml:lang="ko" xmlns="http://www.w3.org/1999/xhtml">
@@ -1242,8 +1212,7 @@ HTMLHEADER;
 	 *
 	 * @return void
 	 */
-	function htmlFooter()
-	{
+	function htmlFooter(){
 		echo '</body></html>';
 	}
 
@@ -1253,8 +1222,7 @@ HTMLHEADER;
 	 * @param string $msg
 	 * @return void
 	 */
-	function alertScript($msg)
-	{
+	function alertScript($msg){
 		if(!$msg) return;
 		echo '<script type="text/javascript">alert("'.$msg.'");</script>';
 	}
@@ -1264,8 +1232,7 @@ HTMLHEADER;
 	 *
 	 * @return void
 	 */
-	function closePopupScript()
-	{
+	function closePopupScript(){
 		echo '<script type="text/javascript">window.close();</script>';
 	}
 
@@ -1275,8 +1242,7 @@ HTMLHEADER;
 	 * @param bool $isOpener
 	 * @return void
 	 */
-	function reload($isOpener = false)
-	{
+	function reload($isOpener = false){
 		$reloadScript = $isOpener ? 'window.opener.location.reload()' : 'document.location.reload()';
 
 		echo '<script type="text/javascript">'.$reloadScript.'</script>';
