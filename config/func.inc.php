@@ -1175,7 +1175,7 @@
 		}
 		else
 		{
-			set_include_path(_XE_PATH_."libs/PEAR.1.9");	
+			set_include_path(_XE_PATH_."libs/PEAR.1.9.5");	
 
 		}
 	}
