@@ -322,7 +322,7 @@ body.modalContainer{_height:100%;_width:100%} /* IE6 only */
 .x .dashboard .portlet:nth-of-type(odd){float:left;width:49%;margin-right:0}
 .x .dashboard .portlet:nth-of-type(even){float:right;width:49%;margin-right:0}
 @media all and (min-width:1300px){
-.x .dashboard .portlet{float:left !important;width:48%!important;margin-right:1em !important}
+.x .dashboard .portlet{float:left !important;width:48.5%!important;margin-right:1em !important}
 }
 /* Search */
 .x .search{zoom:1}
