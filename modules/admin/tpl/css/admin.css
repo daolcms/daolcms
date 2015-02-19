@@ -264,7 +264,7 @@ body.modalContainer{_height:100%;_width:100%} /* IE6 only */
 .x .header{position:relative;z-index:2;padding:30px 0 0 0;background:#4c4c4c;box-shadow:0 0 10px #aaa;zoom:1;border-radius:5px 5px 0 0}
 .x .header:after{content:"";display:block;clear:both}
 .x .header a{text-decoration:none}
-.x .header h1{margin:0 0 10px 20px;font-size:24px;line-height:32px;display:inline-block;*display:inline;zoom:1;vertical-align:middle}
+.x .header h1{margin:4px 0 6px 20px;font-size:24px;line-height:32px;display:inline-block;*display:inline;zoom:1;vertical-align:middle}
 .x .header h1 *{vertical-align:middle}
 .x .header h1 a{display:inline-block;color:#fff;text-shadow:1px 1px 0 #000;filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=1, OffY=1, Color=#000000, Positive=true);zoom:1}
 .x .header h1 .url{font-size:12px;font-weight:normal}
