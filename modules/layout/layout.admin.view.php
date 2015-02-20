@@ -43,6 +43,9 @@
 					$themeLayoutList[] = $oLayoutModel->getLayoutInfo($themeInfo->layout_info->name, null, 'P');
 				}
 				$layout_list = array_merge($layout_list, $themeLayoutList);
+
+				$faceoff_layout = $oLayoutModel->getLayoutInfo('faceoff', null, 'P'); 
+				if($faceoff_layout != NULL)$layout_list[] = $faceoff_layout;
 			}
 
 			$pcLayoutCount = $oLayoutModel->getInstalledLayoutCount('P');
