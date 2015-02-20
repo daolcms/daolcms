@@ -26,7 +26,7 @@
 		var $layout_file = ''; ///< name of layout file
 		var $edited_layout_file = ''; ///< name of temporary layout files that is modified in an admin mode
 
-		var $stop_proc = false; ///< a flag to indicating whether to stop the execution of code.
+		var $stop_proc = FALSE; ///< a flag to indicating whether to stop the execution of code.
 
 		var $module_config = NULL;
 		var $ajaxRequestMethod = array('XMLRPC', 'JSON');
@@ -205,7 +205,7 @@
 		 **/
 		function stop($msg_code) {
 			// flag setting to stop the proc processing
-			$this->stop_proc = true;
+			$this->stop_proc = TRUE;
 			// Error handling
 			$this->setError(-1);
 			$this->setMessage($msg_code);
@@ -319,14 +319,14 @@
 		 **/
 		function proc() {
 			// pass if stop_proc is true
-			if($this->stop_proc) return false;
+			if($this->stop_proc) return FALSE;
 
 			// trigger call
 			$triggerOutput = ModuleHandler::triggerCall('moduleObject.proc', 'before', $this);
 			if(!$triggerOutput->toBool()) {
 				$this->setError($triggerOutput->getError());
 				$this->setMessage($triggerOutput->getMessage());
-				return false;
+				return FALSE;
 			}
 
 			// execute an addon(call called_position as before_module_proc)
@@ -349,7 +349,7 @@
 				$output = $this->{$this->act}();
 			}
 			else {
-				return false;
+				return FALSE;
 			}
 
 			// trigger call
@@ -357,7 +357,7 @@
 			if(!$triggerOutput->toBool()) {
 				$this->setError($triggerOutput->getError());
 				$this->setMessage($triggerOutput->getMessage());
-				return false;
+				return FALSE;
 			}
 
 			// execute an addon(call called_position as after_module_proc)
@@ -370,7 +370,7 @@
 				$this->setError($output->getError());
 				$this->setMessage($output->getMessage());
 
-				if (!$output->toBool()) return false;
+				if (!$output->toBool()) return FALSE;
 			}
 			// execute api methos of the module if view action is and result is XMLRPC or JSON
 			if($this->module_info->module_type == 'view'){
@@ -381,7 +381,6 @@
 					}
 				}
 			}
-			return true;
+			return TRUE;
 		}
 	}
-?>

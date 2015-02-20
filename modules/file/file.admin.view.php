@@ -2,6 +2,7 @@
 	/**
 	 * Admin view of the module class file
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 **/
 	class fileAdminView extends file {
 
@@ -19,6 +20,7 @@
 		 **/
 		function dispFileAdminList() {
 			// Options to get a list
+			$args = new stdClass();
 			$args->page = Context::get('page'); // /< Page
 			$args->list_count = 30; // /< Number of documents that appear on a single page
 			$args->page_count = 10; // /< Number of pages that appear in the page navigation
@@ -49,7 +51,7 @@
 				foreach($output->data as $file) {
 					$file_srl = $file->file_srl;
 					$target_srl = $file->upload_target_srl;
-					$file_update_args = null;
+					$file_update_args = new stdClass();
 					$file_update_args->file_srl = $file_srl;
 					// Find and update if upload_target_type doesn't exist
 					if(!$file->upload_target_type) {
@@ -167,8 +169,8 @@
 			// Set a template
 			$security = new Security();
 			$security->encodeHTML('file_list..');
-			$security->encodeHTML('module_list..');				
-
+			$security->encodeHTML('module_list..');
+			
 			$this->setTemplatePath($this->module_path.'tpl');
 			$this->setTemplateFile('file_list');
 
@@ -183,6 +185,10 @@
 			$oFileModel = &getModel('file');
 			$config = $oFileModel->getFileConfig();
 			Context::set('config',$config);
+			$iniPostMaxSize = FileHandler::returnbytes(ini_get('post_max_size'));
+			$iniUploadMaxSize = FileHandler::returnbytes(ini_get('upload_max_filesize'));
+			$iniMinSize = min($iniPostMaxSize, $iniUploadMaxSize);
+			Context::set('upload_max_filesize',FileHandler::filesize($iniMinSize));
 			// Set a template file
 			$this->setTemplatePath($this->module_path.'tpl');
 			$this->setTemplateFile('adminConfig');

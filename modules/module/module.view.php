@@ -2,6 +2,7 @@
 	/**
 	 * @class  moduleView
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief view class of the module module
 	 **/
 
@@ -120,6 +121,9 @@
 			if($logged_info->is_admin !='Y' && !$logged_info->is_site_admin) return new Object(-1, 'msg_not_permitted');
 
 			$input_name = Context::get('input');
+			if(!preg_match('/^[a-z0-9_]+$/i', $input_name)){
+				return new Object(-1, 'msg_invalid_request');
+			}
 
 			if(!$input_name) return new Object(-1, 'msg_not_permitted');
 

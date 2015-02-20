@@ -2,6 +2,7 @@
 	/**
 	 * @class  communicationView
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * View class of communication module
 	 **/
 
@@ -173,6 +174,7 @@
 			Context::set('receiver_info', $receiver_info);
 			// set a signiture by calling getEditor of the editor module
 			$oEditorModel = &getModel('editor');
+			$option = new stdClass();
 			$option->primary_key_name = 'receiver_srl';
 			$option->content_key_name = 'content';
 			$option->allow_fileupload = false;

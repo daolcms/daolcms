@@ -2,14 +2,15 @@
 	/**
 	 * Model class of the file module
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 **/
-	class fileModel extends file {
+	class fileModel extends file{
 
 		/**
 		 * Initialization
 		 * @return void
 		 **/
-		function init() {
+		function init(){
 		}
 
 		/**
@@ -20,19 +21,19 @@
 		 *
 		 * @return void
 		 **/
-		function getFileList() {
-			$oModuleModel = &getModel('module');
+		function getFileList(){
+			$oModuleModel = getModel('module');
 
 			$mid = Context::get('mid');
 			$editor_sequence = Context::get('editor_sequence');
 			$upload_target_srl = Context::get('upload_target_srl');
 			if(!$upload_target_srl) $upload_target_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
 
-			if($upload_target_srl) {
+			if($upload_target_srl){
 				$tmp_files = $this->getFiles($upload_target_srl);
 				$file_count = count($tmp_files);
 
-				for($i=0;$i<$file_count;$i++) {
+				for($i=0;$i<$file_count;$i++){
 					$file_info = $tmp_files[$i];
 					if(!$file_info->file_srl) continue;
 
@@ -47,7 +48,8 @@
 					$files[] = $obj;
 					$attached_size += $file_info->file_size;
 				}
-			} else {
+			}
+			else{
 				$upload_target_srl = 0;
 				$attached_size = 0;
 				$files = array();
@@ -73,7 +75,8 @@
 		 * @param int $upload_target_srl The sequence to get a number of files
 		 * @return int Returns a number of files
 		 **/
-		function getFilesCount($upload_target_srl) {
+		function getFilesCount($upload_target_srl){
+			$args = new stdClass();
 			$args->upload_target_srl = $upload_target_srl;
 			$output = executeQuery('file.getFilesCount', $args);
 			return (int)$output->data->count;
@@ -86,7 +89,7 @@
 		 * @param string $sid
 		 * @return string Returns a url
 		 **/
-		function getDownloadUrl($file_srl, $sid, $module_srl="") {
+		function getDownloadUrl($file_srl, $sid, $module_srl=""){
 			return sprintf('?module=%s&amp;act=%s&amp;file_srl=%s&amp;sid=%s&amp;module_srl=%s', 'file', 'procFileDownload', $file_srl, $sid, $module_srl);
 		}
 
@@ -98,14 +101,15 @@
 		 **/
 		function getFileConfig($module_srl = null) {
 			// Get configurations (using module model object)
-			$oModuleModel = &getModel('module');
+			$oModuleModel = getModel('module');
 
 			$file_module_config = $oModuleModel->getModuleConfig('file');
 
 			if($module_srl) $file_config = $oModuleModel->getModulePartConfig('file',$module_srl);
 			if(!$file_config) $file_config = $file_module_config;
 
-			if($file_config) {
+			$config = new stdClass();
+			if($file_config){
 				$config->allowed_filesize = $file_config->allowed_filesize;
 				$config->allowed_attach_size = $file_config->allowed_attach_size;
 				$config->allowed_filetypes = $file_config->allowed_filetypes;
@@ -139,27 +143,24 @@
 		 * @param array $columnList The list of columns to get from DB
 		 * @return Object|object|array If error returns an instance of Object. If result set is one returns a object that contins file information. If result set is more than one returns array of object.
 		 **/
-		function getFile($file_srl, $columnList = array()) {
+		function getFile($file_srl, $columnList = array()){
+			$args = new stdClass();
 			$args->file_srl = $file_srl;
 			$output = executeQueryArray('file.getFile', $args, $columnList);
 			if(!$output->toBool()) return $output;
 
 			// old version compatibility
-			if(count($output->data) == 1)
-			{
+			if(count($output->data) == 1){
 				$file = $output->data[0];
 				$file->download_url = $this->getDownloadUrl($file->file_srl, $file->sid);
 
 				return $file;
 			}
-			else
-			{
+			else{
 				$fileList = array();
 				
-				if(is_array($output->data))
-				{
-					foreach($output->data as $key=>$value)
-					{
+				if(is_array($output->data)){
+					foreach($output->data as $key=>$value){
 						$file = $value;
 						$file->download_url = $this->getDownloadUrl($file->file_srl, $file->sid, $file->module_srl);
 						array_push($fileList, $file);
@@ -177,7 +178,8 @@
 		 * @param string $sortIndex The column that used as sort index
 		 * @return array Returns array of object that contains file information. If no result returns null.
 		 **/
-		function getFiles($upload_target_srl, $columnList = array(), $sortIndex = 'file_srl', $ckValid = false) {
+		function getFiles($upload_target_srl, $columnList = array(), $sortIndex = 'file_srl', $ckValid = false){
+			$args = new stdClass();
 			$args->upload_target_srl = $upload_target_srl;
 			$args->sort_index = $sortIndex;
 			if($ckValid) $args->isvalid = 'Y';
@@ -189,7 +191,7 @@
 			if($file_list && !is_array($file_list)) $file_list = array($file_list);
 
 			$file_count = count($file_list);
-			for($i=0;$i<$file_count;$i++) {
+			for($i=0;$i<$file_count;$i++){
 				$file = $file_list[$i];
 				$file->source_filename = stripslashes($file->source_filename);
 				$file->download_url = $this->getDownloadUrl($file->file_srl, $file->sid, $file->module_srl);
@@ -216,7 +218,9 @@
 			
 			$logged_info = Context::get('logged_info');
 			if($logged_info->is_admin == 'Y') {
-				$size = preg_replace('/[a-z]/is', '', ini_get('upload_max_filesize'));
+				$iniPostMaxSize = FileHandler::returnbytes(ini_get('post_max_size'));
+				$iniUploadMaxSize = FileHandler::returnbytes(ini_get('upload_max_filesize'));
+				$size = min($iniPostMaxSize, $iniUploadMaxSize) / 1048576;
 				$file_config->allowed_attach_size = $size;
 				$file_config->allowed_filesize = $size;
 				$file_config->allowed_filetypes = '*.*';

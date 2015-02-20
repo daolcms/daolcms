@@ -34,7 +34,7 @@
 			$oModuleModel = &getModel('module');
 			$editor_default_config = $oModuleModel->getModuleConfig('editor');
 
-			if(!is_object($editor_config)) $editor_config = null;
+			if(!is_object($editor_config)) $editor_config = new stdClass();
 
 			if(!is_array($editor_config->enable_html_grant)) $editor_config->enable_html_grant = array();
 			if(!is_array($editor_config->enable_comment_html_grant)) $editor_config->enable_comment_html_grant = array();
@@ -127,40 +127,7 @@
 				$buff .= sprintf('$xml_info->author['.$i.']->homepage = "%s";', $author_list[$i]->attrs->link);
 			}
 
-			// history
-			if($xml_doc->component->history) {
-				if(!is_array($xml_doc->component->history)) $history_list[] = $xml_doc->component->history;
-				else $history_list = $xml_doc->component->history;
-
-				for($i=0; $i < count($history_list); $i++) {
-					unset($obj);
-					sscanf($history_list[$i]->attrs->date, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
-					$date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
-					$buff .= sprintf('$xml_info->history['.$i.']->description = "%s";', $history_list[$i]->description->body);
-					$buff .= sprintf('$xml_info->history['.$i.']->version = "%s";', $history_list[$i]->attrs->version);
-					$buff .= sprintf('$xml_info->history['.$i.']->date = "%s";', $date);
-
-					if($history_list[$i]->author) {
-						(!is_array($history_list[$i]->author)) ? $obj->author_list[] = $history_list[$i]->author : $obj->author_list = $history_list[$i]->author;
-
-						for($j=0; $j < count($obj->author_list); $j++) {
-							$buff .= sprintf('$xml_info->history['.$i.']->author['.$j.']->name = "%s";', $obj->author_list[$j]->name->body);
-							$buff .= sprintf('$xml_info->history['.$i.']->author['.$j.']->email_address = "%s";', $obj->author_list[$j]->attrs->email_address);
-							$buff .= sprintf('$xml_info->history['.$i.']->author['.$j.']->homepage = "%s";', $obj->author_list[$j]->attrs->link);
-						}
-					}
-
-					if($history_list[$i]->log) {
-						(!is_array($history_list[$i]->log)) ? $obj->log_list[] = $history_list[$i]->log : $obj->log_list = $history_list[$i]->log;
-
-						for($j=0; $j < count($obj->log_list); $j++) {
-							$buff .= sprintf('$xml_info->history['.$i.']->logs['.$j.']->text = "%s";', $obj->log_list[$j]->body);
-							$buff .= sprintf('$xml_info->history['.$i.']->logs['.$j.']->link = "%s";', $obj->log_list[$j]->attrs->link);
-						}
-					}
-				}
-			}
-		   // List extra variables (text type only in the editor component)
+			// List extra variables (text type only in the editor component)
 			$extra_vars = $xml_doc->component->extra_vars->var;
 			if($extra_vars) {
 				if(!is_array($extra_vars)) $extra_vars = array($extra_vars);
@@ -347,6 +314,8 @@
 		function getModuleEditor($type = 'document', $module_srl, $upload_target_srl, $primary_key_name, $content_key_name) {
 			// Get editor settings of the module
 			$editor_config = $this->getEditorConfig($module_srl);
+			
+			$config = new stdClass();
 			// Configurations listed according to a type
 			if($type == 'document') {
 				$config->editor_skin = $editor_config->editor_skin;
@@ -360,7 +329,8 @@
 				$config->enable_html_grant = $editor_config->enable_html_grant;
 				$config->editor_height = $editor_config->editor_height;
 				$config->enable_autosave = $editor_config->enable_autosave;
-			} else {
+			}
+			else {
 				$config->editor_skin = $editor_config->comment_editor_skin;
 				$config->content_style = $editor_config->comment_content_style;
 				$config->content_font = $editor_config->content_font;
@@ -381,6 +351,7 @@
 				$group_list = array();
 			}
 			// Pre-set option variables of editor
+			$option = new stdClass();
 			$option->skin = $config->editor_skin;
 			$option->content_style = $config->content_style;
 			$option->content_font = $config->content_font;
@@ -388,44 +359,52 @@
 			$option->colorset = $config->sel_editor_colorset;
 			// Permission check for file upload
 			$option->allow_fileupload = false;
-			if(count($config->upload_file_grant)) {
-				foreach($group_list as $group_srl => $group_info) {
-					if(in_array($group_srl, $config->upload_file_grant)) {
+			if($logged_info->is_admin=='Y') $option->allow_fileupload = true;
+			elseif(count($config->upload_file_grant)){
+				foreach($group_list as $group_srl => $group_info){
+					if(in_array($group_srl, $config->upload_file_grant)){
 						$option->allow_fileupload = true;
 						break;
 					}
 				}
-			} else $option->allow_fileupload = true;
+			}
+			else $option->allow_fileupload = true;
 			// Permission check for using default components
 			$option->enable_default_component = false;
-			if(count($config->enable_default_component_grant)) {
-				foreach($group_list as $group_srl => $group_info) {
-					if(in_array($group_srl, $config->enable_default_component_grant)) {
+			if($logged_info->is_admin=='Y') $option->enable_default_component = true;
+			elseif(count($config->enable_default_component_grant)){
+				foreach($group_list as $group_srl => $group_info){
+					if(in_array($group_srl, $config->enable_default_component_grant)){
 						$option->enable_default_component = true;
 						break;
 					}
 				}
-			} else $option->enable_default_component = true;
+			}
+			else $option->enable_default_component = true;
 			// Permisshion check for using extended components
 			$option->enable_component = false;
-			if(count($config->enable_component_grant)) {
-				foreach($group_list as $group_srl => $group_info) {
-					if(in_array($group_srl, $config->enable_component_grant)) {
+			if($logged_info->is_admin=='Y') $option->enable_component = true;
+			elseif(count($config->enable_component_grant)){
+				foreach($group_list as $group_srl => $group_info){
+					if(in_array($group_srl, $config->enable_component_grant)){
 						$option->enable_component = true;
 						break;
 					}
 				}
-			} else $option->enable_component = true;
+			}
+			else $option->enable_component = true;
 			// HTML editing privileges
 			$enable_html = false;
-			if(count($config->enable_html_grant)) {
-				foreach($group_list as $group_srl => $group_info) {
-					if(in_array($group_srl, $config->enable_html_grant)) {
+			if($logged_info->is_admin=='Y') $enable_html = true;
+			elseif(count($config->enable_html_grant)){
+				foreach($group_list as $group_srl => $group_info){
+					if(in_array($group_srl, $config->enable_html_grant)){
 						$enable_html = true;
 						break;
 					}
 				}
-			} else $enable_html = true;
+			}
+			else $enable_html = true;
 
 			if($enable_html) $option->disable_html = false;
 			else $option->disable_html = true;
@@ -444,6 +423,7 @@
 		 * @brief Get information which has been auto-saved
 		 **/
 		function getSavedDoc($upload_target_srl) {
+			$auto_save_args = new stdClass();
 			// Find a document by using member_srl for logged-in user and ipaddress for non-logged user
 			if(Context::get('is_logged')) {
 				$logged_info = Context::get('logged_info');
@@ -598,6 +578,7 @@
 		 * @brief Get xml and db information of the component
 		 **/
 		function getComponent($component_name, $site_srl = 0) {
+			$args = new stdClass();
 			$args->component_name = $component_name;
 
 			if($site_srl) {
@@ -689,43 +670,8 @@
 					$buff .= sprintf('$xml_info->author['.$i.']->email_address = "%s";', $author_list[$i]->attrs->email_address);
 					$buff .= sprintf('$xml_info->author['.$i.']->homepage = "%s";', $author_list[$i]->attrs->link);
 				}
-
-				// history
-				if($xml_doc->component->history) {
-					if(!is_array($xml_doc->component->history)) $history_list[] = $xml_doc->component->history;
-					else $history_list = $xml_doc->component->history;
-
-					for($i=0; $i < count($history_list); $i++) {
-						unset($obj);
-						sscanf($history_list[$i]->attrs->date, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
-						$date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
-						$buff .= sprintf('$xml_info->history['.$i.']->description = "%s";', $history_list[$i]->description->body);
-						$buff .= sprintf('$xml_info->history['.$i.']->version = "%s";', $history_list[$i]->attrs->version);
-						$buff .= sprintf('$xml_info->history['.$i.']->date = "%s";', $date);
-
-						if($history_list[$i]->author) {
-							(!is_array($history_list[$i]->author)) ? $obj->author_list[] = $history_list[$i]->author : $obj->author_list = $history_list[$i]->author;
-
-							for($j=0; $j < count($obj->author_list); $j++) {
-								$buff .= sprintf('$xml_info->history['.$i.']->author['.$j.']->name = "%s";', $obj->author_list[$j]->name->body);
-								$buff .= sprintf('$xml_info->history['.$i.']->author['.$j.']->email_address = "%s";', $obj->author_list[$j]->attrs->email_address);
-								$buff .= sprintf('$xml_info->history['.$i.']->author['.$j.']->homepage = "%s";', $obj->author_list[$j]->attrs->link);
-							}
-						}
-
-						if($history_list[$i]->log) {
-							(!is_array($history_list[$i]->log)) ? $obj->log_list[] = $history_list[$i]->log : $obj->log_list = $history_list[$i]->log;
-
-							for($j=0; $j < count($obj->log_list); $j++) {
-								$buff .= sprintf('$xml_info->history['.$i.']->logs['.$j.']->text = "%s";', $obj->log_list[$j]->body);
-								$buff .= sprintf('$xml_info->history['.$i.']->logs['.$j.']->link = "%s";', $obj->log_list[$j]->attrs->link);
-							}
-						}
-					}
-				}
-
-
-			} else {
+			}
+			else {
 				sscanf($xml_doc->component->author->attrs->date, '%d. %d. %d', $date_obj->y, $date_obj->m, $date_obj->d);
 				$date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
 				$xml_info->component_name = $component;

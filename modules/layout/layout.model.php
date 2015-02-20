@@ -267,7 +267,7 @@
 			}
 			// Include the cache file if it is valid and then return $layout_info variable
 			if(!$layout_srl){
-				$cache_file = $this->getLayoutCache($layout, Context::getLangType());
+				$cache_file = $this->getLayoutCache($layout, Context::getLangType(), $layout_type);
 			}else{
 				$cache_file = $this->getUserLayoutCache($layout_srl, Context::getLangType());
 			}
@@ -394,44 +394,8 @@
 						$buff .= sprintf('$layout_info->menu->%s->php_file = "./files/cache/menu/".$vars->%s.".php";',$name, $name);
 					}
 				}
-
-
-				// history
-				if($xml_obj->history) {
-					if(!is_array($xml_obj->history)) $history_list[] = $xml_obj->history;
-					else $history_list = $xml_obj->history;
-
-					for($i=0; $i < count($history_list); $i++) {
-						sscanf($history_list[$i]->attrs->date, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
-						$date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
-						$buff .= sprintf('$layout_info->history['.$i.']->description = "%s";', $history_list[$i]->description->body);
-						$buff .= sprintf('$layout_info->history['.$i.']->version = "%s";', $history_list[$i]->attrs->version);
-						$buff .= sprintf('$layout_info->history['.$i.']->date = "%s";', $date);
-
-						if($history_list[$i]->author) {
-							(!is_array($history_list[$i]->author)) ? $obj->author_list[] = $history_list[$i]->author : $obj->author_list = $history_list[$i]->author;
-
-							for($j=0; $j < count($obj->author_list); $j++) {
-								$buff .= sprintf('$layout_info->history['.$i.']->author['.$j.']->name = "%s";', $obj->author_list[$j]->name->body);
-								$buff .= sprintf('$layout_info->history['.$i.']->author['.$j.']->email_address = "%s";', $obj->author_list[$j]->attrs->email_address);
-								$buff .= sprintf('$layout_info->history['.$i.']->author['.$j.']->homepage = "%s";', $obj->author_list[$j]->attrs->link);
-							}
-						}
-
-						if($history_list[$i]->log) {
-							(!is_array($history_list[$i]->log)) ? $obj->log_list[] = $history_list[$i]->log : $obj->log_list = $history_list[$i]->log;
-
-							for($j=0; $j < count($obj->log_list); $j++) {
-								$buff .= sprintf('$layout_info->history['.$i.']->logs['.$j.']->text = "%s";', $obj->log_list[$j]->body);
-								$buff .= sprintf('$layout_info->history['.$i.']->logs['.$j.']->link = "%s";', $obj->log_list[$j]->attrs->link);
-							}
-						}
-					}
-				}
-
-
-
-			} else {
+			}
+			else {
 				// Layout title, version and other information
 				sscanf($xml_obj->author->attrs->date, '%d. %d. %d', $date_obj->y, $date_obj->m, $date_obj->d);
 				$date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
@@ -676,8 +640,13 @@
 		 * @param string $lang_type
 		 * @return string
 		 **/
-		function getLayoutCache($layout_name,$lang_type){
-			return sprintf("./files/cache/layout/%s.%s.cache.php",$layout_name,$lang_type);
+		function getLayoutCache($layout_name,$lang_type,$layout_type='P'){
+			if($layout_type=='P'){
+				return sprintf("%sfiles/cache/layout/%s.%s.cache.php", _XE_PATH_, $layout_name,$lang_type);
+			}
+			else {
+				return sprintf("%sfiles/cache/layout/m.%s.%s.cache.php", _XE_PATH_, $layout_name,$lang_type);
+			}
 		}
 
 		/**

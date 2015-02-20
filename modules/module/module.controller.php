@@ -45,7 +45,7 @@
 		 * module trigger is to call a trigger to a target module
 		 *
 		 **/
-		function insertTrigger($trigger_name, $module, $type, $called_method, $called_position) {
+		function insertTrigger($trigger_name, $module, $type, $called_method, $called_position){
 			$args->trigger_name = $trigger_name;
 			$args->module = $module;
 			$args->type = $type;
@@ -54,17 +54,16 @@
 
 			$output = executeQuery('module.insertTrigger', $args);
 
-			//remove from cache
-			$oCacheHandler = &CacheHandler::getInstance('object');
-			if($oCacheHandler->isSupport())
-			{
-				$cache_key = 'object:'.$trigger_name.'_'.$called_position;
-				$oCacheHandler->delete($cache_key);
+			if($output->toBool()){
+				//remove from cache
+				$GLOBALS['__triggers__'] = NULL;
+				$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+				if($oCacheHandler->isSupport()){
+					$cache_key = 'triggers';
+					$oCacheHandler->delete($cache_key);
+				}
 			}
-
-			// Delete all the files which contain trigger information
-			FileHandler::removeFilesInDir("./files/cache/triggers");
-
+			
 			return $output;
 
 		}
@@ -82,16 +81,15 @@
 
 			$output = executeQuery('module.deleteTrigger', $args);
 
-			//remove from cache
-			$oCacheHandler = &CacheHandler::getInstance('object');
-			if($oCacheHandler->isSupport())
-			{
-				$cache_key = 'object:'.$trigger_name.'_'.$called_position;
-				$oCacheHandler->delete($cache_key);
+			if($output->toBool()){
+				//remove from cache
+				$GLOBALS['__triggers__'] = NULL;
+				$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+				if($oCacheHandler->isSupport()){
+					$cache_key = 'triggers';
+					$oCacheHandler->delete($cache_key);
+				}
 			}
-
-			// Remove the trigger cache
-			FileHandler::removeFilesInDir('./files/cache/triggers');
 
 			return $output;
 		}

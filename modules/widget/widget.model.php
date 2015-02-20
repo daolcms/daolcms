@@ -157,41 +157,8 @@
 					$buff .= sprintf('$widget_info->author['.$i.']->email_address = "%s";', $author_list[$i]->attrs->email_address);
 					$buff .= sprintf('$widget_info->author['.$i.']->homepage = "%s";', $author_list[$i]->attrs->link);
 				}
-
-				// history
-				if($xml_obj->history) {
-					if(!is_array($xml_obj->history)) $history_list[] = $xml_obj->history;
-					else $history_list = $xml_obj->history;
-
-					for($i=0; $i < count($history_list); $i++) {
-						sscanf($history_list[$i]->attrs->date, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
-						$date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
-						$buff .= sprintf('$widget_info->history['.$i.']->description = "%s";', $history_list[$i]->description->body);
-						$buff .= sprintf('$widget_info->history['.$i.']->version = "%s";', $history_list[$i]->attrs->version);
-						$buff .= sprintf('$widget_info->history['.$i.']->date = "%s";', $date);
-
-						if($history_list[$i]->author) {
-							(!is_array($history_list[$i]->author)) ? $obj->author_list[] = $history_list[$i]->author : $obj->author_list = $history_list[$i]->author;
-
-							for($j=0; $j < count($obj->author_list); $j++) {
-								$buff .= sprintf('$widget_info->history['.$i.']->author['.$j.']->name = "%s";', $obj->author_list[$j]->name->body);
-								$buff .= sprintf('$widget_info->history['.$i.']->author['.$j.']->email_address = "%s";', $obj->author_list[$j]->attrs->email_address);
-								$buff .= sprintf('$widget_info->history['.$i.']->author['.$j.']->homepage = "%s";', $obj->author_list[$j]->attrs->link);
-							}
-						}
-
-						if($history_list[$i]->log) {
-							(!is_array($history_list[$i]->log)) ? $obj->log_list[] = $history_list[$i]->log : $obj->log_list = $history_list[$i]->log;
-
-							for($j=0; $j < count($obj->log_list); $j++) {
-								$buff .= sprintf('$widget_info->history['.$i.']->logs['.$j.']->text = "%s";', $obj->log_list[$j]->body);
-								$buff .= sprintf('$widget_info->history['.$i.']->logs['.$j.']->link = "%s";', $obj->log_list[$j]->attrs->link);
-							}
-						}
-					}
-				}
-
-			} else {
+			}
+			else {
 				// Title of the widget, version
 				$buff .= sprintf('$widget_info->widget = "%s";', $widget);
 				$buff .= sprintf('$widget_info->path = "%s";', $widget_path);
@@ -290,115 +257,87 @@
 			$xml_obj = $tmp_xml_obj->widgetstyle;
 			if(!$xml_obj) return;
 
-			$buff = '';
+			$buff = array();
+			$buff[] = '<?php if(!defined("__XE__")) exit();';
+			$buff[] = '$widgetStyle_info = new stdClass();';
+			
 			// Title of the widget, version
-			$buff .= sprintf('$widgetStyle_info->widgetStyle = "%s";', $widgetStyle);
-			$buff .= sprintf('$widgetStyle_info->path = "%s";', $widgetStyle_path);
-			$buff .= sprintf('$widgetStyle_info->title = "%s";', $xml_obj->title->body);
-			$buff .= sprintf('$widgetStyle_info->description = "%s";', $xml_obj->description->body);
-			$buff .= sprintf('$widgetStyle_info->version = "%s";', $xml_obj->version->body);
+			$buff[] = sprintf('$widgetStyle_info->widgetStyle = "%s";', $widgetStyle);
+			$buff[] = sprintf('$widgetStyle_info->path = "%s";', $widgetStyle_path);
+			$buff[] = sprintf('$widgetStyle_info->title = "%s";', $xml_obj->title->body);
+			$buff[] = sprintf('$widgetStyle_info->description = "%s";', $xml_obj->description->body);
+			$buff[] = sprintf('$widgetStyle_info->version = "%s";', $xml_obj->version->body);
 			sscanf($xml_obj->date->body, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
-			$buff .= sprintf('$widgetStyle_info->date = "%s";', $date);
-			$buff .= sprintf('$widgetStyle_info->homepage = "%s";', $xml_obj->link->body);
-			$buff .= sprintf('$widgetStyle_info->license = "%s";', $xml_obj->license->body);
-			$buff .= sprintf('$widgetStyle_info->license_link = "%s";', $xml_obj->license->attrs->link);
+			$buff[] = sprintf('$widgetStyle_info->date = "%s";', $date);
+			$buff[] = sprintf('$widgetStyle_info->homepage = "%s";', $xml_obj->link->body);
+			$buff[] = sprintf('$widgetStyle_info->license = "%s";', $xml_obj->license->body);
+			$buff[] = sprintf('$widgetStyle_info->license_link = "%s";', $xml_obj->license->attrs->link);
 
 			// preview
 			if(!$xml_obj->preview->body) $xml_obj->preview->body = 'preview.jpg';
 			$preview_file = sprintf("%s%s", $widgetStyle_path,$xml_obj->preview->body);
-			if(file_exists($preview_file)) $buff .= sprintf('$widgetStyle_info->preview = "%s";', $preview_file);
+			if(file_exists($preview_file)) $buff[] = sprintf('$widgetStyle_info->preview = "%s";', $preview_file);
+			
 			// Author information
 			if(!is_array($xml_obj->author)) $author_list[] = $xml_obj->author;
 			else $author_list = $xml_obj->author;
 
-			for($i=0; $i < count($author_list); $i++) {
-				$buff .= sprintf('$widgetStyle_info->author['.$i.']->name = "%s";', $author_list[$i]->name->body);
-				$buff .= sprintf('$widgetStyle_info->author['.$i.']->email_address = "%s";', $author_list[$i]->attrs->email_address);
-				$buff .= sprintf('$widgetStyle_info->author['.$i.']->homepage = "%s";', $author_list[$i]->attrs->link);
+			foreach($author_list as $idx => $author){
+				$buff[] = sprintf('$widgetStyle_info->author[%d] = new stdClass();', $idx);
+				$buff[] = sprintf('$widgetStyle_info->author[%d]->name = "%s";', $idx, $author->name->body);
+				$buff[] = sprintf('$widgetStyle_info->author[%d]->email_address = "%s";', $idx, $author->attrs->email_address);
+				$buff[] = sprintf('$widgetStyle_info->author[%d]->homepage = "%s";', $idx, $author->attrs->link);
 			}
 
-			// history
-			if($xml_obj->history) {
-				if(!is_array($xml_obj->history)) $history_list[] = $xml_obj->history;
-				else $history_list = $xml_obj->history;
-
-				for($i=0; $i < count($history_list); $i++) {
-					sscanf($history_list[$i]->attrs->date, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
-					$date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
-					$buff .= sprintf('$widgetStyle_info->history['.$i.']->description = "%s";', $history_list[$i]->description->body);
-					$buff .= sprintf('$widgetStyle_info->history['.$i.']->version = "%s";', $history_list[$i]->attrs->version);
-					$buff .= sprintf('$widgetStyle_info->history['.$i.']->date = "%s";', $date);
-
-					if($history_list[$i]->author) {
-						(!is_array($history_list[$i]->author)) ? $obj->author_list[] = $history_list[$i]->author : $obj->author_list = $history_list[$i]->author;
-
-						for($j=0; $j < count($obj->author_list); $j++) {
-							$buff .= sprintf('$widgetStyle_info->history['.$i.']->author['.$j.']->name = "%s";', $obj->author_list[$j]->name->body);
-							$buff .= sprintf('$widgetStyle_info->history['.$i.']->author['.$j.']->email_address = "%s";', $obj->author_list[$j]->attrs->email_address);
-							$buff .= sprintf('$widgetStyle_info->history['.$i.']->author['.$j.']->homepage = "%s";', $obj->author_list[$j]->attrs->link);
-						}
-					}
-
-					if($history_list[$i]->log) {
-						(!is_array($history_list[$i]->log)) ? $obj->log_list[] = $history_list[$i]->log : $obj->log_list = $history_list[$i]->log;
-
-						for($j=0; $j < count($obj->log_list); $j++) {
-							$buff .= sprintf('$widgetStyle_info->history['.$i.']->logs['.$j.']->text = "%s";', $obj->log_list[$j]->body);
-							$buff .= sprintf('$widgetStyle_info->history['.$i.']->logs['.$j.']->link = "%s";', $obj->log_list[$j]->attrs->link);
-						}
-					}
-				}
-			}
 			// Extra vars (user defined variables to use in a template)
 			$extra_var_groups = $xml_obj->extra_vars->group;
 			if(!$extra_var_groups) $extra_var_groups = $xml_obj->extra_vars;
 			if(!is_array($extra_var_groups)) $extra_var_groups = array($extra_var_groups);
+			
+			$extra_var_count = 0;
+			$buff[] = sprintf('$widgetStyle_info->extra_var = new stdClass();', $extra_var_count);
+			
 			foreach($extra_var_groups as $group){
-				$extra_vars = $group->var;
-				if(!is_array($group->var)) $extra_vars = array($group->var);
+				$extra_vars = (!is_array($group->var)) ? array($group->var) : $group->var;
 
 				if($extra_vars[0]->attrs->id || $extra_vars[0]->attrs->name) {
-					$extra_var_count = count($extra_vars);
 
-					$buff .= sprintf('$widgetStyle_info->extra_var_count = "%s";', $extra_var_count);
-					for($i=0;$i<$extra_var_count;$i++) {
-						unset($var);
-						unset($options);
-						$var = $extra_vars[$i];
-
-						$id = $var->attrs->id?$var->attrs->id:$var->attrs->name;
-						$name = $var->name->body?$var->name->body:$var->title->body;
-						$type = $var->attrs->type?$var->attrs->type:$var->type->body;
-
-
-						$buff .= sprintf('$widgetStyle_info->extra_var->%s->group = "%s";', $id, $group->title->body);
-						$buff .= sprintf('$widgetStyle_info->extra_var->%s->name = "%s";', $id, $name);
-						$buff .= sprintf('$widgetStyle_info->extra_var->%s->type = "%s";', $id, $type);
-						if($type =='filebox') $buff .= sprintf('$widgetStyle_info->extra_var->%s->filter = "%s";', $id, $var->attrs->filter);
-						if($type =='filebox') $buff .= sprintf('$widgetStyle_info->extra_var->%s->allow_multiple = "%s";', $id, $var->attrs->allow_multiple);
-						$buff .= sprintf('$widgetStyle_info->extra_var->%s->value = $vars->%s;', $id, $id);
-						$buff .= sprintf('$widgetStyle_info->extra_var->%s->description = "%s";', $id, str_replace('"','\"',$var->description->body));
-
-						$options = $var->options;
-						if(!$options) continue;
-
-						if(!is_array($options)) $options = array($options);
-						$options_count = count($options);
-						for($j=0;$j<$options_count;$j++) {
-							$buff .= sprintf('$widgetStyle_info->extra_var->%s->options["%s"] = "%s";', $id, $options[$j]->value->body, $options[$j]->name->body);
+					foreach($extra_vars as $var){
+						$extra_var_count++;
+						$id = ($var->attrs->id) ? $var->attrs->id : $var->attrs->name;
+						$name = ($var->name->body) ? $var->name->body : $var->title->body;
+						$type = ($var->attrs->type) ? $var->attrs->type : $var->type->body;
+						
+						$buff[] = sprintf('$widgetStyle_info->extra_var->%s = new stdClass();', $id);
+						$buff[] = sprintf('$widgetStyle_info->extra_var->%s->group = "%s";', $id, $group->title->body);
+						$buff[] = sprintf('$widgetStyle_info->extra_var->%s->name = "%s";', $id, $name);
+						$buff[] = sprintf('$widgetStyle_info->extra_var->%s->type = "%s";', $id, $type);
+						
+						if($type =='filebox'){
+							$buff[] = sprintf('$widgetStyle_info->extra_var->%s->filter = "%s";', $id, $var->attrs->filter);
+							$buff[] = sprintf('$widgetStyle_info->extra_var->%s->allow_multiple = "%s";', $id, $var->attrs->allow_multiple);
 						}
-
+						
+						$buff[] = sprintf('$widgetStyle_info->extra_var->%s->value = $vars->%s;', $id, $id);
+						$buff[] = sprintf('$widgetStyle_info->extra_var->%s->description = "%s";', $id, str_replace('"','\"',$var->description->body));
+						
+						if($var->options){
+							$var_options = (!is_array($var->options)) ? array($var->options) : $var->options;
+							foreach($var_options as $option_item){
+								$buff[] = sprintf('$widgetStyle_info->extra_var->%s->options["%s"] = "%s";', $id, $option_item->value->body, $option_item->name->body);
+							}
+						}
 					}
 				}
 			}
-
-			$buff = '<?php if(!defined("__ZBXE__")) exit(); '.$buff.' ?>';
-			FileHandler::writeFile($cache_file, $buff);
+			$buff[] = sprintf('$widgetStyle_info->extra_var_count = %d;', $extra_var_count);
+			
+			FileHandler::writeFile($cache_file, implode(PHP_EOL, $buff));;
 
 			if(is_readable($cache_file)) include($cache_file);
+			
 			return $widgetStyle_info;
 		}
-
 	}
 ?>

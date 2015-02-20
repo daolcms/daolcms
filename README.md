@@ -7,7 +7,7 @@
 
 DAOL Core is the base frame of DAOL CMS. DAOL CMS is a web CMS program, branched out from XpressEngine
 
-다올 코어는 다올 CMS에 기반을 두고 있으며, XpressEngine에서 파생된 웹 CMS 프로그램입니다.
+다올 CMS는 다올 코어에 기반을 두고 있으며, XpressEngine에서 파생된 웹 CMS 프로그램입니다.
 
 ## Support
 * DAOL Official Homepage : http://www.daolcms.org/
@@ -20,9 +20,8 @@ DAOL Core is the base frame of DAOL CMS. DAOL CMS is a web CMS program, branched
 `CONTRIBUTING.md`파일을 참고하세요.
 
 ## License
-Copyright (C) 2013 - 2014 DAOL Project. <http://www.daolcms.org>
-
-Copyright (C) 2014 NAVER Corp. <http://www.navercorp.com>
+Copyright (C) 2014 NAVER Corp. <http://www.navercorp.com>  
+Copyright (C) 2013-2015 DAOL Project. <http://www.daolcms.org>  
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public

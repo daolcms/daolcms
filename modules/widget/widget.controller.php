@@ -444,7 +444,7 @@
 							$oEditorController = &getController('editor');
 							$body = $oEditorController->transComponent($body);
 
-							$widget_content_header = sprintf('<div %sstyle="overflow:hidden;%s"><div style="%s">', $args->id, $style,  $inner_style);
+							$widget_content_header = sprintf('<div class="daol_content" %sstyle="overflow:hidden;%s"><div style="%s">', $args->id, $style,  $inner_style);
 							$widget_content_body = $body;
 							$widget_content_footer = '</div></div>';
 
@@ -484,10 +484,10 @@
 								}
 							}
 
-							$oWidgetController = &getController('widget');
+							$oWidgetController = getController('widget');
 
 							$widget_content_header = sprintf(
-								'<div class="widgetOutput" widgetstyle="%s" style="%s" widget_padding_left="%s" widget_padding_right="%s" widget_padding_top="%s" widget_padding_bottom="%s" widget="widgetContent" document_srl="%d" %s>'.
+									'<div class="daol_content widgetOutput" widgetstyle="%s" style="%s" widget_padding_left="%s" widget_padding_right="%s" widget_padding_top="%s" widget_padding_bottom="%s" widget="widgetContent" document_srl="%d" %s>'.
 									'<div class="widgetResize"></div>'.
 									'<div class="widgetResizeLeft"></div>'.
 									'<div class="widgetBorder">'.
@@ -519,7 +519,7 @@
 							}
 
 							$widget_content_header = sprintf(
-								'<div class="widgetOutput" widgetstyle="%s" widget="widgetBox" style="%s;" widget_padding_top="%s" widget_padding_right="%s" widget_padding_bottom="%s" widget_padding_left="%s" %s >'.
+									'<div class="widgetOutput" widgetstyle="%s" widget="widgetBox" style="%s;" widget_padding_top="%s" widget_padding_right="%s" widget_padding_bottom="%s" widget_padding_left="%s" %s >'.
 									'<div class="widgetBoxResize"></div>'.
 									'<div class="widgetBoxResizeLeft"></div>'.
 									'<div class="widgetBoxBorder"><div class="nullWidget" style="%s">',$args->widgetstyle,$style, $widget_padding_top, $widget_padding_right, $widget_padding_bottom, $widget_padding_left,implode(' ',$attribute),$inner_style);
@@ -541,7 +541,8 @@
 								}
 							}
 
-							$widget_content_header = sprintf('<div class="widgetOutput" widgetstyle="%s" style="%s" widget_padding_top="%s" widget_padding_right="%s" widget_padding_bottom="%s" widget_padding_left="%s" widget="%s" %s >'.
+							$widget_content_header = sprintf(
+										'<div class="widgetOutput" widgetstyle="%s" style="%s" widget_padding_top="%s" widget_padding_right="%s" widget_padding_bottom="%s" widget_padding_left="%s" widget="%s" %s >'.
 										'<div class="widgetResize"></div>'.
 										'<div class="widgetResizeLeft"></div>'.
 										'<div class="widgetBorder">',$args->widgetstyle,$style,

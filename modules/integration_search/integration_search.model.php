@@ -3,6 +3,7 @@
 	 * The model class of integration module
 	 *
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 **/
 
 	class integration_searchModel extends module {
@@ -11,7 +12,7 @@
 		 *
 		 * @return void
 		 **/
-		function init() {
+		function init(){
 		}
 
 		/**
@@ -26,14 +27,16 @@
 		 *
 		 * @return Object output document list
 		 **/
-		function getDocuments($target, $module_srls_list, $search_target, $search_keyword, $page=1, $list_count = 20) {
+		function getDocuments($target, $module_srls_list, $search_target, $search_keyword, $page=1, $list_count = 20){
 			if(is_array($module_srls_list)) $module_srls_list = implode(',',$module_srls_list);
 
-			if($target == 'exclude') {
+			$args = new stdClass();
+			if($target == 'exclude'){
 				$module_srls_list .= ',0'; // exclude 'trash'
 				if ($module_srls_list{0} == ',') $module_srls_list = substr($module_srls_list, 1);
 				$args->exclude_module_srl = $module_srls_list;
-			} else {
+			}
+			else{
 				$args->module_srl = $module_srls_list;
 				$args->exclude_module_srl = '0'; // exclude 'trash'
 			}
@@ -64,12 +67,13 @@
 		 *
 		 * @return Object output comment list
 		 **/
-		function getComments($target, $module_srls_list, $search_keyword, $page=1, $list_count = 20) {
+		function getComments($target, $module_srls_list, $search_keyword, $page=1, $list_count = 20){
+			$args = new stdClass();
 			if(is_array($module_srls_list)){
 				if (count($module_srls_list) > 0) $module_srls = implode(',',$module_srls_list); 
 				else $module_srls = 0; 
 			}
-			else {
+			else{
 				$module_srls = ($module_srls_list)?$module_srls_list:0;
 			}
 			if($target == 'exclude') $args->exclude_module_srl = $module_srls;
@@ -101,11 +105,11 @@
 		 *
 		 * @return Object output trackback list
 		 **/
-		function getTrackbacks($target, $module_srls_list, $search_target = "title", $search_keyword, $page=1, $list_count = 20) {
-			$oTrackbackModel = &getAdminModel('trackback');
+		function getTrackbacks($target, $module_srls_list, $search_target = "title", $search_keyword, $page=1, $list_count = 20){
+			$oTrackbackModel = getAdminModel('trackback');
 			if(!$oTrackbackModel) return new Object();
-			$args = new stdClass();
 			
+			$args = new stdClass();
 			if(is_array($module_srls_list)) $module_srls = implode(',',$module_srls_list);
 			else $module_srls = $module_srls_list;
 			if($target == 'exclude') $args->exclude_module_srl = $module_srls;
@@ -136,6 +140,7 @@
 		 * @return Object output file list
 		 **/
 		function _getFiles($target, $module_srls_list, $search_keyword, $page, $list_count, $direct_download = 'Y') {
+			$args = new stdClass();
 			if(is_array($module_srls_list)) $module_srls = implode(',',$module_srls_list);
 			else $module_srls = $module_srls_list;
 			if($target == 'exclude') $args->exclude_module_srl = $module_srls;
@@ -176,7 +181,7 @@
 				// Videos
 				} elseif(preg_match('/\.(swf|flv|wmv|avi|mpg|mpeg|asx|asf|mp3)$/i', $val->source_filename)) {
 					$obj->type = 'multimedia';
-					$obj->src = sprintf('<script type="text/javascript">displayMultimedia("%s",120,120);</script>', $obj->download_url);
+					$obj->src = sprintf('<script type="text/javascript">displayMultimedia("%s",120,120);</script>', $val->uploaded_filename);
 				// Others
 				} else {
 					$obj->type = 'binary';

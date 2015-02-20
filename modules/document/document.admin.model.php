@@ -4,6 +4,7 @@
 	 * Document the module's admin model class
 	 *
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @package /modules/document
 	 * @version 0.1
 	 */
@@ -90,6 +91,7 @@
 		 * @return int
 		 */
 		function getDocumentCountByDate($date = '', $moduleSrlList = array(), $statusList = array()) {
+			$args = new stdClass();
 			if($date) $args->regDate = date('Ymd', strtotime($date));
 			if(count($moduleSrlList)>0) $args->moduleSrlList = $moduleSrlList;
 			if(count($statusList)>0) $args->statusList = $statusList;

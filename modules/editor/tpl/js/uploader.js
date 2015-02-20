@@ -51,7 +51,7 @@ function start(cfg) {
 
 	settings = {
 		flash_url   : request_uri + 'modules/editor/tpl/images/SWFUpload.swf',
-		upload_url  : request_uri.replace(/^https/i, 'http')+'index.php',
+		upload_url  : request_uri + 'index.php',
 		post_params : {
 			mid : current_mid,
 			act : 'procFileUpload',

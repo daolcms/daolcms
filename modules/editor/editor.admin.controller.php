@@ -2,6 +2,7 @@
 	/**
 	 * @class  editorAdminController
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief editor of the module admin controller class
 	 **/
 
@@ -49,6 +50,7 @@
 		 * @brief check use component
 		 **/	
 		function editorCheckUse($componentList, $site_srl = 0){			
+			$args = new stdClass();
 			$args->site_srl = $site_srl;
 			
 			foreach($componentList as $componentName => $value){
@@ -70,6 +72,7 @@
 		 * @brief list order componet
 		 **/
 		function editorListOrder($component_names, $site_srl = 0){		
+			$args = new stdClass();
 			$args->site_srl = $site_srl;
 			$list_order_num = '30';
 			if(is_array($component_names)) {			

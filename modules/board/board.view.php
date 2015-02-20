@@ -2,6 +2,7 @@
 	/**
 	 * @class  boardView
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief  board module View class
 	 **/
 
@@ -152,6 +153,11 @@
 		function dispBoardCategoryList(){
 			// check if the use_category option is enabled
 			if($this->module_info->use_category=='Y') {
+				// check the grant
+				if(!$this->grant->list){
+					Context::set('category_list', array());
+					return;
+				}
 				$oDocumentModel = &getModel('document');
 				Context::set('category_list', $oDocumentModel->getCategoryList($this->module_srl));
 
@@ -174,12 +180,10 @@
 			/**
 			 * if the document exists, then get the document information
 			 **/
-			if($document_srl) {
+			if($document_srl){
 				$oDocument = $oDocumentModel->getDocument($document_srl, false, true); 
-
 				// if the document is existed
-				if($oDocument->isExists()) {
-
+				if($oDocument->isExists()){
 					// if the module srl is not consistent
 					if($oDocument->get('module_srl')!=$this->module_info->module_srl ) return $this->stop('msg_invalid_request');
 
@@ -191,17 +195,24 @@
 						$logged_info = Context::get('logged_info');
 						if($oDocument->get('member_srl')!=$logged_info->member_srl) $oDocument = $oDocumentModel->getDocument(0);
 					}
-
+					
+					// if the document is TEMP saved, check Grant
+					if($oDocument->getStatus() == 'TEMP'){
+						if(!$oDocument->isGranted()){
+							$oDocument = $oDocumentModel->getDocument(0);
+						}
+					}
+				}
 				// if the document is not existed, then alert a warning message
-				} else {
+				else {
 					Context::set('document_srl','',true);
 					$this->alertMessage('msg_not_founded');
 				}
-
+			}
 			/**
 			 * if the document is not existed, get an empty document
 			 **/
-			} else {
+			else {
 				$oDocument = $oDocumentModel->getDocument(0);
 			}
 
@@ -234,14 +245,60 @@
 			 **/
 			Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
 		
-//            return new Object();
+			//return new Object();
 		}
 
 		/**
 		 * @brief  display the document file list (can be used by API)
 		 **/
 		function dispBoardContentFileList(){
-			$oDocumentModel = &getModel('document');
+			/** 
+			 * check the access grant (all the grant has been set by the module object)
+			 **/
+			if(!$this->grant->access){
+				return $this->dispBoardMessage('msg_not_permitted');
+			}
+			
+			// check document view grant
+			$this->dispBoardContentView();
+			
+			// Check if a permission for file download is granted
+			// Get configurations (using module model object)
+			$oModuleModel = getModel('module');
+			$file_module_config = $oModuleModel->getModulePartConfig('file',$this->module_srl);
+			
+			$downloadGrantCount = 0;
+			if(is_array($file_module_config->download_grant)){
+				foreach($file_module_config->download_grant AS $value)
+				if($value) $downloadGrantCount++;
+			}
+			
+			if(is_array($file_module_config->download_grant) && $downloadGrantCount>0){
+				if(!Context::get('is_logged')) return $this->stop('msg_not_permitted_download');
+				$logged_info = Context::get('logged_info');
+				if($logged_info->is_admin != 'Y'){
+					$oModuleModel = getModel('module');
+					$columnList = array('module_srl', 'site_srl');
+					$module_info = $oModuleModel->getModuleInfoByModuleSrl($this->module_srl, $columnList);
+					
+					if(!$oModuleModel->isSiteAdmin($logged_info, $module_info->site_srl)){
+						$oMemberModel = getModel('member');
+						$member_groups = $oMemberModel->getMemberGroups($logged_info->member_srl, $module_info->site_srl);
+						
+						$is_permitted = false;
+						for($i=0;$i<count($file_module_config->download_grant);$i++){
+							$group_srl = $file_module_config->download_grant[$i];
+							if($member_groups[$group_srl]){
+								$is_permitted = true;
+								break;
+							}
+							if(!$is_permitted) return $this->stop('msg_not_permitted_download');
+						}
+					}
+				}
+			}
+			
+			$oDocumentModel = getModel('document');
 			$document_srl = Context::get('document_srl');
 			$oDocument = $oDocumentModel->getDocument($document_srl);
 			Context::set('file_list',$oDocument->getUploadedFiles());
@@ -254,7 +311,10 @@
 		 * @brief display the document comment list (can be used by API)
 		 **/
 		function dispBoardContentCommentList(){
-			$oDocumentModel = &getModel('document');
+			// check document view grant
+			$this->dispBoardContentView();
+			
+			$oDocumentModel = getModel('document');
 			$document_srl = Context::get('document_srl');
 			$oDocument = $oDocumentModel->getDocument($document_srl);
 			$comment_list = $oDocument->getComments();
@@ -276,6 +336,11 @@
 		 * @brief display notice list (can be used by API)
 		 **/
 		function dispBoardNoticeList(){
+			// check the grant
+			if(!$this->grant->list){
+				Context::set('notice_list', array());
+				return;
+			}
 			$oDocumentModel = &getModel('document');
 			$args = new stdClass();
 			$args->module_srl = $this->module_srl;
@@ -308,7 +373,15 @@
 
 			// get the search target and keyword
 			$args->search_target = Context::get('search_target'); 
-			$args->search_keyword = Context::get('search_keyword'); 
+			$args->search_keyword = Context::get('search_keyword');
+			
+			$search_option = Context::get('search_option');
+			if($search_option==FALSE) {
+				$search_option = $this->search_option;
+			}
+			if(isset($search_option[$args->search_target])==FALSE) {
+				$args->search_target = '';
+			}
 
 			// if the category is enabled, then get the category
 			if($this->module_info->use_category=='Y') $args->category_srl = Context::get('category'); 

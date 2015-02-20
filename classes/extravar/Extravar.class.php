@@ -233,7 +233,7 @@
 						return ($value)?sprintf('<a href="mailto:%s">%s</a>', $value, $value):"";
 					break;
 				case 'tel' :
-						return sprintf('%s - %s - %s', $value[0],$value[1],$value[2]);
+						return sprintf('%s-%s-%s', $value[0],$value[1],$value[2]);
 					break;
 				case 'textarea' :
 						return nl2br($value);

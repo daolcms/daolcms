@@ -97,8 +97,8 @@ class documentController extends document {
 	 * @param int $module_srl
 	 * @return void
 	 */
-	function deleteDocumentAliasByModule($module_srl)
-	{
+	function deleteDocumentAliasByModule($module_srl){
+		$args = new stdClass();
 		$args->module_srl = $module_srl;
 		executeQuery("document.deleteAlias", $args);
 	}
@@ -108,8 +108,8 @@ class documentController extends document {
 	 * @param int $document_srl
 	 * @return void
 	 */
-	function deleteDocumentAliasByDocument($document_srl)
-	{
+	function deleteDocumentAliasByDocument($document_srl){
+		$args = new stdClass();
 		$args->document_srl = $document_srl;
 		executeQuery("document.deleteAlias", $args);
 	}
@@ -121,8 +121,8 @@ class documentController extends document {
 	 * @param int $module_srl
 	 * @return void
 	 */
-	function deleteDocumentHistory($history_srl, $document_srl, $module_srl)
-	{
+	function deleteDocumentHistory($history_srl, $document_srl, $module_srl){
+		$args = new stdClass();
 		$args->history_srl = $history_srl;
 		$args->module_srl = $module_srl;
 		$args->document_srl = $document_srl;
@@ -326,8 +326,7 @@ class documentController extends document {
 	 * @return object
 	 */
 	function updateDocument($source_obj, $obj) {
-		if(!checkCSRF())
-		{
+		if(!checkCSRF()){
 			return new Object(-1, 'msg_invalid_request');
 		}
 
@@ -347,10 +346,13 @@ class documentController extends document {
 		if(!$obj->module_srl) $obj->module_srl = $source_obj->get('module_srl');
 		$module_srl = $obj->module_srl;
 		$document_config = $oModuleModel->getModulePartConfig('document', $module_srl);
+		if(!$document_config){
+			$document_config = new stdClass();
+		}
 		if(!isset($document_config->use_history)) $document_config->use_history = 'N';
 		$bUseHistory = $document_config->use_history == 'Y' || $document_config->use_history == 'Trace';
 
-		if($bUseHistory) {
+		if($bUseHistory){
 			$args->history_srl = getNextSequence();
 			$args->document_srl = $obj->document_srl;
 			$args->module_srl = $module_srl;
@@ -361,8 +363,7 @@ class documentController extends document {
 			$args->ipaddress = $source_obj->get('ipaddress');
 			$output = executeQuery("document.insertHistory", $args);
 		}
-		else
-		{
+		else{
 			$obj->ipaddress = $source_obj->get('ipaddress');
 		}
 		// List variables
@@ -401,7 +402,7 @@ class documentController extends document {
 		// If an author is identical to the modifier or history is used, use the logged-in user's information.
 		if(Context::get('is_logged')) {
 			$logged_info = Context::get('logged_info');
-			if($source_obj->get('member_srl')==$logged_info->member_srl || $bUseHistory) {
+			if($source_obj->get('member_srl')==$logged_info->member_srl){
 				$obj->member_srl = $logged_info->member_srl;
 				$obj->user_name = htmlspecialchars_decode($logged_info->user_name);
 				$obj->nick_name = htmlspecialchars_decode($logged_info->nick_name);
@@ -477,6 +478,7 @@ class documentController extends document {
 		// Inert extra vars for multi-language support of title and contents.
 		if($extra_content->title) $this->insertDocumentExtraVar($obj->module_srl, $obj->document_srl, -1, $extra_content->title, 'title_'.Context::getLangType());
 		if($extra_content->content) $this->insertDocumentExtraVar($obj->module_srl, $obj->document_srl, -2, $extra_content->content, 'content_'.Context::getLangType());
+		
 		// Update the category if the category_srl exists.
 		if($source_obj->get('category_srl') != $obj->category_srl || $source_obj->get('module_srl') == $logged_info->member_srl) {
 			if($source_obj->get('category_srl') != $obj->category_srl) $this->updateCategoryCount($obj->module_srl, $source_obj->get('category_srl'));
@@ -522,6 +524,7 @@ class documentController extends document {
 	 */
 	function deleteDocument($document_srl, $is_admin = false, $isEmptyTrash = false, $oDocument = null) {
 		// Call a trigger (before)
+		$trigger_obj = new stdClass();
 		$trigger_obj->document_srl = $document_srl;
 		$output = ModuleHandler::triggerCall('document.deleteDocument', 'before', $trigger_obj);
 		if(!$output->toBool()) return $output;
@@ -544,9 +547,9 @@ class documentController extends document {
 		if(!$oDocument->isGranted()) return new Object(-1, 'msg_not_permitted');
 
 		//if empty trash, document already deleted, therefore document not delete
+		$args = new stdClass();
 		$args->document_srl = $document_srl;
-		if(!$isEmptyTrash)
-		{
+		if(!$isEmptyTrash){
 			// Delete the document
 			$output = executeQuery('document.deleteDocument', $args);
 			if(!$output->toBool()) {
@@ -637,6 +640,7 @@ class documentController extends document {
 	 * @return object
 	 */
 	function moveDocumentToTrash($obj) {
+		$trash_args = new stdClass();
 		// Get trash_srl if a given trash_srl doesn't exist
 		if(!$obj->trash_srl) $trash_args->trash_srl = getNextSequence();
 		else $trash_args->trash_srl = $obj->trash_srl;
@@ -709,6 +713,7 @@ class documentController extends document {
 		FileHandler::removeDir(sprintf('files/cache/thumbnails/%s',getNumberingPath($obj->document_srl, 3)));
 		// Set the attachment to be invalid state
 		if($oDocument->hasUploadedFiles()) {
+			$args = new stdClass();
 			$args->upload_target_srl = $oDocument->document_srl;
 			$args->isvalid = 'N';
 			executeQuery('file.updateFileValid', $args);
@@ -740,7 +745,10 @@ class documentController extends document {
 	 * @param documentItem $oDocument
 	 * @return bool|void
 	 */
-	function updateReadedCount(&$oDocument) {
+	function updateReadedCount(&$oDocument){
+		// Pass if Crawler access
+		if(isCrawler()) return false;
+		
 		$document_srl = $oDocument->document_srl;
 		$member_srl = $oDocument->get('member_srl');
 		$logged_info = Context::get('logged_info');
@@ -793,7 +801,9 @@ class documentController extends document {
 		}
 		
 		// Register session
-		$_SESSION['readed_document'][$document_srl] = true;
+		if(!$_SESSION['banned_document'][$document_srl]){
+			$_SESSION['readed_document'][$document_srl] = true;
+		}
 		
 		return TRUE;
 	}
@@ -814,6 +824,7 @@ class documentController extends document {
 	function insertDocumentExtraKey($module_srl, $var_idx, $var_name, $var_type, $var_is_required = 'N', $var_search = 'N', $var_default = '', $var_desc = '', $eid) {
 		if(!$module_srl || !$var_idx || !$var_name || !$var_type || !$eid) return new Object(-1,'msg_invalid_request');
 
+		$obj = new stdClass();
 		$obj->module_srl = $module_srl;
 		$obj->var_idx = $var_idx;
 		$obj->var_name = $var_name;
@@ -841,6 +852,7 @@ class documentController extends document {
 	 */
 	function deleteDocumentExtraKeys($module_srl, $var_idx = null) {
 		if(!$module_srl) return new Object(-1,'msg_invalid_request');
+		$obj = new stdClass();
 		$obj->module_srl = $module_srl;
 		if(!is_null($var_idx)) $obj->var_idx = $var_idx;
 
@@ -920,6 +932,7 @@ class documentController extends document {
 	 * @return $output
 	 */
 	function deleteDocumentExtraVars($module_srl, $document_srl = null, $var_idx = null, $lang_code = null, $eid = null) {
+		$obj = new stdClass();
 		$obj->module_srl = $module_srl;
 		if(!is_null($document_srl)) $obj->document_srl = $document_srl;
 		if(!is_null($var_idx)) $obj->var_idx = $var_idx;
@@ -1044,22 +1057,23 @@ class documentController extends document {
 		// Fail if session information already has a reported document
 		if($_SESSION['declared_document'][$document_srl]) return new Object(-1, 'failed_declared');
 
-		$trigger_obj = new stdClass();
-		$trigger_obj->document_srl = $document_srl;
-
-		// Call a trigger (before)
-		$trigger_output = ModuleHandler::triggerCall('document.declaredDocument', 'before', $trigger_obj);
-		if(!$trigger_output->toBool())
-		{
-			return $trigger_output;
-		}
-
 		// Check if previously reported
+		$args = new stdClass();
 		$args->document_srl = $document_srl;
 		$output = executeQuery('document.getDeclaredDocument', $args);
 		if(!$output->toBool()) return $output;
 
 		$declared_count = $output->data->declared_count;
+		
+		$trigger_obj = new stdClass();
+		$trigger_obj->document_srl = $document_srl;
+		$trigger_obj->declared_count = $declared_count;
+
+		// Call a trigger (before)
+		$trigger_output = ModuleHandler::triggerCall('document.declaredDocument', 'before', $trigger_obj);
+		if(!$trigger_output->toBool()){
+			return $trigger_output;
+		}
 
 		// Get the original document
 		$oDocumentModel = &getModel('document');
@@ -1148,6 +1162,7 @@ class documentController extends document {
 	 * @return object
 	 */
 	function updateCommentCount($document_srl, $comment_count, $last_updater, $comment_inserted = false) {
+		$args = new stdClass();
 		$args->document_srl = $document_srl;
 		$args->comment_count = $comment_count;
 
@@ -1158,8 +1173,7 @@ class documentController extends document {
 
 		//remove from cache
 				$oCacheHandler = &CacheHandler::getInstance('object');
-				if($oCacheHandler->isSupport())
-				{
+				if($oCacheHandler->isSupport()){
 					$cache_key = 'object:'.$document_srl;
 					$oCacheHandler->delete($cache_key);
 					$oCacheHandler->invalidateGroupKey('documentList');
@@ -1260,6 +1274,7 @@ class documentController extends document {
 	 * @return object
 	 */
 	function deleteCategory($category_srl) {
+		$args = new stdClass();
 		$args->category_srl = $category_srl;
 		$oDocumentModel = &getModel('document');
 		$category_info = $oDocumentModel->getCategory($category_srl);
@@ -1273,8 +1288,7 @@ class documentController extends document {
 
 		$this->makeCategoryFile($category_info->module_srl);
 		// Update category_srl of the documents in the same category to 0
-		unset($args);
-
+		$args = new stdClass();
 		$args->target_category_srl = 0;
 		$args->source_category_srl = $category_srl;
 		$output = executeQuery('document.updateDocumentCategory', $args);
@@ -1288,6 +1302,7 @@ class documentController extends document {
 	 * @return object
 	 */
 	function deleteModuleCategory($module_srl) {
+		$args = new stdClass();
 		$args->module_srl = $module_srl;
 		$output = executeQuery('document.deleteModuleCategory', $args);
 		return $output;
@@ -1619,6 +1634,7 @@ class documentController extends document {
 		$xml_file = sprintf("./files/cache/document_category/%s.xml.php", $module_srl);
 		$php_file = sprintf("./files/cache/document_category/%s.php", $module_srl);
 		// Get a category list
+		$args = new stdClass();
 		$args->module_srl = $module_srl;
 		$args->sort_index = 'list_order';
 		$output = executeQuery('document.getCategoryList', $args);
@@ -1844,6 +1860,7 @@ class documentController extends document {
 		$document_popup_menu_list = Context::get('document_popup_menu_list');
 		if(!is_array($document_popup_menu_list)) $document_popup_menu_list = array();
 
+		$obj = new stdClass();
 		$obj->url = $url;
 		$obj->str = $str;
 		$obj->icon = $icon;
@@ -2002,6 +2019,7 @@ class documentController extends document {
 			$msg_code = 'success_deleted';
 		}
 		elseif($type == 'trash') {
+			$args = new stdClass();
 			$args->description = $message_content;
 
 			$oDB = &DB::getInstance();
@@ -2037,7 +2055,7 @@ class documentController extends document {
 		if(preg_match('/^([0-9,]+)$/',$module_srl)) $module_srl = explode(',',$module_srl);
 		else $module_srl = array($module_srl);
 
-		$document_config = null;
+		$document_config = new stdClass();
 		$document_config->use_history = Context::get('use_history');
 		if(!$document_config->use_history) $document_config->use_history = 'N';
 
@@ -2066,8 +2084,7 @@ class documentController extends document {
 	 * Document temporary save
 	 * @return void|Object
 	 */
-	function procDocumentTempSave()
-	{
+	function procDocumentTempSave(){
 		// Check login information
 		if(!Context::get('is_logged')) return new Object(-1, 'msg_not_logged');
 		$module_info = Context::get('module_info');
@@ -2126,8 +2143,7 @@ class documentController extends document {
 	 * Return Document List for exec_xml
 	 * @return void|Object
 	 */
-	function procDocumentGetList()
-	{
+	function procDocumentGetList(){
 		if(!Context::get('is_logged')) return new Object(-1,'msg_not_permitted');
 		$documentSrls = Context::get('document_srls');
 		if($documentSrls) $documentSrlList = explode(',', $documentSrls);
@@ -2137,8 +2153,7 @@ class documentController extends document {
 			$columnList = array('document_srl', 'title', 'nick_name', 'status');
 			$documentList = $oDocumentModel->getDocuments($documentSrlList, $this->grant->is_admin, false, $columnList);
 		}
-		else
-		{
+		else{
 			global $lang;
 			$documentList = array();
 			$this->setMessage($lang->no_documents);
@@ -2153,8 +2168,7 @@ class documentController extends document {
 	 * @param object $obj
 	 * @return void
 	 */
-	function _checkCommentStatusForOldVersion(&$obj)
-	{
+	function _checkCommentStatusForOldVersion(&$obj){
 		if(!isset($obj->allow_comment)) $obj->allow_comment = 'N';
 		if(!isset($obj->lock_comment)) $obj->lock_comment = 'N';
 
@@ -2167,8 +2181,7 @@ class documentController extends document {
 	 * @param object $obj
 	 * @return void
 	 */
-	function _checkDocumentStatusForOldVersion(&$obj)
-	{
+	function _checkDocumentStatusForOldVersion(&$obj){
 		if(!$obj->status && $obj->is_secret == 'Y') $obj->status = $this->getConfigStatus('secret');
 		if(!$obj->status && $obj->is_secret != 'Y') $obj->status = $this->getConfigStatus('public');
 	}
@@ -2178,34 +2191,27 @@ class documentController extends document {
 	 * @param object $obj
 	 * @return void
 	 */
-	function triggerCopyModuleExtraKeys(&$obj)
-	{
+	function triggerCopyModuleExtraKeys(&$obj){
 		$oDocumentModel = &getModel('document');
 		$documentExtraKeys = $oDocumentModel->getExtraKeys($obj->originModuleSrl);
 
-		if(is_array($documentExtraKeys) && is_array($obj->moduleSrlList))
-		{
+		if(is_array($documentExtraKeys) && is_array($obj->moduleSrlList)){
 			$oDocumentController=&getController('document');
-			foreach($obj->moduleSrlList AS $key=>$value)
-			{
-				foreach($documentExtraKeys AS $extraItem)
-				{
+			foreach($obj->moduleSrlList AS $key=>$value){
+				foreach($documentExtraKeys AS $extraItem){
 					$oDocumentController->insertDocumentExtraKey($value, $extraItem->idx, $extraItem->name, $extraItem->type, $extraItem->is_required , $extraItem->search , $extraItem->default , $extraItem->desc, $extraItem->eid) ;
 				}
 			}
 		}
 	}
 
-	function triggerCopyModule(&$obj)
-	{
+	function triggerCopyModule(&$obj){
 		$oModuleModel = &getModel('module');
 		$documentConfig = $oModuleModel->getModulePartConfig('document', $obj->originModuleSrl);
 
 		$oModuleController = &getController('module');
-		if(is_array($obj->moduleSrlList))
-		{
-			foreach($obj->moduleSrlList AS $key=>$moduleSrl)
-			{
+		if(is_array($obj->moduleSrlList)){
+			foreach($obj->moduleSrlList AS $key=>$moduleSrl){
 				$oModuleController->insertModulePartConfig('document', $moduleSrl, $documentConfig);
 			}
 		}

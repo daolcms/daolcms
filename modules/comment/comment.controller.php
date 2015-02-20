@@ -218,14 +218,13 @@
 			$obj->list_order = getNextSequence() * -1;
 			// remove XE's own tags from the contents
 			$obj->content = preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $obj->content);
-			if(Mobile::isFromMobilePhone())
-			{
-				if($obj->use_html != 'Y')
-				{
+			if(Mobile::isFromMobilePhone()) {
+				if($obj->use_html != 'Y') {
 					$obj->content = htmlspecialchars($obj->content);
 				}
 				$obj->content = nl2br($obj->content);
 			}
+			
 			if(!$obj->regdate) $obj->regdate = date("YmdHis");
 			// remove iframe and script if not a top administrator on the session.
 			if($logged_info->is_admin != 'Y') $obj->content = removeHackTag($obj->content);
@@ -247,7 +246,8 @@
 				$list_args->head = $list_args->arrange = $obj->comment_srl;
 				$list_args->depth = 0;
 			// If parent comment exists, get information of the parent comment
-			} else {
+			}
+			else {
 				// get information of the parent comment posting
 				$parent_args = new stdClass();
 				$parent_args->comment_srl = $obj->parent_srl;
@@ -295,12 +295,10 @@
 			// create the controller object of the document
 			$oDocumentController = &getController('document');
 			// Update the number of comments in the post
-			if (!$using_validation)
-			{
+			if (!$using_validation) {
 				$output = $oDocumentController->updateCommentCount($document_srl, $comment_count, $obj->nick_name, true);
 			}
-			else
-			{
+			else {
 				if ($is_admin)
 				{
 					$output = $oDocumentController->updateCommentCount($document_srl, $comment_count, $obj->nick_name, true);
@@ -338,8 +336,7 @@
 			$output->add('comment_srl', $obj->comment_srl);
 			//remove from cache
 			$oCacheHandler = &CacheHandler::getInstance('object');
-			if($oCacheHandler->isSupport())
-			{
+			if($oCacheHandler->isSupport()) {
 				$oCacheHandler->invalidateGroupKey('commentList_' . $document_srl);
 				$oCacheHandler->invalidateGroupKey('newestCommentsList');
 			}
@@ -352,20 +349,17 @@
 	* @param object $obj 
 	* @return void
 	*/
-	function sendEmailToAdminAfterInsertComment($obj)
-	{
+	function sendEmailToAdminAfterInsertComment($obj) {
 		$using_validation = $this->isModuleUsingPublishValidation($obj->module_srl);
 		
 		$oDocumentModel = &getModel('document');
 		$oDocument = $oDocumentModel->getDocument($obj->document_srl);
 
 		$oMemberModel = &getModel("member");
-		if (isset($obj->member_srl) && !is_null($obj->member_srl))
-		{
+		if (isset($obj->member_srl) && !is_null($obj->member_srl)) {
 			$member_info = $oMemberModel->getMemberInfoByMemberSrl($obj->member_srl);
 		}
-		else
-		{
+		else {
 			$member_info = new stdClass();
 			$member_info->is_admin = "N";
 			$member_info->nick_name = $obj->nick_name;
@@ -378,15 +372,13 @@
 		$oModuleModel = &getModel("module");
 		$module_info = $oModuleModel->getModuleInfoByDocumentSrl($obj->document_srl);
 		// If there is no problem to register comment then send an email to all admin were set in module admin panel
-		if($module_info->admin_mail && $member_info->is_admin != 'Y') 
-		{
+		if($module_info->admin_mail && $member_info->is_admin != 'Y') {
 			$oMail = new Mail();
 			$oMail->setSender($obj->email_address, $obj->email_address);
 			$mail_title = "[XE - ".Context::get('mid')."] A new comment was posted on document: \"".$oDocument->getTitleText()."\"";
 			$oMail->setTitle($mail_title);
 			$url_comment = getFullUrl('','document_srl',$obj->document_srl).'#comment_'.$obj->comment_srl;
-			if($using_validation)
-			{
+			if($using_validation) {
 				$url_approve = getFullUrl('','module','admin','act','procCommentAdminChangePublishedStatusChecked','cart[]',$obj->comment_srl,'will_publish','1','search_target','is_published','search_keyword','N');
 				$url_trash = getFullUrl('','module','admin','act','procCommentAdminDeleteChecked','cart[]',$obj->comment_srl,'search_target','is_trash','search_keyword','true');
 				$mail_content = "
@@ -408,8 +400,7 @@
 				";
 				$oMail->setContent($mail_content);
 			}
-			else
-			{
+			else {
 				$mail_content = "
 					Author: ".$member_info->nick_name."
 					<br />Author e-mail: ".$member_info->email_address."
@@ -438,8 +429,7 @@
 			$target_mail = explode(',',$admins_emails);
 			
 			// send email to all admins - START
-			for($i=0;$i<count($target_mail);$i++)
-			{
+			for($i=0;$i<count($target_mail);$i++) {
 				$email_address = trim($target_mail[$i]);
 				if(!$email_address) continue;
 				$oMail->setReceiptor($email_address, $email_address);
@@ -473,7 +463,6 @@
 		*/
 		return;
 	}
-		
 		
 		/**
 		 * Fix the comment
@@ -691,16 +680,15 @@
 			return $output;
 		}
 
-	/**
-	* Remove all comment relation log
-	* @return Object
-	*/
-	function deleteCommentLog()
-	{
-		$this->_deleteDeclaredComments($args);
-		$this->_deleteVotedComments($args);
-		return new Object(0, 'success');
-	}
+		/**
+		* Remove all comment relation log
+		* @return Object
+		*/
+		function deleteCommentLog($args){
+			$this->_deleteDeclaredComments($args);
+			$this->_deleteVotedComments($args);
+			return new Object(0, 'success');
+		}
 
 		/**
 		 * Remove all comments of the article

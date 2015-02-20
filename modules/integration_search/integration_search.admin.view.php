@@ -3,6 +3,7 @@
 	 * The admin view class of the integration_search module
 	 *
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 **/
 
 	class integration_searchAdminView extends integration_search {
@@ -41,6 +42,7 @@
 			// Get a list of module categories
 			$module_categories = $oModuleModel->getModuleCategories();
 			// Generated mid Wanted list
+			$obj = new stdClass();
 			$obj->site_srl = 0;
 
 			// Shown below as obsolete comments - modify by cherryfilter

@@ -8,6 +8,7 @@ define('RELEASE_SSL',2);
  * It has dual method structure, easy-to use methods which can be called as Context::methodname(),and methods called with static object.
  *
  * @author NHN (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  */
 class Context {
 
@@ -229,7 +230,7 @@ class Context {
 		$this->loadLang(_XE_PATH_.'modules/module/lang');
 
 		// set session handler
-		if(Context::isInstalled() && $this->db_info->use_db_session == 'Y') {
+		if(Context::isInstalled() && $this->db_info->use_db_session == 'Y'){
 			$oSessionModel = &getModel('session');
 			$oSessionController = &getController('session');
 			session_set_save_handler(
@@ -246,20 +247,19 @@ class Context {
 		session_start();
 
 		// set authentication information in Context and session
-		if(Context::isInstalled()) {
+		if(Context::isInstalled()){
 			$oModuleModel = &getModel('module');
 			$oModuleModel->loadModuleExtends();
 
 			$oMemberModel = &getModel('member');
 			$oMemberController = &getController('member');
 
-			if($oMemberController && $oMemberModel)
-			{
+			if($oMemberController && $oMemberModel){
 				// if signed in, validate it.
-				if($oMemberModel->isLogged()) {
+				if($oMemberModel->isLogged()){
 					$oMemberController->setSessionInfo();
 				}
-				elseif($_COOKIE['xeak']) { // check auto sign-in
+				elseif($_COOKIE['xeak']){ // check auto sign-in
 					$oMemberController->doAutologin();
 				}
 
@@ -277,24 +277,31 @@ class Context {
 		else $this->allow_rewrite = false;
 
 		// set locations for javascript use
-		if($_SERVER['REQUEST_METHOD'] == 'GET') {
-			if($this->get_vars) {
-				foreach($this->get_vars as $key=>$val) {
-					if(is_array($val)&&count($val)) {
-						foreach($val as $k => $v) {
+		$url = array();
+		$current_url = Context::getRequestUri();
+		if($_SERVER['REQUEST_METHOD'] == 'GET'){
+			if($this->get_vars){
+				foreach($this->get_vars as $key=>$val){
+					if(is_array($val)&&count($val)){
+						foreach($val as $k => $v){
 							$url .= ($url?'&':'').$key.'['.$k.']='.urlencode($v);
 						}
-					} elseif ($val) {
+					}
+					elseif ($val){
 						$url .= ($url?'&':'').$key.'='.urlencode($val);
 					}
 				}
-				$this->set('current_url',sprintf('%s?%s', Context::getRequestUri(), $url));
-			} else {
-				$this->set('current_url',$this->getUrl());
+				$current_url = Context::getRequestUri();
+				if($url) $current_url .= '?' . join('&', $url);
 			}
-		} else {
-			$this->set('current_url',Context::getRequestUri());
+			else{
+				$current_url = $this->getUrl();
+			}
 		}
+		else{
+			$current_url = Context::getRequestUri();
+		}
+		$this->set('current_url', $current_url);
 		$this->set('request_uri',Context::getRequestUri());
 	}
 
@@ -317,7 +324,7 @@ class Context {
 	 *
 	 * @return void
 	 */
-	function loadDBInfo() {
+	function loadDBInfo(){
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 
 		if(!$self->isInstalled()) return;
@@ -326,7 +333,7 @@ class Context {
 		if(is_readable($config_file)) include($config_file);
 
 				// If master_db information does not exist, the config file needs to be updated
-				if(!isset($db_info->master_db)) {
+				if(!isset($db_info->master_db)){
 					$db_info->master_db = array();
 					$db_info->master_db["db_type"] = $db_info->db_type; unset($db_info->db_type);
 					$db_info->master_db["db_port"] = $db_info->db_port; unset($db_info->db_port);
@@ -346,8 +353,7 @@ class Context {
 					$oInstallController->makeConfigFile();
 				}
 		
-		if(!$db_info->use_prepared_statements) 
-		{
+		if(!$db_info->use_prepared_statements){
 			$db_info->use_prepared_statements = 'Y';
 		}
 				
@@ -361,8 +367,8 @@ class Context {
 		if(!$db_info->use_ssl) $db_info->use_ssl = 'none';
 		$this->set('_use_ssl', $db_info->use_ssl);
 
-		if($db_info->http_port)  $self->set('_http_port', $db_info->http_port);
-		if($db_info->https_port) $self->set('_https_port', $db_info->https_port);
+		$self->set('_http_port', ($db_info->http_port) ? $db_info->http_port : NULL);
+		$self->set('_https_port', ($db_info->https_port) ? $db_info->https_port : NULL);
 
 		$self->setDBInfo($db_info);
 	}
@@ -372,7 +378,7 @@ class Context {
 	 *
 	 * @return string DB's db_type
 	 */
-	function getDBType() {
+	function getDBType(){
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 		return $self->db_info->master_db["db_type"];
 	}
@@ -383,7 +389,7 @@ class Context {
 	 * @param object $db_info DB information
 	 * @return void
 	 */
-	function setDBInfo($db_info) {
+	function setDBInfo($db_info){
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 		$self->db_info = $db_info;
 	}
@@ -393,7 +399,7 @@ class Context {
 	 *
 	 * @return object DB information
 	 */
-	function getDBInfo() {
+	function getDBInfo(){
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 		return $self->db_info;
 	}
@@ -403,8 +409,7 @@ class Context {
 	 *
 	 * @return object SSL status (Optional - none|always|optional) 
 	 */
-	function getSslStatus()
-	{
+	function getSslStatus(){
 		$dbInfo = Context::getDBInfo();
 		return $dbInfo->use_ssl;
 	}
@@ -414,7 +419,7 @@ class Context {
 	 *
 	 * @return string Default URL
 	 */
-	function getDefaultUrl() {
+	function getDefaultUrl(){
 		$db_info = Context::getDBInfo();
 		return $db_info->default_url;
 	}
@@ -885,6 +890,7 @@ class Context {
 
 		foreach($_REQUEST as $key => $val) {
 			if($val === '' || Context::get($key)) continue;
+			$key = htmlentities($key);
 			$val = $this->_filterRequestVar($key, $val);
 
 			if($this->getRequestMethod()=='GET'&&isset($_GET[$key])) $set_to_vars = true;
@@ -947,18 +953,61 @@ class Context {
 	 */
 	function _setXmlRpcArgument() {
 		if($this->getRequestMethod() != 'XMLRPC') return;
+		
+		$xml = $GLOBALS['HTTP_RAW_POST_DATA'];
+		if(Security::detectingXEE($xml)){
+			header("HTTP/1.0 400 Bad Request");
+			exit;
+		}
+		
 		$oXml = new XmlParser();
-		$xml_obj = $oXml->parse();
+		$xml_obj = $oXml->parse($xml);
 
 		$params = $xml_obj->methodcall->params;
-		unset($params->node_name);
+		unset($params->node_name, $params->attrs, $params->body);
 
-		unset($params->attrs);
-		if(!count($params)) return;
-		foreach($params as $key => $obj) {
-			$val = $this->_filterRequestVar($key, $obj->body,0);
-			$this->set($key, $val, true);
+		if(!count(get_object_vars($params))) return;
+		foreach($params as $key => $val) {
+			$this->set($key, $this->_filterXmlVars($key, $val), TRUE);
 		}
+	}
+
+	/**
+	 * Filter xml variables
+	 *
+	 * @param string $key Variable key
+	 * @param object $val Variable value
+	 * @return mixed filtered value
+	 */
+	function _filterXmlVars($key, $val){
+		if(is_array($val)){
+			$stack = array();
+			foreach($val as $k => $v){
+				$stack[$k] = $this->_filterXmlVars($k, $v);
+			}
+			return $stack;
+		}
+
+		$body = $val->body;
+		unset($val->node_name, $val->attrs, $val->body);
+		if(!count(get_object_vars($val))){
+			return $this->_filterRequestVar($key, $body, 0);
+		}
+		$stack = new stdClass();
+		foreach($val as $k => $v){
+			$output = $this->_filterXmlVars($k, $v);
+			if(is_object($v) && $v->attrs->type == 'array'){
+				$output = array($output);
+			}
+			if($k == 'value' && (is_array($v) || $v->attrs->type == 'array')){
+				return $output;
+			}
+			$stack->{$k} = $output;
+		}
+		if(!count(get_object_vars($stack))){
+			return NULL;
+		}
+		return $stack;
 	}
 
 	/**
@@ -972,30 +1021,27 @@ class Context {
 	 */
 	function _filterRequestVar($key, $val, $do_stripslashes = 1) {
 		$isArray = TRUE;
-		if(!is_array($val))
-		{
+		if(!is_array($val)){
 			$isArray = FALSE;
 			$val = array($val);
 		}
 
 		$result = array();
-		foreach($val as $k => $v)
-		{
+		foreach($val as $k => $v){
 			$k = htmlentities($k);
-			if($key === 'page' || $key === 'cpage' || substr($key, -3) === 'srl')
-			{
+			if($key === 'page' || $key === 'cpage' || substr($key, -3) === 'srl'){
 				$result[$k] = !preg_match('/^[0-9,]+$/', $v) ? (int)$v : $v;
 			}
-			elseif($key === 'mid' || $key === 'vid' || $key === 'search_keyword')
-			{
+			elseif($key === 'mid' || $key === 'search_keyword'){
 				$result[$k] = htmlspecialchars($v);
 			}
-			else
-			{
+			elseif($key === 'vid'){
+				$result[$k] = urlencode($v);
+			}
+			else{
 				$result[$k] = $v;
 				
-				if($do_stripslashes && version_compare(PHP_VERSION, '5.9.0', '<') && get_magic_quotes_gpc())
-				{
+				if($do_stripslashes && version_compare(PHP_VERSION, '5.9.0', '<') && get_magic_quotes_gpc()){
 					$result[$k] = stripslashes($result[$k]);
 				}
 
@@ -1013,7 +1059,7 @@ class Context {
 	 *
 	 * @return bool True: exists, False: otherwise
 	 */
-	function isUploaded() {
+	function isUploaded(){
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 		return $self->is_uploaded;
 	}
@@ -1023,19 +1069,20 @@ class Context {
 	 *
 	 * @return void
 	 */
-	function _setUploadedArgument() {
+	function _setUploadedArgument(){
 		if($this->getRequestMethod() != 'POST') return;
 		if(!preg_match('/multipart\/form-data/i',$_SERVER['CONTENT_TYPE'])) return;
 		if(!$_FILES) return;
 
-		foreach($_FILES as $key => $val) {
+		foreach($_FILES as $key => $val){
 			$tmp_name = $val['tmp_name'];
 			if(!is_array($tmp_name)){
 				if(!$tmp_name || !is_uploaded_file($tmp_name)) continue;
 				$val['name'] = htmlspecialchars($val['name']);
 				$this->set($key, $val, true);
 				$this->is_uploaded = true;
-			}else {
+			}
+			else{
 				for($i=0;$i< count($tmp_name);$i++){
 					if($val['size'][$i] > 0){
 						$file['name']=$val['name'][$i];
@@ -1055,7 +1102,7 @@ class Context {
 	 * Return request method
 	 * @return string Request method type. (Optional - GET|POST|XMLRPC|JSON)
 	 */
-	function getRequestMethod() {
+	function getRequestMethod(){
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 		return $self->request_method;
 	}
@@ -1064,14 +1111,12 @@ class Context {
 	 * Return request URL
 	 * @return string request URL
 	 */
-	function getRequestUrl() {
+	function getRequestUrl(){
 		static $url = null;
-		if(is_null($url)) {
+		if(is_null($url)){
 			$url = Context::getRequestUri();
-			if(count($_GET))
-			{
-				foreach($_GET as $key => $val)
-				{
+			if(count($_GET)){
+				foreach($_GET as $key => $val){
 					$vars[] = $key . '=' . ($val ? urlencode(Context::convertEncodingStr($val)) : '');
 				}
 				$url .= '?' . join('&', $vars);
@@ -1090,7 +1135,7 @@ class Context {
 	 * @param bool $autoEncode If true, url encode automatically, detailed. Use this option, $encode value should be true
 	 * @return string URL
 	 */
-	function getUrl($num_args=0, $args_list=array(), $domain = null, $encode = true, $autoEncode = false) {
+	function getUrl($num_args=0, $args_list=array(), $domain = null, $encode = true, $autoEncode = false){
 		static $site_module_info = null;
 		static $current_info = null;
 
@@ -1223,13 +1268,15 @@ class Context {
 		$_use_ssl = $self->get('_use_ssl');
 		if($_use_ssl == 'always') {
 			$query = $self->getRequestUri(ENFORCE_SSL, $domain).$query;
+		}
 		// optional SSL use
-		} elseif($_use_ssl == 'optional') {
-			$ssl_mode = RELEASE_SSL;
+		elseif($_use_ssl == 'optional') {
+			$ssl_mode = (($self->get('module') === 'admin') || ($get_vars['module'] === 'admin') || (isset($get_vars['act']) && $self->isExistsSSLAction($get_vars['act']))) ? ENFORCE_SSL : RELEASE_SSL;
 			if($get_vars['act'] && $self->isExistsSSLAction($get_vars['act'])) $ssl_mode = ENFORCE_SSL;
 			$query = $self->getRequestUri($ssl_mode, $domain).$query;
+		}
 		// no SSL
-		} else {
+		else {
 			// currently on SSL but target is not based on SSL
 			if($_SERVER['HTTPS']=='on' ) $query = $self->getRequestUri(ENFORCE_SSL, $domain).$query;
 
