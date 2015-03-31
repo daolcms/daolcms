@@ -187,12 +187,14 @@
 						if(is_array($value)) $values = $value;
 						elseif(strpos($value,'|@|')!==false) $values = explode('|@|', $value);
 						elseif(strpos($value,',')!==false) $values = explode(',', $value);
-						$values[0] = $values[0];
-						$values[1] = $values[1];
-						$values[2] = $values[2];
+
+						$values = array_values($values);
+						for($i = 0, $c = count($values); $i < $c; $i++)
+						{
+							$values[$i] = trim(htmlspecialchars($values[$i], ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
+						}
+
 						return $values;
-					break;
-					break;
 				case 'checkbox' :
 				case 'radio' :
 				case 'select' :
@@ -202,13 +204,18 @@
 						else $values = array($value);
 						for($i=0;$i<count($values);$i++) $values[$i] = trim(htmlspecialchars($values[$i], ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
 						return $values;
-					break;
 				case 'kr_zip' :
 						if(is_array($value)) $values = $value;
 						elseif(strpos($value,'|@|')!==false) $values = explode('|@|', $value);
 						else $values = array($value);
+
+						$values = array_values($values);
+						for($i = 0, $c = count($values); $i < $c; $i++)
+						{
+							$values[$i] = trim(htmlspecialchars($values[$i], ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
+						}
+
 						return $values;
-					break;
 				//case 'date' :
 				//case 'email_address' :
 				//case 'text' :
