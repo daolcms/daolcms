@@ -26,6 +26,8 @@
 	 */
 	define('__XE_VERSION__', '1.5.4.7');
 
+	define('__DAOL_MIN_PHP_VERSION__', '5.3.0');
+
 	/**
 	 * @deprecated __ZBXE_VERSION__ will be removed. Use __XE_VERSION__ instead.
 	 */
