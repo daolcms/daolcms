@@ -600,7 +600,7 @@
 		/**
 		 * @brief Insert skin vars to a module
 		 **/
-		function _insertModuleSkinVars($module_srl, $obj, $mode) {
+		function _insertModuleSkinVars($module_srl, $obj, $mode){
 			$mode = $mode === 'P' ? 'P' : 'M';
 
 			$oDB = DB::getInstance();
@@ -612,9 +612,11 @@
 				$oDB->rollback();
 				return $output;
 			}
-
+			
+			getDestroyXeVars($obj);
 			if(!$obj || !count($obj)) return new Object();
 
+			$args = new stdClass;
 			$args->module_srl = $module_srl;
 			foreach($obj as $key => $val) {
 				// #17927989 For an old board which used the old blog module
@@ -698,6 +700,7 @@
 		 **/
 		function insertModuleExtraVars($module_srl, $obj) {
 			$this->deleteModuleExtraVars($module_srl);
+			getDestroyXeVars($obj);
 			if(!$obj || !count($obj)) return;
 
 			foreach($obj as $key => $val) {
