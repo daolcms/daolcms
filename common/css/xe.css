@@ -37,7 +37,7 @@ button[type=button].text{border:0;overflow:visible;padding:0;margin:0 4px 0 0;co
 #popup_menu_area a:focus{text-decoration:underline}
 /* Message */
 .message{border:1px solid #ddd;background:#f8f8f8;margin:1em 0;padding:0 1em;border-radius:5px;line-height:1.4;font-size:12px}
-.message p{margin:1em 0 !important}
+.message p{margin:1em 0 !important;color:#333}
 .message em{font-style:normal;color:#e00}
 .message.info,
 .message.error,
