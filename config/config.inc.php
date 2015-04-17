@@ -20,12 +20,15 @@
 	/**
 	 * Display the version info of DAOL CMS.
 	 */
-	define('__DAOL_VERSION__', '1.0.0.10');
+	define('__DAOL_VERSION__', '1.0.0.11');
 	/**
-	 * Display XE's full version.
+	 * Display the version info of XE(XDT EX).
 	 */
 	define('__XE_VERSION__', '1.5.4.7');
-
+	
+	/**
+	 * Recommended version of PHP.
+	 */
 	define('__DAOL_MIN_PHP_VERSION__', '5.3.0');
 
 	/**
