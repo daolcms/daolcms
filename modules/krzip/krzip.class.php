@@ -1,62 +1,44 @@
 <?php
-/* Copyright (C) DAOL Project <http://www.daolcms.org> */
 /* Copyright (C) NAVER <http://www.navercorp.com> */
+/* Copyright (C) DAOL Project <http://www.daolcms.org> */
+/**
+ * @class  krzip
+ * @author NAVER (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
+ * @brief  Krzip module high class.
+ */
 
-	/**
-	 * @class  krzip
-	 * @author NAVER (developers@xpressengine.com)
-	 * @Adaptor DAOL Project (developer@daolcms.org)
-	 * @brief Super class of krzip, which is a zip code search module
-	 **/
-
-	class krzip extends ModuleObject {
-
-		var $hostname = 'krzip.xpressengine.com';
-		var $query = '/server.php';
-		
-		/**
-		 * @brief Implement if additional tasks are necessary when installing
-		 **/
-		function moduleInstall() {
-			return new Object();
-		}
-
-		/**
-		 * @brief a method to check if successfully installed
-		 **/
-		function checkUpdate() {
-			
-			$oModuleModel = getModel('module');
-			$config = $oModuleModel->getModuleConfig('krzip');
-			if($config->krzip_server_hostname == 'kr.zip.zeroboard.com') return true;
-			
-			return false;
-		}
-
-		/**
-		 * @brief Execute update
-		 **/
-		function moduleUpdate() {
-			
-			$oModuleModel = getModel('module');
-			$config = $oModuleModel->getModuleConfig('krzip');
-			if($config->krzip_server_hostname == 'kr.zip.zeroboard.com')
-			{
-				$config->krzip_server_hostname = $this->hostname;
-				$config->krzip_server_query = $this->query;
-				
-				// Insert by creating the module Controller object
-				$oModuleController = getController('module');
-				$output = $oModuleController->insertModuleConfig('krzip',$config);
-			}
-			
-			return new Object(0, 'success_updated');
-		}
-
-		/**
-		 * @brief Re-generate the cache file
-		 **/
-		function recompileCache() {
-		}
+if(!function_exists('lcfirst')){
+	function lcfirst($text){
+		return strtolower(substr($text, 0, 1)) . substr($text, 1);
 	}
-?>
+}
+
+class krzip extends ModuleObject {
+	public static $sequence_id = 0;
+
+	public static $default_config = array('api_handler' => 0);
+
+	public static $api_list = array('daumapi', 'epostapi');
+
+	public static $epostapi_host = 'http://biz.epost.go.kr/KpostPortal/openapi';
+
+	function moduleInstall(){
+		return new Object();
+	}
+
+	function moduleUninstall(){
+		return new Object();
+	}
+
+	function checkUpdate(){
+		return FALSE;
+	}
+
+	function moduleUpdate(){
+		return new Object();
+	}
+}
+
+/* End of file krzip.class.php */
+/* Location: ./modules/krzip/krzip.class.php */

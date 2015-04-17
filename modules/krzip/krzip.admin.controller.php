@@ -1,43 +1,40 @@
 <?php
-/* Copyright (C) DAOL Project <http://www.daolcms.org> */
 /* Copyright (C) NAVER <http://www.navercorp.com> */
+/* Copyright (C) DAOL Project <http://www.daolcms.org> */
+/**
+ * @class  krzipAdminController
+ * @author NAVER (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
+ * @brief  Krzip module admin controller class.
+ */
 
-	/**
-	 * @class  krzipAdminController
-	 * @author NAVER (developers@xpressengine.com)
-	 * @Adaptor DAOL Project (developer@daolcms.org)
-	 * @brief admin controller class of the krzip module 
-	 **/
+class krzipAdminController extends krzip {
+	function procKrzipAdminInsertConfig(){
+		$module_config = Context::getRequestVars();
+		getDestroyXeVars($module_config);
+		unset($module_config->module);
+		unset($module_config->act);
+		unset($module_config->mid);
+		unset($module_config->vid);
 
-	class krzipAdminController extends krzip {
-
-		/**
-		 * @brief Initialization
-		 **/
-		function init() {
+		$oKrzipController = getController('krzip');
+		$output = $oKrzipController->updateConfig($module_config);
+		if(!$output->toBool()){
+			return $output;
 		}
 
-		/**
-		 * @brief Configuration
-		 **/
-		function procKrzipAdminInsertConfig() {
-			// Get the basic information
-			$args = Context::gets('krzip_server_hostname','krzip_server_query');
-			if(!$args->krzip_server_hostname) $args->krzip_server_hostname = $this->hostname;
-			if(!$args->krzip_server_query) $args->krzip_server_query = $this->query;
-			// Insert by creating the module Controller object
-			$oModuleController = getController('module');
-			$output = $oModuleController->insertModuleConfig('krzip',$args);
-
-			if(!$output->toBool()) return $output;
-
-			$this->setMessage('success_registed');
-			if (Context::get('success_return_url')){
-				$this->setRedirectUrl(Context::get('success_return_url'));
-			}else{
-				$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'krzip', 'act', 'dispKrzipAdminConfig'));
-			}
+		$success_return_url = Context::get('success_return_url');
+		if($success_return_url){
+			$return_url = $success_return_url;
 		}
-		
+		else{
+			$return_url = getNotEncodedUrl('', 'module', 'krzip', 'act', 'dispKrzipAdminConfig');
+		}
+
+		$this->setMessage('success_registed');
+		$this->setRedirectUrl($return_url);
 	}
-?>
+}
+
+/* End of file krzip.admin.controller.php */
+/* Location: ./modules/krzip/krzip.admin.controller.php */

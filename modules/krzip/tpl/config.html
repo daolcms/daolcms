@@ -1,0 +1,40 @@
+<!--// HEADER -->
+<load target="./js/admin.js" />
+
+<h3 class="xeAdmin">{$lang->krzip}</h3>
+
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/krzip/tpl/config/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
+<!--// BODY -->
+<form ruleset="krzipConfig" action="{getUrl('')}" method="post">
+	<input type="hidden" name="module" value="krzip" />
+	<input type="hidden" name="act" value="procKrzipAdminInsertConfig" />
+	<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
+	<input type="hidden" name="xe_validator_id" value="modules/krzip/tpl/config/1" />
+	<table cellspacing="0" class="rowTable">
+		<h2>{$lang->subtitle_primary}</h1>
+		<tr>
+			<th scope="row"><div>{$lang->cmd_krzip_api_type}</div></th>
+			<td>
+				<select name="api_handler" id="api_handler">
+					<option value="0">{$lang->cmd_krzip_daumapi}</option>
+					<option value="1" selected="selected"|cond="$module_config->api_handler == 1">{$lang->cmd_krzip_epostapi}</option>
+				</select>
+				<p>{$lang->about_krzip_api_handler}</p>
+			<td>
+		</tr>
+		<tr>
+			<th scope="row"><div>{$lang->cmd_krzip_regkey}</div></th>
+			<td>
+				<input type="text" name="epostapi_regkey" id="epostapi_regkey" value="{htmlspecialchars($module_config->epostapi_regkey, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE)}" disabled="disabled"|cond="$module_config->api_handler != 1" />
+				<p>{$lang->about_krzip_epostapi_regkey}</p>
+			<td>
+		</tr>
+	</table>
+	<div class="btnArea">
+		<span class="btn"><input type="submit" value="{$lang->cmd_apply}" /></span>
+	</div>
+</form>
+	
