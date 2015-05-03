@@ -2225,5 +2225,27 @@
 			$this->setTemplatePath($this->module_path.'tpl');
 			$this->setTemplateFile('msg_success_modify_email_address');
 		}
+		
+		function _clearMemberCache($member_srl, $site_srl = 0){
+			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+			if($oCacheHandler->isSupport()){
+				$object_key = 'member_groups:' . getNumberingPath($member_srl) . $member_srl . '_' . $site_srl;
+				$cache_key = $oCacheHandler->getGroupKey('member', $object_key);
+				$oCacheHandler->delete($cache_key);
+
+				if($site_srl !== 0){
+					$object_key = 'member_groups:' . getNumberingPath($member_srl) . $member_srl . '_0';
+					$cache_key = $oCacheHandler->getGroupKey('member', $object_key);
+					$oCacheHandler->delete($cache_key);
+				}
+			}
+
+			$oCacheHandler = CacheHandler::getInstance('object');
+			if($oCacheHandler->isSupport()){
+				$object_key = 'member_info:' . getNumberingPath($member_srl) . $member_srl;
+				$cache_key = $oCacheHandler->getGroupKey('member', $object_key);
+				$oCacheHandler->delete($cache_key);
+			}
+		}
 	}
 ?>
