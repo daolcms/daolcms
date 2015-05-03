@@ -852,10 +852,10 @@
 				if($output->toBool() && $output->data->count != '0') return new Object(-1, 'msg_user_not_confirmed');
 			}
 			// Insert data into the authentication DB
+			$oPassword = new Password();
 			$args->user_id = $member_info->user_id;
 			$args->member_srl = $member_info->member_srl;
-			$args->new_password = rand(111111,999999);
-			$args->auth_key = md5( rand(0,999999 ) );
+			$args->auth_key = $oPassword->createSecureSalt(40);
 			$args->is_register = 'N';
 
 			$output = executeQuery('member.insertAuthMail', $args);
@@ -948,10 +948,9 @@
 			}
 
 			// Update to a temporary password and set change_password_date to 1
+			
+			$args = new stdClass();
 			$args->member_srl = $member_srl;
-			list($usec, $sec) = explode(" ", microtime());
-			$temp_password = substr(md5($user_id . $member_info->find_account_answer. $usec . $sec),0,15);
-
 			$args->password = $temp_password;
 			$args->change_password_date = '1';
 			$output = $this->updateMemberPassword($args);
@@ -1028,7 +1027,7 @@
 			if($output->toBool() && $output->data->count == '0') return new Object(-1, 'msg_invalid_request');
 			// Insert data into the authentication DB
 			$auth_args->member_srl = $member_srl;
-			$auth_args->auth_key = md5(rand(0, 999999));
+			$auth_args->auth_key = $oPassword->createSecureSalt(40);
 
 			$output = executeQuery('member.updateAuthMail', $auth_args);
 			if(!$output->toBool()){
@@ -1190,10 +1189,12 @@
 			}
 
 			// generate new auth key
+			$oPassword = new Password();
+			$auth_args = new stdClass();
 			$auth_args->user_id = $memberInfo->user_id;
 			$auth_args->member_srl = $memberInfo->member_srl;
 			$auth_args->new_password = $memberInfo->password;
-			$auth_args->auth_key = md5( rand(0,999999 ) );
+			$auth_args->auth_key = $oPassword->createSecureSalt(40);
 			$auth_args->is_register = 'Y';
 
 			$output = executeQuery('member.insertAuthMail', $auth_args);
@@ -1836,10 +1837,12 @@
 			// When using email authentication mode (when you subscribed members denied a) certified mail sent
 			if($args->denied == 'Y'){
 				// Insert data into the authentication DB
+				$oPassword = new Password();
+				$auth_args = new stdClass();
 				$auth_args->user_id = $args->user_id;
 				$auth_args->member_srl = $args->member_srl;
 				$auth_args->new_password = $args->password;
-				$auth_args->auth_key = md5(rand(0, 999999));
+				$auth_args->auth_key = $oPassword->createSecureSalt(40);
 				$auth_args->is_register = 'Y';
 
 				$output = executeQuery('member.insertAuthMail', $auth_args);
