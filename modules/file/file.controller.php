@@ -256,7 +256,9 @@
 			
 			// Call a trigger (after)
 			$output = ModuleHandler::triggerCall('file.downloadFile', 'after', $file_obj);
-
+			
+			$random = new Password();
+			$file_key = $_SESSION['__XE_FILE_KEY__'][$file_srl] = $random->createSecureSalt(32, 'hex');
 			header('Location: '.getNotEncodedUrl('', 'act', 'procFileOutput','file_srl',$file_srl,'file_key',$file_key));
 			Context::close();
 			exit();
@@ -609,6 +611,9 @@
 				}
 			}
 
+			// Get random number generator
+			$random = new Password();
+			
 			// Set upload path by checking if the attachement is an image or other kinds of file
 			if(preg_match("/\.(jpe?g|gif|png|wm[va]|mpe?g|avi|swf|flv|mp[1-4]|as[fx]|wav|midi?|moo?v|qt|r[am]{1,2}|m4v)$/i", $file_info['name'])) {
 				// Immediately remove the direct file if it has any kind of extensions for hacking
@@ -618,10 +623,10 @@
 				$path = sprintf("./files/attach/images/%s/%s", $module_srl,getNumberingPath($upload_target_srl,3));
 
 				// special character to '_'
-				// change to md5 file name. because window php bug. window php is not recognize unicode character file name - by cherryfilter
+				// change to hash file name. because window php bug. window php is not recognize unicode character file name - by cherryfilter
 				$ext = substr(strrchr($file_info['name'],'.'),1);
 				//$_filename = preg_replace('/[#$&*?+%"\']/', '_', $file_info['name']);
-				$_filename = md5(crypt(rand(1000000,900000), rand(0,100))).'.'.$ext;
+				$_filename = $random->createSecureSalt(32, 'hex').'.'.$ext;
 				$filename  = $path.$_filename;
 				$idx = 1;
 				while(file_exists($filename)){
@@ -632,7 +637,7 @@
 			}
 			else{
 				$path = sprintf("./files/attach/binaries/%s/%s", $module_srl, getNumberingPath($upload_target_srl,3));
-				$filename = $path.md5(crypt(rand(1000000,900000), rand(0,100)));
+				$filename = $path.$random->createSecureSalt(32, 'hex');
 				$direct_download = 'N';
 			}
 			// Create a directory
@@ -641,13 +646,13 @@
 			if($manual_insert) {
 				@copy($file_info['tmp_name'], $filename);
 				if(!file_exists($filename)) {
-					$filename = $path. md5(crypt(rand(1000000,900000).$file_info['name'])).'.'.$ext;
+					$filename = $path.$random->createSecureSalt(32, 'hex').'.'.$ext;
 					@copy($file_info['tmp_name'], $filename);
 				}
 			}
 			else{
 				if(!@move_uploaded_file($file_info['tmp_name'], $filename)) {
-					$filename = $path. md5(crypt(rand(1000000,900000).$file_info['name'])).'.'.$ext;
+					$filename = $path.$random->createSecureSalt(32, 'hex').'.'.$ext;
 					if(!@move_uploaded_file($file_info['tmp_name'], $filename))  return new Object(-1,'msg_file_upload_error');
 				}
 			}
@@ -665,7 +670,7 @@
 			$args->file_size = @filesize($filename);
 			$args->comment = NULL;
 			$args->member_srl = $member_srl;
-			$args->sid = md5(rand(rand(1111111,4444444),rand(4444445,9999999)));
+			$args->sid = $random->createSecureSalt(32, 'hex');
 
 			$output = executeQuery('file.insertFile', $args);
 			if(!$output->toBool()) return $output;
@@ -817,7 +822,8 @@
 					$new_file = $path.$file_info->source_filename;
 				} else {
 					$path = sprintf("./files/attach/binaries/%s/%s/", $target_module_srl, $target_srl);
-					$new_file = $path.md5(crypt(rand(1000000,900000), rand(0,100)));
+					$random = new Password();
+					$new_file = $path.$random->createSecureSalt(32, 'hex');
 				}
 				// Pass if a target document to move is same
 				if($old_file == $new_file) continue;
