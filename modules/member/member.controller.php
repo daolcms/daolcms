@@ -974,34 +974,46 @@
 		 * @return void|Object (void : success, Object : fail)
 		 **/
 		function procMemberAuthAccount(){
+			$oMemberModel = getModel('member');
+			
 			// Test user_id and authkey
 			$member_srl = Context::get('member_srl');
 			$auth_key = Context::get('auth_key');
-			if(!$member_srl || !$auth_key) return $this->stop('msg_invalid_request');
+			if(!$member_srl || !$auth_key){
+				return $this->stop('msg_invalid_request'); 
+			}
 			// Test logs for finding password by user_id and authkey
 			$args->member_srl = $member_srl;
 			$args->auth_key = $auth_key;
 			$output = executeQuery('member.getAuthMail', $args);
 			if(!$output->toBool() || $output->data->auth_key != $auth_key){
-				if(strlen($output->data->auth_key) !== strlen($auth_key)) executeQuery('member.deleteAuthMail', $args);
+				if(strlen($output->data->auth_key) !== strlen($auth_key)){
+					executeQuery('member.deleteAuthMail', $args);
+				}
 				return $this->stop('msg_invalid_auth_key');
 			}
+			
+			$args->password = $output->data->new_password; 
+			
 			// If credentials are correct, change the password to a new one
 			if($output->data->is_register == 'Y'){
-				$args->password = $output->data->new_password;
 				$args->denied = 'N';
 			}
 			else {
-				$args->password = getModel('member')->hashPassword($args->password);
-				unset($args->denied);
+				$args->password = $oMemberModel->hashPassword($args->password);
 			}
 			// Back up the value of $Output->data->is_register
 			$is_register = $output->data->is_register;
 
 			$output = executeQuery('member.updateMemberPassword', $args);
-			if(!$output->toBool()) return $this->stop($output->getMessage());
+			if(!$output->toBool()){
+				return $this->stop($output->getMessage());
+			}
 			// Remove all values having the member_srl from authentication table
 			executeQuery('member.deleteAuthMail',$args);
+			
+			$this->_clearMemberCache($args->member_srl); 
+			
 			// Notify the result
 			Context::set('is_register', $is_register);
 			$this->setTemplatePath($this->module_path.'tpl');
