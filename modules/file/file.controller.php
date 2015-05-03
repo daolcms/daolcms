@@ -215,13 +215,12 @@
 
 			// Check if a permission for file download is granted
 			$downloadGrantCount = 0;
-			if(is_array($file_module_config->download_grant))
-			{
+			if(is_array($file_module_config->download_grant)){
 				foreach($file_module_config->download_grant AS $value)
 					if($value) $downloadGrantCount++;
 			}
 
-			if(is_array($file_module_config->download_grant) && $downloadGrantCount>0) {
+			if(is_array($file_module_config->download_grant) && $downloadGrantCount>0){
 				if(!Context::get('is_logged')) return $this->stop('msg_not_permitted_download');
 				$logged_info = Context::get('logged_info');
 				if($logged_info->is_admin != 'Y') {
@@ -230,8 +229,7 @@
 					$columnList = array('module_srl', 'site_srl');
 					$module_info = $oModuleModel->getModuleInfoByModuleSrl($file_obj->module_srl, $columnList);
 
-					if(!$oModuleModel->isSiteAdmin($logged_info, $module_info->site_srl))
-					{
+					if(!$oModuleModel->isSiteAdmin($logged_info, $module_info->site_srl)){
 						$oMemberModel =& getModel('member');
 						$member_groups = $oMemberModel->getMemberGroups($logged_info->member_srl, $module_info->site_srl);
 
@@ -250,44 +248,75 @@
 			// Call a trigger (before)
 			$output = ModuleHandler::triggerCall('file.downloadFile', 'before', $file_obj);
 			if(!$output->toBool()) return $this->stop(($output->message)?$output->message:'msg_not_permitted_download');
-			// File Output
-			if(strstr($_SERVER['HTTP_USER_AGENT'], 'MSIE') || (strstr($_SERVER['HTTP_USER_AGENT'], 'Windows') && strstr($_SERVER['HTTP_USER_AGENT'], 'Trident') && strstr($_SERVER['HTTP_USER_AGENT'], 'rv'))) {
-				$filename = rawurlencode($filename);
-				$filename = preg_replace('/\./', '%2e', $filename, substr_count($filename, '.') - 1);
-			}
-
-			$uploaded_filename = $file_obj->uploaded_filename;
-			if(!file_exists($uploaded_filename)) return $this->stop('msg_file_not_found');
-
-			$fp = fopen($uploaded_filename, 'rb');
-			if(!$fp) return $this->stop('msg_file_not_found');
-
-			header("Cache-Control: "); 
-			header("Pragma: "); 
-			header("Content-Type: application/octet-stream"); 
-			header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); 
-
-			header("Content-Length: " .(string)($file_obj->file_size)); 
-			header('Content-Disposition: attachment; filename="'.$filename.'"'); 
-			header("Content-Transfer-Encoding: binary\n"); 
-
-			// if file size is lager than 10MB, use fread function (#18675748)
-			if (filesize($uploaded_filename) > 1024 * 1024){
-				while(!feof($fp)) echo fread($fp, 1024);
-				fclose($fp);
-			}
-			else{
-				fpassthru($fp); 
-			}
 
 			// Increase download_count
 			$args = new stdClass();
 			$args->file_srl = $file_srl;
 			executeQuery('file.updateFileDownloadCount', $args);
+			
 			// Call a trigger (after)
 			$output = ModuleHandler::triggerCall('file.downloadFile', 'after', $file_obj);
 
+			header('Location: '.getNotEncodedUrl('', 'act', 'procFileOutput','file_srl',$file_srl,'file_key',$file_key));
 			Context::close();
+			exit();
+		}
+		
+		function procFileOutput(){
+			$oFileModel = getModel('file');
+			$file_srl = Context::get('file_srl');
+			$file_key = Context::get('file_key');
+			if(strstr($_SERVER['HTTP_USER_AGENT'], "Android")) $is_android = true;
+
+			if($is_android && $_SESSION['__XE_FILE_KEY_AND__'][$file_srl]) $session_key = '__XE_FILE_KEY_AND__';
+			else $session_key = '__XE_FILE_KEY__';
+			$columnList = array('source_filename', 'uploaded_filename', 'file_size');
+			$file_obj = $oFileModel->getFile($file_srl, $columnList);
+
+			$uploaded_filename = $file_obj->uploaded_filename;
+
+			if(!file_exists($uploaded_filename)) return $this->stop('msg_file_not_found');
+
+			if(!$file_key || $_SESSION[$session_key][$file_srl] != $file_key){
+				unset($_SESSION[$session_key][$file_srl]);
+				return $this->stop('msg_invalid_request');
+			}
+
+			$file_size = $file_obj->file_size;
+			$filename = $file_obj->source_filename;
+			if(strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== FALSE || (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== FALSE && strpos($_SERVER['HTTP_USER_AGENT'], 'Trident') !== FALSE && strpos($_SERVER['HTTP_USER_AGENT'], 'rv:') !== FALSE)){
+				$filename = rawurlencode($filename);
+				$filename = preg_replace('/\./', '%2e', $filename, substr_count($filename, '.') - 1);
+			}
+
+			if($is_android){
+				if($_SESSION['__XE_FILE_KEY__'][$file_srl]) $_SESSION['__XE_FILE_KEY_AND__'][$file_srl] = $file_key;
+			}
+
+			unset($_SESSION[$session_key][$file_srl]);
+
+			Context::close();
+
+			$fp = fopen($uploaded_filename, 'rb');
+			if(!$fp) return $this->stop('msg_file_not_found');
+
+			header("Cache-Control: ");
+			header("Pragma: ");
+			header("Content-Type: application/octet-stream");
+			header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+
+			header("Content-Length: " .(string)($file_size));
+			header('Content-Disposition: attachment; filename="'.$filename.'"');
+			header("Content-Transfer-Encoding: binary\n");
+
+			// if file size is lager than 10MB, use fread function (#18675748)
+			if(filesize($uploaded_filename) > 1024 * 1024){
+				while(!feof($fp)) echo fread($fp, 1024);
+				fclose($fp);
+			}
+			else{
+				fpassthru($fp);
+			}
 
 			exit();
 		}
