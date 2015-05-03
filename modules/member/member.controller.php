@@ -990,7 +990,7 @@
 				$args->denied = 'N';
 			}
 			else {
-				$args->password = md5($output->data->new_password);
+				$args->password = getModel('member')->hashPassword($args->password);
 				unset($args->denied);
 			}
 			// Back up the value of $Output->data->is_register
@@ -1791,7 +1791,7 @@
 			$args->homepage = htmlspecialchars($args->homepage);
 			$args->blog = htmlspecialchars($args->blog);
 
-			if($args->password && !$password_is_hashed) $args->password = md5($args->password);
+			if($args->password && !$password_is_hashed) $args->password = $oMemberModel->hashPassword($args->password); 
 			elseif(!$args->password) unset($args->password);
 
 			if(!$args->user_id) $args->user_id = 't'.$args->member_srl;
@@ -1929,7 +1929,7 @@
 			$oDB->begin();
 			// DB in the update
 
-			if($args->password) $args->password = md5($args->password);
+			if($args->password) $args->password = $oMemberModel->hashPassword($args->password); 
 			else $args->password = $orgMemberInfo->password;
 			if(!$args->user_name) $args->user_name = $orgMemberInfo->user_name;
 			if(!$args->user_id) $args->user_id = $orgMemberInfo->user_id;
@@ -1997,26 +1997,21 @@
 		 **/
 		function updateMemberPassword($args){
 			$output = executeQuery('member.updateChangePasswordDate', $args);
-			//remove from cache
-			$oCacheHandler = &CacheHandler::getInstance('object');
-			if($oCacheHandler->isSupport()){
-				$cache_key = 'object:'.$args->member_srl;
-				$oCacheHandler->delete($cache_key);
-			}
 
 			if($args->password){
-				if($this->useSha1 && function_exists('sha1')){
-					$args->password = md5(sha1(md5($args->password)));
-				}
-				else{
-					$args->password = md5($args->password);
-				}
+				$args->password = $oMemberModel->hashPassword($args->password);
 			}
 			else if($args->hashed_password){
 				$args->password = $args->hashed_password;
 			}
 
-			return executeQuery('member.updateMemberPassword', $args);
+			$output = executeQuery('member.updateMemberPassword', $args);
+			if($output->toBool()){
+				$result = executeQuery('member.updateChangePasswordDate', $args);
+			}
+			$this->_clearMemberCache($args->member_srl);
+			
+			return $output;
 		}
 
 		/**

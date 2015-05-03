@@ -106,8 +106,10 @@
 		 *
 		 * @return void
 		 **/
-		function dispMemberAdminConfig() 
-		{
+		function dispMemberAdminConfig(){
+			$oPassword = new Password();
+			Context::set('password_hashing_algos', $oPassword->getSupportedAlgorithms());
+			
 			$oModuleModel = &getModel('module');
 			$oMemberModel = &getModel('member');
 			$config = $oMemberModel->getMemberConfig();

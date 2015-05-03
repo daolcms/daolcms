@@ -147,6 +147,9 @@
 				'enable_confirm',
 				'webmaster_name',
 				'webmaster_email',
+				'password_hashing_algorithm',
+				'password_hashing_work_factor',
+				'password_hashing_auto_upgrade',
 				'limit_day',
 				'change_password_date',
 				'enable_login_fail_report',
@@ -165,13 +168,29 @@
 				'image_mark', 'image_mark_max_width', 'image_mark_max_height',
 				'signature_editor_skin', 'sel_editor_colorset'
 			);
-
+			
+			$oPassword = new Password();
+			if(!array_key_exists($args->password_hashing_algorithm, $oPassword->getSupportedAlgorithms())){
+				$args->password_hashing_algorithm = 'md5';
+			}
+			
+			$args->password_hashing_work_factor = intval($args->password_hashing_work_factor, 10);
+			if($args->password_hashing_work_factor < 4){
+				$args->password_hashing_work_factor = 4;
+			}
+			if($args->password_hashing_work_factor > 16){
+				$args->password_hashing_work_factor = 16;
+			}
+			if($args->password_hashing_auto_upgrade != 'Y'){
+				$args->password_hashing_auto_upgrade = 'N';
+			}
+		
 			$list_order = Context::get('list_order');
 			$usable_list = Context::get('usable_list');
 			$all_args = Context::getRequestVars();
 
-			$oModuleController = &getController('module');
-			$oMemberModel = &getModel('member');
+			$oModuleController = getController('module');
+			$oMemberModel = getModel('member');
 
 			// default setting start
 			$args = $input_args;
