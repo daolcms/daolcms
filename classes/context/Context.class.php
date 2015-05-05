@@ -277,8 +277,6 @@ class Context {
 		else $this->allow_rewrite = false;
 
 		// set locations for javascript use
-		$url = array();
-		$current_url = Context::getRequestUri();
 		if($_SERVER['REQUEST_METHOD'] == 'GET'){
 			if($this->get_vars){
 				foreach($this->get_vars as $key=>$val){
@@ -291,17 +289,15 @@ class Context {
 						$url .= ($url?'&':'').$key.'='.urlencode($val);
 					}
 				}
-				$current_url = Context::getRequestUri();
-				if($url) $current_url .= '?' . join('&', $url);
+				$this->set('current_url',sprintf('%s?%s', Context::getRequestUri(), $url));
 			}
 			else{
-				$current_url = $this->getUrl();
+				$this->set('current_url',$this->getUrl());
 			}
 		}
 		else{
-			$current_url = Context::getRequestUri();
+			$this->set('current_url',$this->getUrl());
 		}
-		$this->set('current_url', $current_url);
 		$this->set('request_uri',Context::getRequestUri());
 	}
 
@@ -890,7 +886,6 @@ class Context {
 
 		foreach($_REQUEST as $key => $val) {
 			if($val === '' || Context::get($key)) continue;
-			$key = htmlentities($key);
 			$val = $this->_filterRequestVar($key, $val);
 
 			if($this->getRequestMethod()=='GET'&&isset($_GET[$key])) $set_to_vars = true;
