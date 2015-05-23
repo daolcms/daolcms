@@ -52,18 +52,24 @@
 			$group_list = $oMemberModel->getGroups();
 
 			// Per-level group configurations
-			foreach($group_list as $group)
-			{
+			foreach($group_list as $group){
 				// Admin group should not be connected to point.
 				if($group->is_admin == 'Y' || $group->is_default == 'Y') continue;
 
 				$group_srl = $group->group_srl;
-				if($args->{'point_group_'.$group_srl})
-				{
+				
+				if(isset($args->{'point_group_'.$group_srl})){
+					//if group level is higher than max level, change to max level
+					if($args->{'point_group_'.$group_srl} > $args->max_level){
+						$args->{'point_group_'.$group_srl} = $args->max_level;
+					}
+					//if group level is lower than 1, change to 1
+					if($args->{'point_group_'.$group_srl} < 1){
+						$args->{'point_group_'.$group_srl} = 1;
+					}
 					$config->point_group[$group_srl] = $args->{'point_group_'.$group_srl};
 				}
-				else
-				{
+				else{
 					unset($config->point_group[$group_srl]);
 				}
 			}
