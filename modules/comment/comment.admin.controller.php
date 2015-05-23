@@ -373,7 +373,9 @@
 
 			//already comment deleted, therefore only comment log delete
 			$oCommentController = &getController('comment');
-			$output = $oCommentController->deleteCommentLog($oComment->get('comment_srl'));
+			$args = new stdClass();
+			$args->comment_srl = $oComment->get('comment_srl');
+			$output = $oCommentController->deleteCommentLog($args);
 			return $output;
 		}
 	}
