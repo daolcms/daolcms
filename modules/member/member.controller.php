@@ -2016,8 +2016,6 @@
 		 * Modify member password
 		 **/
 		function updateMemberPassword($args){
-			$output = executeQuery('member.updateChangePasswordDate', $args);
-
 			if($args->password){
 				$args->password = $oMemberModel->hashPassword($args->password);
 			}
@@ -2029,6 +2027,7 @@
 			if($output->toBool()){
 				$result = executeQuery('member.updateChangePasswordDate', $args);
 			}
+			
 			$this->_clearMemberCache($args->member_srl);
 			
 			return $output;
