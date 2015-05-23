@@ -211,12 +211,15 @@
 
 			$this->_setSearchOption($obj, $args, $query_id, $use_division);
 
-			if ($sort_check->isExtraVars)
-			{
+			if($sort_check->isExtraVars && substr_count($obj->search_target,'extra_vars')){
+				$query_id = 'document.getDocumentListWithinExtraVarsExtraSort';
+				$args->sort_index = str_replace('documents.','',$args->sort_index);
 				$output = executeQueryArray($query_id, $args);
 			}
-			else
-			{
+			elseif($sort_check->isExtraVars){
+				$output = executeQueryArray($query_id, $args);
+			}
+			else{
 				// document.getDocumentList query execution
 				// Query_id if you have a group by clause getDocumentListWithinTag getDocumentListWithinComment or used again to perform the query because
 				$groupByQuery = array('document.getDocumentListWithinComment' => 1, 'document.getDocumentListWithinTag' => 1);
