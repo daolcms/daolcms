@@ -18,8 +18,8 @@
 		 **/
 		function procBoardAdminInsertBoard($args = null) {
 			// generate module model/controller object
-			$oModuleController = &getController('module');
-			$oModuleModel = &getModel('module');
+			$oModuleController = getController('module');
+			$oModuleModel = getModel('module');
 
 			// setup the board module infortmation
 			$args = Context::getRequestVars();
@@ -68,7 +68,7 @@
 			$module_srl = Context::get('module_srl');
 
 			// get the current module
-			$oModuleController = &getController('module');
+			$oModuleController = getController('module');
 			$output = $oModuleController->deleteModule($module_srl);
 			if(!$output->toBool()) return $output;
 
@@ -93,7 +93,7 @@
 				$list_arr[] = $val;
 			}
 
-			$oModuleController = &getController('module');
+			$oModuleController = getController('module');
 			$oModuleController->insertModulePartConfig('board', $module_srl, $list_arr);
 
 			$this->setRedirectUrl(Context::get('success_return_url'));
