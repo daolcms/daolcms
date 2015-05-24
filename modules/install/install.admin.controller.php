@@ -81,8 +81,8 @@
 				$admin_ip_list = '';
 			}
 
-	        $db_info = Context::getDBInfo();
-	        $db_info->default_url = Context::get('default_url');
+			$db_info = Context::getDBInfo();
+			$db_info->default_url = Context::get('default_url');
 			if($db_info->default_url && strncasecmp('http://', $default_url, 7) !== 0 && strncasecmp('https://', $default_url, 8) !== 0) $default_url = 'http://'.$default_url;
 			if($db_info->default_url && substr($default_url, -1) !== '/') $default_url = $default_url.'/';
 			
@@ -91,15 +91,15 @@
 			$IDN = new idna_convert(array('idn_version' => 2008));
 			$db_info->default_url = $IDN->encode($default_url);
 			
-	        $db_info->time_zone = $time_zone;
-	        $db_info->qmail_compatibility = $qmail_compatibility;
-	        $db_info->use_db_session = $use_db_session;
-	        $db_info->use_rewrite = $use_rewrite;
-	        $db_info->use_sso = $use_sso;
-	        $db_info->use_ssl = $use_ssl;
-	        $db_info->use_html5 = $use_html5;
-	        $db_info->use_mobile_view = $use_mobile_view;
-	        $db_info->admin_ip_list = $admin_ip_list;
+			$db_info->time_zone = $time_zone;
+			$db_info->qmail_compatibility = $qmail_compatibility;
+			$db_info->use_db_session = $use_db_session;
+			$db_info->use_rewrite = $use_rewrite;
+			$db_info->use_sso = $use_sso;
+			$db_info->use_ssl = $use_ssl;
+			$db_info->use_html5 = $use_html5;
+			$db_info->use_mobile_view = $use_mobile_view;
+			$db_info->admin_ip_list = $admin_ip_list;
 
 			if($http_port) $db_info->http_port = (int) $http_port;
 			else if($db_info->http_port) unset($db_info->http_port);
