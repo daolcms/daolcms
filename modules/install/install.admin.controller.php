@@ -89,7 +89,7 @@
 			/* convert NON Alphabet URL to punycode URL - Alphabet URL will not be changed */
 			require_once(_XE_PATH_ . 'libs/idna_convert/idna_convert.class.php');
 			$IDN = new idna_convert(array('idn_version' => 2008));
-			$db_info->default_url = $IDN->encode($default_url);
+			$db_info->default_url = $IDN->encode($db_info->default_url);
 			
 			$db_info->time_zone = $time_zone;
 			$db_info->qmail_compatibility = $qmail_compatibility;
