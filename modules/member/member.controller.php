@@ -383,6 +383,10 @@
 
 			if(!$this->memberInfo->password)
 			{
+				// Get information of logged-in user
+				$logged_info = Context::get('logged_info');
+				$member_srl = $logged_info->member_srl;
+				
 				$columnList = array('member_srl', 'password');
 	            $memberInfo = $oMemberModel->getMemberInfoByMemberSrl($member_srl, 0, $columnList);
 				$this->memberInfo->password = $memberInfo->password;
