@@ -401,6 +401,7 @@
 		 * 
 		 * @return void|Object (void : success, Object : fail)
 		 **/
+		function procMemberModifyInfo(){
 			if(!Context::get('is_logged')){
 				return $this->stop('msg_not_logged');
 			}
@@ -794,6 +795,7 @@
 		 *
 		 * @return Object
 		 **/
+		function procMemberDeleteImageMark($_memberSrl = 0){
 			$member_srl = ($_memberSrl) ? $_memberSrl : Context::get('member_srl');
 			if(!$member_srl){
 				return new Object(0,'success');
@@ -1565,6 +1567,7 @@
 			// Password Check
 			if($password && !$oMemberModel->isValidPassword($this->memberInfo->password, $password, $this->memberInfo->member_srl)) return $this->recordMemberLoginError(-1, 'invalid_password',$this->memberInfo);
 			// If denied == 'Y', notify
+			if($this->memberInfo->denied == 'Y'){
 				$args->member_srl = $this->memberInfo->member_srl;
 				$output = executeQuery('member.chkAuthMail', $args);
 				if($output->toBool() && $output->data->count != '0'){
