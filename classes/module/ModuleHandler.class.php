@@ -126,7 +126,7 @@
 					if($this->mid != $module_info->mid) {
 						$this->mid = $module_info->mid;
 						Context::set('mid', $module_info->mid, true);
-						header('location:' . getNotEncodedSiteUrl($site_info->domain, 'mid', $this->mid, 'document_srl', $this->document_srl));
+						header('location:' . getNotEncodedSiteUrl($site_module_info->domain, 'mid', $this->mid, 'document_srl', $this->document_srl));
 						return false;
 					}
 				}
