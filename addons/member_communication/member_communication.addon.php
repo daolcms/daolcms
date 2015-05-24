@@ -62,10 +62,10 @@ if($called_position == 'before_module_init' && $this->module != 'member') {
 		$logged_info = Context::get('logged_info');
 		// Add a menu for sending message
 		if( $logged_info->is_admin == 'Y' || $target_member_info->allow_message =='Y' || ($target_member_info->allow_message == 'F' && $oCommunicationModel->isFriend($member_srl)))
-			$oMemberController->addMemberPopupMenu(getUrl('','module','communication','act','dispCommunicationSendMessage','receiver_srl',$member_srl), 'cmd_send_message', '', 'popup');
+			$oMemberController->addMemberPopupMenu(getUrl('','mid','Context::get('cur_mid')','act','dispCommunicationSendMessage','receiver_srl',$member_srl), 'cmd_send_message', '', 'popup');
 		// Add a menu for listing friends (if a friend is new)
 		if(!$oCommunicationModel->isAddedFriend($member_srl))
-			$oMemberController->addMemberPopupMenu(getUrl('','module','communication','act','dispCommunicationAddFriend','target_srl',$member_srl), 'cmd_add_friend', '', 'popup');
+			$oMemberController->addMemberPopupMenu(getUrl('','mid','Context::get('cur_mid')','act','dispCommunicationAddFriend','target_srl',$member_srl), 'cmd_add_friend', '', 'popup');
 	}
 }
 ?>
