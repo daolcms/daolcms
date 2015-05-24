@@ -303,6 +303,14 @@ class Context {
 		}
 		$this->set('current_url', $current_url);
 		$this->set('request_uri',Context::getRequestUri());
+		
+		if(strpos($current_url, 'xn--') !== FALSE){
+			$this->set('current_url', Context::decodeIdna($current_url));
+		}
+		
+		if(strpos(Context::getRequestUri(), 'xn--') !== FALSE){
+			$this->set('request_uri', Context::decodeIdna(Context::getRequestUri()));
+		}
 	}
 
 	/**
@@ -818,6 +826,16 @@ class Context {
 		$obj->str = $str;
 		$obj = Context::convertEncoding($obj);
 		return $obj->str;
+	}
+
+	function decodeIdna($domain){
+		if(strpos($domain, 'xn--') !== FALSE){
+			require_once(_XE_PATH_ . 'libs/idna_convert/idna_convert.class.php');
+			$IDN = new idna_convert(array('idn_version' => 2008));
+			$domain = $IDN->decode($domain);
+		}
+		
+		return $domain;
 	}
 
 	/**
