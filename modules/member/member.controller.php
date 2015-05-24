@@ -33,8 +33,7 @@
 		 * @return void|Object (void : success, Object : fail)
 		 **/
 		function procMemberLogin($user_id = null, $password = null, $keep_signed = null){
-			if(!$user_id && !$password && Context::getRequestMethod() == 'GET')
-			{
+			if(!$user_id && !$password && Context::getRequestMethod() == 'GET'){
 				$this->setRedirectUrl(getNotEncodedUrl(''));
 				return new Object(-1, 'null_user_id');
 			}
@@ -69,12 +68,10 @@
 				}
 			}
 
-			if(!$config->after_login_url)
-			{
+			if(!$config->after_login_url){
 				$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', '');
 			}
-			else
-			{
+			else{
 				$returnUrl = $config->after_login_url;
 			}
 			return $this->setRedirectUrl($returnUrl, $output);
@@ -339,18 +336,14 @@
 			$trigger_output = ModuleHandler::triggerCall('member.procMemberInsert', 'after', $config);
 			if(!$trigger_output->toBool()) return $trigger_output;
 
-			if($config->redirect_url)
-			{
+			if($config->redirect_url){
 				$returnUrl = $config->redirect_url;
 			}
-			else
-			{
-				if(Context::get('success_return_url'))
-				{
+			else{
+				if(Context::get('success_return_url')){
 					$returnUrl = Context::get('success_return_url');
 				}
-				else if($_COOKIE['XE_REDIRECT_URL'])
-				{
+				else if($_COOKIE['XE_REDIRECT_URL']){
 					$returnUrl = $_COOKIE['XE_REDIRECT_URL'];
 					setcookie("XE_REDIRECT_URL", '', 1);
 				}
@@ -360,51 +353,43 @@
 		}
 
 
-		function procMemberModifyInfoBefore()
-		{
-			if($_SESSION['rechecked_password_step'] != 'INPUT_PASSWORD')
-			{
+		function procMemberModifyInfoBefore(){
+			if($_SESSION['rechecked_password_step'] != 'INPUT_PASSWORD'){
 				return $this->stop('msg_invalid_request');
 			}
 
-			if(!Context::get('is_logged'))
-			{
+			if(!Context::get('is_logged')){
 				return $this->stop('msg_not_logged');
 			}
 
 			$password = Context::get('password');
 
-			if(!$password)
-			{
+			if(!$password){
 				return $this->stop('msg_invalid_request');
 			}
 
 			$oMemberModel = &getModel('member');
 
-			if(!$this->memberInfo->password)
-			{
+			if(!$this->memberInfo->password){
 				// Get information of logged-in user
 				$logged_info = Context::get('logged_info');
 				$member_srl = $logged_info->member_srl;
 				
 				$columnList = array('member_srl', 'password');
-	            $memberInfo = $oMemberModel->getMemberInfoByMemberSrl($member_srl, 0, $columnList);
+				$memberInfo = $oMemberModel->getMemberInfoByMemberSrl($member_srl, 0, $columnList);
 				$this->memberInfo->password = $memberInfo->password;
 			}
 			// Verify the current password
-			if(!$oMemberModel->isValidPassword($this->memberInfo->password, $password))
-			{
+			if(!$oMemberModel->isValidPassword($this->memberInfo->password, $password)){
 				return new Object(-1, 'invalid_password');
 			}
 
 			$_SESSION['rechecked_password_step'] = 'VALIDATE_PASSWORD';
 
-			if(Context::get('success_return_url'))
-			{
+			if(Context::get('success_return_url')){
 				$redirectUrl = Context::get('success_return_url');
 			}
-			else
-			{
+			else{
 				$redirectUrl = getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', 'dispMemberModifyInfo');
 			}
 			$this->setRedirectUrl($redirectUrl);
@@ -416,15 +401,11 @@
 		 * 
 		 * @return void|Object (void : success, Object : fail)
 		 **/
-		function procMemberModifyInfo() 
-		{
-			if(!Context::get('is_logged'))
-			{
+			if(!Context::get('is_logged')){
 				return $this->stop('msg_not_logged');
 			}
 
-			if($_SESSION['rechecked_password_step'] != 'INPUT_DATA')
-			{
+			if($_SESSION['rechecked_password_step'] != 'INPUT_DATA'){
 				return $this->stop('msg_invalid_request');
 			}
 			unset($_SESSION['rechecked_password_step']);
@@ -813,18 +794,14 @@
 		 *
 		 * @return Object
 		 **/
-		function procMemberDeleteImageMark($_memberSrl = 0) 
-		{
 			$member_srl = ($_memberSrl) ? $_memberSrl : Context::get('member_srl');
-			if(!$member_srl)
-			{
+			if(!$member_srl){
 				return new Object(0,'success');
 			}
 
 			$logged_info = Context::get('logged_info');
 
-			if($logged_info && ($logged_info->is_admin == 'Y' || $logged_info->member_srl == $member_srl)) 
-			{
+			if($logged_info && ($logged_info->is_admin == 'Y' || $logged_info->member_srl == $member_srl)){
 				$oMemberModel = &getModel('member');
 				$image_mark = $oMemberModel->getImageMark($member_srl);
 				FileHandler::removeFile($image_mark->file);
@@ -1003,7 +980,7 @@
 			if($output->data->is_register == 'Y'){
 				$args->denied = 'N';
 			}
-			else {
+			else{
 				$args->password = $oMemberModel->hashPassword($args->password);
 			}
 			// Back up the value of $Output->data->is_register
@@ -1554,12 +1531,10 @@
 			$args->ipaddress = $_SERVER['REMOTE_ADDR'];
 			$output = executeQuery('member.getLoginCountByIp', $args);
 			$count = (int)$output->data->count;
-			if($config->max_error_count < $count)
-			{
+			if($config->max_error_count < $count){
 				$last_update = strtotime($output->data->last_update);
 				$term = intval(time()-$last_update);
-				if($term < $config->max_error_count_time)
-				{
+				if($term < $config->max_error_count_time){
 					$term = $config->max_error_count_time - $term;
 					if($term < 60) $term = intval($term).Context::getLang('unit_sec');
 					elseif(60 <= $term && $term < 3600) $term = intval($term/60).Context::getLang('unit_min');
@@ -1567,8 +1542,7 @@
 					else $term = intval($term/86400).Context::getLang('unit_day');
 					return new Object(-1, sprintf(Context::getLang('excess_ip_access_count'),$term));
 				}
-				else
-				{
+				else{
 					$args->ipaddress = $_SERVER['REMOTE_ADDR'];
 					$output = executeQuery('member.deleteLoginCountByIp', $args);
 				}
@@ -1591,12 +1565,9 @@
 			// Password Check
 			if($password && !$oMemberModel->isValidPassword($this->memberInfo->password, $password, $this->memberInfo->member_srl)) return $this->recordMemberLoginError(-1, 'invalid_password',$this->memberInfo);
 			// If denied == 'Y', notify
-			if($this->memberInfo->denied == 'Y') 
-			{
 				$args->member_srl = $this->memberInfo->member_srl;
 				$output = executeQuery('member.chkAuthMail', $args);
-				if($output->toBool() && $output->data->count != '0') 
-				{
+				if($output->toBool() && $output->data->count != '0'){
 					$_SESSION['auth_member_srl'] = $this->memberInfo->member_srl;
 					$redirectUrl = getUrl('', 'act', 'dispMemberResendAuthMail');
 					return $this->setRedirectUrl($redirectUrl, new Object(-1,'msg_user_not_confirmed'));
@@ -1611,19 +1582,15 @@
 
 			// Check if there is recoding table.
 			$oDB = &DB::getInstance();
-			if($oDB->isTableExists('member_count_history') && $config->enable_login_fail_report != 'N')
-			{
+			if($oDB->isTableExists('member_count_history') && $config->enable_login_fail_report != 'N'){
 				// check if there is login fail records.
 				$output = executeQuery('member.getLoginCountHistoryByMemberSrl', $args);
-				if($output->data && $output->data->content)
-				{
+				if($output->data && $output->data->content){
 					$title = Context::getLang('login_fail_report');
 					$message = '<ul>';
 					$content = unserialize($output->data->content);
-					if(count($content) > $config->max_error_count)
-					{
-						foreach($content as $val)
-						{
+					if(count($content) > $config->max_error_count){
+						foreach($content as $val){
 							$message .= '<li>'.date('Y-m-d H:i:s P',$val[2]).'<br /> Access IP: '.$val[0].'<br /> Message: '.$val[1].'</li>';
 						}
 						$message .= '</ul>';
@@ -1633,8 +1600,7 @@
 						$oCommunicationController = &getController('communication');
 						$oCommunicationController->sendMessage($args->member_srl, $args->member_srl, $title, $content, true);
 
-						if($this->memberInfo->email_address && $this->memberInfo->allow_mailing == 'Y')
-						{
+						if($this->memberInfo->email_address && $this->memberInfo->allow_mailing == 'Y'){
 							$view_url = Context::getRequestUri();
 							$content = sprintf("%s<hr /><p>From: <a href=\"%s\" target=\"_blank\">%s</a><br />To: %s(%s)</p>",$content, $view_url, $view_url, $this->memberInfo->nick_name, $this->memberInfo->email_id);
 							$oMail = new Mail();
@@ -1794,8 +1760,7 @@
 			if($member_srl) return new Object(-1,'msg_exists_user_id');
 
 			// nickname check is prohibited
-			if($oMemberModel->isDeniedNickName($args->nick_name))
-			{
+			if($oMemberModel->isDeniedNickName($args->nick_name)){
 				return new Object(-1,'denied_nick_name');
 			}
 			$member_srl = $oMemberModel->getMemberSrlByNickName($args->nick_name);
@@ -1831,8 +1796,7 @@
 			if(!$args->group_srl_list){
 				$columnList = array('site_srl', 'group_srl');
 				$default_group = $oMemberModel->getDefaultGroup(0, $columnList);
-				if($default_group)
-				{
+				if($default_group){
 					 // Add to the default group
 					$output = $this->addMemberToGroup($args->member_srl,$default_group->group_srl);
 					if(!$output->toBool()) 
@@ -1891,8 +1855,7 @@
 		/**
 		 * Modify member information
 		 **/
-		function updateMember($args) 
-		{
+		function updateMember($args){
 			// Call a trigger (before)
 			$output = ModuleHandler::triggerCall('member.updateMember', 'before', $args);
 			if(!$output->toBool()) return $output;
@@ -1934,8 +1897,7 @@
 				$args->user_id = $orgMemberInfo->user_id;
 			}
 
-			if($args->nick_name && $oMemberModel->isDeniedNickName($args->nick_name))
-			{
+			if($args->nick_name && $oMemberModel->isDeniedNickName($args->nick_name)){
 				return new Object(-1, 'denied_nick_name');
 			}
 
@@ -2156,6 +2118,7 @@
 				}
 			}
 		}
+		
 		function procMemberModifyEmailAddress(){
 			if(!Context::get('is_logged')) return $this->stop('msg_not_logged');
 
