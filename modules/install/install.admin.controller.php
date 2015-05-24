@@ -83,7 +83,14 @@
 
 	        $db_info = Context::getDBInfo();
 	        $db_info->default_url = Context::get('default_url');
-	        if($db_info->default_url && !preg_match('/^(http|https):\/\//i', $db_info->default_url)) $db_info->default_url = 'http://'.$db_info->default_url;
+			if($db_info->default_url && strncasecmp('http://', $default_url, 7) !== 0 && strncasecmp('https://', $default_url, 8) !== 0) $default_url = 'http://'.$default_url;
+			if($db_info->default_url && substr($default_url, -1) !== '/') $default_url = $default_url.'/';
+			
+			/* convert NON Alphabet URL to punycode URL - Alphabet URL will not be changed */
+			require_once(_XE_PATH_ . 'libs/idna_convert/idna_convert.class.php');
+			$IDN = new idna_convert(array('idn_version' => 2008));
+			$db_info->default_url = $IDN->encode($default_url);
+			
 	        $db_info->time_zone = $time_zone;
 	        $db_info->qmail_compatibility = $qmail_compatibility;
 	        $db_info->use_db_session = $use_db_session;
