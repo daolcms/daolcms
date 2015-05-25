@@ -10,6 +10,13 @@
 		<h2 class="h2">{$lang->is_default}</h2>
 		<ul>
 			<li>
+				<p class="q"><label for="able_module">{$lang->point_io}</label></p>
+				<p class="a">
+					<input type="checkbox" name="able_module" id="able_module" value="Y" checked="checked"|cond="!$config->able_module||$config->able_module=='Y'" />
+					<span class="desc">{$lang->about_point_io}</span>
+				</p>
+			</li>
+			<li>
 				<p class="q"><label for="max_level">{$lang->max_level}</label></p>
 				<p class="a">
 					<input type="text" value="{$config->max_level}" name="max_level" id="max_level" style="width:30px" />
