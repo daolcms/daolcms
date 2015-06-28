@@ -175,6 +175,9 @@
 			$isSftpSupported = function_exists(ssh2_sftp);
 			foreach($packages as $package_srl)
 			{
+				// XE 코어가 쉬운 설치되지 않도록 변경
+				if($pakage_srl == 18325662) continue;
+				
 				$package = $oModel->getPackage($package_srl);
 				if($oAdminModel->checkUseDirectModuleInstall($package)->toBool())
 				{
