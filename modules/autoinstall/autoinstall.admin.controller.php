@@ -175,6 +175,8 @@
 			$isSftpSupported = function_exists(ssh2_sftp);
 			foreach($packages as $package_srl)
 			{
+				if($package_srl == 18325662) continue;
+				
 				$package = $oModel->getPackage($package_srl);
 				if($oAdminModel->checkUseDirectModuleInstall($package)->toBool())
 				{
