@@ -89,7 +89,8 @@
 				$args->password = Context::get('password');
 				$output = $oMemberController->insertMember($args);
 				$msg_code = 'success_registed';
-			} else {
+			}
+			else{
 				$output = $oMemberController->updateMember($args);
 				$msg_code = 'success_updated';
 			}
@@ -125,7 +126,7 @@
 		 * Delete a user (Administrator)
 		 * @return void|Object (void : success, Object : fail)
 		 **/
-		function procMemberAdminDelete() {
+		function procMemberAdminDelete(){
 			// Separate all the values into DB entries and others
 			$member_srl = Context::get('member_srl');
 
@@ -198,8 +199,7 @@
 			if($args->enable_confirm !='Y') $args->enable_confirm = 'N';
 			$args->limit_day = (int)$args->limit_day;
 			if(!$args->change_password_date) $args->change_password_date = 0; 
-			if(!trim(strip_tags($args->agreement)))
-			{
+			if(!trim(strip_tags($args->agreement))){
 				$agreement_file = _XE_PATH_.'files/member_extra_info/agreement_' . Context::get('lang_type') . '.txt';
 				FileHandler::removeFile($agreement_file);
 				$args->agreement = null;
@@ -280,8 +280,7 @@
 			$this->_createFindAccountByQuestion($args->identifier);
 
 			// check agreement value exist
-			if($args->agreement)
-			{
+			if($args->agreement){
 				$agreement_file = _XE_PATH_.'files/member_extra_info/agreement_' . Context::get('lang_type') . '.txt';
 				$output = FileHandler::writeFile($agreement_file, $args->agreement);
 
@@ -296,8 +295,7 @@
 			$this->setRedirectUrl($returnUrl);
 		}
 
-		function createSignupForm($identifier)
-		{
+		function createSignupForm($identifier){
 			global $lang;
 			$oMemberModel = &getModel('member');
 
@@ -381,21 +379,28 @@
 				if ($formInfo->required || $formInfo->mustRequired){
 					if($formInfo->type == 'tel' || $formInfo->type == 'kr_zip'){
 						$fields[] = sprintf('<field name="%s[]" required="true" />', $formInfo->name);
-					}else if($formInfo->name == 'password'){
+					}
+					else if($formInfo->name == 'password'){
 						$fields[] = '<field name="password"><if test="$act == \'procMemberInsert\'" attr="required" value="true" /><if test="$act == \'procMemberInsert\'" attr="length" value="3:20" /></field>';
 						$fields[] = '<field name="password2"><if test="$act == \'procMemberInsert\'" attr="required" value="true" /><if test="$act == \'procMemberInsert\'" attr="equalto" value="password" /></field>';
-					}else if($formInfo->name == 'find_account_question'){
+					}
+					else if($formInfo->name == 'find_account_question'){
 						$fields[] = '<field name="find_account_question" required="true" />';
 						$fields[] = '<field name="find_account_answer" required="true" length=":250" />';
-					}else if($formInfo->name == 'email_address'){
+					}
+					else if($formInfo->name == 'email_address'){
 						$fields[] = sprintf('<field name="%s" required="true" rule="email"/>', $formInfo->name);
-					}else if($formInfo->name == 'user_id'){
+					}
+					else if($formInfo->name == 'user_id'){
 						$fields[] = sprintf('<field name="%s" required="true" rule="userid" length="3:20" />', $formInfo->name);
-					}else if(strpos($formInfo->name, 'image') !== false){
+					}
+					else if(strpos($formInfo->name, 'image') !== false){
 						$fields[] = sprintf('<field name="%s"><if test="$act != \'procMemberAdminInsert\' &amp;&amp; $__%s_exist != \'true\'" attr="required" value="true" /></field>', $formInfo->name, $formInfo->name);
-					}else if($formInfo->name == 'signature'){
+					}
+					else if($formInfo->name == 'signature'){
 						$fields[] = '<field name="signature"><if test="$member_srl" attr="required" value="true" /></field>';
-					}else{
+					}
+					else{
 						$fields[] = sprintf('<field name="%s" required="true" />', $formInfo->name);
 					}
 				}
@@ -471,7 +476,7 @@
 		 * Add a user group
 		 * @return void|Object (void : success, Object : fail)
 		 **/
-		function procMemberAdminInsertGroup() {
+		function procMemberAdminInsertGroup(){
 			$args = Context::gets('title','description','is_default','image_mark');
 			$output = $this->insertGroup($args);
 			if(!$output->toBool()) return $output;
@@ -488,7 +493,7 @@
 		 * Update user group information
 		 * @return void|Object (void : success, Object : fail)
 		 **/
-		function procMemberAdminUpdateGroup() {
+		function procMemberAdminUpdateGroup(){
 			$group_srl = Context::get('group_srl');
 
 			$args = Context::gets('group_srl','title','description','is_default','image_mark');
@@ -508,7 +513,7 @@
 		 * Update user group information
 		 * @return void|Object (void : success, Object : fail)
 		 **/
-		function procMemberAdminDeleteGroup() {
+		function procMemberAdminDeleteGroup(){
 			$group_srl = Context::get('group_srl');
 
 			$output = $this->deleteGroup($group_srl);
@@ -526,8 +531,7 @@
 		 * Add a join form
 		 * @return void|Object (void : success, Object : fail)
 		 **/
-		function procMemberAdminInsertJoinForm() 
-		{
+		function procMemberAdminInsertJoinForm() {
 			$args->member_join_form_srl = Context::get('member_join_form_srl');
 
 			$args->column_type = Context::get('column_type');
@@ -541,17 +545,16 @@
 			// Default values
 			if(in_array($args->column_type, array('checkbox','select','radio')) && count($args->default_value) ) {
 				$args->default_value = serialize($args->default_value);
-			} else {
+			}
+			else{
 				$args->default_value = '';
 			}
 
 			// Check ID duplicated
 			$oMemberModel = &getModel('member');
 			$config = $oMemberModel->getMemberConfig();
-			foreach($config->signupForm as $item) 
-			{
-				if($item->name == $args->column_name)
-				{
+			foreach($config->signupForm as $item) {
+				if($item->name == $args->column_name){
 					if($args->member_join_form_srl && $args->member_join_form_srl == $item->member_join_form_srl) continue;
 					return new Object(-1,'msg_exists_user_id');
 				}
@@ -562,7 +565,8 @@
 				$isInsert = true;
 				$args->list_order = $args->member_join_form_srl = getNextSequence();
 				$output = executeQuery('member.insertJoinForm', $args);
-			}else{
+			}
+			else{
 				$output = executeQuery('member.updateJoinForm', $args);
 			}
 
@@ -584,7 +588,8 @@
 
 			if($isInsert){
 				$config->signupForm[] = $signupItem;	
-			}else{
+			}
+			else{
 				foreach($config->signupForm as $key=>$val){
 					if ($val->member_join_form_srl == $signupItem->member_join_form_srl){
 						$config->signupForm[$key] = $signupItem;
@@ -710,7 +715,7 @@
 
 			$message = $var->message;
 			// Send a message
-			if($message) {
+			if($message){
 				$oCommunicationController = &getController('communication');
 
 				$logged_info = Context::get('logged_info');
@@ -793,7 +798,7 @@
 			$oDB->commit();
 			$this->setMessage('success_updated');
 
-			if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))) {
+			if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))){
 				global $lang;
 				htmlHeader();
 				alertScript($lang->success_updated);
@@ -830,25 +835,21 @@
 		 * Add a denied nick name
 		 * @return void
 		 **/
-		function procMemberAdminUpdateDeniedNickName()
-		{
+		function procMemberAdminUpdateDeniedNickName(){
 			$nick_name = Context::get('nick_name');
 
 			$mode = Context::get('mode');
 			$mode = $mode ? $mode : 'insert';
 
-			if($mode == 'delete')
-			{
+			if($mode == 'delete'){
 				$output = $this->deleteDeniedNickName($nick_name);
-				if(!$output->toBool())
-				{
+				if(!$output->toBool()){
 					return $output;
 				}
 				$msg_code = 'success_deleted';
 				$this->setMessage($msg_code);
 			}
-			else
-			{
+			else{
 				$nick_names = explode(',',$nick_name);
 				$success_nick_names = array();
 
@@ -920,7 +921,7 @@
 		function insertGroup($args){
 			if(!$args->site_srl) $args->site_srl = 0;
 			// Check the value of is_default.
-			if($args->is_default != 'Y'){
+			if($args->is_default!='Y'){
 				$args->is_default = 'N';
 			}
 			else{
@@ -945,12 +946,13 @@
 		 * @param object $args
 		 * @return Object
 		 **/
-		function updateGroup($args) {
+		function updateGroup($args){
 			// Check the value of is_default. 
 			if(!$args->group_srl) return new Object(-1, 'lang->msg_not_founded');
-			if($args->is_default!='Y') {
+			if($args->is_default!='Y'){
 				$args->is_default = 'N';
-			} else {
+			}
+			else{
 				 $output = executeQuery('member.updateGroupDefaultClear', $args);
 				 if(!$output->toBool()) return $output;
 			}
@@ -964,7 +966,7 @@
 		 * @param int $site_srl
 		 * @return Object
 		 **/
-		function deleteGroup($group_srl, $site_srl = 0) {
+		function deleteGroup($group_srl, $site_srl = 0){
 			// Create a member model object
 			$oMemberModel = &getModel('member');
 			// Check the group_srl (If is_default == 'Y', it cannot be deleted)
@@ -1027,7 +1029,7 @@
 		 * Set group order
 		 * @return void
 		 **/
-		function procMemberAdminUpdateGroupOrder() {
+		function procMemberAdminUpdateGroupOrder(){
 			$vars = Context::getRequestVars();
 			
 			foreach($vars->group_srls as $key => $val){
@@ -1046,8 +1048,7 @@
 		function _deleteMemberGroupCache($site_srl = 0){
 			//remove from cache
 			$oCacheHandler = CacheHandler::getInstance('object', null, true);
-			if($oCacheHandler->isSupport())
-			{
+			if($oCacheHandler->isSupport()){
 				$oCacheHandler->invalidateGroupKey('member');
 			}
 		}
@@ -1058,7 +1059,7 @@
 		 * @param string $description
 		 * @return Object
 		 **/
-		function insertDeniedID($user_id, $description = '') {
+		function insertDeniedID($user_id, $description = ''){
 			$args->user_id = $user_id;
 			$args->description = $description;
 			$args->list_order = -1*getNextSequence();
@@ -1066,8 +1067,7 @@
 			return executeQuery('member.insertDeniedID', $args);
 		}
 
-		function insertDeniedNickName($nick_name, $description = '')
-		{
+		function insertDeniedNickName($nick_name, $description = ''){
 			$args->nick_name = $nick_name;
 			$args->description = $description;
 
@@ -1079,7 +1079,7 @@
 		 * @param string $user_id
 		 * @return object
 		 **/
-		function deleteDeniedID($user_id) {
+		function deleteDeniedID($user_id){
 			$args->user_id = $user_id;
 			return executeQuery('member.deleteDeniedID', $args);
 		}
@@ -1089,8 +1089,7 @@
 		 * @param string $nick_name
 		 * @return object
 		 **/
-		function deleteDeniedNickName($nick_name)
-		{
+		function deleteDeniedNickName($nick_name){
 			$args->nick_name = $nick_name;
 			return executeQuery('member.deleteDeniedNickName', $args);
 		}
@@ -1100,7 +1099,7 @@
 		 * @param int $member_join_form_srl
 		 * @return Object
 		 **/
-		function deleteJoinForm($member_join_form_srl) {
+		function deleteJoinForm($member_join_form_srl){
 			$args->member_join_form_srl = $member_join_form_srl;
 			$output = executeQuery('member.deleteJoinForm', $args);
 			return $output;
@@ -1112,7 +1111,7 @@
 		 * @param int $member_join_form_srl
 		 * @return Object
 		 **/
-		function moveJoinFormUp($member_join_form_srl) {
+		function moveJoinFormUp($member_join_form_srl){
 			$oMemberModel = &getModel('member');
 			// Get information of the join form
 			$args->member_join_form_srl = $member_join_form_srl;
