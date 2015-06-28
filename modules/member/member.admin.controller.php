@@ -917,22 +917,27 @@
 		 * @param object $args
 		 * @return Object
 		 **/
-		function insertGroup($args) {
+		function insertGroup($args){
 			if(!$args->site_srl) $args->site_srl = 0;
-			// Check the value of is_default. 
-			if($args->is_default!='Y') {
+			// Check the value of is_default.
+			if($args->is_default != 'Y'){
 				$args->is_default = 'N';
-			} else {
+			}
+			else{
 				$output = executeQuery('member.updateGroupDefaultClear', $args);
 				if(!$output->toBool()) return $output;
 			}
-			
-			if(!isset($args->list_order) || $args->list_order=='') {
+
+			if(!isset($args->list_order) || $args->list_order==''){
 				$args->list_order = $args->group_srl;
 			}
-			
+
 			if(!$args->group_srl) $args->group_srl = getNextSequence();
-			return executeQuery('member.insertGroup', $args);
+			$args->list_order = $args->group_srl;
+			$output = executeQuery('member.insertGroup', $args);
+			$this->_deleteMemberGroupCache($args->site_srl);
+
+			return $output;
 		}
 
 		/**
@@ -1032,6 +1037,19 @@
 			}
 
 			$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispMemberAdminGroupList'));
+		}
+		
+		/**
+		 * Delete cached group data
+		 * @return void
+		*/
+		function _deleteMemberGroupCache($site_srl = 0){
+			//remove from cache
+			$oCacheHandler = CacheHandler::getInstance('object', null, true);
+			if($oCacheHandler->isSupport())
+			{
+				$oCacheHandler->invalidateGroupKey('member');
+			}
 		}
 
 		/**
