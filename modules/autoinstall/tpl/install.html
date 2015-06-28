@@ -14,7 +14,7 @@
 	<ul>
 		<li loop="$package->depends => $dep">
 			<div cond="$dep->package_srl == 18325662" class="message info">
-				다올 CMS에서 XE 코어 업데이트는 적용되지 않습니다.
+				<p>다올 CMS에서 XE 코어 업데이트는 적용되지 않습니다.</p>
 			</div>
 			{$dep->title} ver. {$dep->version} -
 			<block cond="$dep->installed">{$lang->current_version}: {$dep->cur_version} <block cond="$dep->need_update">({$lang->require_update})</block></block>
