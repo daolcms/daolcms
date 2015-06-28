@@ -11,19 +11,23 @@
 <div cond="$package->depends && (!$package->installed || $package->need_update)">
 	<p>{$lang->about_depending_programs}</p>
 	<p>{$lang->description_install}</p>
-	<ul>
-		<li loop="$package->depends => $dep">
+	<div>
+		<div loop="$package->depends => $dep">
 			<div cond="$dep->package_srl == 18325662" class="message info">
-				<p>다올 CMS에서 XE 코어 업데이트는 적용되지 않습니다.</p>
+				<p>{$lang->description_daol_update}</p>
 			</div>
-			{$dep->title} ver. {$dep->version} -
-			<block cond="$dep->installed">{$lang->current_version}: {$dep->cur_version} <block cond="$dep->need_update">({$lang->require_update})</block></block>
-			<block cond="!$dep->installed">{$lang->require_installation}</block>
-			<block cond="$show_ftp_note && ($dep->need_update || !$dep->installed)">
-				<a href="{_XE_DOWNLOAD_SERVER_}?module=resourceapi&act=procResourceapiDownload&package_srl={$dep->package_srl}">{$lang->cmd_download}</a> ({$lang->path}: {$dep->path})
-			</block>
-		</li>
-	</ul>
+			<ul>
+				<li>
+					{$dep->title} ver. {$dep->version} -
+					<block cond="$dep->installed">{$lang->current_version}: {$dep->cur_version} <block cond="$dep->need_update">({$lang->require_update})</block></block>
+					<block cond="!$dep->installed">{$lang->require_installation}</block>
+					<block cond="$show_ftp_note && ($dep->need_update || !$dep->installed)">
+						<a href="{_XE_DOWNLOAD_SERVER_}?module=resourceapi&act=procResourceapiDownload&package_srl={$dep->package_srl}">{$lang->cmd_download}</a> ({$lang->path}: {$dep->path})
+					</block>
+				</li>
+			</ul>
+		</div>
+	</div>
 </div>
 <!--//
 <p cond="$package->installed">{$lang->current_version}: {$package->cur_version} <block cond="$package->need_update">({$lang->require_update})</block></p>
