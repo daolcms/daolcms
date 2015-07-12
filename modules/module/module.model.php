@@ -368,9 +368,11 @@
 		 **/
 		function getTrigger($trigger_name, $module, $type, $called_method, $called_position) {
 			$triggers = $this->getTriggers($trigger_name, $called_position);
-			foreach($triggers as $item){
-				if($item->module == $module && $item->type == $type && $item->called_method == $called_method){
-					return $item;
+			if($triggers && is_object($triggers)){
+				foreach($triggers as $item){
+					if($item->module == $module && $item->type == $type && $item->called_method == $called_method){
+						return $item;
+					}
 				}
 			}
 			
