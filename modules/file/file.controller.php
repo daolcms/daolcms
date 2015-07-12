@@ -43,7 +43,8 @@
 			if(!$upload_target_srl) $_SESSION['upload_info'][$editor_sequence]->upload_target_srl = $upload_target_srl = getNextSequence();
 
 
-			return $this->insertFile($file_info, $module_srl, $upload_target_srl);
+			$output = $this->insertFile($file_info, $module_srl, $upload_target_srl);
+			Context::setResponseMethod('JSON');
 		}
 
 
