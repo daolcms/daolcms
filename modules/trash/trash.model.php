@@ -4,6 +4,7 @@
  * trash the module's model class
  *
  * @author NHN (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  * @package /modules/trash
  * @version 0.1
  */
