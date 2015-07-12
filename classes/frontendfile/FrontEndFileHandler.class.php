@@ -317,17 +317,17 @@
 		 * @param string $path Path to normalize
 		 * @return string Normalized path
 		 */
-		function _normalizeFilePath($path)
-		{
-			if (strpos($path, '://') === false && $path{0} != '/' && $path{0} != '.')
-			{
+		function _normalizeFilePath($path){
+			if (strpos($path, '://') === false && $path{0} != '/' && $path{0} != '.'){
 				$path = './' . $path;
+			}
+			elseif(!strncmp($path, '//', 2)){
+				return $path;
 			}
 
 			$path = preg_replace('@/\./|(?<!:)\/\/@', '/', $path);
 
-			while(strpos($path, '/../'))
-			{
+			while(strpos($path, '/../')){
 				$path = preg_replace('/\/([^\/]+)\/\.\.\//s', '/', $path, 1);
 			}
 

@@ -505,7 +505,7 @@ class TemplateHandler {
 					$metafile = '';
 					$pathinfo = pathinfo($attr['target']);
 					$doUnload = ($m[3] === 'unload');
-					$isRemote = !!preg_match('@^https?://@i', $attr['target']);
+					$isRemote = !!preg_match('@^(https?:)?//@i', $attr['target']);
 
 					if(!$isRemote) {
 						if(!preg_match('@^\.?/@',$attr['target'])) $attr['target'] = './'.$attr['target'];
