@@ -256,16 +256,24 @@ class DBMysql extends DB {
 	 * @param boolean $notnull not null status, default value is false
 	 * @return void
 	 */
-	function addColumn($table_name, $column_name, $type='number', $size='', $default = '', $notnull=false) {
+	function addColumn($table_name, $column_name, $type = 'number', $size = '', $default = null, $notnull = false){
 		$type = $this->column_type[$type];
-		if(strtoupper($type)=='INTEGER') $size = '';
-
+		if(strtoupper($type) == 'INTEGER'){
+			$size = '';
+		}
 		$query = sprintf("alter table `%s%s` add `%s` ", $this->prefix, $table_name, $column_name);
-		if($size) $query .= sprintf(" %s(%s) ", $type, $size);
-		else $query .= sprintf(" %s ", $type);
-		if($default) $query .= sprintf(" default '%s' ", $default);
-		if($notnull) $query .= " not null ";
-
+		if($size){
+			$query .= sprintf(" %s(%s) ", $type, $size);
+		}
+		else{
+			$query .= sprintf(" %s ", $type);
+		}
+		if(isset($default)){
+			$query .= sprintf(" default '%s' ", $default);
+		}
+		if($notnull){
+			$query .= " not null ";
+		}
 		return $this->_query($query);
 	}
 
@@ -598,7 +606,7 @@ class DBMysql extends DB {
 
 		// Check for distinct query and if found update count query structure
 		$temp_select = $queryObject->getSelectString($with_values);
-		$uses_distinct = strpos(strtolower($temp_select), "distinct") !== false;
+		$uses_distinct = stripos($temp_select, "distinct") !== FALSE;
 		$uses_groupby = $queryObject->getGroupByString() != '';
 		if($uses_distinct || $uses_groupby) {
 			$count_query = sprintf('select %s %s %s %s'

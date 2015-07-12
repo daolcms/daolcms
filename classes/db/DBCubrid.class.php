@@ -427,36 +427,35 @@
 		 * @param boolean $notnull not null status, default value is false
 		 * @return void
 		 */
-		function addColumn($table_name, $column_name, $type = 'number', $size = '', $default = '', $notnull = FALSE)
-		{
+		function addColumn($table_name, $column_name, $type = 'number', $size = '', $default = null, $notnull = FALSE){
 			$type = strtoupper($this->column_type[$type]);
-			if ($type == 'INTEGER') $size = '';
-
-			$query = sprintf ("alter class \"%s%s\" add \"%s\" ", $this->prefix, $table_name, $column_name);
-
-			if ($type == 'char' || $type == 'varchar') {
-				if ($size) $size = $size * 3;
+			if($type == 'INTEGER'){
+				$size = '';
 			}
-
-			if ($size) {
-				$query .= sprintf ("%s(%s) ", $type, $size);
-			}
-			else {
-				$query .= sprintf ("%s ", $type);
-			}
-
-			if ($default) {
-				if ($type == 'INTEGER' || $type == 'BIGINT' || $type=='INT') {
-					$query .= sprintf ("default %d ", $default);
-				}
-				else {
-					$query .= sprintf ("default '%s' ", $default);
+			$query = sprintf("alter class \"%s%s\" add \"%s\" ", $this->prefix, $table_name, $column_name);
+			if($type == 'char' || $type == 'varchar'){
+				if($size){
+					$size = $size * 3;
 				}
 			}
-
-			if ($notnull) $query .= "not null ";
-
-			return $this->_query ($query);
+			if($size){
+				$query .= sprintf("%s(%s) ", $type, $size);
+			}
+			else{
+				$query .= sprintf("%s ", $type);
+			}
+			if(isset($default)){
+				if($type == 'INTEGER' || $type == 'BIGINT' || $type == 'INT'){
+					$query .= sprintf("default %d ", $default);
+				}
+				else{
+					$query .= sprintf("default '%s' ", $default);
+				}
+			}
+			if($notnull){
+				$query .= "not null ";
+			}
+			return $this->_query($query);
 		}
 
 		/**
@@ -894,7 +893,7 @@
 
 			// Check for distinct query and if found update count query structure
 			$temp_select = $queryObject->getSelectString($with_values);
-			$uses_distinct = strpos(strtolower($temp_select), "distinct") !== FALSE;
+			$uses_distinct = stripos($temp_select, "distinct") !== FALSE;
 			$uses_groupby = $queryObject->getGroupByString() != '';
 			if($uses_distinct || $uses_groupby) {
 				$count_query = sprintf('select %s %s %s %s'

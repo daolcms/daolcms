@@ -238,27 +238,28 @@ class DBPostgresql extends DB
 	/**
 	 * @brief Add a column to a table
 	 **/
-	function addColumn($table_name, $column_name, $type = 'number', $size = '', $default =
-		NULL, $notnull = false)
-	{
+	function addColumn($table_name, $column_name, $type = 'number', $size = '', $default = null, $notnull = false){
 		$type = $this->column_type[$type];
-		if (strtoupper($type) == 'INTEGER' || strtoupper($type) == 'BIGINT')
+		if (strtoupper($type) == 'INTEGER' || strtoupper($type) == 'BIGINT'){
 			$size = '';
-
+		}
+		
 		$query = sprintf("alter table %s%s add %s ", $this->prefix, $table_name, $column_name);
 
-		if ($size)
+		if ($size){
 			$query .= sprintf(" %s(%s) ", $type, $size);
-		else
+		}
+		else{
 			$query .= sprintf(" %s ", $type);
+		}
 
 		$this->_query($query);
 
-		if (isset($default)) {
+		if(isset($default)){
 			$query = sprintf("alter table %s%s alter %s  set default '%s' ", $this->prefix, $table_name, $column_name, $default);
 			$this->_query($query);
 		}
-		if ($notnull) {
+		if($notnull){
 			$query = sprintf("update %s%s set %s  = %s ", $this->prefix, $table_name, $column_name, $default);
 			$this->_query($query);
 			$query = sprintf("alter table %s%s alter %s  set not null ", $this->prefix, $table_name, $column_name);
