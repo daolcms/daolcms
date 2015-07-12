@@ -2,6 +2,7 @@
 /**
  * @class TemplateHandler
  * @author NHN (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  * template compiler
  * @version 0.1
  * @remarks It compiles template file by using regular expression into php

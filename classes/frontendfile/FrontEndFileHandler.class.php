@@ -2,6 +2,7 @@
 	/**
 	 * Handle front end files
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 **/
 	class FrontEndFileHandler extends Handler
 	{
