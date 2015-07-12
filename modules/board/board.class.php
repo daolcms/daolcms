@@ -35,7 +35,7 @@
 			if(!$output->data->index_module_srl) {
 				$args->mid = 'board';
 				$args->module = 'board';
-				$args->browser_title = 'XpressEngine';
+				$args->browser_title = 'DAOL CMS';
 				$args->skin = 'xe_default';
 				$args->site_srl = 0;
 				$output = $oModuleController->insertModule($args);
