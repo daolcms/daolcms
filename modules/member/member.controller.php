@@ -1305,8 +1305,8 @@
 		function setMemberConfig($args){
 			if(!$args->skin) $args->skin = "default";
 			if(!$args->colorset) $args->colorset = "white";
-			if(!$args->editor_skin) $args->editor_skin= "xpresseditor";
-			if(!$args->editor_colorset) $args->editor_colorset = "white";
+			if(!$args->editor_skin) $args->editor_skin= "ckeditor";
+			if(!$args->editor_colorset) $args->editor_colorset = "moono";
 			if($args->enable_join!='Y') $args->enable_join = 'N';
 			$args->enable_openid= 'N';
 			if($args->profile_image !='Y') $args->profile_image = 'N';
