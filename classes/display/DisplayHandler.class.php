@@ -58,25 +58,45 @@
 			$addon_file = $oAddonController->getCacheFilePath(Mobile::isFromMobilePhone()?"mobile":"pc");
 			@include($addon_file);
 
-			if(method_exists($handler, "prepareToPrint")) $handler->prepareToPrint($output);
+			if(method_exists($handler, "prepareToPrint")){
+				$handler->prepareToPrint($output);
+			}
 			// header output
-			if($this->gz_enabled) header("Content-Encoding: gzip");
 
 			$httpStatusCode = $oModule->getHttpStatusCode();
-			if($httpStatusCode && $httpStatusCode != 200) $this->_printHttpStatusCode($httpStatusCode);
-			else
-			{
-				if(Context::getResponseMethod() == 'JSON') $this->_printJSONHeader();
-				else if(Context::getResponseMethod() != 'HTML') $this->_printXMLHeader();
-				else $this->_printHTMLHeader();
+			if($httpStatusCode && $httpStatusCode != 200){
+				$this->_printHttpStatusCode($httpStatusCode);
+			}
+			else{
+				if(Context::getResponseMethod() == 'JSON'){
+					$this->_printJSONHeader();
+				}
+				else if(Context::getResponseMethod() != 'HTML'){
+					$this->_printXMLHeader();
+				}
+				else{
+					$this->_printHTMLHeader();
+				}
 			}
 
 			// debugOutput output
 			$this->content_size = strlen($output);
 			$output .= $this->_debugOutput();
+
+			// disable gzip if output already exists
+			ob_flush();
+			if(headers_sent()){
+				$this->gz_enabled = FALSE;
+			}
+			
 			// results directly output
-			if($this->gz_enabled) print ob_gzhandler($output, 5);
-			else print $output;
+			if($this->gz_enabled){
+				header("Content-Encoding: gzip");
+				print ob_gzhandler($output, 5);
+			}
+			else{
+				print $output;
+			}
 			// call a trigger after display
 			ModuleHandler::triggerCall('display', 'after', $content);
 		}
