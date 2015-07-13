@@ -20,7 +20,7 @@
 	/**
 	 * Display the version info of DAOL CMS.
 	 */
-	define('__DAOL_VERSION__', '1.0.1.0-beta');
+	define('__DAOL_VERSION__', '1.0.1.0-beta2');
 	/**
 	 * Display the version info of XE(XDT EX).
 	 */
