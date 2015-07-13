@@ -432,7 +432,7 @@ class FileHandler {
 			}
 
 			if($code > 300 && $code < 399 && $header['location']) {
-				return self::getRemoteResource($header['location'], $body, $timeout, $method, $content_type, $headers, $cookies, $post_data);
+				return FileHandler::getRemoteResource($header['location'], $body, $timeout, $method, $content_type, $headers, $cookies, $post_data);
 			}
 
 			if($code != 200)
@@ -756,7 +756,7 @@ class FileHandler {
 	 */
 	function exists($filename)
 	{
-		$filename = self::getRealPath($filename);
+		$filename = FileHandler::getRealPath($filename);
 		return file_exists($filename) ? $filename : FALSE;
 	}
 	
@@ -768,7 +768,7 @@ class FileHandler {
 	 */
 	function isDir($path)
 	{
-		$path = self::getRealPath($path);
+		$path = FileHandler::getRealPath($path);
 		return is_dir($path) ? $path : FALSE;
 	}
 
@@ -780,7 +780,7 @@ class FileHandler {
 	 */
 	function isWritableDir($path)
 	{
-		$path = self::getRealPath($path);
+		$path = FileHandler::getRealPath($path);
 		if(is_dir($path)==FALSE)
 		{
 			return FALSE;
@@ -795,7 +795,7 @@ class FileHandler {
 		}
 		fclose($fp);
 
-		self::removeFile($checkFile);
+		FileHandler::removeFile($checkFile);
 		return TRUE;
 	}
 }
