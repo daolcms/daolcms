@@ -41,8 +41,7 @@ class Mobile {
 	function _isFromMobilePhone() {
 		if($this->ismobile !== null) return $this->ismobile;
 
-		$db_info = Context::getDBInfo();
-		if($db_info->use_mobile_view != "Y" || Context::get('full_browse') || $_COOKIE["FullBrowse"]) {
+		if(Mobile::isMobileEnabled() === false || Context::get('full_browse') || $_COOKIE["FullBrowse"]){
 			return ($this->ismobile = false);
 		}
 
@@ -207,6 +206,11 @@ class Mobile {
 	{
 		$oMobile =& Mobile::getInstance();
 		$oMobile->ismobile = $ismobile;
+	}
+	
+	function isMobileEnabled(){
+		$db_info = Context::getDBInfo();
+		return ($db_info->use_mobile_view === 'Y');
 	}
 }
 
