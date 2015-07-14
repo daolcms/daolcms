@@ -169,6 +169,10 @@ class Context {
 	 * @return void
 	 */
 	function init() {
+		if(!isset($GLOBALS['HTTP_RAW_POST_DATA']) && version_compare(PHP_VERSION, '5.6.0', '>=') === true){
+			if(simplexml_load_string(file_get_contents("php://input")) !== false) $GLOBALS['HTTP_RAW_POST_DATA'] = file_get_contents("php://input");
+		}
+		
 		// set context variables in $GLOBALS (to use in display handler)
 		$this->context = &$GLOBALS['__Context__'];
 		$this->context->lang = &$GLOBALS['lang'];
@@ -877,8 +881,8 @@ class Context {
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 
 		($type && $self->request_method=$type) or
-		(strpos($_SERVER['CONTENT_TYPE'],'json') && $self->request_method='JSON') or
-		($GLOBALS['HTTP_RAW_POST_DATA'] && $self->request_method='XMLRPC') or
+		((strpos($_SERVER['CONTENT_TYPE'], 'json') || strpos($_SERVER['HTTP_CONTENT_TYPE'], 'json')) && $self->request_method = 'JSON') or
+		($GLOBALS['HTTP_RAW_POST_DATA'] && $self->request_method = 'XMLRPC') or
 		($self->request_method = $_SERVER['REQUEST_METHOD']);
 	}
 
@@ -1088,9 +1092,9 @@ class Context {
 	 * @return void
 	 */
 	function _setUploadedArgument(){
-		if($this->getRequestMethod() != 'POST') return;
-		if(!preg_match('/multipart\/form-data/i',$_SERVER['CONTENT_TYPE'])) return;
-		if(!$_FILES) return;
+		if($_SERVER['REQUEST_METHOD'] != 'POST' || !$_FILES || stripos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') === FALSE || stripos($_SERVER['HTTP_CONTENT_TYPE'], 'multipart/form-data') === FALSE){
+			return;
+		}
 
 		foreach($_FILES as $key => $val){
 			$tmp_name = $val['tmp_name'];
