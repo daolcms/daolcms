@@ -290,7 +290,7 @@
 				$path = './' . $path;
 			}
 			elseif(!strncmp($path, '//', 2)){
-				return $path;
+				return preg_replace('#^//+#', '//', $path);
 			}
 
 			$path = preg_replace('@/\./|(?<!:)\/\/@', '/', $path);
