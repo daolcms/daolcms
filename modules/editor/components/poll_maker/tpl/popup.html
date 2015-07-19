@@ -36,6 +36,7 @@
 			, onSelect:function(){
 				$(this).prev('input[type="hidden"]').val(this.value.replace(/-/g,""));
 			}
+			,minDate: new Date("{date('Y-m-d',time())}")
 		};
 		$.extend(option,$.datepicker.regional['{$lang_type}']);
 		$(".inputDate").datepicker(option);
