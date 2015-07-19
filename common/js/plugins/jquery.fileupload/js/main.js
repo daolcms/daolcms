@@ -152,9 +152,10 @@
 			});
 
 			$(document).bind('dragover', function (e) {
-				var timeout = window.dropZoneTimeout;
+				var timeout = window.dropZoneTimeout,
+					dropZone = self.settings.dropZone;
 				if (!timeout) {
-					self.settings.dropZone.addClass('in');
+					dropZone.addClass('in');
 				} else {
 					clearTimeout(timeout);
 				}
@@ -168,13 +169,13 @@
 					node = node.parentNode;
 				} while (node != null);
 				if (found) {
-					self.settings.dropZone.addClass('hover');
+					dropZone.addClass('hover');
 				} else {
-					self.settings.dropZone.removeClass('hover');
+					dropZone.removeClass('hover');
 				}
 				window.dropZoneTimeout = setTimeout(function () {
 					window.dropZoneTimeout = null;
-					self.settings.dropZone.removeClass('in hover');
+					dropZone.removeClass('in hover');
 				}, 100);
 			});
 		},
