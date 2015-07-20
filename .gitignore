@@ -1,6 +1,12 @@
 config.user.inc.php
+codeception.yml
+Thumbs.db
+/vendor/
+/node_modules/
 /files/
 /build/
-/node_modules/
+.idea
+.codeintel
 .DS_Store
-Thumbs.db
+*.sublime-workspace
+*.sublime-project
