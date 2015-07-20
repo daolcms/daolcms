@@ -159,6 +159,8 @@
 			$tmp_path = explode('/',$cache_file);
 			$filename = $tmp_path[count($tmp_path)-1];
 			$filepath = preg_replace('/'.$filename."$/i","",$cache_file);
+			
+			$level = ob_get_level();
 			// Verify cache
 			if($caching_interval <1 || !file_exists($cache_file) || filemtime($cache_file) + $caching_interval*60 <= time() || filemtime($cache_file)<filemtime($path) ) {
 				if(file_exists($cache_file)) FileHandler::removeFile($cache_file);
@@ -186,9 +188,13 @@
 
 			ob_start();
 			include($cache_file);
-			$content = ob_get_clean();
 
-			return $content;
+			$contents = '';
+			while (ob_get_level() - $level > 0){
+				$contents .= ob_get_contents();
+				ob_end_clean();
+			}
+			return $contents;
 		}
 
 		function _replacePath($matches) {
