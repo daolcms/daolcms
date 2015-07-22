@@ -19,6 +19,7 @@
 		<action name="procFileAdminInsertModuleConfig" type="controller" standalone="true" ruleset="fileModuleConfig" />
 		<action name="procFileAdminAddCart" type="controller" standalone="true" />
 		<action name="procFileGetList" type="controller" standalone="true" />
+		<action name="procFileSetCoverImage" type="controller" standalone="true" />
 	</actions>
 	<menus>
 		<menu name="file">

@@ -374,6 +374,7 @@
 		function getThumbnail($width = 80, $height = 0, $thumbnail_type = '') {
 			// return false if no doc exists
 			if(!$this->comment_srl) return;
+			if($this->isSecret() && !$this->isGranted()) return;
 			// If signiture height setting is omitted, create a square
 			if(!$height) $height = $width;
 			// return false if neigher attached file nor image;
@@ -395,14 +396,28 @@
 			// find an image file among attached files
 			if($this->hasUploadedFiles()) {
 				$file_list = $this->getUploadedFiles();
-				if(count($file_list)) {
+				
+				$first_image = null;
+				foreach($file_list as $file){
 					foreach($file_list as $file) {
-						if($file->direct_download!='Y') continue;
-						if(!preg_match("/\.(jpg|png|jpeg|gif|bmp)$/i",$file->source_filename)) continue;
+						if($file->direct_download !== 'Y') continue;
+						
+						if($file->cover_image === 'Y' && file_exists($file->uploaded_filename)){
+							$source_file = $file->uploaded_filename;
+							break;
+						}
+						
+						if($first_image) continue;
+						
+						if(preg_match("/\.(jpe?g|png|gif|bmp)$/i", $file->source_filename){
+							if(file_exists($file->uploaded_filename)){
+								$first_image = $file->uploaded_filename;
+							}
+						}
 
-						$source_file = $file->uploaded_filename;
-						if(!file_exists($source_file)) $source_file = null;
-						else break;
+						if(!$source_file && $first_image){
+							$source_file = $first_image;
+						}
 					}
 				}
 			}

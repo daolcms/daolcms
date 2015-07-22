@@ -73,6 +73,8 @@
 
 			// 2012. 08. 29 Add a trigger to copy additional setting when the module is copied 
 			if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'file', 'controller', 'triggerCopyModule', 'after')) return true;
+			
+			if(!$oDB->isColumnExists('files', 'cover_image')) return true;
 
 			return false;
 		}
@@ -129,10 +131,10 @@
 			if(!$oDB->isColumnExists('files', 'upload_target_type')) $oDB->addColumn('files', 'upload_target_type', 'char', '3');
 
 			// 2012. 08. 29 Add a trigger to copy additional setting when the module is copied 
-			if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'file', 'controller', 'triggerCopyModule', 'after'))
-			{
+			if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'file', 'controller', 'triggerCopyModule', 'after')){
 				$oModuleController->insertTrigger('module.procModuleAdminCopyModule', 'file', 'controller', 'triggerCopyModule', 'after');
 			}
+			if(!$oDB->isColumnExists('files', 'cover_image')) $oDB->addColumn('files', 'cover_image', 'char', '1', 'N');
 
 			return new Object(0, 'success_updated');
 		}
