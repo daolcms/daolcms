@@ -409,7 +409,7 @@
 						
 						if($first_image) continue;
 						
-						if(preg_match("/\.(jpe?g|png|gif|bmp)$/i", $file->source_filename){
+						if(preg_match("/\.(jpe?g|png|gif|bmp)$/i", $file->source_filename)){
 							if(file_exists($file->uploaded_filename)){
 								$first_image = $file->uploaded_filename;
 							}
