@@ -1421,7 +1421,6 @@
 		<value xml:lang="jp"><![CDATA[FTPでのディレクトリ生成に失敗しました。FTPサーバーの設定を再度確認してください。]]></value>
 		<value xml:lang="zh-CN"><![CDATA[新建文件夹失败。请确认 FTP服务器设置。]]></value>
 		<value xml:lang="zh-TW"><![CDATA[新增資料夾失敗。請確認 FTP 主機設置。]]></value>
-		<value xml:lang="fr"><![CDATA[FTP를 이용한 디렉토리 생성 명령을 실패하였습니다. FTP 서버의 설정을 확인해주세요]]></value>
 		<value xml:lang="de"><![CDATA[Der Befehl von Herstellung des Verzeichnisses durch FTP ist gescheitert. FTP_Server festlegen.]]></value>
 		<value xml:lang="es"><![CDATA[Ha fallado el comando de FTP para la creación de directorio. Verifique la configuración del servicio FTP en el servidor]]></value>
 		<value xml:lang="tr"><![CDATA[Dizin oluşturma başarısız oldu. Lütfen FTP hesap iznini kontrol ediniz.]]></value>
