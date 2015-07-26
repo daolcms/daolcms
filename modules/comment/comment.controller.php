@@ -36,7 +36,9 @@
 			if($comment_config->use_vote_up=='N') return new Object(-1, 'msg_invalid_request');
 
 			$point = 1;
-			return $this->updateVotedCount($comment_srl, $point);
+			$output = $this->updateVotedCount($comment_srl, $point);
+			$this->add('voted_count', $output->get('voted_count'));
+			return $output;
 		}
 
 		/**
@@ -59,7 +61,9 @@
 			if($comment_config->use_vote_down=='N') return new Object(-1, 'msg_invalid_request');
 
 			$point = -1;
-			return $this->updateVotedCount($comment_srl, $point);
+			$output = $this->updateVotedCount($comment_srl, $point);
+			$this->add('blamed_count', $output->get('blamed_count'));
+			return $output;
 		}
 
 		/**
