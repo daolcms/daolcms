@@ -603,24 +603,21 @@
 			$month = (int)substr($str,4,2);
 			$day   = (int)substr($str,6,2);
 
-			// leading zero?
-			$lz = create_function('$n', 'return ($n>9?"":"0").$n;');
-
 			$trans = array(
-				'Y'=>$year,
-				'y'=>$lz($year%100),
-				'm'=>$lz($month),
-				'n'=>$month,
-				'd'=>$lz($day),
-				'j'=>$day,
-				'G'=>$hour,
-				'H'=>$lz($hour),
-				'g'=>$hour%12,
-				'h'=>$lz($hour%12),
-				'i'=>$lz($min),
-				's'=>$lz($sec),
-				'M'=>getMonthName($month),
-				'F'=>getMonthName($month,false)
+				'Y' => $year,
+				'y' => sprintf('%02d', $year % 100),
+				'm' => sprintf('%02d', $month),
+				'n' => $month,
+				'd' => sprintf('%02d', $day),
+				'j' => $day,
+				'G' => $hour,
+				'H' => sprintf('%02d', $hour),
+				'g' => $hour % 12,
+				'h' => sprintf('%02d', $hour % 12),
+				'i' => sprintf('%02d', $min),
+				's' => sprintf('%02d', $sec),
+				'M' => getMonthName($month),
+				'F' => getMonthName($month, FALSE)
 			);
 
 			$string = strtr($format, $trans);
