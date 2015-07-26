@@ -64,12 +64,13 @@
 		 * Location site
 		 */
 		define('_DAOL_LOCATION_SITE_', 'http://www.daolcms.org/');
-		define('_XE_LOCATION_SITE_','http://www.xpressengine.org/');
+		define('_XE_LOCATION_SITE_','http://www.xpressengine.com/');
 
 		/**
 		 * Download server
 		 */
-		define('_XE_DOWNLOAD_SERVER_','http://en.download.xpressengine.org/');
+		define('_DAOL_DOWNLOAD_SERVER_', 'http://download.daolcms.org/');
+		define('_XE_DOWNLOAD_SERVER_', 'http://download.xpressengine.com/');
 	}
 
 	/*
