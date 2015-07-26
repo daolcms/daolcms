@@ -40,7 +40,6 @@
 				Context::addSSLAction('procMemberModifyInfo');
 				Context::addSSLAction('procMemberFindAccount');
 				Context::addSSLAction('procMemberModifyEmailAddress');
-				Context::addSSLAction('procMemberUpdateAuthMail');
 				Context::addSSLAction('procMemberResendAuthMail');
 				Context::addSSLAction('procMemberLeave');
 				//Context::addSSLAction('getMemberMenu');
