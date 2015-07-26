@@ -483,7 +483,7 @@
 			}
 			
 			if(!is_object($obj)){
-				if(!is_object($obj))
+				$obj = new stdClass();
 			}
 			$obj->__isupdate = true;
 			
