@@ -1716,8 +1716,8 @@
 			$oMemberModel = getModel('member');
 			
 			if($args->password && !$password_is_hashed){
-				$args->password = $oMemberModel->hashPassword($args->password)
-			}; 
+				$args->password = $oMemberModel->hashPassword($args->password);
+			}
 			elseif(!$args->password){
 				unset($args->password);
 			}
