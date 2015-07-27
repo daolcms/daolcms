@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="0.2">
 	<title xml:lang="ko">한국 우편번호</title>
+	<title xml:lang="en">Korea Zip Code</title>
+	<title xml:lang="jp">韓国郵便番号</title>
+	<title xml:lang="zh-CN">韩国邮编</title>
+	<title xml:lang="zh-TW">韓國郵編</title>
+	<title xml:lang="vi">Hàn Quốc Mã Zip</title>
+	<title xml:lang="es">Corea del Código Postal</title>
+	<title xml:lang="fr">Corée du Code postal</title>
+	<title xml:lang="ru">Корея почтовый индекс</title>
+	<title xml:lang="tr">Kore Posta Kodu</title>
 	<description xml:lang="ko">공개 API를 이용해 우편번호 검색 서비스를 이용합니다.</description>
+	<description xml:lang="ko">South Korea Zip Code Search Module using the Public API.</description>
 	<version>1.8.0</version>
 	<date>2015-03-10</date>
 
@@ -13,6 +23,7 @@
 		<name xml:lang="zh-TW">DAOL</name>
 		<name xml:lang="vi">DAOL</name>
 		<name xml:lang="es">DAOL</name>
+		<name xml:lang="fr">DAOL</name>
 		<name xml:lang="ru">DAOL</name>
 		<name xml:lang="tr">DAOL</name>
 	</author>
@@ -25,6 +36,7 @@
 		<name xml:lang="zh-TW">NAVER</name>
 		<name xml:lang="vi">NAVER</name>
 		<name xml:lang="es">NAVER</name>
+		<name xml:lang="fr">NAVER</name>
 		<name xml:lang="ru">NAVER</name>
 		<name xml:lang="tr">NAVER</name>
 	</author>
