@@ -171,6 +171,7 @@
 			$config = new stdClass();
 			$config->thumbnail_type = Context::get('thumbnail_type');
 			$config->htmlFooter = Context::get('htmlFooter');
+			$config->siteTitle = Context::get('site_title');
 			$this->setModulesConfig($config);
 
 			//파비콘
@@ -213,6 +214,7 @@
 			unset($args);
 			
 			$args->htmlFooter = $config->htmlFooter;
+			$args->siteTitle = $config->siteTitle;
 			$oModuleController->insertModuleConfig('module',$args);
 
 			return $output;
