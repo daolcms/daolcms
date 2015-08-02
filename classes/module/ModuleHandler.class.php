@@ -494,6 +494,12 @@
 				if($module_config->htmlFooter){
 						Context::addHtmlFooter($module_config->htmlFooter);
 				}
+				if($module_config->siteTitle){
+					$siteTitle = Context::getBrowserTitle();
+					if(!$siteTitle){
+						Context::setBrowserTitle($module_config->siteTitle);
+					}
+				}
 			}
 
 

@@ -584,6 +584,19 @@ class Context {
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 		$self->site_title = $site_title;
 	}
+	
+	/**
+	 * Return layout's title
+	 * @return string layout's title
+	 */
+	function getSiteTitle(){
+		$oModuleModel = getModel('module');
+		$moduleConfig = $oModuleModel->getModuleConfig('module');
+		if(isset($moduleConfig->siteTitle)){
+			return $moduleConfig->siteTitle;
+		}
+		return '';
+	}
 
 	/**
 	 * Get browser title
