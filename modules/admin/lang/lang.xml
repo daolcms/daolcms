@@ -99,11 +99,6 @@
 		<value xml:lang="vi"><![CDATA[Bảng điều khiển]]></value>
 		<value xml:lang="tr"><![CDATA[Kontrol Paneli]]></value>
 	</item>
-	<item name="site_title">
-		<value xml:lang="ko"><![CDATA[사이트 제목]]></value>
-		<value xml:lang="en"><![CDATA[Site title]]></value>
-		<value xml:lang="jp"><![CDATA[サイトタイトル]]></value>
-	</item>
 	<item name="start_module">
 		<value xml:lang="ko"><![CDATA[시작 모듈]]></value>
 		<value xml:lang="en"><![CDATA[Default Module]]></value>
@@ -1001,15 +996,10 @@
 		<value xml:lang="zh-CN"><![CDATA[本地IP地址]]></value>      
 		<value xml:lang="tr"><![CDATA[Yerel IP adresi]]></value>
 	</item>
-	<item name="detail_about_admin_site_title">
-		<value xml:lang="ko"><![CDATA[다올 CMS 1.0.1.0 이상에서 새롭게 추가된 값입니다. 레이아웃에서 {Context::getSiteTitle()} 변수로 표시할 수 있습니다.]]></value>
-		<value xml:lang="en"><![CDATA[DAOL CMS 1.0.1.0 or later, the newly added value. You can be displayed as {Context::getSiteTitle()} variable in the layout.]]></value>
-		<value xml:lang="jp"><![CDATA[DAOL CMS 1.0.1.0以上、新たに追加された値。あなたはレイアウトの{Context::getSiteTitle()}変数として表示することができます。]]></value>
-	</item>
 	<item name="detail_about_admin_ip_limit">
 		<value xml:lang="ko"><![CDATA[해당 IP에 대해서만 관리자 페이지로 접근이 가능하므로 주의해주시기 바랍니다. IP대역 정보는 /files/config/db.config.php 파일에 저장됩니다. 여러개의 항목은 줄을 바꾸어 입력하세요.]]></value>
 		<value xml:lang="en"><![CDATA[Please note that only the specified IP addresses can access the admin page. The information on IP address band is stored in  /files/config/db.config.php. Change the line to multiple IP.]]></value>
-		<value xml:lang="jp"><![CDATA[該当IPについてのみ管理者ページへアクセスできるため、注意してください。IP帯域情報は、/files/config/db.config.php ファイルに保存されます。Change the line to multiple IP.]]></value>
+	　　<value xml:lang="jp"><![CDATA[該当IPについてのみ管理者ページへアクセスできるため、注意してください。IP帯域情報は、/files/config/db.config.php ファイルに保存されます。Change the line to multiple IP.]]></value>
 		<value xml:lang="zh-CN"><![CDATA[请注意，只有绑定的IP才能访问后台。IP信息将保存在 /files/config/db.config.php. 每行一个IP。]]></value>
 		<value xml:lang="tr"><![CDATA[Sadece bu IP adresi üzerinden yönetici sayfasına erişim mümkündür.IP-bant bilgileri /files/config/db.config.php dosyasında saklanır. Satıra birden fazla öğe girin.]]></value>
 	</item>
