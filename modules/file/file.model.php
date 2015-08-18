@@ -203,6 +203,7 @@
 			for($i=0;$i<$file_count;$i++){
 				$file = $file_list[$i];
 				$file->source_filename = stripslashes($file->source_filename);
+				$file->source_filename = htmlspecialchars($file->source_filename);
 				$file->download_url = $this->getDownloadUrl($file->file_srl, $file->sid, $file->module_srl);
 				$file_list[$i] = $file;
 			}
