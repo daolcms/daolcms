@@ -16,69 +16,86 @@
 		/**
 		 * @brief Save the default configurations
 		 **/
-		function procPointAdminInsertConfig() {
+		function procPointAdminInsertConfig(){
 			// Get the configuration information
-			$oModuleModel = &getModel('module');
+			$oModuleModel = getModel('module');
 			$config = $oModuleModel->getModuleConfig('point');
 			// Arrange variables
 			$args = Context::getRequestVars();
-			// Check the point name
-			$config->point_name = $args->point_name;
-			if(!$config->point_name) $config->point_name = 'point';
-			// Specify the default points
-			$config->signup_point = (int)$args->signup_point;
-			$config->login_point = (int)$args->login_point;
-			$config->insert_document = (int)$args->insert_document;
-			$config->read_document = (int)$args->read_document;
-			$config->insert_comment = (int)$args->insert_comment;
-			$config->upload_file = (int)$args->upload_file;
-			$config->download_file = (int)$args->download_file;
-			$config->voted = (int)$args->voted;
-			$config->blamed = (int)$args->blamed;
-			// The highest level
-			$config->max_level = $args->max_level;
-			if($config->max_level>1000) $config->max_level = 1000;
-			if($config->max_level<1) $config->max_level = 1;
-			// Set the level icon
-			$config->level_icon = $args->level_icon;
-			// Check if downloads are not allowed
-			if($args->disable_download == 'Y') $config->disable_download = 'Y';
-			else $config->disable_download = 'N';
-			// Check if reading a document is not allowed
-			if($args->disable_read_document == 'Y') $config->disable_read_document = 'Y';
-			else $config->disable_read_document = 'N';
-
-			$oMemberModel = &getModel('member');
-			$group_list = $oMemberModel->getGroups();
-
-			// Per-level group configurations
-			foreach($group_list as $group)
-			{
-				// Admin group should not be connected to point.
-				if($group->is_admin == 'Y' || $group->is_default == 'Y') continue;
-
-				$group_srl = $group->group_srl;
-				if($args->{'point_group_'.$group_srl})
-				{
-					$config->point_group[$group_srl] = $args->{'point_group_'.$group_srl};
+			//if module IO config is off
+			if($args->able_module == 'Y'){
+				// Re-install triggers, if it was disabled.
+				if($config->able_module == 'N'){
+					$this->moduleUpdate();
 				}
-				else
-				{
-					unset($config->point_group[$group_srl]);
+				//module IO config is on
+				$config->able_module = 'Y';
+				// Check the point name
+				$config->point_name = $args->point_name;
+				if(!$config->point_name) $config->point_name = 'point';
+				// Specify the default points
+				$config->signup_point = (int)$args->signup_point;
+				$config->login_point = (int)$args->login_point;
+				$config->insert_document = (int)$args->insert_document;
+				$config->read_document = (int)$args->read_document;
+				$config->insert_comment = (int)$args->insert_comment;
+				$config->upload_file = (int)$args->upload_file;
+				$config->download_file = (int)$args->download_file;
+				$config->voted = (int)$args->voted;
+				$config->blamed = (int)$args->blamed;
+				// The highest level
+				$config->max_level = $args->max_level;
+				if($config->max_level>1000) $config->max_level = 1000;
+				if($config->max_level<1) $config->max_level = 1;
+				// Set the level icon
+				$config->level_icon = $args->level_icon;
+				// Check if downloads are not allowed
+				if($args->disable_download == 'Y') $config->disable_download = 'Y';
+				else $config->disable_download = 'N';
+				// Check if reading a document is not allowed
+				if($args->disable_read_document == 'Y') $config->disable_read_document = 'Y';
+				else $config->disable_read_document = 'N';
+				$oMemberModel = getModel('member');
+				$group_list = $oMemberModel->getGroups();
+				// Per-level group configurations
+				foreach($group_list as $group){
+					// Admin group should not be connected to point.
+					if($group->is_admin == 'Y' || $group->is_default == 'Y') continue;
+					$group_srl = $group->group_srl;
+					//if group level is higher than max level, change to max level
+					if($args->{'point_group_'.$group_srl} > $args->max_level){
+						$args->{'point_group_'.$group_srl} = $args->max_level;
+					}
+					//if group level is lower than 1, change to 1
+					if($args->{'point_group_'.$group_srl} < 1){
+						$args->{'point_group_'.$group_srl} = 1;
+					}
+					if($args->{'point_group_'.$group_srl}){
+						$config->point_group[$group_srl] = $args->{'point_group_'.$group_srl};
+					}
+					else{
+						unset($config->point_group[$group_srl]);
+					}
 				}
+				$config->group_reset = $args->group_reset;
+				// Per-level point configurations
+				unset($config->level_step);
+				for($i=1;$i<=$config->max_level;$i++){
+					$key = "level_step_".$i;
+					$config->level_step[$i] = (int)$args->{$key};
+				}
+				// A function to calculate per-level points
+				$config->expression = $args->expression;
 			}
-
-			$config->group_reset = $args->group_reset;
-			// Per-level point configurations
-			unset($config->level_step);
-			for($i=1;$i<=$config->max_level;$i++) {
-				$key = "level_step_".$i;
-				$config->level_step[$i] = (int)$args->{$key};
+			else{
+				//module IO config is OFF, Other settings will not be modified.
+				$config->able_module = 'N';
+				// Delete Triggers
+				$oModuleController = getController('module');
+				$oModuleController->deleteModuleTriggers('point');
 			}
-			// A function to calculate per-level points
-			$config->expression = $args->expression;
 			// Save
-			$oModuleController = &getController('module');
+			$oModuleController = getController('module');
 			$oModuleController->insertModuleConfig('point', $config);
 
 			$this->setMessage('success_updated');

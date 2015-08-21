@@ -231,6 +231,15 @@
 		 *
 		 * @return string Returns a value expressed in HTML.
 		 **/
+		function getValue(){
+			return $this->_getTypeValue($this->type, $this->value);
+		}
+		
+		/**
+		 * Returns a value for HTML
+		 *
+		 * @return string Returns a value expressed in HTML.
+		 **/
 		function getValueHTML() {
 			$value = $this->_getTypeValue($this->type, $this->value);
 			switch($this->type) {

@@ -1,15 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <lang>
 	<item name="introduce_title">
-		<value xml:lang="ko"><![CDATA[Daol CMS 설치]]></value>
-		<value xml:lang="en"><![CDATA[Daol CMS Installation]]></value>
-		<value xml:lang="jp"><![CDATA[Daol CMSのインストール]]></value>
-		<value xml:lang="zh-CN"><![CDATA[安装Daol CMS]]></value>
-		<value xml:lang="zh-TW"><![CDATA[Daol CMS程式安裝]]></value>
-		<value xml:lang="fr"><![CDATA[Installation du Daol CMS ]]></value>
-		<value xml:lang="ru"><![CDATA[Установка Daol CMS]]></value>
-		<value xml:lang="es"><![CDATA[Instalación de Daol CMS ]]></value>
-		<value xml:lang="vi"><![CDATA[Cài đặt Daol CMS]]></value>
+		<value xml:lang="ko"><![CDATA[DAOL CMS 설치]]></value>
+		<value xml:lang="en"><![CDATA[DAOL CMS Installation]]></value>
+		<value xml:lang="jp"><![CDATA[DAOL CMSのインストール]]></value>
+		<value xml:lang="zh-CN"><![CDATA[安装DAOL CMS]]></value>
+		<value xml:lang="zh-TW"><![CDATA[安裝DAOL CMS]]></value>
+		<value xml:lang="fr"><![CDATA[Installation du DAOL CMS ]]></value>
+		<value xml:lang="ru"><![CDATA[Установка DAOL CMS]]></value>
+		<value xml:lang="es"><![CDATA[Instalación de DAOL CMS ]]></value>
+		<value xml:lang="vi"><![CDATA[Cài đặt DAOL CMS]]></value>
 	</item>
 	<item name="install_progress_menu" type="array">
 		<item name="language">
@@ -24,36 +24,51 @@
 		<item name="license_agreement">
 			<value xml:lang="ko"><![CDATA[사용권 동의]]></value>
 			<value xml:lang="en"><![CDATA[License agreement]]></value>
+			<value xml:lang="jp"><![CDATA[ライセンス契約]]></value>
+			<value xml:lang="zh-CN"><![CDATA[许可协议]]></value>
+			<value xml:lang="zh-TW"><![CDATA[許可協議]]></value>
 		</item>
 		<item name="condition">
 			<value xml:lang="ko"><![CDATA[설치 조건 확인]]></value>
 			<value xml:lang="en"><![CDATA[Check the installation conditions]]></value>
 			<value xml:lang="jp"><![CDATA[インストール条件確認]]></value>
+			<value xml:lang="zh-CN"><![CDATA[检查安装条件]]></value>
+			<value xml:lang="zh-TW"><![CDATA[檢查安裝條件]]></value>
 		</item>
 		<item name="ftp">
 			<value xml:lang="ko"><![CDATA[FTP 정보 입력]]></value>
 			<value xml:lang="en"><![CDATA[Input FTP information]]></value>
 			<value xml:lang="jp"><![CDATA[FTP情報入力]]></value>
+			<value xml:lang="zh-CN"><![CDATA[输入FTP信息]]></value>
+			<value xml:lang="zh-TW"><![CDATA[輸入FTP信息]]></value>
 		</item>
 		<item name="dbSelect">
 			<value xml:lang="ko"><![CDATA[DB 선택]]></value>
 			<value xml:lang="en"><![CDATA[Choose database type]]></value>
 			<value xml:lang="jp"><![CDATA[DB選択]]></value>
+			<value xml:lang="zh-CN"><![CDATA[选择DB]]></value>
+			<value xml:lang="zh-TW"><![CDATA[選擇DB]]></value>
 		</item>
 		<item name="dbInfo">
 			<value xml:lang="ko"><![CDATA[DB 정보 입력]]></value>
 			<value xml:lang="en"><![CDATA[Input Database information]]></value>
 			<value xml:lang="jp"><![CDATA[DB情報入力]]></value>
+			<value xml:lang="zh-CN"><![CDATA[输入DB信息]]></value>
+			<value xml:lang="zh-TW"><![CDATA[輸入DB信息]]></value>
 		</item>
 		<item name="configInfo">
 			<value xml:lang="ko"><![CDATA[환경 설정]]></value>
 			<value xml:lang="en"><![CDATA[Settings]]></value>
 			<value xml:lang="jp"><![CDATA[環境設定]]></value>
+			<value xml:lang="zh-CN"><![CDATA[环境设置]]></value>
+			<value xml:lang="zh-TW"><![CDATA[環境設置]]></value>
 		</item>
 		<item name="adminInfo">
 			<value xml:lang="ko"><![CDATA[관리자 정보 입력]]></value>
 			<value xml:lang="en"><![CDATA[Enter Administrator information]]></value>
 			<value xml:lang="jp"><![CDATA[管理者情報入力]]></value>
+			<value xml:lang="zh-CN"><![CDATA[输入管理员信息]]></value>
+			<value xml:lang="zh-TW"><![CDATA[輸入管理員信息]]></value>
 		</item>
 	</item>
 	<item name="install_condition_title">
@@ -143,15 +158,15 @@
 	<item name="install_checklist_desc" type="array">
 		<item name="php_version">
 			<value xml:lang="ko"><![CDATA[[필수] PHP버전이 5.2.2일 경우 PHP의 버그로 인하여 설치되지 않습니다.]]></value>
-			<value xml:lang="en"><![CDATA[[Required] If PHP version is 5.2.2, Daol CMS will not be installed because of a bug]]></value>
+			<value xml:lang="en"><![CDATA[[Required] If PHP version is 5.2.2, DAOL CMS will not be installed because of a bug]]></value>
 			<value xml:lang="jp"><![CDATA[【必須】PHPバージョンが 5.2.2の場合は、PHPのセキュリティバグのため、インストールできません。]]></value>
-			<value xml:lang="zh-CN"><![CDATA[[必须] 由于 PHP 5.2.2 版本BUG，无法安装 Daol CMS。]]></value>
-			<value xml:lang="zh-TW"><![CDATA[[必須] 由於 PHP 5.2.2 版本的問題，無法安裝 Daol CMS 程式。]]></value>
-			<value xml:lang="fr"><![CDATA[[Obligatoire] Si la version de PHP est 5.2.2, Daol CMS ne sera pas  installé à cause du bogue]]></value>
-			<value xml:lang="ru"><![CDATA[[Требуется] Если версия PHP равна 5.2.2, то Daol CMS не будет установлена из-за бага]]></value>
-			<value xml:lang="es"><![CDATA[[Requerido] Si la versión de PHP es 5.2.2, Daol CMS no sera instalado por errores]]></value>
-			<value xml:lang="tr"><![CDATA[[Gerekli] Eğer PHP sürümü 5.2.2 ise, Daol CMS yazılım hatasından dolayı kurulmayacaktır]]></value>
-			<value xml:lang="vi"><![CDATA[[Bắt buộc] Nếu phiên bản của PHP là 5.2.2, Daol CMS sẽ không thể cài đặt vì có lỗi.]]></value>
+			<value xml:lang="zh-CN"><![CDATA[[必须] 由于 PHP 5.2.2 版本BUG，无法安装 DAOL CMS。]]></value>
+			<value xml:lang="zh-TW"><![CDATA[[必須] 由於 PHP 5.2.2 版本的問題，無法安裝 DAOL CMS 程式。]]></value>
+			<value xml:lang="fr"><![CDATA[[Obligatoire] Si la version de PHP est 5.2.2, DAOL CMS ne sera pas  installé à cause du bogue]]></value>
+			<value xml:lang="ru"><![CDATA[[Требуется] Если версия PHP равна 5.2.2, то DAOL CMS не будет установлена из-за бага]]></value>
+			<value xml:lang="es"><![CDATA[[Requerido] Si la versión de PHP es 5.2.2, DAOL CMS no sera instalado por errores]]></value>
+			<value xml:lang="tr"><![CDATA[[Gerekli] Eğer PHP sürümü 5.2.2 ise, DAOL CMS yazılım hatasından dolayı kurulmayacaktır]]></value>
+			<value xml:lang="vi"><![CDATA[[Bắt buộc] Nếu phiên bản của PHP là 5.2.2, DAOL CMS sẽ không thể cài đặt vì có lỗi.]]></value>
 		</item>
 		<item name="php_version_warning">
 			<value xml:lang="ko"><![CDATA[[권장] DAOL은 PHP 5.3.10 버전 이상을 권장합니다.<br> PHP 5.2.x 이하 버전은 더이상 업데이트되지 않는 버전입니다.]]></value>
@@ -160,21 +175,21 @@
 		<item name="php_more">
 			<value xml:lang="ko"><![CDATA[더보기]]></value>
 			<value xml:lang="en"><![CDATA[more]]></value>
-			<value xml:lang="jp"><![CDATA[もっと見る]]></value>もっと見る
+			<value xml:lang="jp"><![CDATA[もっと見る]]></value>
 			<value xml:lang="zh-CN"><![CDATA[[更多]]></value>
 			<value xml:lang="zh-TW"><![CDATA[[更多]]></value>
 		</item>
 		<item name="permission">
-			<value xml:lang="ko"><![CDATA[[필수] Daol CMS의 설치 경로 또는 ./files 디렉토리의 퍼미션이 707이어야 합니다.]]></value>
-			<value xml:lang="en"><![CDATA[[Required] Daol CMS installation path or ./files directory's permission must be 707]]></value>
-			<value xml:lang="jp"><![CDATA[【必須】Daol CMSのインストールパスまたは「./files」ディレクトリのパーミッションを「707」に設定してください。]]></value>
+			<value xml:lang="ko"><![CDATA[[필수] DAOL CMS의 설치 경로 또는 ./files 디렉토리의 퍼미션이 707이어야 합니다.]]></value>
+			<value xml:lang="en"><![CDATA[[Required] DAOL CMS installation path or ./files directory's permission must be 707]]></value>
+			<value xml:lang="jp"><![CDATA[【必須】DAOL CMSのインストールパスまたは「./files」ディレクトリのパーミッションを「707」に設定してください。]]></value>
 			<value xml:lang="zh-CN"><![CDATA[[必须] 的安装路径或 ./files目录属性必须是707]]></value>
-			<value xml:lang="zh-TW"><![CDATA[[必須] Daol CMS的資料夾或『./files』資料夾權限必須是『707』。]]></value>
-			<value xml:lang="fr"><![CDATA[[Obligatoire] Chemin de l'installation de Daol CMS ou la permission de  répertoire de ./files doit être 707]]></value>
-			<value xml:lang="ru"><![CDATA[[Требуется] Путь установки Daol CMS или директория ./files должна иметь права доступа 707]]></value>
-			<value xml:lang="es"><![CDATA[[Requerido] La ruta de la instalación de Daol CMS o el directorio de ./archivos deberia tener la atribución 707]]></value>
-			<value xml:lang="tr"><![CDATA[[Gerekli] Daol CMS kurulum yolu ya da ./files directory yolunun yetkisi 707 olmalıdır]]></value>
-			<value xml:lang="vi"><![CDATA[[Bắt buộc] Thư mục cài đặt của Daol CMS hay ./files directory phải CHMOD thành 707]]></value>
+			<value xml:lang="zh-TW"><![CDATA[[必須] DAOL CMS的資料夾或『./files』資料夾權限必須是『707』。]]></value>
+			<value xml:lang="fr"><![CDATA[[Obligatoire] Chemin de l'installation de DAOL CMS ou la permission de  répertoire de ./files doit être 707]]></value>
+			<value xml:lang="ru"><![CDATA[[Требуется] Путь установки DAOL CMS или директория ./files должна иметь права доступа 707]]></value>
+			<value xml:lang="es"><![CDATA[[Requerido] La ruta de la instalación de DAOL CMS o el directorio de ./archivos deberia tener la atribución 707]]></value>
+			<value xml:lang="tr"><![CDATA[[Gerekli] DAOL CMS kurulum yolu ya da ./files directory yolunun yetkisi 707 olmalıdır]]></value>
+			<value xml:lang="vi"><![CDATA[[Bắt buộc] Thư mục cài đặt của DAOL CMS hay ./files directory phải CHMOD thành 707]]></value>
 		</item>
 		<item name="xml">
 			<value xml:lang="ko"><![CDATA[[필수] XML통신을 위하여 XML 라이브러리가 필요합니다.]]></value>
@@ -189,16 +204,16 @@
 			<value xml:lang="vi"><![CDATA[[Bắt buộc] XML Library cần thiết cho việc truyền thông File XML.]]></value>
 		</item>
 		<item name="session">
-			<value xml:lang="ko"><![CDATA[[필수] Daol CMS에서 세션 사용을 위해 php.ini 설정의 session.auto_start=0 이어야 합니다.]]></value>
-			<value xml:lang="en"><![CDATA[[Required] PHP setting file's (php.ini) 'Session.auto_start' must equal to zero in order for Daol CMS to use the session]]></value>
-			<value xml:lang="jp"><![CDATA[【必須】Daol CMSでは、セッションを使用しているため、「php.ini」の設定を「session.auto_start=0」にしてください。]]></value>
+			<value xml:lang="ko"><![CDATA[[필수] DAOL CMS에서 세션 사용을 위해 php.ini 설정의 session.auto_start=0 이어야 합니다.]]></value>
+			<value xml:lang="en"><![CDATA[[Required] PHP setting file's (php.ini) 'Session.auto_start' must equal to zero in order for DAOL CMS to use the session]]></value>
+			<value xml:lang="jp"><![CDATA[【必須】DAOL CMSでは、セッションを使用しているため、「php.ini」の設定を「session.auto_start=0」にしてください。]]></value>
 			<value xml:lang="zh-CN"><![CDATA[[必须] 为了使用缓冲功能，必须在php.ini当中设置 session.auto_start=0]]></value>
 			<value xml:lang="zh-TW"><![CDATA[[必須] 在『php.ini』中必須要設定『session.auto_start=0』，才能使用暫存功能]]></value>
-			<value xml:lang="fr"><![CDATA[[Obligatoire] 'Session.auto_start' dans le fichier de configuration pour PHP (php.ini) doit être égal à zéro car Daol CMS utilise la session]]></value>
-			<value xml:lang="ru"><![CDATA[[Требуется] Файл настроек PHP (php.ini) 'Session.auto_start' должен быть равен нулю, чтобы Daol CMS могла использовать сессии]]></value>
-			<value xml:lang="es"><![CDATA[[Requerido] Para el uso de la sesion de Daol CMS, el archivo php.ini deberia estar configurada  session.auto_start=0]]></value>
-			<value xml:lang="tr"><![CDATA[[Gerekli] PHP ayar dosyasındaki (php.ini) 'Session.auto_start' Daol CMS'nin oturumu kullanabilmesi için sıfıra eşit olmalıdır]]></value>
-			<value xml:lang="vi"><![CDATA[[Bắt buộc] File thiết lập của PHP (php.ini) 'Session.auto_start' phải là 0 theo thứ tự số cho phiên làm việc của Daol CMS hoạt động.]]></value>
+			<value xml:lang="fr"><![CDATA[[Obligatoire] 'Session.auto_start' dans le fichier de configuration pour PHP (php.ini) doit être égal à zéro car DAOL CMS utilise la session]]></value>
+			<value xml:lang="ru"><![CDATA[[Требуется] Файл настроек PHP (php.ini) 'Session.auto_start' должен быть равен нулю, чтобы DAOL CMS могла использовать сессии]]></value>
+			<value xml:lang="es"><![CDATA[[Requerido] Para el uso de la sesion de DAOL CMS, el archivo php.ini deberia estar configurada  session.auto_start=0]]></value>
+			<value xml:lang="tr"><![CDATA[[Gerekli] PHP ayar dosyasındaki (php.ini) 'Session.auto_start' DAOL CMS'nin oturumu kullanabilmesi için sıfıra eşit olmalıdır]]></value>
+			<value xml:lang="vi"><![CDATA[[Bắt buộc] File thiết lập của PHP (php.ini) 'Session.auto_start' phải là 0 theo thứ tự số cho phiên làm việc của DAOL CMS hoạt động.]]></value>
 		</item>
 		<item name="iconv">
 			<value xml:lang="ko"><![CDATA[UTF-8과 다른 언어셋의 변환을 위한 iconv설치가 필요합니다.]]></value>
@@ -385,28 +400,28 @@
 			<value xml:lang="vi"><![CDATA[Dùng chức năng <b>innodb</b> để sử dụng MySql Database.<br />Giao dịch được kích hoạt cho innodb]]></value>
 		</item>
 		<item name="sqlite2">
-			<value xml:lang="ko"><![CDATA[파일로 데이터를 저장하는 sqlite2를 지원합니다.<br />설치 시 DB파일은 웹에서 접근할 수 없는 곳에 생성하여 주셔야 합니다.<br />(안정화 테스트가 되지 않았습니다.)]]></value>
-			<value xml:lang="en"><![CDATA[Use sqlite2 as a database which saves the data in files.<br />DB file <b>must not be</b> accessible from the web.<br />(Never been tested for stabilization)]]></value>
-			<value xml:lang="jp"><![CDATA[ファイルタイプデータベースである「sqlite2」をサポートします。<br />インストール時、セキュリティのため、DBファイルはウェブがらアクセスできない場所に作成してください。<br />（安定化までのテストは行われていません）]]></value>
-			<value xml:lang="zh-CN"><![CDATA[支持用文件形式保存数据的sqlite2。<br />安装时DB文件应在web不能访问的地方生成。<br />(还没有通过安全的测试)]]></value>
-			<value xml:lang="zh-TW"><![CDATA[支援用檔案形式保存數據的『sqlite2』。<br />安裝時，資料庫數據應建立在 web 無法訪問的地方。<br />(尚未通過安全測試)]]></value>
-			<value xml:lang="fr"><![CDATA[Surpporter sqlite2 qui conserve les données dans les fichiers.<br />Quand vous installez, vous devez créer le fichier de Base de Données dans une place que l'on ne peut pas accéder par web.<br />(Jamais  testé sur  stabilization)]]></value>
-			<value xml:lang="ru"><![CDATA[Поддерживает sqlite2, которая сохраняет данные в файл.<br />Устанавливая, следует размещать файл базы данных в недоступном с веб месте.<br />(Никогда не тестировалось на стабильность)]]></value>
-			<value xml:lang="es"><![CDATA[Soporta sqlite2, el cual almacena los datos en archivos <br />En la instalacion, es necesario crear archivo de BD en un lugar inaccesible de la web.<br />(Testeo de la estabilización no realizada)]]></value>
-			<value xml:lang="tr"><![CDATA['Verileri dosya olarak kaydeden sqlite2 'yi veritabanı olarak kullanınız. <br />VT dosyası tarayıcıdan erişilebilir <b>olmamalıdır</b>.<br />(Sabitleme için hiç test edilmedi)]]></value>
-			<value xml:lang="vi"><![CDATA[Hỗ trợ <b>sqlite2</b> khi lưu Database thành File.<br />Khi cài đặt, File Database phải được tạo ra tại chỗ không sử dụng được từ Web.<br />(Không khẳng định sẽ hoạt động ổn định)]]></value>
+			<value xml:lang="ko"><![CDATA[<span style="color:#FFD700;"><b>SQLite 사용을 권장하지 않습니다.</b></span><br />파일로 데이터를 저장하는 sqlite2를 지원합니다.<br />설치 시 DB파일은 웹에서 접근할 수 없는 곳에 생성하여 주셔야 합니다.<br />(안정화 테스트가 되지 않았습니다.)]]></value>
+			<value xml:lang="en"><![CDATA[<span style="color:#FFD700;"><b>Not recommended to use SQLite.</b></span><br />Use sqlite2 as a database which saves the data in files.<br />DB file <b>must not be</b> accessible from the web.<br />(Never been tested for stabilization)]]></value>
+			<value xml:lang="jp"><![CDATA[<span style="color:#FFD700;"><b>SQLiteの使用することをお勧めしません。</b></span><br />ファイルタイプデータベースである「sqlite2」をサポートします。<br />インストール時、セキュリティのため、DBファイルはウェブがらアクセスできない場所に作成してください。<br />（安定化までのテストは行われていません）]]></value>
+			<value xml:lang="zh-CN"><![CDATA[<span style="color:#FFD700;"><b>不推荐使用SQLite。</b></span><br />支持用文件形式保存数据的sqlite2。<br />安装时DB文件应在web不能访问的地方生成。<br />(还没有通过安全的测试)]]></value>
+			<value xml:lang="zh-TW"><![CDATA[<span style="color:#FFD700;"><b>不推薦使用SQLite。</b></span><br />支援用檔案形式保存數據的『sqlite2』。<br />安裝時，資料庫數據應建立在 web 無法訪問的地方。<br />(尚未通過安全測試)]]></value>
+			<value xml:lang="fr"><![CDATA[<span style="color:#FFD700;"><b>Pas recommandé d'utiliser SQLite.</b></span><br />Surpporter sqlite2 qui conserve les données dans les fichiers.<br />Quand vous installez, vous devez créer le fichier de Base de Données dans une place que l'on ne peut pas accéder par web.<br />(Jamais  testé sur  stabilization)]]></value>
+			<value xml:lang="ru"><![CDATA[<span style="color:#FFD700;"><b>Не рекомендуется указывать использовать SQLite.</b></span><br />Поддерживает sqlite2, которая сохраняет данные в файл.<br />Устанавливая, следует размещать файл базы данных в недоступном с веб месте.<br />(Никогда не тестировалось на стабильность)]]></value>
+			<value xml:lang="es"><![CDATA[<span style="color:#FFD700;"><b>No se recomienda usar SQLite.</b></span><br />Soporta sqlite2, el cual almacena los datos en archivos <br />En la instalacion, es necesario crear archivo de BD en un lugar inaccesible de la web.<br />(Testeo de la estabilización no realizada)]]></value>
+			<value xml:lang="tr"><![CDATA[<span style="color:#FFD700;"><b>SQLite kullanmanız tavsiye edilmez.</b></span><br />'Verileri dosya olarak kaydeden sqlite2 'yi veritabanı olarak kullanınız. <br />VT dosyası tarayıcıdan erişilebilir <b>olmamalıdır</b>.<br />(Sabitleme için hiç test edilmedi)]]></value>
+			<value xml:lang="vi"><![CDATA[<span style="color:#FFD700;"><b>Không khuyến cáo sử dụng SQLite.</b></span><br />Hỗ trợ <b>sqlite2</b> khi lưu Database thành File.<br />Khi cài đặt, File Database phải được tạo ra tại chỗ không sử dụng được từ Web.<br />(Không khẳng định sẽ hoạt động ổn định)]]></value>
 		</item>
 		<item name="sqlite3_pdo">
-			<value xml:lang="ko"><![CDATA[PHP의 PDO로 sqlite3를 지원합니다.<br />설치 시 DB파일은 웹에서 접근할 수 없는 곳에 생성하여 주셔야 합니다.]]></value>
-			<value xml:lang="en"><![CDATA[Use sqlite3 as a database which supports PHP PDO.<br />DB file <b>must not be</b> accessible from the web.]]></value>
-			<value xml:lang="jp"><![CDATA[PHPのPDOを経由して「sqlite3」をサポートします。<br />インストール時、セキュリティのため、DBファイルはウェブからアクセスできない場所に作成してください。]]></value>
-			<value xml:lang="zh-CN"><![CDATA[用PHP的 PDO支持 sqlite3。<br />安装时DB文件应在web不能访问的地方生成。]]></value>
-			<value xml:lang="zh-TW"><![CDATA[用 PHP 的 PDO 支援『sqlite3』。<br />安裝時，資料庫數據應建立在網頁無法訪問的地方。]]></value>
-			<value xml:lang="fr"><![CDATA[Supporter sqlite3 PDO de PHP.<br />Quand vous installez, vous devez cr?r le fichier de Base de Données dans une place que l'on ne peut pas accéder par Web.]]></value>
-			<value xml:lang="ru"><![CDATA[Поддерживает sqlite3 посредством PHP's PDO.<br />Устанавливая, следует размещать файл базы данных в недоступном с веб месте.]]></value>
-			<value xml:lang="es"><![CDATA[A través de PDO de PHP soporta sqlite2 <br />En la instalación, es necesario crear archivo de BD en un lugar inaccesible de la web.]]></value>
-			<value xml:lang="tr"><![CDATA[PHP'nin PDO'sunun desteğiyle sqlite3'ü veritabanı olarak kullanınız.<br />VT dosyası tarayıcıdan erişilebilir <b>olmamalıdır</b>.]]></value>
-			<value xml:lang="vi"><![CDATA[Hỗ trợ <b>sqlite3</b> bởi PDO của PHP.<br />Khi cài đặt, File Database phải được tạo ra tại chỗ không sử dụng được từ Web.]]></value>
+			<value xml:lang="ko"><![CDATA[<span style="color:#FFD700;"><b>SQLite 사용을 권장하지 않습니다.</b></span><br />PHP의 PDO로 sqlite3를 지원합니다.<br />설치 시 DB파일은 웹에서 접근할 수 없는 곳에 생성하여 주셔야 합니다.]]></value>
+			<value xml:lang="en"><![CDATA[<span style="color:#FFD700;"><b>Not recommended to use SQLite.</b></span><br />Use sqlite3 as a database which supports PHP PDO.<br />DB file <b>must not be</b> accessible from the web.]]></value>
+			<value xml:lang="jp"><![CDATA[<span style="color:#FFD700;"><b>SQLiteの使用することをお勧めしません。</b></span><br />PHPのPDOを経由して「sqlite3」をサポートします。<br />インストール時、セキュリティのため、DBファイルはウェブからアクセスできない場所に作成してください。]]></value>
+			<value xml:lang="zh-CN"><![CDATA[<span style="color:#FFD700;"><b>不推荐使用SQLite。</b></span><br />用PHP的 PDO支持 sqlite3。<br />安装时DB文件应在web不能访问的地方生成。]]></value>
+			<value xml:lang="zh-TW"><![CDATA[<span style="color:#FFD700;"><b>不推薦使用SQLite。</b></span><br />用 PHP 的 PDO 支援『sqlite3』。<br />安裝時，資料庫數據應建立在網頁無法訪問的地方。]]></value>
+			<value xml:lang="fr"><![CDATA[<span style="color:#FFD700;"><b>Pas recommandé d'utiliser SQLite.</b></span><br />Supporter sqlite3 PDO de PHP.<br />Quand vous installez, vous devez cr?r le fichier de Base de Données dans une place que l'on ne peut pas accéder par Web.]]></value>
+			<value xml:lang="ru"><![CDATA[<span style="color:#FFD700;"><b>Не рекомендуется указывать использовать SQLite.</b></span><br />Поддерживает sqlite3 посредством PHP's PDO.<br />Устанавливая, следует размещать файл базы данных в недоступном с веб месте.]]></value>
+			<value xml:lang="es"><![CDATA[<span style="color:#FFD700;"><b>No se recomienda usar SQLite.</b></span><br />A través de PDO de PHP soporta sqlite2 <br />En la instalación, es necesario crear archivo de BD en un lugar inaccesible de la web.]]></value>
+			<value xml:lang="tr"><![CDATA[<span style="color:#FFD700;"><b>SQLite kullanmanız tavsiye edilmez.</b></span><br />PHP'nin PDO'sunun desteğiyle sqlite3'ü veritabanı olarak kullanınız.<br />VT dosyası tarayıcıdan erişilebilir <b>olmamalıdır</b>.]]></value>
+			<value xml:lang="vi"><![CDATA[<span style="color:#FFD700;"><b>Không khuyến cáo sử dụng SQLite.</b></span><br />Hỗ trợ <b>sqlite3</b> bởi PDO của PHP.<br />Khi cài đặt, File Database phải được tạo ra tại chỗ không sử dụng được từ Web.]]></value>
 		</item>
 		<item name="cubrid">
 			<value xml:lang="ko"><![CDATA[CUBRID DB를 이용합니다. <a href="http://www.cubrid.com/zbxe/?mid=bbs_developer_tutorial&category=47452" target="_blank">Manual</a>]]></value>
@@ -432,28 +447,28 @@
 			<value xml:lang="tr"><![CDATA[MSSQL'ü veritabanı olarak kullanın]]></value>
 		</item>
 		<item name="postgresql">
-			<value xml:lang="ko"><![CDATA[PostgreSql을 이용합니다.]]></value>
-			<value xml:lang="en"><![CDATA[Use PostgreSql as a database.]]></value>
-			<value xml:lang="jp"><![CDATA[PostgreSql DBを利用します。]]></value>
-			<value xml:lang="zh-CN"><![CDATA[使用PostgreSql DB。]]></value>
-			<value xml:lang="zh-TW"><![CDATA[使用 PostgreSql DB。]]></value>
-			<value xml:lang="fr"><![CDATA[Utiliser la Base de Données de PostgreSql.]]></value>
-			<value xml:lang="ru"><![CDATA[Используем PostgreSql DB.]]></value>
-			<value xml:lang="es"><![CDATA[Usar BD PostgreSql.]]></value>
-			<value xml:lang="tr"><![CDATA[PostgreSql'ü veritabanı olarak kullanın.]]></value>
-			<value xml:lang="vi"><![CDATA[Sử dụng <b>PostgreSql</b> Database.]]></value>
+			<value xml:lang="ko"><![CDATA[<span style="color:#FFD700;"><b>PostgreSQL 사용을 권장하지 않습니다.</b></span><br />PostgreSQL을 이용합니다.]]></value>
+			<value xml:lang="en"><![CDATA[<span style="color:#FFD700;"><b>Not recommended to use PostgreSQL.</b></span><br />Use PostgreSql as a database.]]></value>
+			<value xml:lang="jp"><![CDATA[<span style="color:#FFD700;"><b>PostgreSQLの使用することをお勧めしません。</b></span><br />PostgreSql DBを利用します。]]></value>
+			<value xml:lang="zh-CN"><![CDATA[<span style="color:#FFD700;"><b>不推荐使用PostgreSQL。</b></span><br />使用PostgreSQL DB。]]></value>
+			<value xml:lang="zh-TW"><![CDATA[<span style="color:#FFD700;"><b>不推薦使用PostgreSQL。</b></span><br />使用 PostgreSQL DB。]]></value>
+			<value xml:lang="fr"><![CDATA[<span style="color:#FFD700;"><b>Pas recommandé d'utiliser PostgreSQL.</b></span><br />Utiliser la Base de Données de PostgreSQL.]]></value>
+			<value xml:lang="ru"><![CDATA[<span style="color:#FFD700;"><b>Не рекомендуется указывать использовать PostgreSQL.</b></span><br />Используем PostgreSQL DB.]]></value>
+			<value xml:lang="es"><![CDATA[<span style="color:#FFD700;"><b>No se recomienda usar PostgreSQL.</b></span><br />Usar BD PostgreSQL.]]></value>
+			<value xml:lang="tr"><![CDATA[<span style="color:#FFD700;"><b>PostgreSQL kullanmanız tavsiye edilmez.</b></span><br />PostgreSQL'ü veritabanı olarak kullanın.]]></value>
+			<value xml:lang="vi"><![CDATA[<span style="color:#FFD700;"><b>Không khuyến cáo sử dụng PostgreSQL.</b></span><br />Sử dụng <b>PostgreSQL</b> Database.]]></value>
 		</item>
 		<item name="firebird">
-			<value xml:lang="ko"><![CDATA[Firebird를 이용합니다.<br />DB 생성 방법 (create database "/path/dbname.fdb" page_size=8192 default character set UTF-8;)]]></value>
-			<value xml:lang="en"><![CDATA[Use Firebird as a database.<br />You can create a database with (create database "/path/dbname.fdb" page_size=8192 default character set UTF-8;)]]></value>
-			<value xml:lang="jp"><![CDATA[Firebird DBを利用します。<br />DB生成方法 (create database "/path/dbname.fdb" page_size=8192 default character set UTF8;)]]></value>
-			<value xml:lang="zh-CN"><![CDATA[使用Firebird DB。]]></value>
-			<value xml:lang="zh-TW"><![CDATA[使用 Firebird DB。<br />DB 建立方式 (create database "/path/dbname.fdb" page_size=8192 default character set UTF8;)]]></value>
-			<value xml:lang="fr"><![CDATA[Utiliser la Base de Données de firebird.]]></value>
-			<value xml:lang="ru"><![CDATA[Используем firebird DB.]]></value>
-			<value xml:lang="es"><![CDATA[Usar BD firebird. Cómo crear <br /> PP (crear base de datos "/ path / dbname.fdb" page_size = 8192 el conjunto de caracteres UTF8 por defecto;)]]></value>
-			<value xml:lang="tr"><![CDATA[Firebird'ü veritabanı olarak kullanın.<br /> (create database "/path/dbname.fdb" page_size=8192 default character set UTF-8;) ile veritabanı oluşturabilirsiniz]]></value>
-			<value xml:lang="vi"><![CDATA[Sử dụng <b>firebird</b> Database.]]></value>
+			<value xml:lang="ko"><![CDATA[<span style="color:#FFD700;"><b>Firebird 사용을 권장하지 않습니다.</b></span><br />Firebird를 이용합니다.<br />DB 생성 방법 (create database "/path/dbname.fdb" page_size=8192 default character set UTF-8;)]]></value>
+			<value xml:lang="en"><![CDATA[<span style="color:#FFD700;"><b>Not recommended to use Firebird.</b></span><br />Use Firebird as a database.<br />You can create a database with (create database "/path/dbname.fdb" page_size=8192 default character set UTF-8;)]]></value>
+			<value xml:lang="jp"><![CDATA[<span style="color:#FFD700;"><b>Firebirdの使用することをお勧めしません。</b></span><br />Firebird DBを利用します。<br />DB生成方法 (create database "/path/dbname.fdb" page_size=8192 default character set UTF8;)]]></value>
+			<value xml:lang="zh-CN"><![CDATA[<span style="color:#FFD700;"><b>不推荐使用Firebird。</b></span><br />使用Firebird DB。]]></value>
+			<value xml:lang="zh-TW"><![CDATA[<span style="color:#FFD700;"><b>不推薦使用Firebird。</b></span><br />使用 Firebird DB。<br />DB 建立方式 (create database "/path/dbname.fdb" page_size=8192 default character set UTF8;)]]></value>
+			<value xml:lang="fr"><![CDATA[<span style="color:#FFD700;"><b>Pas recommandé d'utiliser Firebird.</b></span><br />Utiliser la Base de Données de Firebird.]]></value>
+			<value xml:lang="ru"><![CDATA[<span style="color:#FFD700;"><b>Не рекомендуется указывать использовать Firebird.</b></span><br />Используем Firebird DB.]]></value>
+			<value xml:lang="es"><![CDATA[<span style="color:#FFD700;"><b>No se recomienda usar Firebird.</b></span><br />Usar BD Firebird. Cómo crear <br /> PP (crear base de datos "/ path / dbname.fdb" page_size = 8192 el conjunto de caracteres UTF8 por defecto;)]]></value>
+			<value xml:lang="tr"><![CDATA[<span style="color:#FFD700;"><b>Firebird kullanmanız tavsiye edilmez.</b></span><br />Firebird'ü veritabanı olarak kullanın.<br /> (create database "/path/dbname.fdb" page_size=8192 default character set UTF-8;) ile veritabanı oluşturabilirsiniz]]></value>
+			<value xml:lang="vi"><![CDATA[<span style="color:#FFD700;"><b>Không khuyến cáo sử dụng Firebird.</b></span><br />Sử dụng <b>Firebird</b> Database.]]></value>
 		</item>
 	</item>
 	<item name="form_title">
@@ -754,7 +769,7 @@
 		<value xml:lang="ru"><![CDATA[Установка завершена]]></value>
 		<value xml:lang="es"><![CDATA[Instalación finalizada]]></value>
 		<value xml:lang="tr"><![CDATA[Kurulum tamamlandı]]></value>
-		<value xml:lang="vi"><![CDATA[Chúc mừng bạn đã cài đặt Daol CMS thành công!]]></value>
+		<value xml:lang="vi"><![CDATA[Chúc mừng bạn đã cài đặt DAOL CMS thành công!]]></value>
 	</item>
 	<item name="msg_cannot_proc">
 		<value xml:lang="ko"><![CDATA[설치 환경이 갖춰지지 않아 요청을 실행할 수가 없습니다.]]></value>
@@ -770,15 +785,15 @@
 	</item>
 	<item name="msg_already_installed">
 		<value xml:lang="ko"><![CDATA[이미 설치가 되어 있습니다.]]></value>
-		<value xml:lang="en"><![CDATA[Daol CMS is already installed.]]></value>
+		<value xml:lang="en"><![CDATA[DAOL CMS is already installed.]]></value>
 		<value xml:lang="jp"><![CDATA[既にインストールされています。]]></value>
 		<value xml:lang="zh-CN"><![CDATA[已安装]]></value>
 		<value xml:lang="zh-TW"><![CDATA[已安裝]]></value>
-		<value xml:lang="fr"><![CDATA[Daol CMS est déjà installé]]></value>
-		<value xml:lang="ru"><![CDATA[Daol CMS уже установлена]]></value>
-		<value xml:lang="es"><![CDATA[Instalación de Daol CMS ya existe.]]></value>
-		<value xml:lang="tr"><![CDATA[Daol CMS zaten kurulmuştur]]></value>
-		<value xml:lang="vi"><![CDATA[Một phiên bản nào đó của Daol CMS đã được cài đặt từ trước.<br />Xin hãy kiểm tra lại!]]></value>
+		<value xml:lang="fr"><![CDATA[DAOL CMS est déjà installé]]></value>
+		<value xml:lang="ru"><![CDATA[DAOL CMS уже установлена]]></value>
+		<value xml:lang="es"><![CDATA[Instalación de DAOL CMS ya existe.]]></value>
+		<value xml:lang="tr"><![CDATA[DAOL CMS zaten kurulmuştur]]></value>
+		<value xml:lang="vi"><![CDATA[Một phiên bản nào đó của DAOL CMS đã được cài đặt từ trước.<br />Xin hãy kiểm tra lại!]]></value>
 	</item>
 	<item name="msg_dbconnect_failed">
 		<value xml:lang="ko"><![CDATA[DB접속 오류가 발생하였습니다. DB정보를 다시 확인해주세요.]]></value>
@@ -806,15 +821,15 @@
 	</item>
 	<item name="msg_install_completed">
 		<value xml:lang="ko"><![CDATA[설치가 완료되었습니다. 감사합니다.]]></value>
-		<value xml:lang="en"><![CDATA[Installation has been completed. Thank you for choosing Daol CMS]]></value>
+		<value xml:lang="en"><![CDATA[Installation has been completed. Thank you for choosing DAOL CMS]]></value>
 		<value xml:lang="jp"><![CDATA[インストールが完了しました。 ありがとうございました。]]></value>
 		<value xml:lang="zh-CN"><![CDATA[安装完成。 非常感谢。]]></value>
 		<value xml:lang="zh-TW"><![CDATA[安裝完成。 非常感謝。]]></value>
-		<value xml:lang="fr"><![CDATA[Installation a complété. Merci pour choisir Daol CMS]]></value>
-		<value xml:lang="ru"><![CDATA[Установка завершена. Спасибо Вам за выбор Daol CMS]]></value>
+		<value xml:lang="fr"><![CDATA[Installation a complété. Merci pour choisir DAOL CMS]]></value>
+		<value xml:lang="ru"><![CDATA[Установка завершена. Спасибо Вам за выбор DAOL CMS]]></value>
 		<value xml:lang="es"><![CDATA[Instalación finalizada.  Muchas gracias.]]></value>
-		<value xml:lang="tr"><![CDATA[Kurulum tamamlandı. Daol CMS'yi seçtiğiniz için teşekkür ederiz]]></value>
-		<value xml:lang="vi"><![CDATA[Đã cài đặt Daol CMS thành công!. Xin cảm ơn đã sử dụng Daol CMS!]]></value>
+		<value xml:lang="tr"><![CDATA[Kurulum tamamlandı. DAOL CMS'yi seçtiğiniz için teşekkür ederiz]]></value>
+		<value xml:lang="vi"><![CDATA[Đã cài đặt DAOL CMS thành công!. Xin cảm ơn đã sử dụng DAOL CMS!]]></value>
 	</item>
 	<item name="msg_install_failed">
 		<value xml:lang="ko"><![CDATA[설치 파일 생성 시에 오류가 발생하였습니다.]]></value>
@@ -912,17 +927,17 @@
 		<value xml:lang="mn"><![CDATA[FTP холболт шалгах]]></value>
 	</item>
 	<item name="msg_safe_mode_ftp_needed">
-		<value xml:lang="ko"><![CDATA[PHP의 <strong>safe_mode=On</strong>일 경우 Daol CMS의 정상적인 동작을 돕습니다.]]></value>
-		<value xml:lang="en"><![CDATA[When safe_mode setting of PHP is On, you should enter FTP account information to install Daol CMS.]]></value>
-		<value xml:lang="jp"><![CDATA[PHPのsafe_modeがOnの場合、FTP情報を登録することで、Daol CMSのインストール及び利用が可能になります。]]></value>
-		<value xml:lang="zh-CN"><![CDATA[当PHP的safe_mode=On时，请必须输入相关FTP信息，否则将无法正常安装或使用Daol CMS程序。]]></value>
+		<value xml:lang="ko"><![CDATA[PHP의 <strong>safe_mode=On</strong>일 경우 DAOL CMS의 정상적인 동작을 돕습니다.]]></value>
+		<value xml:lang="en"><![CDATA[When safe_mode setting of PHP is On, you should enter FTP account information to install DAOL CMS.]]></value>
+		<value xml:lang="jp"><![CDATA[PHPのsafe_modeがOnの場合、FTP情報を登録することで、DAOL CMSのインストール及び利用が可能になります。]]></value>
+		<value xml:lang="zh-CN"><![CDATA[当PHP的safe_mode=On时，请必须输入相关FTP信息，否则将无法正常安装或使用DAOL CMS程序。]]></value>
 		<value xml:lang="zh-TW"><![CDATA[當 PHP 的安全模式(safe_mode)開啟時，請輸入相關 FTP 資訊，否則無法正常安裝或使用程式。]]></value>
-		<value xml:lang="fr"><![CDATA[PHP의 safe_mode가 On일 경우 FTP 정보를 꼭 입력해주셔야 Daol CMS의 설치 및 사용이 가능합니다]]></value>
-		<value xml:lang="de"><![CDATA[Zur Installation und Nutzung des Daol CMSs muss die Angabe des FTPs festgestellt werden, wenn safe_mode in PHP 'An' ist.]]></value>
-		<value xml:lang="es"><![CDATA[Si la la variable safe_mode está activa[safe_mode=On], debe rellenar los datos de FTP para seguir instalando y usar con normalidad el Daol CMS.]]></value>
-		<value xml:lang="tr"><![CDATA[Eğer PHP güvenli mod ayarları etkinse, Daol CMS'yi kurmak için FTP hesap bilgilerini girmelisiniz.]]></value>
-		<value xml:lang="vi"><![CDATA[Nếu safe_mode của PHP mở, bạn có thể cài đặt các thành phần bổ xung cho Daol CMS một cách tự động qua FTP.]]></value>
-		<value xml:lang="mn"><![CDATA[PHP의 safe_mode가 Onбайх тохиолдолд , FTP мэдээллийг заавал оруулснаар Daol CMS идэвжvvлэх болон хэрэглэх боломжтой болно.]]></value>
+		<value xml:lang="fr"><![CDATA[PHP의 safe_mode가 On일 경우 FTP 정보를 꼭 입력해주셔야 DAOL CMS의 설치 및 사용이 가능합니다]]></value>
+		<value xml:lang="de"><![CDATA[Zur Installation und Nutzung des DAOL CMSs muss die Angabe des FTPs festgestellt werden, wenn safe_mode in PHP 'An' ist.]]></value>
+		<value xml:lang="es"><![CDATA[Si la la variable safe_mode está activa[safe_mode=On], debe rellenar los datos de FTP para seguir instalando y usar con normalidad el DAOL CMS.]]></value>
+		<value xml:lang="tr"><![CDATA[Eğer PHP güvenli mod ayarları etkinse, DAOL CMS'yi kurmak için FTP hesap bilgilerini girmelisiniz.]]></value>
+		<value xml:lang="vi"><![CDATA[Nếu safe_mode của PHP mở, bạn có thể cài đặt các thành phần bổ xung cho DAOL CMS một cách tự động qua FTP.]]></value>
+		<value xml:lang="mn"><![CDATA[PHP의 safe_mode가 Onбайх тохиолдолд , FTP мэдээллийг заавал оруулснаар DAOL CMS идэвжvvлэх болон хэрэглэх боломжтой болно.]]></value>
 	</item>
 	<item name="msg_safe_mode_ftp_needed2">
 		<value xml:lang="ko"><![CDATA[모듈의 쉬운 설치 또는 업데이트가 가능해 집니다.]]></value>
@@ -1014,25 +1029,25 @@
 		<value xml:lang="vi"><![CDATA[Hãy nhập thông tin đường dẫn của FTP.]]></value>
 	</item>
 	<item name="msg_ftp_installed_realpath">
-		<value xml:lang="ko"><![CDATA[설치된 Daol CMS의 절대경로]]></value>
-		<value xml:lang="en"><![CDATA[Absolute Path of Daol CMS]]></value>
-		<value xml:lang="jp"><![CDATA[インストールされたDaol CMSの絶対パス]]></value>
-		<value xml:lang="zh-CN"><![CDATA[Daol CMS绝对路径]]></value>
-		<value xml:lang="zh-TW"><![CDATA[Daol CMS絕對路經]]></value>
-		<value xml:lang="de"><![CDATA[absoluter Pfad, in dem Daol CMS installiert ist.]]></value>
-		<value xml:lang="tr"><![CDATA[Daol CMS Salt Yolu]]></value>
-		<value xml:lang="vi"><![CDATA[Đường dẫn thư mục đã cài đặt Daol CMS]]></value>
+		<value xml:lang="ko"><![CDATA[설치된 DAOL CMS의 절대경로]]></value>
+		<value xml:lang="en"><![CDATA[Absolute Path of DAOL CMS]]></value>
+		<value xml:lang="jp"><![CDATA[インストールされたDAOL CMSの絶対パス]]></value>
+		<value xml:lang="zh-CN"><![CDATA[DAOL CMS绝对路径]]></value>
+		<value xml:lang="zh-TW"><![CDATA[DAOL CMS絕對路經]]></value>
+		<value xml:lang="de"><![CDATA[absoluter Pfad, in dem DAOL CMS installiert ist.]]></value>
+		<value xml:lang="tr"><![CDATA[DAOL CMS Salt Yolu]]></value>
+		<value xml:lang="vi"><![CDATA[Đường dẫn thư mục đã cài đặt DAOL CMS]]></value>
 	</item>
 	<item name="msg_ftp_installed_ftp_realpath">
-		<value xml:lang="ko"><![CDATA[설치된 Daol CMS의 FTP 경로 설정]]></value>
-		<value xml:lang="en"><![CDATA[Absolute FTP Path of Daol CMS]]></value>
-		<value xml:lang="jp"><![CDATA[インストールされたDaol CMSのFTP絶対パス設定]]></value>
+		<value xml:lang="ko"><![CDATA[설치된 DAOL CMS의 FTP 경로 설정]]></value>
+		<value xml:lang="en"><![CDATA[Absolute FTP Path of DAOL CMS]]></value>
+		<value xml:lang="jp"><![CDATA[インストールされたDAOL CMSのFTP絶対パス設定]]></value>
 		<value xml:lang="zh-CN"><![CDATA[FTP绝对路径设置]]></value>
-		<value xml:lang="zh-TW"><![CDATA[Daol CMS的 FTP 絕對路經]]></value>
-		<value xml:lang="fr"><![CDATA[설치된 Daol CMS의 FTP 절대경로 설정]]></value>
-		<value xml:lang="de"><![CDATA[absoluten Pfad des FTPs, in dem Daol CMS installiert ist, festlegen.]]></value>
-		<value xml:lang="es"><![CDATA[설치된 Daol CMS의 FTP 절대경로 설정]]></value>
-		<value xml:lang="tr"><![CDATA[Daol CMS Salt FTP Yolu]]></value>
-		<value xml:lang="vi"><![CDATA[Đường dẫn tuyệt đối của thư mục cài đặt Daol CMS trên FTP]]></value>
+		<value xml:lang="zh-TW"><![CDATA[DAOL CMS的 FTP 絕對路經]]></value>
+		<value xml:lang="fr"><![CDATA[설치된 DAOL CMS의 FTP 절대경로 설정]]></value>
+		<value xml:lang="de"><![CDATA[absoluten Pfad des FTPs, in dem DAOL CMS installiert ist, festlegen.]]></value>
+		<value xml:lang="es"><![CDATA[설치된 DAOL CMS의 FTP 절대경로 설정]]></value>
+		<value xml:lang="tr"><![CDATA[DAOL CMS Salt FTP Yolu]]></value>
+		<value xml:lang="vi"><![CDATA[Đường dẫn tuyệt đối của thư mục cài đặt DAOL CMS trên FTP]]></value>
 	</item>
 </lang>

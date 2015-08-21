@@ -18,8 +18,8 @@
 		 **/
 		function procBoardAdminInsertBoard($args = null) {
 			// generate module model/controller object
-			$oModuleController = &getController('module');
-			$oModuleModel = &getModel('module');
+			$oModuleController = getController('module');
+			$oModuleModel = getModel('module');
 
 			// setup the board module infortmation
 			$args = Context::getRequestVars();
@@ -33,7 +33,7 @@
 			if($args->except_notice!='Y') $args->except_notice = 'N';
 			if($args->use_anonymous!='Y') $args->use_anonymous= 'N';
 			if($args->consultation!='Y') $args->consultation = 'N';
-			if(!in_array($args->order_target,$this->order_target)) $args->order_target = 'list_order';
+			if(!in_array($args->order_target,$this->order_target) && !array_key_exists($args->order_target, $extra_order_target)) $args->order_target = 'list_order';
 			if(!in_array($args->order_type,array('asc','desc'))) $args->order_type = 'asc';
 
 			// if there is an existed module
@@ -68,7 +68,7 @@
 			$module_srl = Context::get('module_srl');
 
 			// get the current module
-			$oModuleController = &getController('module');
+			$oModuleController = getController('module');
 			$output = $oModuleController->deleteModule($module_srl);
 			if(!$output->toBool()) return $output;
 
@@ -93,7 +93,7 @@
 				$list_arr[] = $val;
 			}
 
-			$oModuleController = &getController('module');
+			$oModuleController = getController('module');
 			$oModuleController->insertModulePartConfig('board', $module_srl, $list_arr);
 
 			$this->setRedirectUrl(Context::get('success_return_url'));

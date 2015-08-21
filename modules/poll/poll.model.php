@@ -2,6 +2,7 @@
 	/**
 	 * @class  pollModel
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief The model class for the poll modules
 	 **/
 
@@ -62,7 +63,7 @@
 
 			$poll->poll_srl = $poll_srl;
 			// Only ongoing poll results
-			if($poll->stop_date > date("Ymd")) {
+			if($poll->stop_date >= date("Ymd")){
 				if($this->isPolled($poll_srl)) $tpl_file = "result";
 				else $tpl_file = "form";
 			} else {

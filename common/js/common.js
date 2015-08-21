@@ -239,12 +239,13 @@ String.prototype.setQuery = function(key, val) {
 	var loc = isSameUrl(this, window.location.href) ? current_url : this;
 	var idx = loc.indexOf('?');
 	var uri = loc.replace(/#$/, '');
-	var act, re, v;
+	var act, re, v, toReplace, query_string;
 
 	if (typeof(val)=='undefined') val = '';
 
 	if (idx != -1) {
-		var query_string = uri.substr(idx+1, loc.length), args = {}, q_list = [];
+		var args = {}, q_list = [];
+		query_string = uri.substr(idx + 1, loc.length);
 		uri = loc.substr(0, idx);
 		query_string.replace(/([^=]+)=([^&]*)(&|$)/g, function(all,key,val) { args[key] = val; });
 
@@ -257,9 +258,12 @@ String.prototype.setQuery = function(key, val) {
 		}
 
 		query_string = q_list.join('&');
-		uri = uri+(query_string?'?'+query_string:'');
+		uri = uri + (query_string ? '?' + encodeURI(query_string) : '');
 	} else {
-		if (String(val).trim()) uri = uri+'?'+key+'='+val;
+		if (String(val).trim()) {
+			query_string = '?' + key + '=' + val;
+			uri = uri + encodeURI(query_string);
+		}
 	}
 
 	re = /^https:\/\/([^:\/]+)(:\d+|)/i;
@@ -289,7 +293,7 @@ String.prototype.setQuery = function(key, val) {
 	// insert index.php if it isn't included
 	uri = uri.replace(/\/(index\.php)?\?/, '/index.php?');
 
-	return encodeURI(uri);
+	return uri;
 }
 
 /**

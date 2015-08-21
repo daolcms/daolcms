@@ -603,24 +603,21 @@
 			$month = (int)substr($str,4,2);
 			$day   = (int)substr($str,6,2);
 
-			// leading zero?
-			$lz = create_function('$n', 'return ($n>9?"":"0").$n;');
-
 			$trans = array(
-				'Y'=>$year,
-				'y'=>$lz($year%100),
-				'm'=>$lz($month),
-				'n'=>$month,
-				'd'=>$lz($day),
-				'j'=>$day,
-				'G'=>$hour,
-				'H'=>$lz($hour),
-				'g'=>$hour%12,
-				'h'=>$lz($hour%12),
-				'i'=>$lz($min),
-				's'=>$lz($sec),
-				'M'=>getMonthName($month),
-				'F'=>getMonthName($month,false)
+				'Y' => $year,
+				'y' => sprintf('%02d', $year % 100),
+				'm' => sprintf('%02d', $month),
+				'n' => $month,
+				'd' => sprintf('%02d', $day),
+				'j' => $day,
+				'G' => $hour,
+				'H' => sprintf('%02d', $hour),
+				'g' => $hour % 12,
+				'h' => sprintf('%02d', $hour % 12),
+				'i' => sprintf('%02d', $min),
+				's' => sprintf('%02d', $sec),
+				'M' => getMonthName($month),
+				'F' => getMonthName($month, FALSE)
 			);
 
 			$string = strtr($format, $trans);
@@ -1162,11 +1159,10 @@
 	 */
 	function requirePear(){
 		if(version_compare(PHP_VERSION, "5.3.0") < 0){
-			set_include_path(_XE_PATH_."libs/PEAR");	
+			set_include_path(_XE_PATH_ . "libs/PEAR" . PATH_SEPARATOR . get_include_path());
 		}
 		else{
-			set_include_path(_XE_PATH_."libs/PEAR.1.9.5");	
-
+			set_include_path(_XE_PATH_. "libs/PEAR.1.9.5" . PATH_SEPARATOR . get_include_path());
 		}
 	}
 
@@ -1182,14 +1178,23 @@
 			return true;
 		}
 
-		$defaultUrl = Context::getDefaultUrl();
-		$referer = parse_url($_SERVER["HTTP_REFERER"]);
+		$default_url = Context::getDefaultUrl();
+		$referer = $_SERVER["HTTP_REFERER"];
+		
+		if(strpos($default_url, 'xn--') !== FALSE && strpos($referer, 'xn--') === FALSE){
+			require_once(_XE_PATH_ . 'libs/idna_convert/idna_convert.class.php');
+			$IDN = new idna_convert(array('idn_version' => 2008));
+			$referer = $IDN->encode($referer);
+		}
+		
+		$default_url = parse_url($default_url);
+		$referer = parse_url($referer);
 
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$siteModuleInfo = $oModuleModel->getDefaultMid();
 
 		if($siteModuleInfo->site_srl == 0){
-			if(!strstr(strtolower($defaultUrl), strtolower($referer['host']))){
+			if($default_url['host'] !== $referer['host']){
 				return false;
 			}
 		}

@@ -36,7 +36,9 @@
 			if($comment_config->use_vote_up=='N') return new Object(-1, 'msg_invalid_request');
 
 			$point = 1;
-			return $this->updateVotedCount($comment_srl, $point);
+			$output = $this->updateVotedCount($comment_srl, $point);
+			$this->add('voted_count', $output->get('voted_count'));
+			return $output;
 		}
 
 		/**
@@ -59,7 +61,9 @@
 			if($comment_config->use_vote_down=='N') return new Object(-1, 'msg_invalid_request');
 
 			$point = -1;
-			return $this->updateVotedCount($comment_srl, $point);
+			$output = $this->updateVotedCount($comment_srl, $point);
+			$this->add('blamed_count', $output->get('blamed_count'));
+			return $output;
 		}
 
 		/**
@@ -185,8 +189,10 @@
 			// get a object of document model
 			$oDocumentModel = &getModel('document');
 
-			// even for manual_inserted if password exists, md5 it.
-			if($obj->password) $obj->password = md5($obj->password);
+			// even for manual_inserted if password exists, hash it.
+			if($obj->password){
+				$obj->password = getModel('member')->hashPassword($obj->password);
+			}
 			// get the original posting
 			if(!$manual_inserted) {
 				$oDocument = $oDocumentModel->getDocument($document_srl);
@@ -468,10 +474,19 @@
 		 * Fix the comment
 		 * @param object $obj
 		 * @param bool $is_admin
+		 * @param bool $manual_updated
 		 * @return object
 		 */
-		function updateComment($obj, $is_admin = false) {
+		function updateComment($obj, $is_admin = FALSE, $manual_updated = FALSE){
+			if(!$manual_updated && !checkCSRF()){
+				return new Object(-1, 'msg_invalid_request');
+			}
+			
+			if(!is_object($obj)){
+				$obj = new stdClass();
+			}
 			$obj->__isupdate = true;
+			
 			// call a trigger (before)
 			$output = ModuleHandler::triggerCall('comment.updateComment', 'before', $obj);
 			if(!$output->toBool()) return $output;
@@ -489,11 +504,12 @@
 			// check if permission is granted
 			if(!$is_admin && !$source_obj->isGranted()) return new Object(-1, 'msg_not_permitted');
 
-			if($obj->password) $obj->password = md5($obj->password);
-			if($obj->homepage) {
+			if($obj->password){
+				$obj->password = getModel('member')->hashPassword($obj->password);
+			}
+			if($obj->homepage){
 				$obj->homepage = removeHackTag($obj->homepage);
-				if(!preg_match('/^[a-z]+:\/\//i',$obj->homepage))
-				{
+				if(!preg_match('/^[a-z]+:\/\//i',$obj->homepage)){
 					$obj->homepage = 'http://'.$obj->homepage;
 				}
 			}

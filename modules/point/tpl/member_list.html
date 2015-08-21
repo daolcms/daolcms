@@ -60,8 +60,8 @@
 					<form action="./" method="get">
 						<input type="hidden" name="module" value="point" />
 						<input type="hidden" name="member_srl" value="{$val->member_srl}" />
-						<input type="text" name="orgpoint" value="{$val->point}" disabled="disabled" style="width:40px;text-align:right" />
-						<input type="text" id="point_{$val->member_srl}" name="point" style="width:40px;text-align:right" />
+						<input type="text" name="orgpoint" value="{$val->point}" disabled="disabled" style="width:70px;text-align:right" />
+						<input type="text" id="point_{$val->member_srl}" name="point" style="width:70px;text-align:right" />
 						<input type="button" value="{$lang->cmd_update}" onclick="updatePoint({$val->member_srl})" class="text" />
 					</form>
 				</td>

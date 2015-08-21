@@ -445,6 +445,7 @@
 
 		function getSummary($str_size = 50, $tail = '...') {
 			$content = $this->getContent(false,false);
+			$content = nl2br($content);
 
 			// For a newlink, inert a whitespace
 			$content = preg_replace('!(<br[\s]*/{0,1}>[\s]*)+!is', ' ', $content);
@@ -556,7 +557,17 @@
 
 		function getExtraValue($idx) {
 			$extra_vars = $this->getExtraVars();
-			return $extra_vars[$idx]->value;
+			if(is_array($extra_vars) && array_key_exists($idx,$extra_vars)){
+				if(is_array($extra_vars) && array_key_exists($idx,$extra_vars)){
+					return $extra_vars[$idx]->getValue();
+				}
+				else{
+					return '';
+				}
+			}
+			else{
+				return '';
+			}
 		}
 
 		function getExtraValueHTML($idx) {
@@ -579,7 +590,17 @@
 					$extra_eid[$key->eid] = $key;
 				}
 			}
-			return $extra_eid[$eid]->value;
+			if(is_array($extra_eid) && array_key_exists($eid,$extra_eid)){
+				if(is_array($extra_eid) && array_key_exists($eid,$extra_eid)){
+					return $extra_eid[$eid]->getValue();
+				}
+				else{
+					return '';
+				}
+			}
+			else{
+				return '';
+			}
 		}
 
 		function getExtraEidValueHTML($eid) {
@@ -588,7 +609,17 @@
 			foreach($extra_vars as $idx => $key) {
 				$extra_eid[$key->eid] = $key;
 			}
-			return $extra_eid[$eid]->getValueHTML();
+			if(is_array($extra_eid) && array_key_exists($eid,$extra_eid)){
+				if(is_array($extra_eid) && array_key_exists($eid,$extra_eid)){
+					return $extra_eid[$eid]->getValueHTML();
+				}
+				else{
+					return '';
+				}
+			}
+			else{
+				return '';
+			}
 		}
 
 		function getExtraVarsValue($key) {
@@ -662,6 +693,7 @@
 		function getThumbnail($width = 80, $height = 0, $thumbnail_type = '') {
 			// Return false if the document doesn't exist
 			if(!$this->document_srl) return;
+			if($this->isSecret() && !$this->isGranted()) return;
 			// If not specify its height, create a square
 			if(!$height) $height = $width;
 			// Return false if neither attachement nor image files in the document
@@ -688,41 +720,55 @@
 			// Target File
 			$source_file = null;
 			$is_tmp_file = false;
+			
 			// Find an iamge file among attached files if exists
-			if($this->get('uploaded_count')) {
-				$oFileModel = &getModel('file');
-				$file_list = $oFileModel->getFiles($this->document_srl, array(), 'file_srl', true);
-				if(count($file_list)) {
-					foreach($file_list as $file) {
-						if($file->direct_download!='Y') continue;
-						if(!preg_match("/\.(jpg|png|jpeg|gif|bmp)$/i",$file->source_filename)) continue;
+			if($this->hasUploadedFiles()){
+				$file_list = $this->getUploadedFiles();
+				
+				$first_image = null;
+				foreach($file_list as $file){
+					foreach($file_list as $file){
+						if($file->direct_download !== 'Y') continue;
+						
+						if($file->cover_image === 'Y' && file_exists($file->uploaded_filename)){
+							$source_file = $file->uploaded_filename;
+							break;
+						}
 
-						$source_file = $file->uploaded_filename;
-						if(!file_exists($source_file)) $source_file = null;
-						else break;
+						if($first_image) continue;
+						
+						if(preg_match("/\.(jpe?g|png|gif|bmp)$/i", $file->source_filename)){
+							if(file_exists($file->uploaded_filename)){
+								$first_image = $file->uploaded_filename;
+							}
+						}
+						
+						if(!$source_file && $first_image){
+							$source_file = $first_image;
+						}
 					}
 				}
 			}
+			
 			// If not exists, file an image file from the content
-			if(!$source_file) {
+			if(!$source_file){
 				$content = $this->get('content');
 				$target_src = null;
 				preg_match_all("!src=(\"|')([^\"' ]*?)(\"|')!is", $content, $matches, PREG_SET_ORDER);
 				$cnt = count($matches);
-				for($i=0;$i<$cnt;$i++) {
+				for($i=0;$i<$cnt;$i++){
 					$target_src = trim($matches[$i][2]);
 					if(!preg_match("/\.(jpg|png|jpeg|gif|bmp)$/i",$target_src)) continue;
 					if(preg_match('/\/(common|modules|widgets|addons|layouts)\//i', $target_src)) continue;
-					else {
+					else{
 						if(!preg_match('/^(http|https):\/\//i',$target_src)) $target_src = Context::getRequestUri().$target_src;
 						$tmp_file = sprintf('./files/cache/tmp/%d', md5(rand(111111,999999).$this->document_srl));
 						if(!is_dir('./files/cache/tmp')) FileHandler::makeDir('./files/cache/tmp');
 						FileHandler::getRemoteFile($target_src, $tmp_file);
 						if(!file_exists($tmp_file)) continue;
-						else {
+						else{
 							list($_w, $_h, $_t, $_a) = @getimagesize($tmp_file);
 							if($_w<$width || $_h<$height) continue;
-
 							$source_file = $tmp_file;
 							$is_tmp_file = true;
 							break;

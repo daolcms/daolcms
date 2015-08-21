@@ -2,9 +2,9 @@
 	/**
 	 * Handle front end files
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 **/
-	class FrontEndFileHandler extends Handler
-	{
+	class FrontEndFileHandler extends Handler{
 		/**
 		 * Map for css
 		 * @var array
@@ -47,8 +47,7 @@
 		 * @return bool If using ssl returns true, otherwise returns false.
 		 * @deprecated
 		 */
-		function isSsl()
-		{
+		function isSsl(){
 			if ($GLOBAL['__XE_IS_SSL__']) return $GLOBAL['__XE_IS_SSL__'];
 
 			$url_info = parse_url(Context::getRequestUrl());
@@ -81,8 +80,7 @@
 		 * @param array $args Arguments
 		 * @return void
 		 **/
-		function loadFile($args)
-		{
+		function loadFile($args){
 			if (!is_array($args)) $args = array($args);
 
 			$pathInfo = pathinfo($args[0]);
@@ -94,10 +92,8 @@
 			$file->fileNameNoExt = preg_replace('/\.min$/', '', $pathInfo['filename']);
 			$file->keyName = implode('.', array($file->fileNameNoExt, $file->fileExtension));
 
-			if(strpos($file->filePath, '://') === FALSE)
-			{
-				if(!__DEBUG__)
-				{
+			if(strpos($file->filePath, '://') === FALSE){
+				if(!__DEBUG__){
 					// if no debug mode, load minifed file
 					$minifiedFileName = implode('.', array($file->fileNameNoExt, 'min', $file->fileExtension));
 					$minifiedRealPath = implode('/', array($file->fileRealPath, $minifiedFileName));
@@ -106,11 +102,9 @@
 						$file->fileName = $minifiedFileName;
 					}
 				}
-				else
-				{
+				else{
 					// Remove .min
-					if(file_exists(implode('/', array($file->fileRealPath, $file->keyName))))
-					{
+					if(file_exists(implode('/', array($file->fileRealPath, $file->keyName)))){
 						$file->fileName = $file->keyName;
 					}
 				}
@@ -124,8 +118,7 @@
 			$file->targetIe = $args[2];
 			$file->index = (int)$args[3];
 
-			if ($file->fileExtension == 'css')
-			{
+			if ($file->fileExtension == 'css'){
 				$file->media = $args[1];
 				if (!$file->media) $file->media = 'all';
 				$map = &$this->cssMap;
@@ -134,16 +127,13 @@
 
 				$this->_arrangeCssIndex($pathInfo['dirname'], $file);
 			}
-			else if ($file->fileExtension == 'js')
-			{
+			else if ($file->fileExtension == 'js'){
 				$type = $args[1];
-				if ($type == 'body')
-				{
+				if ($type == 'body'){
 					$map = &$this->jsBodyMap;
 					$mapIndex = &$this->jsBodyMapIndex;
 				}
-				else
-				{
+				else{
 					$map = &$this->jsHeadMap;
 					$mapIndex = &$this->jsHeadMapIndex;
 				}
@@ -151,8 +141,7 @@
 			}
 
 			(is_null($file->index))?$file->index=0:$file->index=$file->index;
-			if (!isset($map[$file->index][$key]) || $mapIndex[$key] > $file->index)
-			{
+			if (!isset($map[$file->index][$key]) || $mapIndex[$key] > $file->index){
 				$this->unloadFile($args[0], $args[2], $args[1]);
 				$map[$file->index][$key] = $file;
 				$mapIndex[$key] = $file->index;
@@ -167,39 +156,32 @@
 		 * @param string $media Media of file to unload. Only use when file is css.
 		 * @return void
 		 */
-		function unloadFile($fileName, $targetIe = '', $media = 'all')
-		{
+		function unloadFile($fileName, $targetIe = '', $media = 'all'){
 			$pathInfo = pathinfo($fileName);
 			$fileName = $pathInfo['basename'];
 			$filePath = $this->_getAbsFileUrl($pathInfo['dirname']);
 			$fileExtension = strtolower($pathInfo['extension']);
 			$key = $filePath . $fileName . "\t" . $targetIe;
 
-			if ($fileExtension == 'css')
-			{
-				if(empty($media))
-				{
+			if ($fileExtension == 'css'){
+				if(empty($media)){
 					$media = 'all';
 				}
 
 				$key .= "\t" . $media;
-				if (isset($this->cssMapIndex[$key]))
-				{
+				if (isset($this->cssMapIndex[$key])){
 					$index = $this->cssMapIndex[$key];
 					unset($this->cssMap[$index][$key]);
 					unset($this->cssMapIndex[$key]);
 				}
 			}
-			else
-			{
-				if (isset($this->jsHeadMapIndex[$key]))
-				{
+			else{
+				if (isset($this->jsHeadMapIndex[$key])){
 					$index = $this->jsHeadMapIndex[$key];
 					unset($this->jsHeadMap[$index][$key]);
 					unset($this->jsHeadMapIndex[$key]);
 				}
-				if (isset($this->jsBodyMapIndex[$key]))
-				{
+				if (isset($this->jsBodyMapIndex[$key])){
 					$index = $this->jsBodyMapIndex[$key];
 					unset($this->jsBodyMap[$index][$key]);
 					unset($this->jsBodyMapIndex[$key]);
@@ -213,16 +195,13 @@
 		 * @param string $type Type to unload. all, css, js
 		 * @return void
 		 */
-		function unloadAllFiles($type = 'all')
-		{
-			if ($type == 'css' || $type == 'all')
-			{
+		function unloadAllFiles($type = 'all'){
+			if ($type == 'css' || $type == 'all'){
 				$this->cssMap = array();
 				$this->cssMapIndex = array();
 			}
 
-			if ($type == 'js' || $type == 'all')
-			{
+			if ($type == 'js' || $type == 'all'){
 				$this->jsHeadMap = array();
 				$this->jsBodyMap = array();
 				$this->jsHeadMapIndex = array();
@@ -235,24 +214,19 @@
 		 *
 		 * @return array Returns css file list. Array contains file, media, targetie.
 		 */
-		function getCssFileList()
-		{
+		function getCssFileList(){
 			$map = &$this->cssMap;
 			$mapIndex = &$this->cssMapIndex;
 
 			$this->_sortMap($map, $mapIndex);
 
 			$result = array();
-			foreach($map as $indexedMap)
-			{
-				foreach($indexedMap as $file)
-				{
-					if ($this->isSsl() == false && $useCdn == 'Y' && $file->useCdn && $file->cdnVersion != '%__XE_CDN_VERSION__%')
-					{
+			foreach($map as $indexedMap){
+				foreach($indexedMap as $file){
+					if ($this->isSsl() == false && $useCdn == 'Y' && $file->useCdn && $file->cdnVersion != '%__XE_CDN_VERSION__%'){
 						$fullFilePath = $file->cdnPrefix . $file->cdnVersion . '/' . substr($file->cdnPath, 2) . '/' . $file->fileName;
 					}
-					else
-					{
+					else{
 						$noneCache = (is_readable($file->cdnPath.'/'.$file->fileName))?'?'.date('YmdHis', filemtime($file->cdnPath.'/'.$file->fileName)):'';
 						$fullFilePath = $file->filePath . '/' . $file->fileName.$noneCache;
 					}
@@ -269,15 +243,12 @@
 		 * @param string $type Type of javascript. head, body
 		 * @return array Returns javascript file list. Array contains file, targetie.
 		 */
-		function getJsFileList($type = 'head')
-		{
-			if ($type == 'head')
-			{
+		function getJsFileList($type = 'head'){
+			if ($type == 'head'){
 				$map = &$this->jsHeadMap;
 				$mapIndex = &$this->jsHeadMapIndex;
 			}
-			else
-			{
+			else{
 				$map = &$this->jsBodyMap;
 				$mapIndex = &$this->jsBodyMapIndex;
 			}
@@ -285,10 +256,8 @@
 			$this->_sortMap($map, $mapIndex);
 
 			$result = array();
-			foreach($map as $indexedMap)
-			{
-				foreach($indexedMap as $file)
-				{
+			foreach($map as $indexedMap){
+				foreach($indexedMap as $file){
 					$noneCache = (is_readable($file->cdnPath.'/'.$file->fileName))?'?'.date('YmdHis', filemtime($file->cdnPath.'/'.$file->fileName)):'';
 					$fullFilePath = $file->filePath . '/' . $file->fileName.$noneCache;
 
@@ -306,8 +275,7 @@
 		 * @param array $index Not used
 		 * @return void
 		 */
-		function _sortMap(&$map, &$index)
-		{
+		function _sortMap(&$map, &$index){
 			ksort($map);
 		}
 
@@ -317,17 +285,17 @@
 		 * @param string $path Path to normalize
 		 * @return string Normalized path
 		 */
-		function _normalizeFilePath($path)
-		{
-			if (strpos($path, '://') === false && $path{0} != '/' && $path{0} != '.')
-			{
+		function _normalizeFilePath($path){
+			if (strpos($path, '://') === false && $path{0} != '/' && $path{0} != '.'){
 				$path = './' . $path;
+			}
+			elseif(!strncmp($path, '//', 2)){
+				return preg_replace('#^//+#', '//', $path);
 			}
 
 			$path = preg_replace('@/\./|(?<!:)\/\/@', '/', $path);
 
-			while(strpos($path, '/../'))
-			{
+			while(strpos($path, '/../')){
 				$path = preg_replace('/\/([^\/]+)\/\.\.\//s', '/', $path, 1);
 			}
 
@@ -340,23 +308,18 @@
 		 * @param string $path Path to get absolute url
 		 * @return string Absolute url
 		 */
-		function _getAbsFileUrl($path)
-		{
+		function _getAbsFileUrl($path){
 			$path = $this->_normalizeFilePath($path);
 
-			if(strpos($path, './') === 0)
-			{
-				if (dirname($_SERVER['SCRIPT_NAME']) == '/' || dirname($_SERVER['SCRIPT_NAME']) == '\\')
-				{
+			if(strpos($path, './') === 0){
+				if (dirname($_SERVER['SCRIPT_NAME']) == '/' || dirname($_SERVER['SCRIPT_NAME']) == '\\'){
 					$path = '/' . substr($path, 2);
 				}
-				else
-				{
+				else{
 					$path = dirname($_SERVER['SCRIPT_NAME']) . '/' . substr($path, 2);
 				}
 			}
-			else if(strpos($file, '../') === 0)
-			{
+			else if(strpos($file, '../') === 0){
 				$path= $this->_normalizeFilePath(dirname($_SERVER['SCRIPT_NAME']) . "/{$path}");
 			}
 
@@ -370,10 +333,8 @@
 		 * @param array $file file info.
 		 * @return void
 		 */
-		function _arrangeCssIndex($dirName, &$file)
-		{
-			if($file->index !== 0)
-			{
+		function _arrangeCssIndex($dirName, &$file){
+			if($file->index !== 0){
 				return;
 			}
 

@@ -203,20 +203,22 @@
 				$cache_key = $oCacheHandler->getGroupKey('documentList', $object_key);
 				$output = $oCacheHandler->get($cache_key);
 
-				if($output)
-				{
+				if($output){
 					return $output;
 				}
 			}
 
 			$this->_setSearchOption($obj, $args, $query_id, $use_division);
 
-			if ($sort_check->isExtraVars)
-			{
+			if($sort_check->isExtraVars && substr_count($obj->search_target,'extra_vars')){
+				$query_id = 'document.getDocumentListWithinExtraVarsExtraSort';
+				$args->sort_index = str_replace('documents.','',$args->sort_index);
 				$output = executeQueryArray($query_id, $args);
 			}
-			else
-			{
+			elseif($sort_check->isExtraVars){
+				$output = executeQueryArray($query_id, $args);
+			}
+			else{
 				// document.getDocumentList query execution
 				// Query_id if you have a group by clause getDocumentListWithinTag getDocumentListWithinComment or used again to perform the query because
 				$groupByQuery = array('document.getDocumentListWithinComment' => 1, 'document.getDocumentListWithinTag' => 1);
@@ -226,7 +228,7 @@
 					$output = executeQueryArray($query_id, $group_args);
 					if(!$output->toBool()||!count($output->data)) return $output;
 
-					foreach($output->data as $key => $val) {
+					foreach($output->data as $key => $val){
 						if($val->document_srl) $target_srls[] = $val->document_srl;
 					}
 
@@ -245,7 +247,8 @@
 					$output->total_count = $page_navigation->total_count;
 					$output->total_page = $page_navigation->total_page;
 					$output->page = $page_navigation->cur_page;
-				} else {
+				}
+				else{
 					$output = executeQueryArray($query_id, $args, $columnList);
 				}
 			}
@@ -255,22 +258,21 @@
 			$data = $output->data;
 			unset($output->data);
 
-			if(!isset($virtual_number))
-			{
+			if(!isset($virtual_number)){
 				$keys = array_keys($data);
 				$virtual_number = $keys[0];
 			}
 
-			if($except_notice) {
-				foreach($data as $key => $attribute) {
+			if($except_notice){
+				foreach($data as $key => $attribute){
 					if($attribute->is_notice == 'Y') $virtual_number --;
 				}
 			}
 
-			foreach($data as $key => $attribute) {
+			foreach($data as $key => $attribute){
 				if($except_notice && $attribute->is_notice == 'Y') continue;
 				$document_srl = $attribute->document_srl;
-				if(!$GLOBALS['XE_DOCUMENT_LIST'][$document_srl]) {
+				if(!$GLOBALS['XE_DOCUMENT_LIST'][$document_srl]){
 					$oDocument = null;
 					$oDocument = new documentItem();
 					$oDocument->setAttribute($attribute, false);
@@ -285,7 +287,7 @@
 
 			if($load_extra_vars) $this->setToAllDocumentExtraVars();
 
-			if(count($output->data)) {
+			if(count($output->data)){
 				foreach($output->data as $number => $document) {
 					$output->data[$number] = $GLOBALS['XE_DOCUMENT_LIST'][$document->document_srl];
 				}
@@ -302,18 +304,18 @@
 		 * @param array $columnList
 		 * @return object|void
 		 */
-		function getNoticeList($obj, $columnList = array()) {
+		function getNoticeList($obj, $columnList = array()){
 			$args = new stdClass();
 			$args->module_srl = $obj->module_srl;
 			$args->category_srl= $obj->category_srl;
 			$output = executeQueryArray('document.getNoticeList', $args, $columnList);
 			if(!$output->toBool()||!$output->data) return;
 
-			foreach($output->data as $key => $val) {
+			foreach($output->data as $key => $val){
 				$document_srl = $val->document_srl;
 				if(!$document_srl) continue;
 
-				if(!$GLOBALS['XE_DOCUMENT_LIST'][$document_srl]) {
+				if(!$GLOBALS['XE_DOCUMENT_LIST'][$document_srl]){
 					$oDocument = null;
 					$oDocument = new documentItem();
 					$oDocument->setAttribute($val, false);
@@ -336,8 +338,8 @@
 		 * @param int $module_srl
 		 * @return array
 		 */
-		function getExtraKeys($module_srl) {
-			if(is_null($GLOBALS['XE_EXTRA_KEYS'][$module_srl])) {
+		function getExtraKeys($module_srl){
+			if(is_null($GLOBALS['XE_EXTRA_KEYS'][$module_srl])){
 				$oExtraVar = ExtraVar::getInstance($module_srl);
 				$obj = new stdClass();
 				$obj->module_srl = $module_srl;
@@ -364,8 +366,7 @@
 						}
 
 						// case others
-						if($prevIdx > 0 && $prevIdx + 1 != $value->idx)
-						{
+						if($prevIdx > 0 && $prevIdx + 1 != $value->idx){
 							$args = new stdClass();
 							$args->module_srl = $module_srl;
 							$args->var_idx = $value->idx;
@@ -381,8 +382,7 @@
 					}
 				}
 
-				if($isFixed)
-				{
+				if($isFixed){
 					$output = executeQueryArray('document.getDocumentExtraKeys', $obj);
 				}
 
@@ -401,8 +401,8 @@
 		 * @param int $document_srl
 		 * @return array
 		 */
-		function getExtraVars($module_srl, $document_srl) {
-			if(!isset($GLOBALS['XE_EXTRA_VARS'][$document_srl])) {
+		function getExtraVars($module_srl, $document_srl){
+			if(!isset($GLOBALS['XE_EXTRA_VARS'][$document_srl])){
 				// Extended to extract the values of variables set
 				$oDocument = $this->getDocument($document_srl, false);
 				$GLOBALS['XE_DOCUMENT_LIST'][$document_srl] = $oDocument;
@@ -417,7 +417,7 @@
 		 * Printing, scrap, recommendations and negative, reported the Add Features
 		 * @return void
 		 */
-		function getDocumentMenu() {
+		function getDocumentMenu(){
 			// Post number and the current login information requested Wanted
 			$document_srl = Context::get('target_srl');
 			$mid = Context::get('cur_mid');
@@ -544,25 +544,19 @@
 			$this->_setSearchOption($opt, $args, $query_id, $use_division);
 			$sort_check = $this->_setSortIndex($args, TRUE);
 
-			if($sort_check->isExtraVars)
-			{
+			if($sort_check->isExtraVars){
 				return 1;
 			}
-			else
-			{
-				if($sort_check->sort_index === 'list_order' || $sort_check->sort_index === 'update_order')
-				{
-					if($args->order_type === 'desc')
-					{
+			else{
+				if($sort_check->sort_index === 'list_order' || $sort_check->sort_index === 'update_order'){
+					if($args->order_type === 'desc'){
 						$args->{'rev_' . $sort_check->sort_index} = $oDocument->get($sort_check->sort_index);
 					}
-					else
-					{
+					else{
 						$args->{$sort_check->sort_index} = $oDocument->get($sort_check->sort_index);
 					}
 				}
-				else
-				{
+				else{
 					return 1;
 				}
 			}

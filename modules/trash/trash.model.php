@@ -4,6 +4,7 @@
  * trash the module's model class
  *
  * @author NHN (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  * @package /modules/trash
  * @version 0.1
  */
@@ -63,6 +64,7 @@ class trashModel extends trash
 		$oTrashVO->setTitle($stdObject->title);
 		$oTrashVO->setOriginModule($stdObject->origin_module);
 		$oTrashVO->setSerializedObject($stdObject->serialized_object);
+		$oTrashVO->setUnserializedObject($stdObject->serialized_object);
 		$oTrashVO->setDescription($stdObject->description);
 		$oTrashVO->setIpaddress($stdObject->ipaddress);
 		$oTrashVO->setRemoverSrl($stdObject->remover_srl);

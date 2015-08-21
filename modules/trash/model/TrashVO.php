@@ -1,18 +1,17 @@
 <?php
-
 class TrashVO
 {
 	var $trashSrl;
 	var $title;
 	var $originModule;
 	var $serializedObject;
+	var $unserializedObject;
 	var $description;
 	var $ipaddress;
 	var $removerSrl;
 	var $userId;
 	var $nickName;
 	var $regdate;
-
 	function getTrashSrl()
 	{
 		return $this->trashSrl;
@@ -24,7 +23,7 @@ class TrashVO
 	function getTitle()
 	{
 		if(empty($this->title)) return $lang->untitle;
-		return $this->title;
+		return htmlspecialchars($this->title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 	}
 	function setTitle($title)
 	{
@@ -47,9 +46,17 @@ class TrashVO
 	{
 		$this->serializedObject = $serializedObject;
 	}
+	function getUnserializedObject()
+	{
+		return $this->unserializedObject;
+	}
+	function setUnserializedObject($serializedObject)
+	{
+		$this->unserializedObject = unserialize($serializedObject);
+	}
 	function getDescription()
 	{
-		return $this->description;
+		return htmlspecialchars($this->description, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 	}
 	function setDescription($description)
 	{
@@ -81,7 +88,7 @@ class TrashVO
 	}
 	function getNickName()
 	{
-		return $this->nickName;
+		return htmlspecialchars($this->nickName, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 	}
 	function setNickName($nickName)
 	{
@@ -90,7 +97,6 @@ class TrashVO
 	function getRegdate()
 	{
 		if(empty($this->regdate)) return date('YmdHis');
-
 		return $this->regdate;
 	}
 	function setRegdate($regdate)
@@ -98,6 +104,5 @@ class TrashVO
 		$this->regdate = $regdate;
 	}
 }
-
 /* End of file Trash.php */
 /* Location: ./modules/trash/model/Trash.php */

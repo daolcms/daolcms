@@ -2,6 +2,7 @@
 /**
  * @class TemplateHandler
  * @author NHN (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  * template compiler
  * @version 0.1
  * @remarks It compiles template file by using regular expression into php
@@ -26,8 +27,7 @@ class TemplateHandler {
 	 * constructor
 	 * @return void
 	 **/
-	function TemplateHandler()
-	{
+	function TemplateHandler(){
 		// TODO: replace this with static variable in PHP5
 		global $__templatehandler_root_tpl;
 
@@ -40,11 +40,10 @@ class TemplateHandler {
 	 * returns TemplateHandler's singleton object
 	 * @return TemplateHandler instance
 	 **/
-	function &getInstance()
-	{
+	function &getInstance(){
 		static $oTemplate = null;
 
-		if(__DEBUG__==3 ) {
+		if(__DEBUG__==3 ){
 			if(!isset($GLOBALS['__TemplateHandlerCalled__'])) $GLOBALS['__TemplateHandlerCalled__']=1;
 			else $GLOBALS['__TemplateHandlerCalled__']++;
 		}
@@ -61,13 +60,11 @@ class TemplateHandler {
 	 * @param string $tpl_file
 	 * @return void
 	 **/
-	function init($tpl_path, $tpl_filename, $tpl_file='')
-	{
+	function init($tpl_path, $tpl_filename, $tpl_file=''){
 		// verify arguments
 		if(substr($tpl_path,-1)!='/') $tpl_path .= '/';
-		if(!is_dir($tpl_path))
-		{
-		return;
+		if(!is_dir($tpl_path)){
+			return;
 		}
 		if(!file_exists($tpl_path.$tpl_filename)&&file_exists($tpl_path.$tpl_filename.'.html')) $tpl_filename .= '.html';
 
@@ -98,7 +95,7 @@ class TemplateHandler {
 	 * @param string $tpl_file if specified use it as template file's full path
 	 * @return string Returns compiled result in case of success, NULL otherwise
 	 */
-	function compile($tpl_path, $tpl_filename, $tpl_file='') {
+	function compile($tpl_path, $tpl_filename, $tpl_file=''){
 		global $__templatehandler_root_tpl;
 
 		$buff = '';
@@ -113,7 +110,7 @@ class TemplateHandler {
 		if(!$this->file || !file_exists($this->file)) return "Err : '{$this->file}' template file does not exists.";
 
 		// for backward compatibility
-		if(is_null($__templatehandler_root_tpl)) {
+		if(is_null($__templatehandler_root_tpl)){
 			$__templatehandler_root_tpl = $this->file;
 		}
 
@@ -127,13 +124,14 @@ class TemplateHandler {
 		if($oCacheHandler->isSupport()){
 			$cache_key = 'template:'.$this->file;
 			$buff = $oCacheHandler->get($cache_key, $latest_mtime);
-		} else {
+		}
+		else{
 			if(is_readable($this->compiled_file) && filemtime($this->compiled_file)>$latest_mtime && filesize($this->compiled_file)) {
 				$buff = 'file://'.$this->compiled_file;
 			}
 		}
 
-		if(!$buff) {
+		if(!$buff){
 			$buff = $this->parse();
 			if($oCacheHandler->isSupport()) $oCacheHandler->put($cache_key, $buff);
 			else FileHandler::writeFile($this->compiled_file, $buff);
@@ -141,7 +139,7 @@ class TemplateHandler {
 
 		$output = $this->_fetch($buff);
 
-		if($__templatehandler_root_tpl == $this->file) {
+		if($__templatehandler_root_tpl == $this->file){
 			$__templatehandler_root_tpl = null;
 		}
 
@@ -157,11 +155,11 @@ class TemplateHandler {
 	 * @param string $tpl_filename target template file's name
 	 * @return string Returns compiled content in case of success or NULL in case of failure
 	 **/
-	function compileDirect($tpl_path, $tpl_filename) {
+	function compileDirect($tpl_path, $tpl_filename){
 		$this->init($tpl_path, $tpl_filename, null);
 
 		// if target file does not exist exit
-		if(!$this->file || !file_exists($this->file)) {
+		if(!$this->file || !file_exists($this->file)){
 			Context::close();
 			exit("Cannot find the template file: '{$this->file}'");
 		}
@@ -174,7 +172,7 @@ class TemplateHandler {
 	 * @param string $buff template file
 	 * @return string compiled result in case of success or NULL in case of error
 	 **/
-	function parse($buff=null) {
+	function parse($buff=null){
 		if(is_null($buff)) {
 			if(!is_readable($this->file)) return;
 
@@ -183,7 +181,7 @@ class TemplateHandler {
 		}
 
 		// HTML tags to skip
-		if(is_null($this->skipTags)) {
+		if(is_null($this->skipTags)){
 			$this->skipTags = array('marquee');
 		}
 
@@ -191,7 +189,7 @@ class TemplateHandler {
 		$buff = preg_replace('@<!--//.*?-->@s', '', $buff);
 
 		// replace value of src in img/input/script tag
-		$buff = preg_replace_callback('/<(?:img|input|script)[^<>]*src="(?!https?:\/\/|[\/\{])([^"]+)"/is', array($this, '_replacePath'), $buff);
+		$buff = preg_replace_callback('/<(?:img|input|script)(?:[^<>]*?)(?(?=cond=")(?:cond="[^"]+"[^<>]*)+|)[^<>]* src="(?!(?:https?|file):\/\/|[\/\{])([^"]+)"/is', array($this, '_replacePath'), $buff);
 
 		// replace loop and cond template syntax
 		$buff = $this->_parseInline($buff);
@@ -204,8 +202,7 @@ class TemplateHandler {
 
 		// form auto generation
 		$temp = preg_replace_callback('/(<form(?:<\?php.+?\?>|[^<>]+)*?>)(.*?)(<\/form>)/is', array($this, '_compileFormAuthGeneration'), $buff);
-		if($temp)
-		{
+		if($temp){
 			$buff = $temp;
 		}
 
@@ -228,20 +225,18 @@ class TemplateHandler {
 	 * @return string
 	 **/
 
-	function _compileFormAuthGeneration($matches)
-	{
+	function _compileFormAuthGeneration($matches){
 		// form ruleset attribute move to hidden tag
-		if($matches[1])
-		{
+		if($matches[1]){
 			preg_match('/ruleset="([^"]*?)"/is', $matches[1], $m);
-			if($m[0])
-			{
+			if($m[0]){
 				$matches[1] = preg_replace('/'.addcslashes($m[0], '?$').'/i', '', $matches[1]);
 
 				if (strpos($m[1],'@') !== false){
 					$path = str_replace('@', '', $m[1]);
 					$path = './files/ruleset/'.$path.'.xml';
-				}else if(strpos($m[1],'#') !== false){
+				}
+				else if(strpos($m[1],'#') !== false){
 					$fileName = str_replace('#', '', $m[1]);
 					$fileName = str_replace('<?php echo ', '', $fileName);
 					$fileName = str_replace(' ?>', '', $fileName);
@@ -252,7 +247,8 @@ class TemplateHandler {
 					list($rulsetFile) = explode('.', $fileName);  
 					$autoPath = $module_path.'/ruleset/'.$rulsetFile.'.xml';
 					$m[1] = $rulsetFile;
-				}else if(preg_match('@(?:^|\.?/)(modules/[\w-]+)@', $this->path, $mm)) {
+				}
+				else if(preg_match('@(?:^|\.?/)(modules/[\w-]+)@', $this->path, $mm)){
 					$module_path = $mm[1];
 					$path = $module_path.'/ruleset/'.$m[1].'.xml';
 				}
@@ -267,24 +263,20 @@ class TemplateHandler {
 		preg_match_all('/<input[^>]* name="(act|mid|vid)"/is', $matches[2], $m2);
 		$checkVar = array('act', 'mid', 'vid');
 		$resultArray = array_diff($checkVar, $m2[1]);
-		if(is_array($resultArray))
-		{
+		if(is_array($resultArray)){
 			$generatedHidden = '';
-			foreach($resultArray AS $key=>$value)
-			{
+			foreach($resultArray AS $key=>$value){
 				$generatedHidden .= '<input type="hidden" name="'.$value.'" value="<?php echo $__Context->'.$value.' ?>" />';
 			}
 			$matches[2] = $generatedHidden.$matches[2];
 		}
 
 		// return url generate
-		if(!preg_match('/no-error-return-url="true"/i', $matches[1]))
-		{
+		if(!preg_match('/no-error-return-url="true"/i', $matches[1])){
 			preg_match('/<input[^>]*name="error_return_url"[^>]*>/is', $matches[2], $m3);
 			if(!$m3[0]) $matches[2] = '<input type="hidden" name="error_return_url" value="<?php echo htmlspecialchars(getRequestUriByServerEnviroment()) ?>" />'.$matches[2];
 		}
-		else
-		{
+		else{
 			$matches[1] = preg_replace('/no-error-return-url="true"/i', '', $matches[1]);
 		}
 
@@ -303,19 +295,26 @@ class TemplateHandler {
 		$__Context = &$GLOBALS['__Context__'];
 		$__Context->tpl_path = $this->path;
 
-		if($_SESSION['is_logged']) {
+		if($_SESSION['is_logged']){
 			$__Context->logged_info = Context::get('logged_info');
 		}
 
+		$level = ob_get_level();
 		ob_start();
-		if(substr($buff, 0, 7) == 'file://') {
+		if(substr($buff, 0, 7) == 'file://'){
 			include(substr($buff, 7));
-		} else {
+		}
+		else{
 			$eval_str = "?>".$buff;
 			eval($eval_str);
 		}
 
-		return ob_get_clean();
+		$contents = '';
+		while (ob_get_level() - $level > 0){
+			$contents .= ob_get_contents();
+			ob_end_clean();
+		}
+		return $contents;
 	}
 
 	/**
@@ -326,25 +325,24 @@ class TemplateHandler {
 	 *
 	 * @return string changed result
 	 **/
-	function _replacePath($match)
-	{
-		//return origin code when src value include variable.
-		if(preg_match('/^[\'|"]\s*\.\s*\$/', $match[1]))
-		{
+	function _replacePath($match){
+		//return origin conde when src value started '${'.
+		if(preg_match('@^\${@', $match[1])){
 			return $match[0];
 		}
-
+		//return origin code when src value include variable.
+		if(preg_match('@^[\'|"]\s*\.\s*\$@', $match[1])){
+			return $match[0];
+		}
 		$src = preg_replace('@^(\./)+@', '', trim($match[1]));
-
-		$src = $this->web_path.$src;
+		$src = $this->web_path . $src;
 		$src = str_replace('/./', '/', $src);
-
 		// for backward compatibility
 		$src = preg_replace('@/((?:[\w-]+/)+)\1@', '/\1', $src);
-
-		while(($tmp=preg_replace('@[^/]+/\.\./@', '', $src, 1))!==$src) $src = $tmp;
-
-		return substr($match[0],0,-strlen($match[1])-6)."src=\"{$src}\"";
+		while(($tmp = preg_replace('@[^/]+/\.\./@', '', $src, 1)) !== $src){
+			$src = $tmp;
+		}
+		return substr($match[0], 0, -strlen($match[1]) - 6) . "src=\"{$src}\"";
 	}
 
 	/**
@@ -352,8 +350,7 @@ class TemplateHandler {
 	 * @param string $buff
 	 * @return string changed result
 	 **/
-	function _parseInline($buff)
-	{
+	function _parseInline($buff){
 		if(preg_match_all('/<([a-zA-Z]+\d?)(?>(?!<[a-z]+\d?[\s>]).)*?(?:[ \|]cond| loop)="/s', $buff, $match) === false) return $buff;
 
 		$tags = array_diff(array_unique($match[1]), $this->skipTags);
@@ -368,10 +365,10 @@ class TemplateHandler {
 		// list of self closing tags
 		$self_closing = array('area'=>1,'base'=>1,'basefont'=>1,'br'=>1,'hr'=>1,'input'=>1,'img'=>1,'link'=>1,'meta'=>1,'param'=>1,'frame'=>1,'col'=>1);
 
-		for($idx=1,$node_len=count($nodes); $idx < $node_len; $idx+=2) {
+		for($idx=1,$node_len=count($nodes); $idx < $node_len; $idx+=2){
 			if(!($node=$nodes[$idx])) continue;
 
-			if(preg_match_all('@\s(loop|cond)="([^"]+)"@', $node, $matches)) {
+			if(preg_match_all('@\s(loop|cond)="([^"]+)"@', $node, $matches)){
 				// this tag
 				$tag = substr($node, 1, strpos($node, ' ')-1);
 
@@ -379,25 +376,27 @@ class TemplateHandler {
 				$closing = 0;
 
 				// process opening tag
-				foreach($matches[1] as $n=>$stmt) {
+				foreach($matches[1] as $n=>$stmt){
 					$expr = $matches[2][$n];
 					$expr = $this->_replaceVar($expr);
 					$closing++;
 
-					switch($stmt) {
+					switch($stmt){
 					case 'cond':
 						$nodes[$idx-1] .= "<?php if({$expr}){ ?>";
 						break;
 					case 'loop':
 						if(!preg_match('@^(?:(.+?)=>(.+?)(?:,(.+?))?|(.*?;.*?;.*?)|(.+?)\s*=\s*(.+?))$@', $expr, $expr_m)) break;
-						if($expr_m[1]) {
+						if($expr_m[1]){
 							$expr_m[1] = trim($expr_m[1]);
 							$expr_m[2] = trim($expr_m[2]);
 							if($expr_m[3]) $expr_m[2] .= '=>'.trim($expr_m[3]);
 							$nodes[$idx-1] .= "<?php if({$expr_m[1]}&&count({$expr_m[1]}))foreach({$expr_m[1]} as {$expr_m[2]}){ ?>";
-						}elseif($expr_m[4]) {
+						}
+						elseif($expr_m[4]){
 							$nodes[$idx-1] .= "<?php for({$expr_m[4]}){ ?>";
-						}elseif($expr_m[5]) {
+						}
+						elseif($expr_m[5]){
 							$nodes[$idx-1] .= "<?php while({$expr_m[5]}={$expr_m[6]}){ ?>";
 						}
 						break;
@@ -407,9 +406,10 @@ class TemplateHandler {
 
 				// find closing tag
 				$close_php = '<?php '.str_repeat('}', $closing).' ?>';
-				if($node{1} == '!' || substr($node,-2,1) == '/' || isset($self_closing[$tag])) { //  self closing tag
+				if($node{1} == '!' || substr($node,-2,1) == '/' || isset($self_closing[$tag])){ //  self closing tag
 					$nodes[$idx+1] = $close_php.$nodes[$idx+1];
-				} else {
+				}
+				else{
 					$depth = 1;
 					for($i=$idx+2; $i < $node_len; $i+=2) {
 						$nd = $nodes[$i];
@@ -427,7 +427,7 @@ class TemplateHandler {
 				}
 			}
 
-			if(strpos($node, '|cond="') !== false) {
+			if(strpos($node, '|cond="') !== false){
 				$node = preg_replace('@(\s[-\w:]+="[^"]+?")\|cond="(.+?)"@s', '<?php if($2){ ?>$1<?php } ?>', $node);
 				$node = $this->_replaceVar($node);
 			}
@@ -446,40 +446,37 @@ class TemplateHandler {
 	 * @param array $m
 	 * @return string changed result
 	 **/
-	function _parseResource($m)
-	{
+	function _parseResource($m){
 		// {@ ... } or {$var} or {func(...)}
-		if($m[1])
-		{
+		if($m[1]){
 			if(preg_match('@^(\w+)\(@', $m[1], $mm) && !function_exists($mm[1])) return $m[0];
 
 			$echo = 'echo ';
-			if($m[1]{0} == '@') {
+			if($m[1]{0} == '@'){
 				$echo = '';
 				$m[1] = substr($m[1], 1);
 			}
 			return '<?php '.$echo.$this->_replaceVar($m[1]).' ?>';
 		}
 
-		if($m[3])
-		{
+		if($m[3]){
 			$attr = array();
-			if($m[5]) {
-				if(preg_match_all('@,(\w+)="([^"]+)"@', $m[6], $mm)) {
+			if($m[5]){
+				if(preg_match_all('@,(\w+)="([^"]+)"@', $m[6], $mm)){
 					foreach($mm[1] as $idx=>$name) {
 						$attr[$name] = $mm[2][$idx];
 					}
 				}
 				$attr['target'] = $m[5];
-			} else {
+			}
+			else{
 				if(!preg_match_all('@ (\w+)="([^"]+)"@', $m[6], $mm)) return $m[0];
-				foreach($mm[1] as $idx=>$name) {
+				foreach($mm[1] as $idx=>$name){
 					$attr[$name] = $mm[2][$idx];
 				}
 			}
 
-			switch($m[3])
-			{
+			switch($m[3]){
 				// <!--#include--> or <include ..>
 				case 'include':
 					if(!$this->file || !$attr['target']) return '';
@@ -505,9 +502,9 @@ class TemplateHandler {
 					$metafile = '';
 					$pathinfo = pathinfo($attr['target']);
 					$doUnload = ($m[3] === 'unload');
-					$isRemote = !!preg_match('@^https?://@i', $attr['target']);
+					$isRemote = !!preg_match('@^(https?:)?//@i', $attr['target']);
 
-					if(!$isRemote) {
+					if(!$isRemote){
 						if(!preg_match('@^\.?/@',$attr['target'])) $attr['target'] = './'.$attr['target'];
 						if(substr($attr['target'], -5) == '/lang') {
 							$pathinfo['dirname']  .= '/lang';
@@ -520,21 +517,22 @@ class TemplateHandler {
 						$attr['target'] = $relativeDir.'/'.$pathinfo['basename'];
 					}
 
-					switch($pathinfo['extension'])
-					{
+					switch($pathinfo['extension']){
 						case 'xml':
 							if($isRemote || $doUnload) return '';
 							// language file?
 							if($pathinfo['basename'] == 'lang.xml' || substr($pathinfo['dirname'],-5) == '/lang') {
 								$result = "Context::loadLang('{$relativeDir}');";
-							} else {
+							}
+							else{
 								$result = "require_once('./classes/xml/XmlJsFilter.class.php');\$__xmlFilter=new XmlJsFilter('{$relativeDir}','{$pathinfo['basename']}');\$__xmlFilter->compile();";
 							}
 							break;
 						case 'js':
-							if($doUnload) {
+							if($doUnload){
 								$result = "Context::unloadFile('{$attr['target']}','{$attr['targetie']}');";
-							} else {
+							}
+							else{
 								$metafile = $attr['target'];
 								$result = "\$__tmp=array('{$attr['target']}','{$attr['type']}','{$attr['targetie']}','{$attr['index']}');Context::loadFile(\$__tmp,'{$attr['usecdn']}','{$attr['cdnprefix']}','{$attr['cdnversion']}');unset(\$__tmp);";
 							}
@@ -542,7 +540,8 @@ class TemplateHandler {
 						case 'css':
 							if($doUnload) {
 								$result = "Context::unloadFile('{$attr['target']}','{$attr['targetie']}','{$attr['media']}');";
-							} else {
+							}
+							else{
 								$metafile = $attr['target'];
 								$result = "\$__tmp=array('{$attr['target']}','{$attr['media']}','{$attr['targetie']}','{$attr['index']}');Context::loadFile(\$__tmp,'{$attr['usecdn']}','{$attr['cdnprefix']}','{$attr['cdnversion']}');unset(\$__tmp);";
 							}
@@ -557,18 +556,18 @@ class TemplateHandler {
 		}
 
 		// <!--@..--> such as <!--@if($cond)-->, <!--@else-->, <!--@end-->
-		if($m[7])
-		{
+		if($m[7]){
 			$m[7] = substr($m[7],1);
 			if(!$m[7]) return '<?php '.$this->_replaceVar($m[8]).'{ ?>'.$m[9];
 			if(!preg_match('/^(?:((?:end)?(?:if|switch|for(?:each)?|while)|end)|(else(?:if)?)|(break@)?(case|default)|(break))$/', $m[7], $mm)) return '';
-			if($mm[1]) {
+			if($mm[1]){
 				if($mm[1]{0} == 'e') return '<?php } ?>'.$m[9];
 
 				$precheck = '';
-				if($mm[1] == 'switch') {
+				if($mm[1] == 'switch'){
 					$m[9] = '';
-				} elseif($mm[1] == 'foreach') {
+				}
+				elseif($mm[1] == 'foreach'){
 					$var = preg_replace('/^\s*\(\s*(.+?) .*$/', '$1', $m[8]);
 					$precheck = "if({$var}&&count({$var}))";
 				}
@@ -588,21 +587,20 @@ class TemplateHandler {
 	 * @param string $path
 	 * @return string
 	 **/
-	function _getRelativeDir($path)
-	{
+	function _getRelativeDir($path){
 		$_path = $path;
 
 		$fileDir = strtr(realpath($this->path),'\\','/');
 		if($path{0} != '/') $path = strtr(realpath($fileDir.'/'.$path),'\\','/');
 
 		// for backward compatibility
-		if(!$path) {
+		if(!$path){
 			$dirs  = explode('/', $fileDir);
 			$paths = explode('/', $_path);
 			$idx   = array_search($paths[0], $dirs);
 
-			if($idx !== false) {
-				while($dirs[$idx] && $dirs[$idx] === $paths[0]) {
+			if($idx !== false){
+				while($dirs[$idx] && $dirs[$idx] === $paths[0]){
 					array_splice($dirs, $idx, 1);
 					array_shift($paths);
 				}
@@ -620,7 +618,7 @@ class TemplateHandler {
 	 * @param string $php
 	 * @return string $__Context->varname
 	 **/
-	function _replaceVar($php) {
+	function _replaceVar($php){
 		if(!strlen($php)) return '';
 		return preg_replace('@(?<!::|\\\\|(?<!eval\()\')\$([a-z]|_[a-z0-9])@i', '\$__Context->$1', $php);
 	}

@@ -23,8 +23,8 @@
 		/**
 		 * @brief Return editor setting for each module
 		 **/
-		function getEditorConfig($module_srl = null) {
-			if(!$GLOBALS['__editor_module_config__'][$module_srl] && $module_srl) {
+		function getEditorConfig($module_srl = null){
+			if(!$GLOBALS['__editor_module_config__'][$module_srl] && $module_srl){
 				// Get trackback settings of the selected module
 				$oModuleModel = &getModel('module');
 				$GLOBALS['__editor_module_config__'][$module_srl] = $oModuleModel->getModulePartConfig('editor', $module_srl);
@@ -36,6 +36,7 @@
 
 			if(!is_object($editor_config)) $editor_config = new stdClass();
 
+			if($editor_config->enable_autosave != 'N') $editor_config->enable_autosave = 'Y';
 			if(!is_array($editor_config->enable_html_grant)) $editor_config->enable_html_grant = array();
 			if(!is_array($editor_config->enable_comment_html_grant)) $editor_config->enable_comment_html_grant = array();
 			if(!is_array($editor_config->upload_file_grant)) $editor_config->upload_file_grant = array();
@@ -44,21 +45,36 @@
 			if(!is_array($editor_config->enable_comment_default_component_grant)) $editor_config->enable_comment_default_component_grant = array();
 			if(!is_array($editor_config->enable_component_grant)) $editor_config->enable_component_grant = array();
 			if(!is_array($editor_config->enable_comment_component_grant)) $editor_config->enable_comment_component_grant= array();
-
-			if($editor_config->enable_autosave!='N') $editor_config->enable_autosave = "Y";
-			
-			if(!$editor_config->editor_height) if($editor_default_config->editor_height? $editor_config->editor_height = $editor_default_config->editor_height : $editor_config->editor_height = 400);
-			if(!$editor_config->comment_editor_height) if($editor_default_config->comment_editor_height? $editor_config->comment_editor_height = $editor_default_config->comment_editor_height : $editor_config->comment_editor_height = 100);
-			if(!$editor_config->editor_skin) if($editor_default_config->editor_skin? $editor_config->editor_skin = $editor_default_config->editor_skin : $editor_config->editor_skin = 'xpresseditor');
-			if(!$editor_config->comment_editor_skin) if($editor_default_config->comment_editor_skin? $editor_config->comment_editor_skin = $editor_default_config->comment_editor_skin : $editor_config->comment_editor_skin = 'xpresseditor');
-			if(!$editor_config->content_style) if($editor_default_config->content_style? $editor_config->content_style = $editor_default_config->content_style : $editor_config->content_style = 'default');
-			
-			if(!$editor_config->content_font && $editor_default_config->content_font) $editor_config->content_font = $editor_default_config->content_font;
-			if(!$editor_config->content_font_size && $editor_default_config->content_font_size) $editor_config->content_font_size = $editor_default_config->content_font_size;
-			
-			if(!$editor_config->sel_editor_colorset && $editor_default_config->sel_editor_colorset) $editor_config->sel_editor_colorset = $editor_default_config->sel_editor_colorset;
-			if(!$editor_config->sel_comment_editor_colorset && $editor_default_config->sel_comment_editor_colorset) $editor_config->sel_comment_editor_colorset = $editor_default_config->sel_comment_editor_colorset;
-			if(!$editor_config->comment_content_style && $editor_default_config->comment_content_style) $editor_config->comment_content_style = $editor_default_config->comment_content_style;
+			if(!$editor_config->editor_height){
+				$editor_config->editor_height = ($editor_default_config->editor_height) ? $editor_default_config->editor_height : 500;
+			}
+			if(!$editor_config->comment_editor_height){
+				$editor_config->comment_editor_height = ($editor_default_config->comment_editor_height) ? $editor_default_config->comment_editor_height : 120;
+			}
+			if(!$editor_config->editor_skin){
+				$editor_config->editor_skin = ($editor_default_config->editor_skin) ? $editor_default_config->editor_skin : 'ckeditor';
+			}
+			if(!$editor_config->comment_editor_skin){
+				$editor_config->comment_editor_skin = ($editor_default_config->comment_editor_skin) ? $editor_default_config->comment_editor_skin : 'ckeditor';
+			}
+			if(!$editor_config->content_style){
+				$editor_config->content_style = ($editor_default_config->content_style) ? $editor_default_config->content_style : 'ckeditor_light';
+			}
+			if(!$editor_config->content_font && $editor_default_config->content_font){
+				$editor_config->content_font = $editor_default_config->content_font;
+			}
+			if(!$editor_config->content_font_size && $editor_default_config->content_font_size){
+				$editor_config->content_font_size = $editor_default_config->content_font_size;
+			}
+			if(!$editor_config->sel_editor_colorset && $editor_default_config->sel_editor_colorset){
+				$editor_config->sel_editor_colorset = $editor_default_config->sel_editor_colorset;
+			}
+			if(!$editor_config->sel_comment_editor_colorset && $editor_default_config->sel_comment_editor_colorset){
+				$editor_config->sel_comment_editor_colorset = $editor_default_config->sel_comment_editor_colorset;
+			}
+			if(!$editor_config->comment_content_style && $editor_default_config->comment_content_style){
+				$editor_config->comment_content_style = $editor_default_config->comment_content_style;
+			}
 			return $editor_config;
 		}
 
@@ -90,7 +106,7 @@
 			$xml_file = sprintf('%sinfo.xml', $component_path);
 			$cache_file = sprintf('./files/cache/editor/dr_%s.%s.php', $drComponentName, $lang_type);
 			// Return information after including it after cached xml file exists
-			if(file_exists($cache_file) && file_exists($xml_file) && filemtime($cache_file) > filemtime($xml_file)) {
+			if(file_exists($cache_file) && file_exists($xml_file) && filemtime($cache_file) > filemtime($xml_file)){
 				include($cache_file);
 				return $xml_info;
 			}
@@ -121,7 +137,7 @@
 			if(!is_array($xml_doc->component->author)) $author_list[] = $xml_doc->component->author;
 			else $author_list = $xml_doc->component->author;
 
-			for($i=0; $i < count($author_list); $i++) {
+			for($i=0; $i < count($author_list); $i++){
 				$buff .= sprintf('$xml_info->author['.$i.']->name = "%s";', $author_list[$i]->name->body);
 				$buff .= sprintf('$xml_info->author['.$i.']->email_address = "%s";', $author_list[$i]->attrs->email_address);
 				$buff .= sprintf('$xml_info->author['.$i.']->homepage = "%s";', $author_list[$i]->attrs->link);
@@ -129,9 +145,9 @@
 
 			// List extra variables (text type only in the editor component)
 			$extra_vars = $xml_doc->component->extra_vars->var;
-			if($extra_vars) {
+			if($extra_vars){
 				if(!is_array($extra_vars)) $extra_vars = array($extra_vars);
-				foreach($extra_vars as $key => $val) {
+				foreach($extra_vars as $key => $val){
 					unset($obj);
 					$key = $val->attrs->name;
 					$title = $val->title->body;
@@ -158,20 +174,20 @@
 		 * You can call upload_target_srl when modifying content
 		 * The upload_target_srl is used for a routine to check if an attachment exists
 		 **/
-		function getEditor($upload_target_srl = 0, $option = null) {
+		function getEditor($upload_target_srl = 0, $option = null){
 			/**
 			 * Editor's default options
 			 **/
 			// Option setting to allow file upload
-			if($upload_target_srl)
-			{
+			if($upload_target_srl){
 				$option->editor_sequence = $upload_target_srl;
 			}
 			if(!$option->allow_fileupload) $allow_fileupload = false;
 			else $allow_fileupload = true;
 			// content_style setting
-			if(!$option->content_style) $option->content_style = 'default';
+			if(!$option->content_style) $option->content_style = 'ckeditor_light';
 			Context::set('content_style', $option->content_style);
+			Context::set('content_style_path', $this->module_path . 'styles/' . $option->content_style);
 			// Default font setting
 			Context::set('content_font', $option->content_font);
 			Context::set('content_font_size', $option->content_font_size);
@@ -194,11 +210,13 @@
 			else $editor_height = $option->height;
 			// Skin Setting
 			$skin = $option->skin;
-			if(!$skin) $skin = 'xpresseditor';
+			if(!$skin) $skin = 'ckeditor';
 
 			$colorset = $option->colorset;
+			if(!$colorset) $colorset = 'moono';
 			Context::set('colorset', $colorset);
 			Context::set('skin', $skin);
+			Context::set('module_type', $option->module_type);
 
 			if($skin=='dreditor'){
 				$this->loadDrComponents();	
@@ -207,7 +225,7 @@
 			/**
 			 * Check the automatic backup feature (do not use if the post is edited)
 			 **/
-			if($enable_autosave) {
+			if($enable_autosave){
 				// Extract auto-saved data
 				$saved_doc = $this->getSavedDoc($upload_target_srl);
 				// Context setting auto-saved data
@@ -228,7 +246,7 @@
 			 * Upload setting by using configuration of the file module internally
 			 **/
 			$files_count = 0;
-			if($allow_fileupload) {
+			if($allow_fileupload){
 				$oFileModel = &getModel('file');
 				// Get upload configuration to set on SWFUploader
 				$file_config = $oFileModel->getUploadConfig();
@@ -264,7 +282,7 @@
 			 **/
 			$site_module_info = Context::get('site_module_info');
 			$site_srl = (int)$site_module_info->site_srl;
-			if($enable_component) {
+			if($enable_component){
 				if(!Context::get('component_list')) {
 					$component_list = $this->getComponentList(true, $site_srl);
 					Context::set('component_list', $component_list);
@@ -291,8 +309,8 @@
 			$tpl_path = sprintf('%sskins/%s/', $this->module_path, $skin);
 			$tpl_file = 'editor.html';
 
-			if(!file_exists($tpl_path.$tpl_file)) {
-				$skin = 'xpresseditor';
+			if(!file_exists($tpl_path.$tpl_file)){
+				$skin = 'ckeditor';
 				$tpl_path = sprintf('%sskins/%s/', $this->module_path, $skin);
 			}
 			Context::set('editor_path', $tpl_path);
@@ -316,8 +334,10 @@
 			$editor_config = $this->getEditorConfig($module_srl);
 			
 			$config = new stdClass();
+			$config->module_type = $type;
+			
 			// Configurations listed according to a type
-			if($type == 'document') {
+			if($type == 'document'){
 				$config->editor_skin = $editor_config->editor_skin;
 				$config->content_style = $editor_config->content_style;
 				$config->content_font = $editor_config->content_font;
@@ -330,7 +350,7 @@
 				$config->editor_height = $editor_config->editor_height;
 				$config->enable_autosave = $editor_config->enable_autosave;
 			}
-			else {
+			else{
 				$config->editor_skin = $editor_config->comment_editor_skin;
 				$config->content_style = $editor_config->comment_content_style;
 				$config->content_font = $editor_config->content_font;
@@ -344,14 +364,15 @@
 				$config->enable_autosave = 'N';
 			}
 			// Check a group_list of the currently logged-in user for permission check
-			if(Context::get('is_logged')) {
+			if(Context::get('is_logged')){
 				$logged_info = Context::get('logged_info');
 				$group_list = $logged_info->group_list;
-			} else {
+			} else{
 				$group_list = array();
 			}
 			// Pre-set option variables of editor
 			$option = new stdClass();
+			$option->module_type = $config->module_type;
 			$option->skin = $config->editor_skin;
 			$option->content_style = $config->content_style;
 			$option->content_font = $config->content_font;
@@ -422,13 +443,14 @@
 		/**
 		 * @brief Get information which has been auto-saved
 		 **/
-		function getSavedDoc($upload_target_srl) {
+		function getSavedDoc($upload_target_srl){
 			$auto_save_args = new stdClass();
 			// Find a document by using member_srl for logged-in user and ipaddress for non-logged user
-			if(Context::get('is_logged')) {
+			if(Context::get('is_logged')){
 				$logged_info = Context::get('logged_info');
 				$auto_save_args->member_srl = $logged_info->member_srl;
-			} else {
+			}
+			else{
 				$auto_save_args->ipaddress = $_SERVER['REMOTE_ADDR'];
 			}
 			$auto_save_args->module_srl = Context::get('module_srl');
@@ -448,7 +470,7 @@
 			if($oSaved->isExists()) return;
 			// Move all the files if the auto-saved data contains document_srl and file
 			// Then set document_srl to editor_sequence
-			if($saved_doc->document_srl && $upload_target_srl && !Context::get('document_srl')) {
+			if($saved_doc->document_srl && $upload_target_srl && !Context::get('document_srl')){
 				$saved_doc->module_srl = $auto_save_args->module_srl;
 				$oFileController = &getController('file');
 				$oFileController->moveFile($saved_doc->document_srl, $saved_doc->module_srl, $upload_target_srl);
@@ -467,18 +489,17 @@
 		/**
 		 * @brief create objects of the component
 		 **/
-		function getComponentObject($component, $editor_sequence = 0, $site_srl = 0) {
+		function getComponentObject($component, $editor_sequence = 0, $site_srl = 0){
 			if(!preg_match('/^[a-zA-Z0-9_-]+$/',$component) || !preg_match('/^[0-9]+$/', $editor_sequence . $site_srl)) return;
 
-			if(!$this->loaded_component_list[$component][$editor_sequence]) {
+			if(!$this->loaded_component_list[$component][$editor_sequence]){
 				// Create an object of the component and execute
 				$class_path = sprintf('%scomponents/%s/', $this->module_path, $component);
 				$class_file = sprintf('%s%s.class.php', $class_path, $component);
 				if(!file_exists($class_file)) return new Object(-1, sprintf(Context::getLang('msg_component_is_not_founded'), $component));
 				// Create an object after loading the class file
 				require_once($class_file);
-				$tmp_fn = create_function('$seq,$path', "return new {$component}(\$seq,\$path);");
-				$oComponent = $tmp_fn($editor_sequence, $class_path);
+				$oComponent = new $component($editor_sequence, $class_path);
 				if(!$oComponent) return new Object(-1, sprintf(Context::getLang('msg_component_is_not_founded'), $component));
 				// Add configuration information
 				$component_info = $this->getComponent($component, $site_srl);
@@ -492,14 +513,14 @@
 		/**
 		 * @brief Return a list of the editor skin
 		 **/
-		function getEditorSkinList() {
+		function getEditorSkinList(){
 			return FileHandler::readDir('./modules/editor/skins');
 		}
 
 		/**
 		 * @brief Return the cache file name of editor component list
 		 **/
-		function getCacheFile($filter_enabled= true, $site_srl = 0) {
+		function getCacheFile($filter_enabled= true, $site_srl = 0){
 			$lang = Context::getLangType();
 			$cache_path = _XE_PATH_.'files/cache/editor/cache/';
 			if(!is_dir($cache_path)) FileHandler::makeDir($cache_path);
@@ -513,7 +534,7 @@
 		/**
 		 * @brief Return a component list (DB Information included)
 		 **/
-		function getComponentList($filter_enabled = true, $site_srl=0, $from_db=false) {
+		function getComponentList($filter_enabled = true, $site_srl=0, $from_db=false){
 			$cache_file = $this->getCacheFile(false, $site_srl);
 			if($from_db || !is_readable($cache_file)) {
 				$oEditorController = &getController('editor');
@@ -523,34 +544,31 @@
 			if(!file_exists($cache_file)) return;
 			include($cache_file);
 			$logged_info = Context::get('logged_info');
-			if($logged_info && is_array($logged_info->group_list)) 
-			{
+			if($logged_info && is_array($logged_info->group_list)){
 				$group_list = array_keys($logged_info->group_list);
 			}
-			else
-			{
+			else{
 				$group_list = array();
 			}
 
-			if(count($component_list)) {
-				foreach($component_list as $key => $val) {
+			if(count($component_list)){
+				foreach($component_list as $key => $val){
 					if(!trim($key)) continue;
-					if(!is_dir(_XE_PATH_.'modules/editor/components/'.$key)) {
+					if(!is_dir(_XE_PATH_.'modules/editor/components/'.$key)){
 						FileHandler::removeFile($cache_file);
 						return $this->getComponentList($filter_enabled, $site_srl);
 					}
 					if(!$filter_enabled) continue;
-					if($val->enabled == "N") {
+					if($val->enabled == "N"){
 						unset($component_list->{$key});
 						continue;
 					}
 					if($logged_info->is_admin == "Y" || $logged_info->is_site_admin == "Y") continue;
-					if($val->target_group)
-					{
-						if(!$logged_info) {
+					if($val->target_group){
+						if(!$logged_info){
 							$val->enabled = "N";	
 						}
-						else {
+						else{
 							$is_granted = false;
 							foreach($group_list as $group_srl)
 							{
@@ -559,12 +577,11 @@
 							if(!$is_granted) $val->enabled = "N"; 
 						}
 					}
-					if($val->enabled != "N" && $val->mid_list)
-					{
+					if($val->enabled != "N" && $val->mid_list){
 						$mid = Context::get('mid');
 						if(!in_array($mid, $val->mid_list)) $val->enabled = "N";
 					}
-					if($val->enabled == "N") {
+					if($val->enabled == "N"){
 						unset($component_list->{$key});
 						continue;
 					}
@@ -577,14 +594,15 @@
 		/**
 		 * @brief Get xml and db information of the component
 		 **/
-		function getComponent($component_name, $site_srl = 0) {
+		function getComponent($component_name, $site_srl = 0){
 			$args = new stdClass();
 			$args->component_name = $component_name;
 
-			if($site_srl) {
+			if($site_srl){
 				$args->site_srl = $site_srl;
 				$output = executeQuery('editor.getSiteComponent', $args);
-			} else {
+			}
+			else{
 				$output = executeQuery('editor.getComponent', $args);
 			}
 			$component = $output->data;
@@ -599,22 +617,22 @@
 
 			$xml_info->mid_list = array();
 
-			if($component->extra_vars) {
+			if($component->extra_vars){
 				$extra_vars = unserialize($component->extra_vars);
 
-				if($extra_vars->target_group) {
+				if($extra_vars->target_group){
 					$xml_info->target_group = $extra_vars->target_group;
 					unset($extra_vars->target_group);
 				}
 
-				if($extra_vars->mid_list) {
+				if($extra_vars->mid_list){
 					$xml_info->mid_list = $extra_vars->mid_list;
 					unset($extra_vars->mid_list);
 				}
 
 
-				if($xml_info->extra_vars) {
-					foreach($xml_info->extra_vars as $key => $val) {
+				if($xml_info->extra_vars){
+					foreach($xml_info->extra_vars as $key => $val){
 						$xml_info->extra_vars->{$key}->value = $extra_vars->{$key};
 					}
 				}
@@ -626,7 +644,7 @@
 		/**
 		 * @brief Read xml information of the component
 		 **/
-		function getComponentXmlInfo($component) {
+		function getComponentXmlInfo($component){
 			$lang_type = Context::getLangType();
 			// Get xml file path of the requested components
 			$component_path = sprintf('%s/components/%s/', $this->module_path, $component);
@@ -634,7 +652,7 @@
 			$xml_file = sprintf('%sinfo.xml', $component_path);
 			$cache_file = sprintf('./files/cache/editor/%s.%s.php', $component, $lang_type);
 			// Include and return xml file information if cached file exists
-			if(file_exists($cache_file) && file_exists($xml_file) && filemtime($cache_file) > filemtime($xml_file)) {
+			if(file_exists($cache_file) && file_exists($xml_file) && filemtime($cache_file) > filemtime($xml_file)){
 				include($cache_file);
 				return $xml_info;
 			}
@@ -642,7 +660,7 @@
 			$oParser = new XmlParser();
 			$xml_doc = $oParser->loadXmlFile($xml_file);
 			// Component information listed
-			if($xml_doc->component->version && $xml_doc->component->attrs->version == '0.2') {
+			if($xml_doc->component->version && $xml_doc->component->attrs->version == '0.2'){
 				$component_info->component_name = $component;
 				$component_info->title = $xml_doc->component->title->body;
 				$component_info->description = str_replace('\n', "\n", $xml_doc->component->description->body);
@@ -665,7 +683,7 @@
 				if(!is_array($xml_doc->component->author)) $author_list[] = $xml_doc->component->author;
 				else $author_list = $xml_doc->component->author;
 
-				for($i=0; $i < count($author_list); $i++) {
+				for($i=0; $i < count($author_list); $i++){
 					$buff .= sprintf('$xml_info->author['.$i.']->name = "%s";', $author_list[$i]->name->body);
 					$buff .= sprintf('$xml_info->author['.$i.']->email_address = "%s";', $author_list[$i]->attrs->email_address);
 					$buff .= sprintf('$xml_info->author['.$i.']->homepage = "%s";', $author_list[$i]->attrs->link);
@@ -695,9 +713,9 @@
 			}
 			// List extra variables (text type only for editor component)
 			$extra_vars = $xml_doc->component->extra_vars->var;
-			if($extra_vars) {
+			if($extra_vars){
 				if(!is_array($extra_vars)) $extra_vars = array($extra_vars);
-				foreach($extra_vars as $key => $val) {
+				foreach($extra_vars as $key => $val){
 					unset($obj);
 					$key = $val->attrs->name;
 					$title = $val->title->body;

@@ -109,9 +109,11 @@
 		/**
 		 * @brief handles quatation of the string variables from the query
 		 **/
-		function addQuotes($string) {
-			if(get_magic_quotes_gpc()) $string = stripslashes(str_replace("\\","\\\\",$string));
-			if(!is_numeric($string)) $string = str_replace("'","''", $string);
+		function addQuotes($string){
+			if (version_compare(PHP_VERSION, "5.4.0", "<") && get_magic_quotes_gpc())
+				$string = stripslashes(str_replace("\\","\\\\",$string));
+			if (!is_numeric($string))
+				$string = str_replace("'","''", $string);
 			return $string;
 		}
 

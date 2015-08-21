@@ -153,6 +153,10 @@
 		<value xml:lang="tr"><![CDATA[KolayKurulum, bu program için gerekli olan tüm diğer programları kurup/güncelleştirecektir.]]></value>
 		<value xml:lang="vi"><![CDATA[Quá trình Cài đặt / Cập nhật này phụ thuộc vào ]]></value>
 	</item>
+	<item name="description_daol_update">
+		<value xml:lang="ko"><![CDATA[다올 CMS에서 XE 코어 업데이트는 적용되지 않습니다. XE 코어 업데이트가 필요한 자료는 다올 CMS에서 호환성 문제가 있을 수 있습니다.]]></value>
+		<value xml:lang="en"><![CDATA[XE Core Update doesn't apply in DAOL CMS. XE Core Update required Program or Skin might have compatibility issues in DAOL CMS.]]></value>
+	</item>
 	<item name="description_download">
 		<value xml:lang="ko"><![CDATA[FTP를 이용할 수 없는 경우, 직접 다운로드 하여 해당 경로(path)에 설치하셔야 합니다. (한 단계 상위에서 압축을 푸시면 됩니다. ./modules/board의 경우 ./modules에서 묶음(tar)을 푸세요)]]></value>
 		<value xml:lang="en"><![CDATA[If FTP is unavailable, you should manually download and extract it into the target path. (If the target path is ./modules/board, extract it to ./modules)]]></value>

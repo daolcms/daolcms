@@ -20,7 +20,7 @@
 	/**
 	 * Display the version info of DAOL CMS.
 	 */
-	define('__DAOL_VERSION__', '1.0.0.11');
+	define('__DAOL_VERSION__', '1.0.1.0');
 	/**
 	 * Display the version info of XE(XDT EX).
 	 */
@@ -64,12 +64,13 @@
 		 * Location site
 		 */
 		define('_DAOL_LOCATION_SITE_', 'http://www.daolcms.org/');
-		define('_XE_LOCATION_SITE_','http://www.xpressengine.org/');
+		define('_XE_LOCATION_SITE_','http://www.xpressengine.com/');
 
 		/**
 		 * Download server
 		 */
-		define('_XE_DOWNLOAD_SERVER_','http://en.download.xpressengine.org/');
+		define('_DAOL_DOWNLOAD_SERVER_', 'http://download.daolcms.org/');
+		define('_XE_DOWNLOAD_SERVER_', 'http://download.xpressengine.com/');
 	}
 
 	/*
@@ -247,6 +248,7 @@
 		require(_XE_PATH_.'classes/mobile/Mobile.class.php');
 		require(_XE_PATH_.'classes/validator/Validator.class.php');
 		require(_XE_PATH_.'classes/frontendfile/FrontEndFileHandler.class.php');
+		require(_XE_PATH_.'classes/security/Password.class.php'); 
 		require(_XE_PATH_.'classes/security/Security.class.php');
 		if(__DEBUG__) $GLOBALS['__elapsed_class_load__'] = getMicroTime() - __ClassLoadStartTime__;
 	}

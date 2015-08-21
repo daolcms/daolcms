@@ -145,7 +145,7 @@
 		 * @brief Add or change quotes to the query string variables
 		 **/
 		function addQuotes($string) {
-			if(version_compare(PHP_VERSION, "5.9.0", "<") && get_magic_quotes_gpc()) $string = stripslashes(str_replace("\\","\\\\",$string));
+			if(version_compare(PHP_VERSION, "5.4.0", "<") && get_magic_quotes_gpc()) $string = stripslashes(str_replace("\\","\\\\",$string));
 			if(!is_numeric($string)) $string = str_replace("'","''",$string);
 			return $string;
 		}
@@ -240,15 +240,25 @@
 		/**
 		 * @brief Add a column to a table
 		 **/
-		function addColumn($table_name, $column_name, $type='number', $size='', $default = '', $notnull=false) {
+		function addColumn($table_name, $column_name, $type='number', $size='', $default = null, $notnull=false) {
 			$type = $this->column_type[$type];
-			if(strtoupper($type)=='INTEGER') $size = '';
+			if(strtoupper($type)=='INTEGER'){
+				$size = '';
+			}
 
 			$query = sprintf("alter table %s%s add %s ", $this->prefix, $table_name, $column_name);
-			if($size) $query .= sprintf(" %s(%s) ", $type, $size);
-			else $query .= sprintf(" %s ", $type);
-			if($default) $query .= sprintf(" default '%s' ", $default);
-			if($notnull) $query .= " not null ";
+			if($size){
+				$query .= sprintf(" %s(%s) ", $type, $size);
+			}
+			else{
+				$query .= sprintf(" %s ", $type);
+			}
+			if(isset($default)){
+				$query .= sprintf(" default '%s' ", $default);
+			}
+			if($notnull){
+				$query .= " not null ";
+			}
 
 			$this->_prepare($query);
 			return $this->_execute();

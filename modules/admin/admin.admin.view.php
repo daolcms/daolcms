@@ -276,22 +276,22 @@
 			$admin_ip_list = preg_replace("/[,]+/","\r\n",$db_info->admin_ip_list);
 			Context::set('admin_ip_list', $admin_ip_list);
 
-			$oAdminModel = &getAdminModel('admin');
+			$oAdminModel = getAdminModel('admin');
 			$favicon_url = $oAdminModel->getFaviconUrl();
 			$mobicon_url = $oAdminModel->getMobileIconUrl();
 			Context::set('favicon_url', $favicon_url);
 			Context::set('mobicon_url', $mobicon_url);
 
-			$oDocumentModel = &getModel('document');
+			$oDocumentModel = getModel('document');
 			$config = $oDocumentModel->getDocumentConfig();
 			Context::set('thumbnail_type',$config->thumbnail_type);
 			
-			Context::set('IP',$_SERVER['REMOTE_ADDR']);
-			
-			$oModuleModel = &getModel('module');
+			$oModuleModel = getModel('module');
 			$config = $oModuleModel->getModuleConfig('module');
+			Context::set('siteTitle',$config->siteTitle);
 			Context::set('htmlFooter',htmlspecialchars($config->htmlFooter));
-
+			
+			Context::set('IP',$_SERVER['REMOTE_ADDR']);
 
 			$columnList = array('modules.mid', 'modules.browser_title', 'sites.index_module_srl');
 			$start_module = $oModuleModel->getSiteInfo(0, $columnList);

@@ -5,27 +5,23 @@
  * Filedisk Cache Handler
  *
  * @author Arnia Software (xe_dev@arnia.ro)
- **/
-class CacheFile extends CacheBase {
-	/**
-	 * Default valid time
-	 * @var int
-	 */
-	var $valid_time = 36000;
-
+ * @author NAVER (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
+ */
+class CacheFile extends CacheBase{
 	/**
 	 * Path that value to stored
 	 * @var string
 	 */
 	var $cache_dir = 'files/cache/store/';
-	
+
 	/**
 	 * Get instance of CacheFile
 	 *
 	 * @return CacheFile instance of CacheFile
 	 */
 	function getInstance(){
-		if(!$GLOBALS['__CacheFile__']) {
+		if(!$GLOBALS['__CacheFile__']){
 			$GLOBALS['__CacheFile__'] = new CacheFile();
 		}
 		return $GLOBALS['__CacheFile__'];
@@ -38,7 +34,7 @@ class CacheFile extends CacheBase {
 	 */
 	function CacheFile(){
 		$this->cache_dir = _XE_PATH_ . $this->cache_dir;
-		if(!is_dir($this->cache_dir)) FileHandler::makeDir($this->cache_dir);
+		FileHandler::makeDir($this->cache_dir);
 	}
 
 	/**
@@ -48,9 +44,9 @@ class CacheFile extends CacheBase {
 	 * @return string Returns cache file path
 	 */
 	function getCacheFileName($key){
-		return $this->cache_dir . str_replace(':', '_', $key);
+		return $this->cache_dir . str_replace(':', DIRECTORY_SEPARATOR, $key) . '.php';
 	}
-	
+
 	/**
 	 * Return whether support or not support cache
 	 *
@@ -69,9 +65,15 @@ class CacheFile extends CacheBase {
 	 * @return void
 	 */
 	function put($key, $obj, $valid_time = 0){
-		$cache_file = $this->getCacheFileName($key);		
-		$text = serialize($obj);
-		FileHandler::writeFile($cache_file, $text);
+		$cache_file = $this->getCacheFileName($key);
+		$content = array();
+		$content[] = '<?php';
+		$content[] = 'if(!defined(\'__XE__\')) { exit(); }';
+		$content[] = 'return \'' . addslashes(serialize($obj)) . '\';';
+		FileHandler::writeFile($cache_file, implode(PHP_EOL, $content));
+		if(function_exists('opcache_invalidate')){
+			@opcache_invalidate($cache_file, true);
+		}
 	}
 
 	/**
@@ -81,10 +83,18 @@ class CacheFile extends CacheBase {
 	 * @param int $modified_time Not used
 	 * @return bool Return true on valid or false on invalid.
 	 */
-	function isValid($key, $modified_time = 0) {
+	function isValid($key, $modified_time = 0){
 		$cache_file = $this->getCacheFileName($key);
-		if(file_exists($cache_file)) return true;
-		
+
+		if(file_exists($cache_file)){
+			if($modified_time > 0 && filemtime($cache_file) < $modified_timed){
+				FileHandler::removeFile($cache_file);
+				return false;
+			}
+
+			return true;
+		}
+
 		return false;
 	}
 
@@ -95,12 +105,19 @@ class CacheFile extends CacheBase {
 	 * @param int $modified_time Not used
 	 * @return false|mixed Return false on failure. Return the string associated with the $key on success.
 	 */
-	function get($key, $modified_time = 0) {
-		$cache_file = $this->getCacheFileName($key);
-		$content = FileHandler::readFile($cache_file);
-		if(!$content) return false;
-		
-		return unserialize($content);
+	function get($key, $modified_time = 0){
+		if(!$cache_file = FileHandler::exists($this->getCacheFileName($key))){
+			return false;
+		}
+
+		if($modified_time > 0 && filemtime($cache_file) < $modified_timed){
+			FileHandler::removeFile($cache_file);
+			return false;
+		}
+
+		$content = include($cache_file);
+
+		return unserialize(stripslashes($content));
 	}
 
 	/**
@@ -109,8 +126,11 @@ class CacheFile extends CacheBase {
 	 * @param string $_key Used to store the value.
 	 * @return void
 	 */
-	function _delete($_key) {
+	function _delete($_key){
 		$cache_file = $this->getCacheFileName($_key);
+		if(function_exists('opcache_invalidate')){
+			@opcache_invalidate($cache_file, true);
+		}
 		FileHandler::removeFile($cache_file);
 	}
 
@@ -120,7 +140,7 @@ class CacheFile extends CacheBase {
 	 * @param string $key Used to store the value.
 	 * @return void
 	 */
-	function delete($key) {
+	function delete($key){
 		$this->_delete($key);
 	}
 
@@ -129,10 +149,10 @@ class CacheFile extends CacheBase {
 	 *
 	 * @return bool Returns true on success or false on failure.
 	 */
-	function truncate() {
+	function truncate(){
 		FileHandler::removeFilesInDir($this->cache_dir);
 	}
-}
 
+}
 /* End of file CacheFile.class.php */
 /* Location: ./classes/cache/CacheFile.class.php */

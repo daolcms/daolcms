@@ -169,6 +169,10 @@ class Context {
 	 * @return void
 	 */
 	function init() {
+		if(!isset($GLOBALS['HTTP_RAW_POST_DATA']) && version_compare(PHP_VERSION, '5.6.0', '>=') === true){
+			if(simplexml_load_string(file_get_contents("php://input")) !== false) $GLOBALS['HTTP_RAW_POST_DATA'] = file_get_contents("php://input");
+		}
+		
 		// set context variables in $GLOBALS (to use in display handler)
 		$this->context = &$GLOBALS['__Context__'];
 		$this->context->lang = &$GLOBALS['lang'];
@@ -284,11 +288,11 @@ class Context {
 				foreach($this->get_vars as $key=>$val){
 					if(is_array($val)&&count($val)){
 						foreach($val as $k => $v){
-							$url .= ($url?'&':'').$key.'['.$k.']='.urlencode($v);
+							$url[] = $key . '[' . $k . ']=' . urlencode($v);
 						}
 					}
 					elseif ($val){
-						$url .= ($url?'&':'').$key.'='.urlencode($val);
+						$url[] = $key . '=' . urlencode($val);
 					}
 				}
 				$current_url = Context::getRequestUri();
@@ -303,6 +307,14 @@ class Context {
 		}
 		$this->set('current_url', $current_url);
 		$this->set('request_uri',Context::getRequestUri());
+		
+		if(strpos($current_url, 'xn--') !== FALSE){
+			$this->set('current_url', Context::decodeIdna($current_url));
+		}
+		
+		if(strpos(Context::getRequestUri(), 'xn--') !== FALSE){
+			$this->set('request_uri', Context::decodeIdna(Context::getRequestUri()));
+		}
 	}
 
 	/**
@@ -572,6 +584,19 @@ class Context {
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 		$self->site_title = $site_title;
 	}
+	
+	/**
+	 * Return layout's title
+	 * @return string layout's title
+	 */
+	function getSiteTitle(){
+		$oModuleModel = getModel('module');
+		$moduleConfig = $oModuleModel->getModuleConfig('module');
+		if(isset($moduleConfig->siteTitle)){
+			return $moduleConfig->siteTitle;
+		}
+		return '';
+	}
 
 	/**
 	 * Get browser title
@@ -820,6 +845,16 @@ class Context {
 		return $obj->str;
 	}
 
+	function decodeIdna($domain){
+		if(strpos($domain, 'xn--') !== FALSE){
+			require_once(_XE_PATH_ . 'libs/idna_convert/idna_convert.class.php');
+			$IDN = new idna_convert(array('idn_version' => 2008));
+			$domain = $IDN->decode($domain);
+		}
+		
+		return $domain;
+	}
+
 	/**
 	 * Force to set response method
 	 *
@@ -859,8 +894,8 @@ class Context {
 		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
 
 		($type && $self->request_method=$type) or
-		(strpos($_SERVER['CONTENT_TYPE'],'json') && $self->request_method='JSON') or
-		($GLOBALS['HTTP_RAW_POST_DATA'] && $self->request_method='XMLRPC') or
+		((strpos($_SERVER['CONTENT_TYPE'], 'json') || strpos($_SERVER['HTTP_CONTENT_TYPE'], 'json')) && $self->request_method = 'JSON') or
+		($GLOBALS['HTTP_RAW_POST_DATA'] && $self->request_method = 'XMLRPC') or
 		($self->request_method = $_SERVER['REQUEST_METHOD']);
 	}
 
@@ -1041,7 +1076,7 @@ class Context {
 			else{
 				$result[$k] = $v;
 				
-				if($do_stripslashes && version_compare(PHP_VERSION, '5.9.0', '<') && get_magic_quotes_gpc()){
+				if($do_stripslashes && version_compare(PHP_VERSION, '5.4.0', '<') && get_magic_quotes_gpc()){
 					$result[$k] = stripslashes($result[$k]);
 				}
 
@@ -1070,9 +1105,9 @@ class Context {
 	 * @return void
 	 */
 	function _setUploadedArgument(){
-		if($this->getRequestMethod() != 'POST') return;
-		if(!preg_match('/multipart\/form-data/i',$_SERVER['CONTENT_TYPE'])) return;
-		if(!$_FILES) return;
+		if($_SERVER['REQUEST_METHOD'] != 'POST' || !$_FILES || (stripos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') === FALSE && stripos($_SERVER['HTTP_CONTENT_TYPE'], 'multipart/form-data') === FALSE)){
+			return;
+		}
 
 		foreach($_FILES as $key => $val){
 			$tmp_name = $val['tmp_name'];

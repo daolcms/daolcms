@@ -23,8 +23,8 @@
 			<th scope="row">{$lang->poll_stop_date}</th>
 			<td>
 
-			<input type="hidden" name="stop_date" id="stop_date" value="{date('Ymd',time()+60*60*24*30)}" />
-			<input type="text" class="inputDate" value="{date('Y-m-d',time()+60*60*24*30)}" readonly="readonly" />
+			<input type="hidden" name="stop_date" id="stop_date" value="{date('Ymd',time()+60*60*24*7)}" />
+			<input type="text" class="inputDate" value="{date('Y-m-d',time()+60*60*24*7)}" readonly="readonly" />
 <script type="text/javascript">
 (function($){
 	$(function(){
@@ -36,6 +36,7 @@
 			, onSelect:function(){
 				$(this).prev('input[type="hidden"]').val(this.value.replace(/-/g,""));
 			}
+			,minDate: new Date("{date('Y-m-d',time())}")
 		};
 		$.extend(option,$.datepicker.regional['{$lang_type}']);
 		$(".inputDate").datepicker(option);

@@ -33,8 +33,7 @@
 		 * @return void|Object (void : success, Object : fail)
 		 **/
 		function procMemberLogin($user_id = null, $password = null, $keep_signed = null){
-			if(!$user_id && !$password && Context::getRequestMethod() == 'GET')
-			{
+			if(!$user_id && !$password && Context::getRequestMethod() == 'GET'){
 				$this->setRedirectUrl(getNotEncodedUrl(''));
 				return new Object(-1, 'null_user_id');
 			}
@@ -69,12 +68,15 @@
 				}
 			}
 
-			if(!$config->after_login_url)
-			{
+			// Delete all previous authmail if login is successful
+			$args = new stdClass();
+			$args->member_srl = $this->memberInfo->member_srl;
+			executeQuery('member.deleteAuthMail', $args);
+
+			if(!$config->after_login_url){
 				$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', '');
 			}
-			else
-			{
+			else{
 				$returnUrl = $config->after_login_url;
 			}
 			return $this->setRedirectUrl($returnUrl, $output);
@@ -296,11 +298,10 @@
 			if(!$args->nick_name) $args->nick_name = $args->member_srl;
 
 			// remove whitespace
-			$checkInfos = array('user_id', 'nick_name', 'email_address');
-			$replaceStr = array("\r\n", "\r", "\n", " ", "\t", "\xC2\xAD");
+			$checkInfos = array('user_id', 'user_name', 'nick_name', 'email_address');
 			foreach($checkInfos as $val){
 				if(isset($args->{$val})){
-					$args->{$val} = str_replace($replaceStr, '', $args->{$val});
+					$args->{$val} = preg_replace('/[\pZ\pC]+/u', '', $args->{$val});
 				}
 			}
 			$output = $this->insertMember($args);
@@ -339,18 +340,14 @@
 			$trigger_output = ModuleHandler::triggerCall('member.procMemberInsert', 'after', $config);
 			if(!$trigger_output->toBool()) return $trigger_output;
 
-			if($config->redirect_url)
-			{
+			if($config->redirect_url){
 				$returnUrl = $config->redirect_url;
 			}
-			else
-			{
-				if(Context::get('success_return_url'))
-				{
+			else{
+				if(Context::get('success_return_url')){
 					$returnUrl = Context::get('success_return_url');
 				}
-				else if($_COOKIE['XE_REDIRECT_URL'])
-				{
+				else if($_COOKIE['XE_REDIRECT_URL']){
 					$returnUrl = $_COOKIE['XE_REDIRECT_URL'];
 					setcookie("XE_REDIRECT_URL", '', 1);
 				}
@@ -360,47 +357,43 @@
 		}
 
 
-		function procMemberModifyInfoBefore()
-		{
-			if($_SESSION['rechecked_password_step'] != 'INPUT_PASSWORD')
-			{
+		function procMemberModifyInfoBefore(){
+			if($_SESSION['rechecked_password_step'] != 'INPUT_PASSWORD'){
 				return $this->stop('msg_invalid_request');
 			}
 
-			if(!Context::get('is_logged'))
-			{
+			if(!Context::get('is_logged')){
 				return $this->stop('msg_not_logged');
 			}
 
 			$password = Context::get('password');
 
-			if(!$password)
-			{
+			if(!$password){
 				return $this->stop('msg_invalid_request');
 			}
 
 			$oMemberModel = &getModel('member');
 
-			if(!$this->memberInfo->password)
-			{
+			if(!$this->memberInfo->password){
+				// Get information of logged-in user
+				$logged_info = Context::get('logged_info');
+				$member_srl = $logged_info->member_srl;
+				
 				$columnList = array('member_srl', 'password');
-	            $memberInfo = $oMemberModel->getMemberInfoByMemberSrl($member_srl, 0, $columnList);
+				$memberInfo = $oMemberModel->getMemberInfoByMemberSrl($member_srl, 0, $columnList);
 				$this->memberInfo->password = $memberInfo->password;
 			}
 			// Verify the current password
-			if(!$oMemberModel->isValidPassword($this->memberInfo->password, $password))
-			{
+			if(!$oMemberModel->isValidPassword($this->memberInfo->password, $password)){
 				return new Object(-1, 'invalid_password');
 			}
 
 			$_SESSION['rechecked_password_step'] = 'VALIDATE_PASSWORD';
 
-			if(Context::get('success_return_url'))
-			{
+			if(Context::get('success_return_url')){
 				$redirectUrl = Context::get('success_return_url');
 			}
-			else
-			{
+			else{
 				$redirectUrl = getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', 'dispMemberModifyInfo');
 			}
 			$this->setRedirectUrl($redirectUrl);
@@ -412,15 +405,12 @@
 		 * 
 		 * @return void|Object (void : success, Object : fail)
 		 **/
-		function procMemberModifyInfo() 
-		{
-			if(!Context::get('is_logged'))
-			{
+		function procMemberModifyInfo(){
+			if(!Context::get('is_logged')){
 				return $this->stop('msg_not_logged');
 			}
 
-			if($_SESSION['rechecked_password_step'] != 'INPUT_DATA')
-			{
+			if($_SESSION['rechecked_password_step'] != 'INPUT_DATA'){
 				return $this->stop('msg_invalid_request');
 			}
 			unset($_SESSION['rechecked_password_step']);
@@ -464,11 +454,10 @@
 			$args->extra_vars = serialize($extra_vars);
 			
 			// remove whitespace
-			$checkInfos = array('user_id', 'nick_name', 'email_address');
-			$replaceStr = array("\r\n", "\r", "\n", " ", "\t", "\xC2\xAD");
+			$checkInfos = array('user_id', 'user_name', 'nick_name', 'email_address');
 			foreach($checkInfos as $val){
 				if(isset($args->{$val})){
-					$args->{$val} = str_replace($replaceStr, '', $args->{$val});
+					$args->{$val} = preg_replace('/[\pZ\pC]+/u', '', $args->{$val});
 				}
 			}
 
@@ -809,18 +798,15 @@
 		 *
 		 * @return Object
 		 **/
-		function procMemberDeleteImageMark($_memberSrl = 0) 
-		{
+		function procMemberDeleteImageMark($_memberSrl = 0){
 			$member_srl = ($_memberSrl) ? $_memberSrl : Context::get('member_srl');
-			if(!$member_srl)
-			{
+			if(!$member_srl){
 				return new Object(0,'success');
 			}
 
 			$logged_info = Context::get('logged_info');
 
-			if($logged_info && ($logged_info->is_admin == 'Y' || $logged_info->member_srl == $member_srl)) 
-			{
+			if($logged_info && ($logged_info->is_admin == 'Y' || $logged_info->member_srl == $member_srl)){
 				$oMemberModel = &getModel('member');
 				$image_mark = $oMemberModel->getImageMark($member_srl);
 				FileHandler::removeFile($image_mark->file);
@@ -852,10 +838,11 @@
 				if($output->toBool() && $output->data->count != '0') return new Object(-1, 'msg_user_not_confirmed');
 			}
 			// Insert data into the authentication DB
+			$oPassword = new Password();
 			$args->user_id = $member_info->user_id;
 			$args->member_srl = $member_info->member_srl;
-			$args->new_password = rand(111111,999999);
-			$args->auth_key = md5( rand(0,999999 ) );
+			$args->new_password = $oPassword->createTemporaryPassword(8);
+			$args->auth_key = $oPassword->createSecureSalt(40);
 			$args->is_register = 'N';
 
 			$output = executeQuery('member.insertAuthMail', $args);
@@ -948,10 +935,11 @@
 			}
 
 			// Update to a temporary password and set change_password_date to 1
+			$oPassword = new Password();
+			$temp_password = $oPassword->createTemporaryPassword(8);
+			
+			$args = new stdClass();
 			$args->member_srl = $member_srl;
-			list($usec, $sec) = explode(" ", microtime());
-			$temp_password = substr(md5($user_id . $member_info->find_account_answer. $usec . $sec),0,15);
-
 			$args->password = $temp_password;
 			$args->change_password_date = '1';
 			$output = $this->updateMemberPassword($args);
@@ -972,101 +960,55 @@
 		 * @return void|Object (void : success, Object : fail)
 		 **/
 		function procMemberAuthAccount(){
+			$oMemberModel = getModel('member');
+			
 			// Test user_id and authkey
 			$member_srl = Context::get('member_srl');
 			$auth_key = Context::get('auth_key');
-			if(!$member_srl || !$auth_key) return $this->stop('msg_invalid_request');
+			if(!$member_srl || !$auth_key){
+				return $this->stop('msg_invalid_request'); 
+			}
 			// Test logs for finding password by user_id and authkey
 			$args->member_srl = $member_srl;
 			$args->auth_key = $auth_key;
 			$output = executeQuery('member.getAuthMail', $args);
 			if(!$output->toBool() || $output->data->auth_key != $auth_key){
-				if(strlen($output->data->auth_key) !== strlen($auth_key)) executeQuery('member.deleteAuthMail', $args);
+				if(strlen($output->data->auth_key) !== strlen($auth_key)){
+					executeQuery('member.deleteAuthMail', $args);
+				}
 				return $this->stop('msg_invalid_auth_key');
 			}
+
+			if(ztime($output->data->regdate) < $_SERVER['REQUEST_TIME'] + zgap() - 86400){
+				executeQuery('member.deleteAuthMail', $args);
+				return $this->stop('msg_invalid_auth_key');
+			}
+
+			$args->password = $output->data->new_password; 
+			
 			// If credentials are correct, change the password to a new one
 			if($output->data->is_register == 'Y'){
-				$args->password = $output->data->new_password;
 				$args->denied = 'N';
 			}
-			else {
-				$args->password = md5($output->data->new_password);
-				unset($args->denied);
+			else{
+				$args->password = $oMemberModel->hashPassword($args->password);
 			}
 			// Back up the value of $Output->data->is_register
 			$is_register = $output->data->is_register;
 
 			$output = executeQuery('member.updateMemberPassword', $args);
-			if(!$output->toBool()) return $this->stop($output->getMessage());
+			if(!$output->toBool()){
+				return $this->stop($output->getMessage());
+			}
 			// Remove all values having the member_srl from authentication table
 			executeQuery('member.deleteAuthMail',$args);
+			
+			$this->_clearMemberCache($args->member_srl); 
+			
 			// Notify the result
 			Context::set('is_register', $is_register);
 			$this->setTemplatePath($this->module_path.'tpl');
 			$this->setTemplateFile('msg_success_authed');
-		}
-
-		/**
-		 * Execute finding ID/Passoword
-		 * When clicking the link in the verification email, a method is called to change the old password and to authenticate it
-		 *
-		 * @return Object
-		 **/
-		function procMemberUpdateAuthMail(){
-			$member_srl = Context::get('member_srl');
-			if(!$member_srl) return new Object(-1, 'msg_invalid_request');
-
-			$oMemberModel = &getModel('member');
-			// Get information of the member
-			$member_info = $oMemberModel->getMemberInfoByMemberSrl($member_srl);
-			// Check if the member is set to allow a request to re-send an authentication mail
-			if($member_info->denied != 'Y')
-				return new Object(-1, 'msg_invalid_request');
-
-			$chk_args->member_srl = $member_srl;
-			$output = executeQuery('member.chkAuthMail', $chk_args);
-			if($output->toBool() && $output->data->count == '0') return new Object(-1, 'msg_invalid_request');
-			// Insert data into the authentication DB
-			$auth_args->member_srl = $member_srl;
-			$auth_args->auth_key = md5(rand(0, 999999));
-
-			$output = executeQuery('member.updateAuthMail', $auth_args);
-			if(!$output->toBool()){
-				$oDB->rollback();
-				return $output;
-			}
-			// Get content of the email to send a member
-			Context::set('auth_args', $auth_args);
-			Context::set('memberInfo', $member_info);
-
-			$oModuleModel = getModel('module');
-			$member_config = $oModuleModel->getModuleConfig('member');
-			if(!$member_config->skin) $member_config->skin = "default";
-			if(!$member_config->colorset) $member_config->colorset = "white";
-
-			Context::set('member_config', $member_config);
-
-			$tpl_path = sprintf('%sskins/%s', $this->module_path, $member_config->skin);
-			if(!is_dir($tpl_path)) $tpl_path = sprintf('%sskins/%s', $this->module_path, 'default');
-
-			$auth_url = getFullUrl('','module','member','act','procMemberAuthAccount','member_srl',$member_info->member_srl, 'auth_key',$auth_args->auth_key);
-			Context::set('auth_url', $auth_url);
-
-			$oTemplate = &TemplateHandler::getInstance();
-			$content = $oTemplate->compile($tpl_path, 'confirm_member_account_mail');
-			// Get information of the Webmaster
-			$oModuleModel = getModel('module');
-			$member_config = $oModuleModel->getModuleConfig('member');
-			// Send a mail
-			$oMail = new Mail();
-			$oMail->setTitle( Context::getLang('msg_confirm_account_title') );
-			$oMail->setContent($content);
-			$oMail->setSender( $member_config->webmaster_name?$member_config->webmaster_name:'webmaster', $member_config->webmaster_email);
-			$oMail->setReceiptor( $member_info->nick_name, $member_info->email_address );
-			$oMail->send();
-			// Return message
-			$msg = sprintf(Context::getLang('msg_auth_mail_sent'), $member_info->email_address);
-			return new Object(-1, $msg);
 		}
 
 		/**
@@ -1103,6 +1045,13 @@
 			$auth_args->member_srl = $member_info->member_srl;
 			$output = executeQueryArray('member.getAuthMailInfo', $auth_args);
 			if(!$output->data || !$output->data[0]->auth_key)  return new Object(-1, 'msg_invalid_request');
+
+			// Update the regdate of authmail entry
+			$renewal_args = new stdClass;
+			$renewal_args->member_srl = $member_info->member_srl;
+			$renewal_args->auth_key = $auth_info->auth_key;
+			$output = executeQuery('member.updateAuthMail', $renewal_args);
+
 			$auth_info = $output->data[0];
 
 			$memberInfo = array();
@@ -1190,10 +1139,12 @@
 			}
 
 			// generate new auth key
+			$oPassword = new Password();
+			$auth_args = new stdClass();
 			$auth_args->user_id = $memberInfo->user_id;
 			$auth_args->member_srl = $memberInfo->member_srl;
 			$auth_args->new_password = $memberInfo->password;
-			$auth_args->auth_key = md5( rand(0,999999 ) );
+			$auth_args->auth_key = $oPassword->createSecureSalt(40);
 			$auth_args->is_register = 'Y';
 
 			$output = executeQuery('member.insertAuthMail', $auth_args);
@@ -1304,8 +1255,8 @@
 		function setMemberConfig($args){
 			if(!$args->skin) $args->skin = "default";
 			if(!$args->colorset) $args->colorset = "white";
-			if(!$args->editor_skin) $args->editor_skin= "xpresseditor";
-			if(!$args->editor_colorset) $args->editor_colorset = "white";
+			if(!$args->editor_skin) $args->editor_skin= "ckeditor";
+			if(!$args->editor_colorset) $args->editor_colorset = "moono";
 			if($args->enable_join!='Y') $args->enable_join = 'N';
 			$args->enable_openid= 'N';
 			if($args->profile_image !='Y') $args->profile_image = 'N';
@@ -1466,9 +1417,10 @@
 			$do_auto_login = false;
 
 			// Compare key values based on the information
-			$key = md5($user_id . $password . $_SERVER['HTTP_USER_AGENT']);
+			$check_key = strtolower($user_id).$password.$_SERVER['HTTP_USER_AGENT'];
+			$check_key = substr(hash_hmac('sha256', $check_key, substr($args->autologin_key, 0, 32)), 0, 32);
 
-			if($key == $args->autologin_key){
+			if($check_key === substr($args->autologin_key, 32)){
 
 				// Check change_password_date
 				$oModuleModel = &getModel('module');
@@ -1532,12 +1484,10 @@
 			$args->ipaddress = $_SERVER['REMOTE_ADDR'];
 			$output = executeQuery('member.getLoginCountByIp', $args);
 			$count = (int)$output->data->count;
-			if($config->max_error_count < $count)
-			{
+			if($config->max_error_count < $count){
 				$last_update = strtotime($output->data->last_update);
 				$term = intval(time()-$last_update);
-				if($term < $config->max_error_count_time)
-				{
+				if($term < $config->max_error_count_time){
 					$term = $config->max_error_count_time - $term;
 					if($term < 60) $term = intval($term).Context::getLang('unit_sec');
 					elseif(60 <= $term && $term < 3600) $term = intval($term/60).Context::getLang('unit_min');
@@ -1545,8 +1495,7 @@
 					else $term = intval($term/86400).Context::getLang('unit_day');
 					return new Object(-1, sprintf(Context::getLang('excess_ip_access_count'),$term));
 				}
-				else
-				{
+				else{
 					$args->ipaddress = $_SERVER['REMOTE_ADDR'];
 					$output = executeQuery('member.deleteLoginCountByIp', $args);
 				}
@@ -1569,12 +1518,10 @@
 			// Password Check
 			if($password && !$oMemberModel->isValidPassword($this->memberInfo->password, $password, $this->memberInfo->member_srl)) return $this->recordMemberLoginError(-1, 'invalid_password',$this->memberInfo);
 			// If denied == 'Y', notify
-			if($this->memberInfo->denied == 'Y') 
-			{
+			if($this->memberInfo->denied == 'Y'){
 				$args->member_srl = $this->memberInfo->member_srl;
 				$output = executeQuery('member.chkAuthMail', $args);
-				if($output->toBool() && $output->data->count != '0') 
-				{
+				if($output->toBool() && $output->data->count != '0'){
 					$_SESSION['auth_member_srl'] = $this->memberInfo->member_srl;
 					$redirectUrl = getUrl('', 'act', 'dispMemberResendAuthMail');
 					return $this->setRedirectUrl($redirectUrl, new Object(-1,'msg_user_not_confirmed'));
@@ -1589,19 +1536,15 @@
 
 			// Check if there is recoding table.
 			$oDB = &DB::getInstance();
-			if($oDB->isTableExists('member_count_history') && $config->enable_login_fail_report != 'N')
-			{
+			if($oDB->isTableExists('member_count_history') && $config->enable_login_fail_report != 'N'){
 				// check if there is login fail records.
 				$output = executeQuery('member.getLoginCountHistoryByMemberSrl', $args);
-				if($output->data && $output->data->content)
-				{
+				if($output->data && $output->data->content){
 					$title = Context::getLang('login_fail_report');
 					$message = '<ul>';
 					$content = unserialize($output->data->content);
-					if(count($content) > $config->max_error_count)
-					{
-						foreach($content as $val)
-						{
+					if(count($content) > $config->max_error_count){
+						foreach($content as $val){
 							$message .= '<li>'.date('Y-m-d H:i:s P',$val[2]).'<br /> Access IP: '.$val[0].'<br /> Message: '.$val[1].'</li>';
 						}
 						$message .= '</ul>';
@@ -1611,8 +1554,7 @@
 						$oCommunicationController = &getController('communication');
 						$oCommunicationController->sendMessage($args->member_srl, $args->member_srl, $title, $content, true);
 
-						if($this->memberInfo->email_address && $this->memberInfo->allow_mailing == 'Y')
-						{
+						if($this->memberInfo->email_address && $this->memberInfo->allow_mailing == 'Y'){
 							$view_url = Context::getRequestUri();
 							$content = sprintf("%s<hr /><p>From: <a href=\"%s\" target=\"_blank\">%s</a><br />To: %s(%s)</p>",$content, $view_url, $view_url, $this->memberInfo->nick_name, $this->memberInfo->email_id);
 							$oMail = new Mail();
@@ -1632,7 +1574,7 @@
 			// When user checked to use auto-login
 			if($keep_signed){
 				// Key generate for auto login
-				$autologin_args->autologin_key = md5(strtolower($user_id).$this->memberInfo->password.$_SERVER['HTTP_USER_AGENT']);
+				$autologin_args->autologin_key = $random_key.$extra_key;
 				$autologin_args->member_srl = $this->memberInfo->member_srl;
 				executeQuery('member.deleteAutologin', $autologin_args);
 				$autologin_output = executeQuery('member.insertAutologin', $autologin_args);
@@ -1760,42 +1702,58 @@
 			}
 
 			list($args->email_id, $args->email_host) = explode('@', $args->email_address);
-			// Website, blog, checks the address
+			
+			// Sanitize user ID, username, nickname, homepage, blog
+			$args->user_id = htmlspecialchars($args->user_id, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			$args->user_name = htmlspecialchars($args->user_name, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			$args->nick_name = htmlspecialchars($args->nick_name, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			$args->homepage = htmlspecialchars($args->homepage, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			$args->blog = htmlspecialchars($args->blog, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 			if($args->homepage && !preg_match("/^[a-z]+:\/\//i",$args->homepage)) $args->homepage = 'http://'.$args->homepage;
 			if($args->blog && !preg_match("/^[a-z]+:\/\//i",$args->blog)) $args->blog = 'http://'.$args->blog;
+			
 			// Create a model object
-			$oMemberModel = &getModel('member');
-			// ID check is prohibited
-			if($oMemberModel->isDeniedID($args->user_id)) return new Object(-1,'denied_user_id');
-			// ID, nickname, email address of the redundancy check
+			$oMemberModel = getModel('member');
+			
+			if($args->password && !$password_is_hashed){
+				$args->password = $oMemberModel->hashPassword($args->password);
+			}
+			elseif(!$args->password){
+				unset($args->password);
+			}
+			
+			// Check if ID is prohibited
+			if($oMemberModel->isDeniedID($args->user_id)){
+				return new Object(-1,'denied_user_id');
+			}
+			// Check if ID is duplicate
 			$member_srl = $oMemberModel->getMemberSrlByUserID($args->user_id);
-			if($member_srl) return new Object(-1,'msg_exists_user_id');
-
-			// nickname check is prohibited
-			if($oMemberModel->isDeniedNickName($args->nick_name))
-			{
+			if($member_srl){
 				return new Object(-1,'denied_nick_name');
 			}
+			// Check if nickname is prohibited
+			if($oMemberModel->isDeniedNickName($args->nick_name)){
+				return new Object(-1,'denied_nick_name');
+			}
+			// Check if nickname is duplicate
 			$member_srl = $oMemberModel->getMemberSrlByNickName($args->nick_name);
-			$member_srl_by_decode = $oMemberModel->getMemberSrlByNickName(utf8_decode($args->nick_name));
-			if(($member_srl || $member_srl_by_decode) && $orgMemberInfo->nick_name != $args->nick_name) return new Object(-1,'msg_exists_nick_name');;
-
+			if($member_srl){
+				return new Object(-1,'msg_exists_nick_name');
+			}
+			// Check if email address is duplicate
 			$member_srl = $oMemberModel->getMemberSrlByEmailAddress($args->email_address);
-			if($member_srl) return new Object(-1,'msg_exists_email_address');
-
-			$oDB = &DB::getInstance();
-			$oDB->begin();
+			if($member_srl){
+				return new Object(-1,'msg_exists_email_address');
+			}
+			
 			// Insert data into the DB
 			$args->list_order = -1 * $args->member_srl;
-			$args->nick_name = htmlspecialchars($args->nick_name);
-			$args->homepage = htmlspecialchars($args->homepage);
-			$args->blog = htmlspecialchars($args->blog);
-
-			if($args->password && !$password_is_hashed) $args->password = md5($args->password);
-			elseif(!$args->password) unset($args->password);
 
 			if(!$args->user_id) $args->user_id = 't'.$args->member_srl;
 			if(!$args->user_name) $args->user_name = $args->member_srl;
+
+			$oDB = &DB::getInstance();
+			$oDB->begin();
 
 			$output = executeQuery('member.insertMember', $args);
 			if(!$output->toBool()){
@@ -1809,8 +1767,7 @@
 			if(!$args->group_srl_list){
 				$columnList = array('site_srl', 'group_srl');
 				$default_group = $oMemberModel->getDefaultGroup(0, $columnList);
-				if($default_group)
-				{
+				if($default_group){
 					 // Add to the default group
 					$output = $this->addMemberToGroup($args->member_srl,$default_group->group_srl);
 					if(!$output->toBool()) 
@@ -1836,10 +1793,12 @@
 			// When using email authentication mode (when you subscribed members denied a) certified mail sent
 			if($args->denied == 'Y'){
 				// Insert data into the authentication DB
+				$oPassword = new Password();
+				$auth_args = new stdClass();
 				$auth_args->user_id = $args->user_id;
 				$auth_args->member_srl = $args->member_srl;
 				$auth_args->new_password = $args->password;
-				$auth_args->auth_key = md5(rand(0, 999999));
+				$auth_args->auth_key = $oPassword->createSecureSalt(40);
 				$auth_args->is_register = 'Y';
 
 				$output = executeQuery('member.insertAuthMail', $auth_args);
@@ -1867,13 +1826,13 @@
 		/**
 		 * Modify member information
 		 **/
-		function updateMember($args) 
-		{
+		function updateMember($args){
 			// Call a trigger (before)
 			$output = ModuleHandler::triggerCall('member.updateMember', 'before', $args);
 			if(!$output->toBool()) return $output;
+			
 			// Create a model object
-			$oMemberModel = &getModel('member');
+			$oMemberModel = getModel('member');
 
 			$logged_info = Context::get('logged_info');
 			// Get what you want to modify the original information
@@ -1888,48 +1847,72 @@
 			}
 			else{
 				unset($args->is_admin);
-				unset($args->denied);
+				if($is_admin == false){
+					unset($args->denied);
+				}
+				if($logged_info->member_srl != $args->member_srl && $is_admin == false){
+					return $this->stop('msg_invalid_request');
+				}
 			}
 
+			// Sanitize user ID, username, nickname, homepage, blog
+			if($args->user_id) $args->user_id = htmlspecialchars($args->user_id, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			$args->user_name = htmlspecialchars($args->user_name, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			$args->nick_name = htmlspecialchars($args->nick_name, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			$args->homepage = htmlspecialchars($args->homepage, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			$args->blog = htmlspecialchars($args->blog, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			if($args->homepage && !preg_match("/^[a-z]+:\/\//is",$args->homepage)) $args->homepage = 'http://'.$args->homepage;
+			if($args->blog && !preg_match("/^[a-z]+:\/\//is",$args->blog)) $args->blog = 'http://'.$args->blog;
+			
 			// check member identifier form
 			$config = $oMemberModel->getMemberConfig();
 
 			$output = executeQuery('member.getMemberInfoByMemberSrl', $args);
 			$orgMemberInfo = $output->data;
 
+			// Check if email address or user ID is duplicate
 			if($config->identifier == 'email_address'){
 				$member_srl = $oMemberModel->getMemberSrlByEmailAddress($args->email_address);
-				if($member_srl&&$args->member_srl!=$member_srl) return new Object(-1,'msg_exists_email_address');
-
+				if($member_srl && $args->member_srl != $member_srl){
+					return new Object(-1,'msg_exists_email_address');
+				}
 				$args->email_address = $orgMemberInfo->email_address;
 			}
 			else{
 				$member_srl = $oMemberModel->getMemberSrlByUserID($args->user_id);
-				if($member_srl&&$args->member_srl!=$member_srl) return new Object(-1,'msg_exists_user_id');
-
+				if($member_srl && $args->member_srl != $member_srl){
+					return new Object(-1,'msg_exists_user_id');
+				}
 				$args->user_id = $orgMemberInfo->user_id;
 			}
 
-			if($args->nick_name && $oMemberModel->isDeniedNickName($args->nick_name))
-			{
+			// Check if ID is prohibited
+			if($args->user_id && $oMemberModel->isDeniedID($args->user_id)){
+				return new Object(-1,'denied_user_id');
+			}
+			// Check if ID is duplicate
+			if($args->user_id){
+				$member_srl = $oMemberModel->getMemberSrlByUserID($args->user_id);
+				if($member_srl && $orgMemberInfo->user_id != $args->user_id){
+					return new Object(-1,'msg_exists_user_id');
+				}
+			}
+			// Check if nickname is prohibited
+			if($args->nick_name && $oMemberModel->isDeniedNickName($args->nick_name)){
 				return new Object(-1, 'denied_nick_name');
 			}
-
+			// Check if nickname is duplicate
 			$member_srl = $oMemberModel->getMemberSrlByNickName($args->nick_name);
-			$member_srl_by_decode = $oMemberModel->getMemberSrlByNickName(utf8_decode($args->nick_name));
-			if(($member_srl || $member_srl_by_decode) && $orgMemberInfo->nick_name != $args->nick_name) return new Object(-1,'msg_exists_nick_name');
+			if($member_srl && $args->member_srl != $member_srl){
+				return new Object(-1,'msg_exists_nick_name');
+			}
 
 			list($args->email_id, $args->email_host) = explode('@', $args->email_address);
-			// Website, blog, checks the address
-			if($args->homepage && !preg_match("/^[a-z]+:\/\//is",$args->homepage)) $args->homepage = 'http://'.$args->homepage;
-			if($args->blog && !preg_match("/^[a-z]+:\/\//is",$args->blog)) $args->blog = 'http://'.$args->blog;
-
 
 			$oDB = &DB::getInstance();
 			$oDB->begin();
-			// DB in the update
 
-			if($args->password) $args->password = md5($args->password);
+			if($args->password) $args->password = $oMemberModel->hashPassword($args->password); 
 			else $args->password = $orgMemberInfo->password;
 			if(!$args->user_name) $args->user_name = $orgMemberInfo->user_name;
 			if(!$args->user_id) $args->user_id = $orgMemberInfo->user_id;
@@ -1996,27 +1979,21 @@
 		 * Modify member password
 		 **/
 		function updateMemberPassword($args){
-			$output = executeQuery('member.updateChangePasswordDate', $args);
-			//remove from cache
-			$oCacheHandler = &CacheHandler::getInstance('object');
-			if($oCacheHandler->isSupport()){
-				$cache_key = 'object:'.$args->member_srl;
-				$oCacheHandler->delete($cache_key);
-			}
-
 			if($args->password){
-				if($this->useSha1 && function_exists('sha1')){
-					$args->password = md5(sha1(md5($args->password)));
-				}
-				else{
-					$args->password = md5($args->password);
-				}
+				$args->password = $oMemberModel->hashPassword($args->password);
 			}
 			else if($args->hashed_password){
 				$args->password = $args->hashed_password;
 			}
 
-			return executeQuery('member.updateMemberPassword', $args);
+			$output = executeQuery('member.updateMemberPassword', $args);
+			if($output->toBool()){
+				$result = executeQuery('member.updateChangePasswordDate', $args);
+			}
+			
+			$this->_clearMemberCache($args->member_srl);
+			
+			return $output;
 		}
 
 		/**
@@ -2138,6 +2115,7 @@
 				}
 			}
 		}
+		
 		function procMemberModifyEmailAddress(){
 			if(!Context::get('is_logged')) return $this->stop('msg_not_logged');
 
@@ -2158,9 +2136,11 @@
 			$auth_args = new stdClass;
 			$auth_args->user_id = $newEmail;
 			$auth_args->member_srl = $member_info->member_srl;
-			$auth_args->auth_key = md5(rand(0, 999999));
+			$auth_args->auth_key = $oPassword->createSecureSalt(40);
 			$auth_args->new_password = 'XE_change_emaill_address';
 
+			$oDB = &DB::getInstance();
+			$oDB->begin();
 			$output = executeQuery('member.insertAuthMail', $auth_args);
 			if(!$output->toBool()){
 				$oDB->rollback();
@@ -2229,6 +2209,28 @@
 			// Notify the result
 			$this->setTemplatePath($this->module_path.'tpl');
 			$this->setTemplateFile('msg_success_modify_email_address');
+		}
+		
+		function _clearMemberCache($member_srl, $site_srl = 0){
+			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+			if($oCacheHandler->isSupport()){
+				$object_key = 'member_groups:' . getNumberingPath($member_srl) . $member_srl . '_' . $site_srl;
+				$cache_key = $oCacheHandler->getGroupKey('member', $object_key);
+				$oCacheHandler->delete($cache_key);
+
+				if($site_srl !== 0){
+					$object_key = 'member_groups:' . getNumberingPath($member_srl) . $member_srl . '_0';
+					$cache_key = $oCacheHandler->getGroupKey('member', $object_key);
+					$oCacheHandler->delete($cache_key);
+				}
+			}
+
+			$oCacheHandler = CacheHandler::getInstance('object');
+			if($oCacheHandler->isSupport()){
+				$object_key = 'member_info:' . getNumberingPath($member_srl) . $member_srl;
+				$cache_key = $oCacheHandler->getGroupKey('member', $object_key);
+				$oCacheHandler->delete($cache_key);
+			}
 		}
 	}
 ?>

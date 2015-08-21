@@ -81,18 +81,25 @@
 				$admin_ip_list = '';
 			}
 
-	        $db_info = Context::getDBInfo();
-	        $db_info->default_url = Context::get('default_url');
-	        if($db_info->default_url && !preg_match('/^(http|https):\/\//i', $db_info->default_url)) $db_info->default_url = 'http://'.$db_info->default_url;
-	        $db_info->time_zone = $time_zone;
-	        $db_info->qmail_compatibility = $qmail_compatibility;
-	        $db_info->use_db_session = $use_db_session;
-	        $db_info->use_rewrite = $use_rewrite;
-	        $db_info->use_sso = $use_sso;
-	        $db_info->use_ssl = $use_ssl;
-	        $db_info->use_html5 = $use_html5;
-	        $db_info->use_mobile_view = $use_mobile_view;
-	        $db_info->admin_ip_list = $admin_ip_list;
+			$db_info = Context::getDBInfo();
+			$db_info->default_url = Context::get('default_url');
+			if($db_info->default_url && strncasecmp('http://', $default_url, 7) !== 0 && strncasecmp('https://', $default_url, 8) !== 0) $default_url = 'http://'.$default_url;
+			if($db_info->default_url && substr($default_url, -1) !== '/') $default_url = $default_url.'/';
+			
+			/* convert NON Alphabet URL to punycode URL - Alphabet URL will not be changed */
+			require_once(_XE_PATH_ . 'libs/idna_convert/idna_convert.class.php');
+			$IDN = new idna_convert(array('idn_version' => 2008));
+			$db_info->default_url = $IDN->encode($db_info->default_url);
+			
+			$db_info->time_zone = $time_zone;
+			$db_info->qmail_compatibility = $qmail_compatibility;
+			$db_info->use_db_session = $use_db_session;
+			$db_info->use_rewrite = $use_rewrite;
+			$db_info->use_sso = $use_sso;
+			$db_info->use_ssl = $use_ssl;
+			$db_info->use_html5 = $use_html5;
+			$db_info->use_mobile_view = $use_mobile_view;
+			$db_info->admin_ip_list = $admin_ip_list;
 
 			if($http_port) $db_info->http_port = (int) $http_port;
 			else if($db_info->http_port) unset($db_info->http_port);
@@ -171,6 +178,7 @@
 			$config = new stdClass();
 			$config->thumbnail_type = Context::get('thumbnail_type');
 			$config->htmlFooter = Context::get('htmlFooter');
+			$config->siteTitle = Context::get('site_title');
 			$this->setModulesConfig($config);
 
 			//파비콘
@@ -213,6 +221,7 @@
 			unset($args);
 			
 			$args->htmlFooter = $config->htmlFooter;
+			$args->siteTitle = $config->siteTitle;
 			$oModuleController->insertModuleConfig('module',$args);
 
 			return $output;
@@ -225,27 +234,17 @@
 			$target_filename = _XE_PATH_.'files/attach/xeicon/'.$iconname;
 
 			list($width, $height, $type_no, $attrs) = @getimagesize($target_file);
-			if($iconname == 'favicon.ico') {
-			    if(!preg_match('/^.*(x-icon|\.icon)$/i',$type)) {
-					Context::set('msg', '*.ico '.Context::getLang('msg_possible_only_file'));
-					return;
-			    }
-			else if($iconname == 'mobicon.png') {
-			    if(!preg_match('/^.*(png).*$/',$type)) {
-			        Context::set('msg', '*.png '.Context::getLang('msg_possible_only_file'));
-			        return;
-			    }
-			    if(!(($height == '57' && $width == '57') || ($height == '114' && $width == '114'))) {
-			        Context::set('msg', Context::getLang('msg_invalid_format').' (size : 57x57, 114x114)');
-			        return;
-			    }
+			if($iconname == 'favicon.ico' && preg_match('/^.*(x-icon|\.icon)$/i',$type)){
+				$fitHeight = $fitWidth = '16';
 			}
-			else {
-			    return false;
+			else if($iconname == 'mobicon.png' && preg_match('/^.*(png).*$/',$type) && in_array($height,$mobicon_size) && in_array($width,$mobicon_size)){
+				$fitHeight = $fitWidth = $height;
+			}
+			else{
+				return false;
 			}
 			//FileHandler::createImageFile($target_file, $target_filename, $fitHeight, $fitWidth, $ext);
 			FileHandler::copyFile($target_file, $target_filename);
-			}
 		}
 	}
 ?>

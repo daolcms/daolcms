@@ -335,6 +335,9 @@
 			$oDocumentAdminView = &getAdminView('document');
 			$oDocumentAdminView->dispDocumentAdminList();
 
+			$oSecurity = new Security();
+			$oSecurity->encodeHTML('document_list...title', 'search_target', 'search_keyword');
+
 			Context::set('module_srl', $module_srl);
 			$this->setTemplateFile('document_list');
 		}

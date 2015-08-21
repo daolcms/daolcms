@@ -257,16 +257,13 @@
 			for($i = 0; $i < count($supported_list); $i++) {
 				$db_type = $supported_list[$i];
 
-				if(version_compare(phpversion(), '5.0') < 0 && preg_match('/pdo/i',$db_type)) continue;
-
 				$class_name = sprintf("DB%s%s", strtoupper(substr($db_type,0,1)), strtolower(substr($db_type,1)));
 				$class_file = sprintf(_XE_PATH_."classes/db/%s.class.php", $class_name);
 				if(!file_exists($class_file)) continue;
 
 				unset($oDB);
 				require_once($class_file);
-				$tmp_fn = create_function('', "return new {$class_name}();");
-				$oDB    = $tmp_fn();
+				$oDB = new $class_name();
 
 				if(!$oDB) continue;
 
@@ -406,7 +403,7 @@
 		 * @param array $arg_columns column list. if you want get specific colums from executed result, add column list to $arg_columns
 		 * @return object result of query
 		 */
-		function executeQuery($query_id, $args = NULL, $arg_columns = NULL) {
+		function executeQuery($query_id, $args = NULL, $arg_columns = NULL, $type = NULL){
 			static $cache_file = array();
 
 			if(!$query_id) return new Object(-1, 'msg_invalid_queryid');
@@ -446,7 +443,7 @@
 				// look for cache file
 				$cache_file[$query_id] = $this->checkQueryCacheFile($query_id, $xml_file);
 			}
-			$result = $this->_executeQuery($cache_file[$query_id], $args, $query_id, $arg_columns);
+			$result = $this->_executeQuery($cache_file[$query_id], $args, $query_id, $arg_columns, $type);
 
 			$this->actDBClassFinish();
 			// execute query
@@ -486,8 +483,10 @@
 		 * @param array $arg_columns column list. if you want get specific colums from executed result, add column list to $arg_columns
 		 * @return object result of query
 		 */
-		function _executeQuery($cache_file, $source_args, $query_id, $arg_columns) {
+		function _executeQuery($cache_file, $source_args, $query_id, $arg_columns, $type){
 			global $lang;
+
+			if(!in_array($type, array('master','slave'))) $type = 'slave';
 
 			if(!file_exists($cache_file)) return new Object(-1, 'msg_invalid_queryid');
 
@@ -515,7 +514,7 @@
 				case 'select' :
 						$arg_columns = is_array($arg_columns)?$arg_columns:array();
 						$output->setColumnList($arg_columns);
-						$connection = $this->_getConnection('slave');
+						$connection = $this->_getConnection($type);
 						$output = $this->_executeSelectAct($output, $connection);
 					break;
 			}

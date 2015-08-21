@@ -24,7 +24,8 @@
 		 * @return void
 		 **/
 		function procFileUpload() {
-			$file_info = Context::get('Filedata');
+			Context::setRequestMethod('JSON');
+			$file_info = $_FILES['Filedata'];
 
 			// An error appears if not a normally uploaded file
 			if(!is_uploaded_file($file_info['tmp_name'])) exit();
@@ -43,7 +44,8 @@
 			if(!$upload_target_srl) $_SESSION['upload_info'][$editor_sequence]->upload_target_srl = $upload_target_srl = getNextSequence();
 
 
-			return $this->insertFile($file_info, $module_srl, $upload_target_srl);
+			$output = $this->insertFile($file_info, $module_srl, $upload_target_srl);
+			Context::setResponseMethod('JSON');
 		}
 
 
@@ -215,13 +217,12 @@
 
 			// Check if a permission for file download is granted
 			$downloadGrantCount = 0;
-			if(is_array($file_module_config->download_grant))
-			{
+			if(is_array($file_module_config->download_grant)){
 				foreach($file_module_config->download_grant AS $value)
 					if($value) $downloadGrantCount++;
 			}
 
-			if(is_array($file_module_config->download_grant) && $downloadGrantCount>0) {
+			if(is_array($file_module_config->download_grant) && $downloadGrantCount>0){
 				if(!Context::get('is_logged')) return $this->stop('msg_not_permitted_download');
 				$logged_info = Context::get('logged_info');
 				if($logged_info->is_admin != 'Y') {
@@ -230,8 +231,7 @@
 					$columnList = array('module_srl', 'site_srl');
 					$module_info = $oModuleModel->getModuleInfoByModuleSrl($file_obj->module_srl, $columnList);
 
-					if(!$oModuleModel->isSiteAdmin($logged_info, $module_info->site_srl))
-					{
+					if(!$oModuleModel->isSiteAdmin($logged_info, $module_info->site_srl)){
 						$oMemberModel =& getModel('member');
 						$member_groups = $oMemberModel->getMemberGroups($logged_info->member_srl, $module_info->site_srl);
 
@@ -250,44 +250,77 @@
 			// Call a trigger (before)
 			$output = ModuleHandler::triggerCall('file.downloadFile', 'before', $file_obj);
 			if(!$output->toBool()) return $this->stop(($output->message)?$output->message:'msg_not_permitted_download');
-			// File Output
-			if(strstr($_SERVER['HTTP_USER_AGENT'], 'MSIE') || (strstr($_SERVER['HTTP_USER_AGENT'], 'Windows') && strstr($_SERVER['HTTP_USER_AGENT'], 'Trident') && strstr($_SERVER['HTTP_USER_AGENT'], 'rv'))) {
-				$filename = rawurlencode($filename);
-				$filename = preg_replace('/\./', '%2e', $filename, substr_count($filename, '.') - 1);
-			}
-
-			$uploaded_filename = $file_obj->uploaded_filename;
-			if(!file_exists($uploaded_filename)) return $this->stop('msg_file_not_found');
-
-			$fp = fopen($uploaded_filename, 'rb');
-			if(!$fp) return $this->stop('msg_file_not_found');
-
-			header("Cache-Control: "); 
-			header("Pragma: "); 
-			header("Content-Type: application/octet-stream"); 
-			header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); 
-
-			header("Content-Length: " .(string)($file_obj->file_size)); 
-			header('Content-Disposition: attachment; filename="'.$filename.'"'); 
-			header("Content-Transfer-Encoding: binary\n"); 
-
-			// if file size is lager than 10MB, use fread function (#18675748)
-			if (filesize($uploaded_filename) > 1024 * 1024){
-				while(!feof($fp)) echo fread($fp, 1024);
-				fclose($fp);
-			}
-			else{
-				fpassthru($fp); 
-			}
 
 			// Increase download_count
 			$args = new stdClass();
 			$args->file_srl = $file_srl;
 			executeQuery('file.updateFileDownloadCount', $args);
+			
 			// Call a trigger (after)
 			$output = ModuleHandler::triggerCall('file.downloadFile', 'after', $file_obj);
+			
+			$random = new Password();
+			$file_key = $_SESSION['__XE_FILE_KEY__'][$file_srl] = $random->createSecureSalt(32, 'hex');
+			header('Location: '.getNotEncodedUrl('', 'act', 'procFileOutput','file_srl',$file_srl,'file_key',$file_key));
+			Context::close();
+			exit();
+		}
+		
+		function procFileOutput(){
+			$oFileModel = getModel('file');
+			$file_srl = Context::get('file_srl');
+			$file_key = Context::get('file_key');
+			if(strstr($_SERVER['HTTP_USER_AGENT'], "Android")) $is_android = true;
+
+			if($is_android && $_SESSION['__XE_FILE_KEY_AND__'][$file_srl]) $session_key = '__XE_FILE_KEY_AND__';
+			else $session_key = '__XE_FILE_KEY__';
+			$columnList = array('source_filename', 'uploaded_filename', 'file_size');
+			$file_obj = $oFileModel->getFile($file_srl, $columnList);
+
+			$uploaded_filename = $file_obj->uploaded_filename;
+
+			if(!file_exists($uploaded_filename)) return $this->stop('msg_file_not_found');
+
+			if(!$file_key || $_SESSION[$session_key][$file_srl] != $file_key){
+				unset($_SESSION[$session_key][$file_srl]);
+				return $this->stop('msg_invalid_request');
+			}
+
+			$file_size = $file_obj->file_size;
+			$filename = $file_obj->source_filename;
+			if(strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== FALSE || (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') !== FALSE && strpos($_SERVER['HTTP_USER_AGENT'], 'Trident') !== FALSE && strpos($_SERVER['HTTP_USER_AGENT'], 'rv:') !== FALSE)){
+				$filename = rawurlencode($filename);
+				$filename = preg_replace('/\./', '%2e', $filename, substr_count($filename, '.') - 1);
+			}
+
+			if($is_android){
+				if($_SESSION['__XE_FILE_KEY__'][$file_srl]) $_SESSION['__XE_FILE_KEY_AND__'][$file_srl] = $file_key;
+			}
+
+			unset($_SESSION[$session_key][$file_srl]);
 
 			Context::close();
+
+			$fp = fopen($uploaded_filename, 'rb');
+			if(!$fp) return $this->stop('msg_file_not_found');
+
+			header("Cache-Control: ");
+			header("Pragma: ");
+			header("Content-Type: application/octet-stream");
+			header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+
+			header("Content-Length: " .(string)($file_size));
+			header('Content-Disposition: attachment; filename="'.$filename.'"');
+			header("Content-Transfer-Encoding: binary\n");
+
+			// if file size is lager than 10MB, use fread function (#18675748)
+			if(filesize($uploaded_filename) > 1024 * 1024){
+				while(!feof($fp)) echo fread($fp, 1024);
+				fclose($fp);
+			}
+			else{
+				fpassthru($fp);
+			}
 
 			exit();
 		}
@@ -579,20 +612,24 @@
 					if($attached_size > $allowed_attach_size) return new Object(-1, 'msg_exceeds_limit_size');
 				}
 			}
+			
+			// https://github.com/xpressengine/xe-core/issues/1713
+			$file_info['name'] = preg_replace('/\.(php|phtm|phar|html?|cgi|pl|exe|jsp|asp|inc)/i', '$0-x',$file_info['name']);
+			$file_info['name'] = removeHackTag($file_info['name']);
+			$file_info['name'] = str_replace(array('<','>'),array('%3C','%3E'),$file_info['name']);
 
+			// Get random number generator
+			$random = new Password();
+			
 			// Set upload path by checking if the attachement is an image or other kinds of file
 			if(preg_match("/\.(jpe?g|gif|png|wm[va]|mpe?g|avi|swf|flv|mp[1-4]|as[fx]|wav|midi?|moo?v|qt|r[am]{1,2}|m4v)$/i", $file_info['name'])) {
-				// Immediately remove the direct file if it has any kind of extensions for hacking
-				$file_info['name'] = preg_replace('/\.(php|phtm|html?|cgi|pl|exe|jsp|asp|inc)/i', '$0-x',$file_info['name']);
-				$file_info['name'] = str_replace(array('<','>'),array('%3C','%3E'),$file_info['name']);
-
 				$path = sprintf("./files/attach/images/%s/%s", $module_srl,getNumberingPath($upload_target_srl,3));
 
 				// special character to '_'
-				// change to md5 file name. because window php bug. window php is not recognize unicode character file name - by cherryfilter
+				// change to hash file name. because window php bug. window php is not recognize unicode character file name - by cherryfilter
 				$ext = substr(strrchr($file_info['name'],'.'),1);
 				//$_filename = preg_replace('/[#$&*?+%"\']/', '_', $file_info['name']);
-				$_filename = md5(crypt(rand(1000000,900000), rand(0,100))).'.'.$ext;
+				$_filename = $random->createSecureSalt(32, 'hex').'.'.$ext;
 				$filename  = $path.$_filename;
 				$idx = 1;
 				while(file_exists($filename)){
@@ -603,7 +640,7 @@
 			}
 			else{
 				$path = sprintf("./files/attach/binaries/%s/%s", $module_srl, getNumberingPath($upload_target_srl,3));
-				$filename = $path.md5(crypt(rand(1000000,900000), rand(0,100)));
+				$filename = $path.$random->createSecureSalt(32, 'hex');
 				$direct_download = 'N';
 			}
 			// Create a directory
@@ -612,13 +649,13 @@
 			if($manual_insert) {
 				@copy($file_info['tmp_name'], $filename);
 				if(!file_exists($filename)) {
-					$filename = $path. md5(crypt(rand(1000000,900000).$file_info['name'])).'.'.$ext;
+					$filename = $path.$random->createSecureSalt(32, 'hex').'.'.$ext;
 					@copy($file_info['tmp_name'], $filename);
 				}
 			}
 			else{
 				if(!@move_uploaded_file($file_info['tmp_name'], $filename)) {
-					$filename = $path. md5(crypt(rand(1000000,900000).$file_info['name'])).'.'.$ext;
+					$filename = $path.$random->createSecureSalt(32, 'hex').'.'.$ext;
 					if(!@move_uploaded_file($file_info['tmp_name'], $filename))  return new Object(-1,'msg_file_upload_error');
 				}
 			}
@@ -636,7 +673,7 @@
 			$args->file_size = @filesize($filename);
 			$args->comment = NULL;
 			$args->member_srl = $member_srl;
-			$args->sid = md5(rand(rand(1111111,4444444),rand(4444445,9999999)));
+			$args->sid = $random->createSecureSalt(32, 'hex');
 
 			$output = executeQuery('file.insertFile', $args);
 			if(!$output->toBool()) return $output;
@@ -788,7 +825,8 @@
 					$new_file = $path.$file_info->source_filename;
 				} else {
 					$path = sprintf("./files/attach/binaries/%s/%s/", $target_module_srl, $target_srl);
-					$new_file = $path.md5(crypt(rand(1000000,900000), rand(0,100)));
+					$random = new Password();
+					$new_file = $path.$random->createSecureSalt(32, 'hex');
 				}
 				// Pass if a target document to move is same
 				if($old_file == $new_file) continue;
@@ -804,6 +842,38 @@
 				$args->upload_target_srl = $target_srl;
 				executeQuery('file.updateFile', $args);
 			}
+		}
+		
+		function procFileSetCoverImage(){
+			$vars = Context::getRequestVars();
+			$logged_info = Context::get('logged_info');
+			if(!$vars->editor_sequence) return new Object(-1, 'msg_invalid_request');
+			$upload_target_srl = $_SESSION['upload_info'][$vars->editor_sequence]->upload_target_srl;
+			$oFileModel = getModel('file');
+			$file_info = $oFileModel->getFile($vars->file_srl);
+			if(!$file_info) return new Object(-1, 'msg_not_founded');
+			if(!$this->manager && !$file_info->member_srl === $logged_info->member_srl) return new Object(-1, 'msg_not_permitted');
+			$args =  new stdClass();
+			$args->file_srl = $vars->file_srl;
+			$args->upload_target_srl = $upload_target_srl;
+			$oDB = &DB::getInstance();
+			$oDB->begin();
+			$args->cover_image = 'N';
+			$output = executeQuery('file.updateClearCoverImage', $args);
+			if(!$output->toBool()){
+				$oDB->rollback();
+				return $output;
+			}
+			$args->cover_image = 'Y';
+			$output = executeQuery('file.updateCoverImage', $args);
+			if(!$output->toBool()){
+				$oDB->rollback();
+				return $output;
+			}
+			$oDB->commit();
+			// Delete the thumbnail
+			$thumbnail_path = sprintf('files/thumbnails/%s', getNumberingPath($upload_target_srl, 3));
+			Filehandler::removeFilesInDir($thumbnail_path);
 		}
 
 		/**

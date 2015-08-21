@@ -329,7 +329,7 @@
 			if(function_exists('xml_parser_create')) $checklist['xml'] = true;
 			else $checklist['xml'] = false;
 			// 3. Check if ini_get (session.auto_start) == 1
-			if(ini_get(session.auto_start)!=1) $checklist['session'] = true;
+			if(ini_get('session.auto_start')!=1) $checklist['session'] = true;
 			else $checklist['session'] = false;
 			// 4. Check if iconv exists
 			if(function_exists('iconv')) $checklist['iconv'] = true;
@@ -368,7 +368,7 @@
 			}
 			
 			if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))) {
-				$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispInstallCheckEnv');
+				$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'act', 'dispInstallCheckEnv');
 				$this->setRedirectUrl($returnUrl);
 			}
 		}
