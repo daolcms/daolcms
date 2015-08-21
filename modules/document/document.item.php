@@ -558,7 +558,12 @@
 		function getExtraValue($idx) {
 			$extra_vars = $this->getExtraVars();
 			if(is_array($extra_vars) && array_key_exists($idx,$extra_vars)){
-				return $extra_vars[$idx]->getValue();
+				if(is_array($extra_vars) && array_key_exists($idx,$extra_vars)){
+					return $extra_vars[$idx]->getValue();
+				}
+				else{
+					return '';
+				}
 			}
 			else{
 				return '';
@@ -586,7 +591,12 @@
 				}
 			}
 			if(is_array($extra_eid) && array_key_exists($eid,$extra_eid)){
-				return $extra_eid[$eid]->getValue();
+				if(is_array($extra_eid) && array_key_exists($eid,$extra_eid)){
+					return $extra_eid[$eid]->getValue();
+				}
+				else{
+					return '';
+				}
 			}
 			else{
 				return '';
@@ -600,7 +610,12 @@
 				$extra_eid[$key->eid] = $key;
 			}
 			if(is_array($extra_eid) && array_key_exists($eid,$extra_eid)){
-				return $extra_eid[$eid]->getValueHTML();
+				if(is_array($extra_eid) && array_key_exists($eid,$extra_eid)){
+					return $extra_eid[$eid]->getValueHTML();
+				}
+				else{
+					return '';
+				}
 			}
 			else{
 				return '';
