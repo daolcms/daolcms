@@ -4,7 +4,7 @@
 <p>{$XE_VALIDATOR_MESSAGE}</p>
 </div>
 	<!--@if(!$isLicenseAgreement)-->
-	<form action="./" method="post" class="message info">
+	<form action="./" method="post" class="message info" style="margin:0 0 1em 0;">
 		<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin')}" />
 		<input type="hidden" name="module" value="install" />
 		<input type="hidden" name="act" value="procInstallLicenseAggrement" />
@@ -19,7 +19,7 @@
 	</form>
 	<!--@end-->
 	<!--@if($addTables || $needUpdate)-->
-	<div class="message update">
+	<div class="message update" style="margin:0 0 1em 0;">
 		<h2 cond="$needUpdate && $addTables">{$lang->need_update_and_table}</h2>
 		<h2 cond="$needUpdate && !$addTables">{$lang->need_update}</h2>
 		<h2 cond="!$needUpdate && $addTables">{$lang->need_table}</h2>
@@ -34,7 +34,7 @@
 		</ul>
 	</div>
 	<!--@end-->
-	<div class="message error" cond="version_compare(PHP_VERSION, __DAOL_MIN_PHP_VERSION__, '<')">
+	<div class="message error" style="margin:0 0 1em 0;" cond="version_compare(PHP_VERSION, __DAOL_MIN_PHP_VERSION__, '<')">
 		<h2>{$lang->msg_php_warning_title}</h2>
 		<p>{$lang->msg_php_warning_notice}</p>
 		<ul>{$lang->msg_php_warning_notice_explain}</ul>
