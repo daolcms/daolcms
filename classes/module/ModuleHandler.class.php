@@ -215,11 +215,11 @@
 		 **/
 		function procModule(){
 			$oModuleModel = &getModel('module');
-
+			$display_mode = Mobile::isFromMobilePhone() ? 'mobile' : 'view';
+			
 			// If error occurred while preparation, return a message instance
 			if($this->error){
-				$type = Mobile::isFromMobilePhone() ? 'mobile' : 'view';
-				$oMessageObject = &ModuleHandler::getModuleInstance('message',$type);
+				$oMessageObject = &ModuleHandler::getModuleInstance('message',$display_mode);
 				$oMessageObject->setError(-1);
 				$oMessageObject->setMessage($this->error);
 				$oMessageObject->dispMessage();
@@ -245,8 +245,7 @@
 				$this->error = 'msg_module_is_not_exists';
 				$this->httpStatusCode = '404';
 
-				$type = Mobile::isFromMobilePhone() ? 'mobile' : 'view';
-				$oMessageObject = &ModuleHandler::getModuleInstance('message',$type);
+				$oMessageObject = &ModuleHandler::getModuleInstance('message',$display_mode);
 				$oMessageObject->setError(-1);
 				$oMessageObject->setMessage($this->error);
 				$oMessageObject->dispMessage();
@@ -278,8 +277,19 @@
 				}
 			}
 
-			// Admin ip
 			$logged_info = Context::get('logged_info');
+			
+			// check CSRF for admin actions
+			if($kind === 'admin' && Context::getRequestMethod() === 'POST' && !checkCSRF()) {
+				$this->error = 'msg_invalid_request';
+				$oMessageObject = &ModuleHandler::getModuleInstance('message', $display_mode);
+				$oMessageObject->setError(-1);
+				$oMessageObject->setMessage($this->error);
+				$oMessageObject->dispMessage();
+				return $oMessageObject;
+			}
+			
+			// Admin ip
 			if($kind == 'admin' && $_SESSION['denied_admin'] == 'Y'){
 				$this->error = "msg_not_permitted_act";
 				$oMessageObject = &ModuleHandler::getModuleInstance('message',$type);
@@ -307,8 +317,7 @@
 			}
 
 			if(!is_object($oModule)){
-				$type = Mobile::isFromMobilePhone() ? 'mobile' : 'view';
-				$oMessageObject = &ModuleHandler::getModuleInstance('message',$type);
+				$oMessageObject = &ModuleHandler::getModuleInstance('message',$display_mode);
 				$oMessageObject->setError(-1);
 				$oMessageObject->setMessage($this->error);
 				$oMessageObject->dispMessage();
@@ -373,8 +382,7 @@
 					}
 
 					if(!is_object($oModule)) {
-						$type = Mobile::isFromMobilePhone() ? 'mobile' : 'view';
-						$oMessageObject = &ModuleHandler::getModuleInstance('message',$type);
+						$oMessageObject = &ModuleHandler::getModuleInstance('message',$display_mode);
 						$oMessageObject->setError(-1);
 						$oMessageObject->setMessage('msg_module_is_not_exists');
 						$oMessageObject->dispMessage();
