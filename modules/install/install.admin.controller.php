@@ -166,6 +166,30 @@
 			$this->setMessage('success_updated');
 			$this->setRedirectUrl(Context::get('error_return_url'));
 		}
+		
+		function procInstallAdminSaveSMTPInfo(){
+			$smtp_info = Context::getSMTPInfo();
+			$smtp_info->smtp_use = Context::get('smtp_use');
+			$smtp_info->smtp_host = Context::get('smtp_host');
+			$smtp_info->smtp_port = Context::get('smtp_port');			
+			$smtp_info->smtp_type = Context::get('smtp_type');
+			$smtp_info->smtp_user = Context::get('smtp_user');
+			$smtp_info->smtp_password = Context::get('smtp_password');
+
+			$buff = '<?php if(!defined("__ZBXE__")) exit();'."\n";
+			foreach($smtp_info as $key => $val){
+				if(!$val) continue;
+				if(preg_match('/(<\?|<\?php|\?>|fputs|fopen|fwrite|fgets|fread|\/\*|\*\/|chr\()/xsm', preg_replace('/\s/', '', $val))){
+					continue;
+				}
+				$buff .= sprintf("\$smtp_info->%s = '%s';\n", $key, str_replace("'","\\'",$val));
+			}
+			$buff .= "?>";
+			$config_file = Context::getSMTPConfigFile();
+			FileHandler::WriteFile($config_file, $buff);
+			$this->setMessage('success_updated');
+			$this->setRedirectUrl(Context::get('error_return_url'));
+		}
 
 		function procInstallAdminConfig(){
 			$this->procInstallAdminSaveTimeZone();

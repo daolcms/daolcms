@@ -323,6 +323,19 @@
 		}
 
 		/**
+		 * Display SMTP Configuration(settings) page
+		 * @return void
+		 */
+		function dispAdminConfigSMTP(){
+		    Context::loadLang('modules/install/lang');
+
+			$smtp_info = Context::getSMTPInfo();
+			Context::set('smtp_info', $smtp_info);
+
+			$this->setTemplateFile('config_smtp');
+		}
+
+		/**
 		 * Display Admin Menu Configuration(settings) page
 		 * @return void
 		 */

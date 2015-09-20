@@ -43,6 +43,11 @@ class Context {
 	 */
 	var $ftp_info = NULL;
 	/**
+	 * SMTP info 
+	 * @var object
+	 */
+	var $smtp_info = NULL;
+	/**
 	 * ssl action cache file
 	 * @var array
 	 */
@@ -566,6 +571,32 @@ class Context {
 		@include($ftp_config_file);
 
 		return $ftp_info;
+	}
+	
+	/**
+	 * Check if SMTP info is registered
+	 *
+	 * @return bool True: FTP information is registered, False: otherwise
+	 */
+	function isSMTPRegisted() {
+		$smtp_config_file = Context::getSMTPConfigFile();
+		if(file_exists($smtp_config_file)) return true;
+		return false;
+	}
+
+	/**
+	 * Get SMTP information
+	 *
+	 * @return object SMTP information
+	 */
+	function getSMTPInfo() {
+		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
+		if(!$self->isSMTPRegisted()) return null;
+
+		$smtp_config_file = $self->getSMTPConfigFile();
+		@include($smtp_config_file);
+
+		return $smtp_info;
 	}
 
 	/**
@@ -1883,6 +1914,15 @@ class Context {
 	 */
 	function getFTPConfigFile() {
 		return _XE_PATH_.'files/config/ftp.config.php';
+	}
+	
+	/**
+	 * Get SMTP config file
+	 *
+	 * @return string The path of the config file that contains SMTP settings
+	 */
+	function getSMTPConfigFile() {
+		return _XE_PATH_.'files/config/smtp.config.php';
 	}
 
 	/**
