@@ -168,7 +168,7 @@
 		 * returns instance of db
 		 * @return DB return DB object instance
 		 */
-		function create() {
+		function create(){
 			return new DB;
 		}
 
@@ -176,7 +176,7 @@
 		 * constructor
 		 * @return void
 		 */
-		function DB() {
+		function DB(){
 			$this->count_cache_path = _XE_PATH_.$this->count_cache_path;
 			$this->cache_file = _XE_PATH_.$this->cache_file;
 		}
@@ -197,17 +197,14 @@
 		 * this list return by child class
 		 * @return array return enable DBMS list in supported dbms list
 		 */
-		function getEnableList()
-		{
-				if(!$this->supported_list)
-				{
+		function getEnableList(){
+				if(!$this->supported_list){
 						$oDB = new DB();
 						$this->supported_list = $oDB->_getSupportedList();
 				}
 
 				$enableList = array();
-				if(is_array($this->supported_list))
-				{
+				if(is_array($this->supported_list)){
 						foreach($this->supported_list AS $key=>$value)
 								if($value->enable) array_push($enableList, $value);
 				}
@@ -219,17 +216,14 @@
 		 * this list return by child class
 		 * @return array return disable DBMS list in supported dbms list
 		 */
-		function getDisableList()
-		{
-				if(!$this->supported_list)
-				{
+		function getDisableList(){
+				if(!$this->supported_list){
 						$oDB = new DB();
 						$this->supported_list = $oDB->_getSupportedList();
 				}
 
 				$disableList = array();
-				if(is_array($this->supported_list))
-				{
+				if(is_array($this->supported_list)){
 						foreach($this->supported_list AS $key=>$value)
 								if(!$value->enable) array_push($disableList, $value);
 				}
@@ -241,9 +235,9 @@
 		 * this method is private
 		 * @return array return supported DBMS list
 		 */
-		function _getSupportedList() {
+		function _getSupportedList(){
 			static $get_supported_list = '';
-			if(is_array($get_supported_list)) {
+			if(is_array($get_supported_list)){
 				$this->supported_list = $get_supported_list;
 				return $this->supported_list;
 			}
@@ -282,7 +276,7 @@
 		 * The value is set in the child class
 		 * @return boolean true: is supported, false: is not supported
 		 */
-		function isSupported() {
+		function isSupported(){
 			return FALSE;
 		}
 
@@ -292,7 +286,7 @@
 		 * @param int $indx key of server list
 		 * @return boolean true: connected, false: not connected
 		 */
-		function isConnected($type = 'master', $indx = 0) {
+		function isConnected($type = 'master', $indx = 0){
 			if($type == 'master') return $this->master_db["is_connected"] ? TRUE : FALSE;
 			else return $this->slave_db[$indx]["is_connected"] ? TRUE : FALSE;
 		}
@@ -302,7 +296,7 @@
 		 * @param string $query query string
 		 * @return void
 		 */
-		function actStart($query) {
+		function actStart($query){
 			$this->setError(0, 'success');
 			$this->query = $query;
 			$this->act_start = getMicroTime();
@@ -313,7 +307,7 @@
 		 * finish recording log
 		 * @return void
 		 */
-		function actFinish() {
+		function actFinish(){
 			if(!$this->query) return;
 			$this->act_finish = getMicroTime();
 			$elapsed_time = $this->act_finish - $this->act_start;
@@ -325,7 +319,7 @@
 			$log['connection'] = $this->connection;
 
 			// leave error log if an error occured (if __DEBUG_DB_OUTPUT__ is defined)
-			if($this->isError()) {
+			if($this->isError()){
 				$site_module_info = Context::get('site_module_info');
 				$log['module'] = $site_module_info->module;
 				$log['act'] = Context::get('act');
@@ -335,7 +329,7 @@
 				$log['errno'] = $this->errno;
 				$log['errstr'] = $this->errstr;
 
-				if(__DEBUG_DB_OUTPUT__ == 1)  {
+				if(__DEBUG_DB_OUTPUT__ == 1){
 					$debug_file = _XE_PATH_."files/_debug_db_query.php";
 					$buff = array();
 					if(!file_exists($debug_file)) $buff[] = '<?php exit(); ?>';
