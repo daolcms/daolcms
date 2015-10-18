@@ -280,7 +280,7 @@
 			$logged_info = Context::get('logged_info');
 			
 			// check CSRF for admin actions
-			f(Context::getRequestMethod() === 'POST' && Context::isInstalled() && !checkCSRF()){
+			if(Context::getRequestMethod() === 'POST' && Context::isInstalled() && !checkCSRF()){
 				$this->error = 'msg_invalid_request';
 				$oMessageObject = &ModuleHandler::getModuleInstance('message', $display_mode);
 				$oMessageObject->setError(-1);
