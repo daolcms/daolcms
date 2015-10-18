@@ -956,7 +956,7 @@ class Context {
 	 }
 
 	/**
-	 * handle request areguments for GET/POST
+	 * handle request arguments for GET/POST
 	 *
 	 * @return void
 	 */
