@@ -623,7 +623,7 @@
 						$info->action->{$name} = new stdClass();
 						$info->action->{$name}->type = $type;
 						$info->action->{$name}->grant = $grant;
-						$info->action->{$name}->standalone = $standalone;
+						$info->action->{$name}->standalone = $standalone=='true'?true:false;
 						$info->action->{$name}->ruleset = $ruleset;
 						$info->action->{$name}->method = $method;
 						if($action->attrs->menu_name){
