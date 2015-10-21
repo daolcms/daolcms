@@ -183,7 +183,7 @@
 				),
 				18=>array(
 					'module'=>'admin',
-					'subMenu'=>array('adminConfigurationGeneral', 'adminConfigurationFtp', 'adminMenuSetup'),
+					'subMenu'=>array('adminConfigurationGeneral', 'adminConfigurationFtp', 'adminConfigurationSMTP', 'adminMenuSetup'),
 				),
 				19=>array(
 					'module'=>'file',
@@ -278,6 +278,7 @@
 					break;
 				case 'adminConfigurationGeneral':
 				case 'adminConfigurationFtp':
+				case 'adminConfigurationSMTP':
 				case 'adminMenuSetup':
 				case 'fileUpload':
 				case 'filebox':

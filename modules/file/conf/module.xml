@@ -12,8 +12,8 @@
 		<action name="procFileIframeUpload" type="controller" standalone="true" />
 		<action name="procFileImageResize" type="controller" standalone="true" ruleset="imageResize" />
 		<action name="procFileDelete" type="controller" standalone="true" />
-		<action name="procFileDownload" type="controller" standalone="true" />
-		<action name="procFileOutput" type="controller" standalone="true" />
+		<action name="procFileDownload" type="controller" method="GET|POST" standalone="true" />
+		<action name="procFileOutput" type="controller" method="GET|POST" standalone="true" />
 		<action name="procFileAdminDeleteChecked" type="controller" standalone="true" ruleset="deleteChecked" />
 		<action name="procFileAdminInsertConfig" type="controller" standalone="true" ruleset="insertConfig" />
 		<action name="procFileAdminInsertModuleConfig" type="controller" standalone="true" ruleset="fileModuleConfig" />

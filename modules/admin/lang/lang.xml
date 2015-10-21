@@ -1015,9 +1015,15 @@
 	</item>
 	<item name="detail_about_ftp_info">
 		<value xml:lang="ko"><![CDATA[FTP 정보를 입력하면 쉬운 설치를 가능하도록 합니다. FTP정보는 files/config/ftp.config.php 파일에 저장됩니다. 쉬운 설치가 불가능한 경우 PHP의 safe_mode를 On으로 변경해야 합니다.]]></value>
-		<value xml:lang="en"><![CDATA[When you enter FTP information to enable easy installation.	The information on FTP is stored in files/config/ftp.config.php. If you are unable to easy install, PHP's 'safe_mode' must be changed 'On']]></value>
+		<value xml:lang="en"><![CDATA[When you enter FTP information to enable easy installation. The information on FTP is stored in files/config/ftp.config.php. If you are unable to easy install, PHP's 'safe_mode' must be changed 'On']]></value>
 		<value xml:lang="zh-CN"><![CDATA[当设定FTP信息来启用快捷安装。FTP的信息保存在 /files/config/ftp.config.php. 如果不启用快捷安装，请务必将开启PHP安全模式]]></value>
-		<value xml:lang="tr"><![CDATA[Kolay kurulum sağlayan FTP bilgilerini girdiğinizde. FTP bilgi, dosya / config / ftp.config.php dosyasında saklanır. Kolay yükleme sizin için mümkün değilse, PHP'nin safe_mode ayarını On şeklinde değiştiriniz.]]></value>
+		<value xml:lang="tr"><![CDATA[Kolay kurulum sağlayan FTP bilgilerini girdiğinizde. FTP bilgi, /files/config/ftp.config.php dosyasında saklanır. Kolay yükleme sizin için mümkün değilse, PHP'nin safe_mode ayarını On şeklinde değiştiriniz.]]></value>
+	</item>
+	<item name="detail_about_smtp_info">
+		<value xml:lang="ko"><![CDATA[SMTP 정보는 files/config/smtp.config.php 파일에 저장됩니다.]]></value>
+		<value xml:lang="en"><![CDATA[The information on SMTP is stored in files/config/smtp.config.php.]]></value>
+		<value xml:lang="zh-CN"><![CDATA[SMTP的信息保存在 /files/config/smtp.config.php。]]></value>
+		<value xml:lang="tr"><![CDATA[SMTP bilgi, /files/config/smtp.config.php dosyasında saklanır.]]></value>
 	</item>
 	<item name="allow_use_favicon">
 		<value xml:lang="ko"><![CDATA[파비콘을 사용할까요?]]></value>
@@ -1491,6 +1497,22 @@
 		<value xml:lang="de"><![CDATA[absoluten Pfad des FTPs, in dem DAOL CMS installiert ist, festlegen.]]></value>
 		<value xml:lang="tr"><![CDATA[DAOL CMS Salt FTP Yolu]]></value>
 		<value xml:lang="vi"><![CDATA[Đường dẫn tuyệt đối của thư mục cài đặt DAOL CMS trên FTP]]></value>
+	</item>
+	<item name="smtp_use">
+		<value xml:lang="ko"><![CDATA[SMTP 설정 사용]]></value>
+		<value xml:lang="en"><![CDATA[Use SMTP Settings?]]></value>
+	</item>
+	<item name="smtp_host">
+		<value xml:lang="ko"><![CDATA[SMTP 서버 주소]]></value>
+		<value xml:lang="en"><![CDATA[SMTP Hostname]]></value>
+	</item>
+	<item name="smtp_port">
+		<value xml:lang="ko"><![CDATA[SMTP 포트]]></value>
+		<value xml:lang="en"><![CDATA[SMTP Port]]></value>
+	</item>
+	<item name="smtp_type">
+		<value xml:lang="ko"><![CDATA[SMTP 인증 타입]]></value>
+		<value xml:lang="en"><![CDATA[SMTP Auth Type]]></value>
 	</item>
 	<item name="msg_php_warning_title">
 		<value xml:lang="ko"><![CDATA[안전하지 않은 PHP 버전 경고]]></value>

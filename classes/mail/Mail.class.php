@@ -128,9 +128,16 @@ class Mail extends PHPMailer
 	*
 	* @return void
 	*/
-	function Mail()
-	{
-
+	function Mail(){
+		$smtp_info = Context::getSMTPInfo();
+		Context::set('smtp_info', $smtp_info);
+			
+		if($smtp_info->smtp_use == 'Y'){
+			$this->useSMTP(true,$smtp_info->smtp_host,$smtp_info->smtp_user,$smtp_info->smtp_password,$smtp_info->smtp_type,$smtp_info->smtp_port);
+		}
+		else{
+			
+		}
 	}
 
 	/**

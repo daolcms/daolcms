@@ -6,6 +6,7 @@
 		<action name="dispAdminIndex" type="view" standalone="true" index="true" />
 		<action name="dispAdminConfigGeneral" type="view" standalone="true" menu_name="adminConfigurationGeneral" menu_index="true" />
 		<action name="dispAdminConfigFtp" type="view" standalone="true" menu_name="adminConfigurationFtp" menu_index="true" />
+		<action name="dispAdminConfigSMTP" type="view" standalone="true" menu_name="adminConfigurationSMTP" menu_index="true" />
 		<action name="dispAdminTheme" type="view" standalone="true" menu_name="theme" menu_index="true" />
 		<action name="dispAdminSetup" type="view" standalone="true" menu_name="adminMenuSetup" menu_index="true" />
 		<action name="dispAdminViewServerEnv" type="view" standalone="true" />
@@ -61,6 +62,19 @@
 			<title xml:lang="vi">FTP Configuration</title>
 			<title xml:lang="mn">FTP Configuration</title>
 			<title xml:lang="tr">FTP Configuration</title>
+		</menu>
+		<menu name="adminConfigurationSMTP" type="all">
+			<title xml:lang="en">SMTP Configuration</title>
+			<title xml:lang="ko">SMTP 설정</title>
+			<title xml:lang="zh-CN">SMTP 配置</title>
+			<title xml:lang="jp">SMTP Configuration</title>
+			<title xml:lang="es">SMTP Configuration</title>
+			<title xml:lang="ru">SMTP Configuration</title>
+			<title xml:lang="fr">SMTP Configuration</title>
+			<title xml:lang="zh-TW">SMTP Configuration</title>
+			<title xml:lang="vi">SMTP Configuration</title>
+			<title xml:lang="mn">SMTP Configuration</title>
+			<title xml:lang="tr">SMTP Configuration</title>
 		</menu>
 		<menu name="theme" type="site">
 			<title xml:lang="en">Theme</title>
