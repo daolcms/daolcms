@@ -204,11 +204,13 @@
 				$oDB = new DB();
 				$self->supported_list = $oDB->_getSupportedList();
 			}
-
 			$enableList = array();
-			if(is_array($self>supported_list)){
-				foreach($self->supported_list AS $key=>$value)
-				if($value->enable) array_push($enableList, $value);
+			if(is_array($self->supported_list)){
+				foreach($self->supported_list AS $key => $value){
+					if($value->enable){
+						$enableList[] = $value;
+					}
+				}
 			}
 			return $enableList;
 		}
@@ -225,11 +227,13 @@
 				$oDB = new DB();
 				$self->supported_list = $oDB->_getSupportedList();
 			}
-
 			$disableList = array();
 			if(is_array($self->supported_list)){
-				foreach($self->supported_list AS $key=>$value)
-				if(!$value->enable) array_push($disableList, $value);
+				foreach($self->supported_list AS $key => $value){
+					if(!$value->enable){
+						$disableList[] = $value;
+					}
+				}
 			}
 			return $disableList;
 		}
