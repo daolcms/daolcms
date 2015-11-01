@@ -667,7 +667,7 @@
 				}
 			}
 
-			$oDB->commit;
+			$oDB->commit();
 			return new Object();
 		}
 
