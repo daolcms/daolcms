@@ -273,7 +273,7 @@
 
 			Context::set('lang_selected', Context::loadLangSelected());
 
-			$admin_ip_list = preg_replace("/[,]+/","\r\n",$db_info->admin_ip_list);
+			$admin_ip_list = implode("\r\n", $db_info->admin_ip_list);
 			Context::set('admin_ip_list', $admin_ip_list);
 
 			$oAdminModel = getAdminModel('admin');

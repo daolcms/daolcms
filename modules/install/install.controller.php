@@ -513,6 +513,9 @@
 				else if($key == 'slave_db'){
 					$buff .= $this->_getDbConnText($key, $val, true);
 				}
+				else if($key == 'admin_ip_list'){
+					$buff .= sprintf('$db_info->%s = array(\'%s\');' . PHP_EOL, $key, implode('\', \'', $val));
+				}
 				else
 					$buff .= sprintf("\$db_info->%s = '%s';" . PHP_EOL, $key, str_replace("'","\\'",$val));
 			}
