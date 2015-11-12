@@ -426,6 +426,17 @@
 		}
 		return $url;
 	}
+	
+	/**
+	 * Return the exact url of the current page
+	 *
+	 * @return string
+	 */
+	function getCurrentPageUrl(){
+		$protocol = $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://';
+		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		return htmlspecialchars($url, ENT_COMPAT, 'UTF-8', FALSE);
+	}
 
 	/**
 	 * Return if domain of the virtual site is url type or id type
