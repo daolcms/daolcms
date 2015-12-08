@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * @class  layoutView
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * admin view class of the layout module
 	 **/
@@ -37,6 +37,12 @@
 		 * @return void|Object (void : success, Object : fail)
 		 **/
 		function dispLayoutPreview() {
+			if(!checkCSRF())
+			{
+				$this->stop('msg_invalid_request');
+				return new Object(-1, 'msg_invalid_request');
+			}
+
 			// admin check
 			// this act is admin view but in normal view because do not load admin css/js files
 			$logged_info = Context::get('logged_info');
