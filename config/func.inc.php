@@ -812,6 +812,12 @@
 	function url_decode($str){
 		return preg_replace('/%u([[:alnum:]]{4})/', '&#x\\1;',$str);
 	}
+	
+	function purifierHtml(&$content){
+		require_once(_XE_PATH_.'classes/security/Purifier.class.php');
+		$oPurifier = Purifier::getInstance();
+		$oPurifier->purify($content);
+	}
 
 	/**
 	 * Pre-block the codes which may be hacking attempts
@@ -823,6 +829,8 @@
 		require_once(_XE_PATH_.'classes/security/EmbedFilter.class.php');
 		$oEmbedFilter = EmbedFilter::getInstance();
 		$oEmbedFilter->check($content);
+		
+		purifierHtml($content);
 
 		// change the specific tags to the common texts
 		$content = preg_replace('@<(\/?(?:html|body|head|title|meta|base|link|script|style|applet)(/*).*?>)@i', '&lt;$1', $content);

@@ -20,7 +20,7 @@ class HTMLPurifier_Config
     /**
      * HTML Purifier's version
      */
-    public $version = '4.5.0';
+    public $version = '4.4.0';
 
     /**
      * Bool indicator whether or not to automatically finalize
@@ -153,7 +153,7 @@ class HTMLPurifier_Config
         if (!$this->finalized) $this->autoFinalize();
         if (!isset($this->def->info[$key])) {
             // can't add % due to SimpleTest bug
-            $this->triggerError('Cannot retrieve value of undefined directive ' . htmlspecialchars($key),
+            $this->triggerError('Cannot retrieve value of undefined directive ' . htmlspecialchars($key, ENT_COMPAT | ENT_HTML401, 'UTF-8', false),
                 E_USER_WARNING);
             return;
         }
@@ -181,7 +181,7 @@ class HTMLPurifier_Config
         if (!$this->finalized) $this->autoFinalize();
         $full = $this->getAll();
         if (!isset($full[$namespace])) {
-            $this->triggerError('Cannot retrieve undefined namespace ' . htmlspecialchars($namespace),
+            $this->triggerError('Cannot retrieve undefined namespace ' . htmlspecialchars($namespace, ENT_COMPAT | ENT_HTML401, 'UTF-8', false),
                 E_USER_WARNING);
             return;
         }
@@ -189,7 +189,7 @@ class HTMLPurifier_Config
     }
 
     /**
-     * Returns a SHA-1 signature of a segment of the configuration object
+     * Returns a md5 signature of a segment of the configuration object
      * that uniquely identifies that particular configuration
      * @note Revision is handled specially and is removed from the batch
      *       before processing!
@@ -199,18 +199,18 @@ class HTMLPurifier_Config
         if (empty($this->serials[$namespace])) {
             $batch = $this->getBatch($namespace);
             unset($batch['DefinitionRev']);
-            $this->serials[$namespace] = sha1(serialize($batch));
+            $this->serials[$namespace] = md5(serialize($batch));
         }
         return $this->serials[$namespace];
     }
 
     /**
-     * Returns a SHA-1 signature for the entire configuration object
+     * Returns a md5 signature for the entire configuration object
      * that uniquely identifies that particular configuration
      */
     public function getSerial() {
         if (empty($this->serial)) {
-            $this->serial = sha1(serialize($this->getAll()));
+            $this->serial = md5(serialize($this->getAll()));
         }
         return $this->serial;
     }
@@ -246,7 +246,7 @@ class HTMLPurifier_Config
         }
         if ($this->isFinalized('Cannot set directive after finalization')) return;
         if (!isset($this->def->info[$key])) {
-            $this->triggerError('Cannot set undefined directive ' . htmlspecialchars($key) . ' to value',
+            $this->triggerError('Cannot set undefined directive ' . htmlspecialchars($key, ENT_COMPAT | ENT_HTML401, 'UTF-8', false) . ' to value',
                 E_USER_WARNING);
             return;
         }
@@ -682,7 +682,6 @@ class HTMLPurifier_Config
             $trace = debug_backtrace();
             // zip(tail(trace), trace) -- but PHP is not Haskell har har
             for ($i = 0, $c = count($trace); $i < $c - 1; $i++) {
-                // XXX this is not correct on some versions of HTML Purifier
                 if ($trace[$i + 1]['class'] === 'HTMLPurifier_Config') {
                     continue;
                 }

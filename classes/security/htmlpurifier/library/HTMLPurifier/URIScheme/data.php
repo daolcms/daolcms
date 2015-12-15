@@ -61,15 +61,13 @@ class HTMLPurifier_URIScheme_data extends HTMLPurifier_URIScheme {
         // XXX probably want to refactor this into a general mechanism
         // for filtering arbitrary content types
         $file = tempnam("/tmp", "");
-        file_put_contents($file, $raw_data);
+        file_put_contents($file, $raw_data, LOCK_EX);
         if (function_exists('exif_imagetype')) {
             $image_code = exif_imagetype($file);
-            unlink($file);
         } elseif (function_exists('getimagesize')) {
             set_error_handler(array($this, 'muteErrorHandler'));
             $info = getimagesize($file);
             restore_error_handler();
-            unlink($file);
             if ($info == false) return false;
             $image_code = $info[2];
         } else {
