@@ -40,6 +40,11 @@
 	 * The base path to where you installed zbXE Wanted
 	 */
 	define('_XE_PATH_', str_replace('config/config.inc.php', '', str_replace('\\', '/', __FILE__)));
+	
+	/**
+	 * The base path to where you installed DAOL CMS Wanted
+	 */
+	define('_DAOL_PATH_', str_replace('config/config.inc.php', '', str_replace('\\', '/', __FILE__)));
 
 
 	// Set can use other method instead cookie to store session id(for file upload)
