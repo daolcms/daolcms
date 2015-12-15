@@ -878,7 +878,8 @@
 			}
 			else
 			{
-				$this->add('save_filename', $output->get('save_filename'));
+				if($output) $this->add('save_filename', $output->get('save_filename'));
+				else $this->add('save_filename', '');
 			}
 		}
 
@@ -899,6 +900,9 @@
 
 				$save_filename = sprintf('%s%s.%s',$path, $vars->module_filebox_srl, $ext);
 				$tmp = $vars->addfile['tmp_name'];
+				
+				// Check uploaded file
+				if(!checkUploadedFile($tmp)) return false;
 
 				if(!@move_uploaded_file($tmp, $save_filename)) {
 					return false;
@@ -930,6 +934,9 @@
 			FileHandler::makeDir($path);
 			$save_filename = sprintf('%s%s.%s',$path, $vars->module_filebox_srl, $vars->ext);
 			$tmp = $vars->addfile['tmp_name'];
+			
+			// Check uploaded file
+			if(!checkUploadedFile($tmp)) return false;
 
 			// upload
 			if(!@move_uploaded_file($tmp, $save_filename)) {

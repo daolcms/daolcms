@@ -527,10 +527,14 @@
 			$target = Context::get('target');
 			$target_file = Context::get($target);
 			// Error occurs when the target is neither a uploaded file nor a valid file
-			if(!$menu_srl || !$menu_item_srl || !$target_file || !is_uploaded_file($target_file['tmp_name']) || !preg_match('/\.(gif|jpeg|jpg|png)/i',$target_file['name'])) {
+			if(!$menu_srl || !$menu_item_srl){
 				Context::set('error_messge', Context::getLang('msg_invalid_request'));
+			}
+			else if(!$target_file || !is_uploaded_file($target_file['tmp_name']) || !preg_match('/\.(gif|jpeg|jpg|png)/i',$target_file['name'])  || !checkUploadedFile($target_file['tmp_name'])){
+				Context::set('error_messge', Context::getLang('msg_invalid_request'));
+			}
 			// Move the file to a specific director if the uploaded file meets requirement
-			} else {
+			else{
 				$tmp_arr = explode('.',$target_file['name']);
 				$ext = $tmp_arr[count($tmp_arr)-1];
 
@@ -1016,8 +1020,11 @@
 				$ext = $tmp_arr[count($tmp_arr)-1];
 
 				$filename = sprintf('%s%d.%s.%s', $path, $args->menu_item_srl, 'menu_normal_btn', $ext);
-				move_uploaded_file($args->menu_normal_btn['tmp_name'], $filename);
-				$returnArray['normal_btn'] = $filename;
+				
+				if(checkUploadedFile($args->menu_normal_btn['tmp_name'])){
+					move_uploaded_file ( $args->menu_normal_btn ['tmp_name'], $filename );
+					$returnArray ['normal_btn'] = $filename;
+				}
 			}
 
 			// hover button
@@ -1027,8 +1034,11 @@
 				$ext = $tmp_arr[count($tmp_arr)-1];
 
 				$filename = sprintf('%s%d.%s.%s', $path, $args->menu_item_srl, 'menu_hover_btn', $ext);
-				move_uploaded_file($args->menu_hover_btn['tmp_name'], $filename);
-				$returnArray['hover_btn'] = $filename;
+				
+				if(checkUploadedFile($args->menu_hover_btn['tmp_name'])){
+					move_uploaded_file($args->menu_hover_btn['tmp_name'], $filename);
+					$returnArray['hover_btn'] = $filename;
+				}
 			}
 
 			// active button
@@ -1038,8 +1048,11 @@
 				$ext = $tmp_arr[count($tmp_arr)-1];
 
 				$filename = sprintf('%s%d.%s.%s', $path, $args->menu_item_srl, 'menu_active_btn', $ext);
-				move_uploaded_file($args->menu_active_btn['tmp_name'], $filename);
-				$returnArray['active_btn'] = $filename;
+				
+				if(checkUploadedFile($args->menu_active_btn['tmp_name'])){
+					move_uploaded_file($args->menu_active_btn['tmp_name'], $filename);
+					$returnArray['active_btn'] = $filename;
+				}
 			}
 			return $returnArray;
 		}
