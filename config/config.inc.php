@@ -2,7 +2,7 @@
 	/**
 	 * set the include of the class file and other environment configurations
 	 *
-	 * @file   config/config.inc.php
+	 * @file config/config.inc.php
 	 * @Original_author NHN
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 */
@@ -20,7 +20,7 @@
 	/**
 	 * Display the version info of DAOL CMS.
 	 */
-	define('__DAOL_VERSION__', '1.0.1.4');
+	define('__DAOL_VERSION__', '1.0.1.5');
 	/**
 	 * Display the version info of XE(XDT EX).
 	 */
@@ -40,6 +40,11 @@
 	 * The base path to where you installed zbXE Wanted
 	 */
 	define('_XE_PATH_', str_replace('config/config.inc.php', '', str_replace('\\', '/', __FILE__)));
+	
+	/**
+	 * The base path to where you installed DAOL CMS Wanted
+	 */
+	define('_DAOL_PATH_', str_replace('config/config.inc.php', '', str_replace('\\', '/', __FILE__)));
 
 
 	// Set can use other method instead cookie to store session id(for file upload)
@@ -250,6 +255,7 @@
 		require(_XE_PATH_.'classes/frontendfile/FrontEndFileHandler.class.php');
 		require(_XE_PATH_.'classes/security/Password.class.php'); 
 		require(_XE_PATH_.'classes/security/Security.class.php');
+		require(_XE_PATH_ . 'classes/security/IpFilter.class.php');
 		if(__DEBUG__) $GLOBALS['__elapsed_class_load__'] = getMicroTime() - __ClassLoadStartTime__;
 	}
 ?>

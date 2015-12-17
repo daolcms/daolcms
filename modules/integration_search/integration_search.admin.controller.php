@@ -75,8 +75,8 @@
 						$obj->{$vars->name} = $module_info->{$vars->name};
 						continue;
 					}
-					// Ignore if the file is not successfully uploaded
-					if(!is_uploaded_file($image_obj['tmp_name'])) {
+					// Ignore if the file is not successfully uploaded, and check uploaded file
+					if(!is_uploaded_file($image_obj['tmp_name']) || !checkUploadedFile($image_obj['tmp_name'])){
 						unset($obj->{$vars->name});
 						continue;
 					}

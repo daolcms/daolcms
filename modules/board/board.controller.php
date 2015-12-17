@@ -101,7 +101,7 @@
 					$oMail = new Mail();
 					$oMail->setTitle($obj->title);
 					$oMail->setContent( sprintf("From : <a href=\"%s\">%s</a><br/>\r\n%s", getFullUrl('','document_srl',$obj->document_srl), getFullUrl('','document_srl',$obj->document_srl), $obj->content));
-					$oMail->setSender($obj->user_name, $obj->email_address);
+					$oMail->setSender($obj->nick_name, $obj->email_address);
 
 					$target_mail = explode(',',$this->module_info->admin_mail);
 					for($i=0;$i<count($target_mail);$i++) {
@@ -142,8 +142,9 @@
 			if(!$output->toBool()) return $output;
 
 			// alert an message
+			$this->setRedirectUrl(getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', '', 'page', Context::get('page'), 'document_srl', ''));
 			$this->add('mid', Context::get('mid'));
-			$this->add('page', $output->get('page'));
+			$this->add('page', Context::get('page'));
 			$this->setMessage('success_deleted');
 		}
 

@@ -513,6 +513,9 @@
 				else if($key == 'slave_db'){
 					$buff .= $this->_getDbConnText($key, $val, true);
 				}
+				else if($key == 'admin_ip_list'){
+					$buff .= sprintf('$db_info->%s = array(\'%s\');' . PHP_EOL, $key, implode('\', \'', $val));
+				}
 				else
 					$buff .= sprintf("\$db_info->%s = '%s';" . PHP_EOL, $key, str_replace("'","\\'",$val));
 			}
@@ -527,7 +530,7 @@
 		function makeDBConfigFile() {
 			$db_tmp_config_file = $this->db_tmp_config_file;
 
-			$db_info = Context::getDbInfo();
+			$db_info = Context::getDBInfo();
 			if(!$db_info) return;
 
 			$buff = $this->_getDBConfigFileContents($db_info);
@@ -565,7 +568,7 @@
 			$config_file = Context::getConfigFile();
 			//if(file_exists($config_file)) return;
 
-			$db_info = Context::getDbInfo();
+			$db_info = Context::getDBInfo();
 			if(!$db_info) return;
 
 			$buff = $this->_getDBConfigFileContents($db_info);

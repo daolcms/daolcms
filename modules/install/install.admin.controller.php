@@ -75,10 +75,17 @@
 
 			$admin_ip_list = Context::get('admin_ip_list');
 
-			$admin_ip_list = preg_replace("/[\r|\n|\r\n]+/",",",$admin_ip_list);
-			$admin_ip_list = preg_replace("/\s+/","",$admin_ip_list);
-			if(preg_match('/(<\?|<\?php|\?>)/xsm', $admin_ip_list)){
-				$admin_ip_list = '';
+			if($admin_ip_list){
+				$admin_ip_list = preg_replace("/[\r|\n|\r\n]+/",",",$admin_ip_list);
+				$admin_ip_list = preg_replace("/\s+/","",$admin_ip_list);
+				if(preg_match('/(<\?|<\?php|\?>)/xsm', $admin_ip_list)){
+					$admin_ip_list = '';
+				}
+				$admin_ip_list = explode(',',trim($admin_ip_list, ','));
+				$admin_ip_list = array_unique($admin_ip_list);
+				if(!IpFilter::validate($admin_ip_list)){
+					return new Object(-1, 'msg_invalid_ip');
+				}
 			}
 
 			$db_info = Context::getDBInfo();

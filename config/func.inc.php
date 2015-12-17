@@ -2,7 +2,7 @@
 	/**
 	 * function library files for convenience
 	 *
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	**/
 
@@ -426,6 +426,17 @@
 		}
 		return $url;
 	}
+	
+	/**
+	 * Return the exact url of the current page
+	 *
+	 * @return string
+	 */
+	function getCurrentPageUrl(){
+		$protocol = $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://';
+		$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		return htmlspecialchars($url, ENT_COMPAT, 'UTF-8', FALSE);
+	}
 
 	/**
 	 * Return if domain of the virtual site is url type or id type
@@ -801,6 +812,12 @@
 	function url_decode($str){
 		return preg_replace('/%u([[:alnum:]]{4})/', '&#x\\1;',$str);
 	}
+	
+	function purifierHtml(&$content){
+		require_once(_XE_PATH_.'classes/security/Purifier.class.php');
+		$oPurifier = Purifier::getInstance();
+		$oPurifier->purify($content);
+	}
 
 	/**
 	 * Pre-block the codes which may be hacking attempts
@@ -812,6 +829,8 @@
 		require_once(_XE_PATH_.'classes/security/EmbedFilter.class.php');
 		$oEmbedFilter = EmbedFilter::getInstance();
 		$oEmbedFilter->check($content);
+		
+		purifierHtml($content);
 
 		// change the specific tags to the common texts
 		$content = preg_replace('@<(\/?(?:html|body|head|title|meta|base|link|script|style|applet)(/*).*?>)@i', '&lt;$1', $content);
@@ -839,6 +858,17 @@
 		$content = preg_replace('/(<(?:img|div)(?:[^>]*))(widget)(?:(=([^>]*?)>))/is', '$1blocked-widget$3', $content);
 		
 		return $content;
+	}
+	
+	/**
+	 * check uploaded file which may be hacking attempts
+	 *
+	 * @param string $file Taget file path
+	 * @return bool
+	 */
+	function checkUploadedFile($file){
+		require_once(_XE_PATH_ . 'classes/security/UploadFileFilter.class.php');
+		return UploadFileFilter::check($file);
 	}
 
 	/**
@@ -883,6 +913,24 @@
 				if(preg_match('/^[a-z]+script:/i', $val)) continue;
 
 				$attrs[$name] = $val;
+			}
+		}
+		
+		$filter_arrts = array('style', 'src', 'href');
+		
+		if($tag === 'object') array_push($filter_arrts, 'data');
+		if($tag === 'param') array_push($filter_arrts, 'value');
+		
+		foreach($filter_arrts as $attr)
+		{
+			if(!isset($attrs[$attr])) continue;
+		
+			$attr_value = rawurldecode($attrs[$attr]);
+			$attr_value = htmlspecialchars_decode($attr_value, ENT_COMPAT);
+			$attr_value = preg_replace('/\s+|[\t\n\r]+/', '', $attr_value);
+			if(preg_match('@(\?|&|;)(act=)@i', $attr_value))
+			{
+				unset($attrs[$attr]);
 			}
 		}
 
@@ -1106,21 +1154,14 @@
 		if(!$agent) $agent = $_SERVER['HTTP_USER_AGENT'];
 		$check_agent = array('bot', 'spider', 'google', 'yahoo', 'daum', 'teoma', 'fish', 'hanrss', 'facebook');
 		$check_ip = array(
-			'211.245.21.11*' /* mixsh */
+			'211.245.21.110-211.245.21.119' /* mixsh */
 		);
 
 		foreach($check_agent as $str){
 			if(stristr($agent, $str) != FALSE) return true;
 		}
 
-		$check_ip = '/^('.implode($check_ip, '|').')/';
-		$check_ip = str_replace('.', '\.', $check_ip);
-		$check_ip = str_replace('*', '.+', $check_ip);
-		$check_ip = str_replace('?', '.?', $check_ip);
-
-		if(preg_match($check_ip, $_SERVER['REMOTE_ADDR'], $matches)) return true;
-
-		return false;
+		return IpFilter::filter($check_ip, '211.245.21.113');
 	}
 
 	/**

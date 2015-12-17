@@ -380,8 +380,8 @@
 		// If there is no problem to register comment then send an email to all admin were set in module admin panel
 		if($module_info->admin_mail && $member_info->is_admin != 'Y') {
 			$oMail = new Mail();
-			$oMail->setSender($obj->email_address, $obj->email_address);
-			$mail_title = "[XE - ".Context::get('mid')."] A new comment was posted on document: \"".$oDocument->getTitleText()."\"";
+			$oMail->setSender($obj->nick_name, $obj->email_address);
+			$mail_title = "".$oDocument->getTitleText()." - A new comment was posted on document";
 			$oMail->setTitle($mail_title);
 			$url_comment = getFullUrl('','document_srl',$obj->document_srl).'#comment_'.$obj->comment_srl;
 			if($using_validation) {
