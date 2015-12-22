@@ -39,7 +39,7 @@
 	/**
 	 * The base path to where you installed zbXE Wanted
 	 */
-	define('_DAOL_PATH_', str_replace('config/config.inc.php', '', str_replace('\\', '/', __FILE__)));
+	define('_XE_PATH_', str_replace('config/config.inc.php', '', str_replace('\\', '/', __FILE__)));
 	
 	/**
 	 * The base path to where you installed DAOL CMS Wanted
