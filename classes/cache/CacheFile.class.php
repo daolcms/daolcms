@@ -33,7 +33,7 @@ class CacheFile extends CacheBase{
 	 * @return void
 	 */
 	function CacheFile(){
-		$this->cache_dir = _DAOL_PATH_ . $this->cache_dir;
+		$this->cache_dir = _XE_PATH_ . $this->cache_dir;
 		FileHandler::makeDir($this->cache_dir);
 	}
 

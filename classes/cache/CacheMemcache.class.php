@@ -70,7 +70,7 @@ class CacheMemcache extends CacheBase {
 	 * @return string Return unique key
 	 */
 	function getKey($key){
-		return md5(_DAOL_PATH_.$key);
+		return md5(_XE_PATH_.$key);
 	}
 
 	/**

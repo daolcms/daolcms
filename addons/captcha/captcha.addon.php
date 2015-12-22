@@ -91,7 +91,7 @@
 				if($_SESSION['captcha_authed']) return false;
 				// Load language files
 
-				Context::loadLang(_DAOL_PATH_.'addons/captcha/lang');
+				Context::loadLang(_XE_PATH_.'addons/captcha/lang');
 				// Generate keywords
 
 				$this->createKeyword();

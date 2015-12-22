@@ -18,7 +18,7 @@
 		 * easy install check file
 		 * @var array
 		 */
-		var $easyinstallCheckFile = _DAOL_PATH_.'files/env/easyinstall_last';
+		var $easyinstallCheckFile = './files/env/easyinstall_last';
 
 		/**
 		 * Initilization
@@ -247,7 +247,7 @@
 
 			// license agreement check
 			$isLicenseAgreement = FALSE;
-			$path = FileHandler::getRealPath(_DAOL_PATH_.'files/env/license_agreement');
+			$path = FileHandler::getRealPath('./files/env/license_agreement');
 			$isLicenseAgreement = FALSE;
 			if(file_exists($path)) $isLicenseAgreement = TRUE;
 			Context::set('isLicenseAgreement', $isLicenseAgreement);
@@ -358,7 +358,7 @@
 		 */
 		function dispAdminTheme(){
 			// choice theme file
-			$theme_file = _DAOL_PATH_.'files/theme/theme_info.php';
+			$theme_file = _XE_PATH_.'files/theme/theme_info.php';
 			if(is_readable($theme_file)){
 				@include($theme_file);
 				Context::set('current_layout', $theme_info->layout);
@@ -385,10 +385,10 @@
 					if (!$layout_info) continue;
 					$layout_parse = explode('|@|', $layout_info->layout);
 					if (count($layout_parse) == 2){
-						$thumb_path = sprintf(_DAOL_PATH_.'themes/%s/layouts/%s/thumbnail.png', $layout_parse[0], $layout_parse[1]);
+						$thumb_path = sprintf('./themes/%s/layouts/%s/thumbnail.png', $layout_parse[0], $layout_parse[1]);
 					}
 					else{
-						$thumb_path = _DAOL_PATH_.'layouts/'.$layout_info->layout.'/thumbnail.png';
+						$thumb_path = './layouts/'.$layout_info->layout.'/thumbnail.png';
 					}
 					$layout_info->thumbnail = (is_readable($thumb_path))?$thumb_path:null;
 					$layout_list[] = $layout_info;
@@ -494,7 +494,7 @@
 				$info['PHP_Core'] = $php_core;
 		  
 				$str_info = "[DAOL Server Environment " . date("Y-m-d") . "]\n\n";
-				$str_info .= "realpath : ".realpath(_DAOL_PATH_.'')."\n";
+				$str_info .= "realpath : ".realpath('./')."\n";
 				foreach( $info as $key=>$value ){
 					if( is_array( $value ) == false ){
 						$str_info .= "{$key} : {$value}\n";

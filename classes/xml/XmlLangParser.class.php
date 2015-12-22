@@ -34,7 +34,7 @@
 		var $lang_types;
 		/**
 		 * language type
-		 * @see _DAOL_PATH_.'/common/lang/lang.info'
+		 * @see _XE_PATH_.'/common/lang/lang.info'
 		 * @var string
 		 */
 		var $lang_type;

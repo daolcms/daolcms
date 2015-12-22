@@ -20,8 +20,8 @@
 				return new Object(-1, 'msg_already_installed');
 			}
 
-			$this->db_tmp_config_file = _DAOL_PATH_.'files/config/tmpDB.config.php';
-			$this->etc_tmp_config_file = _DAOL_PATH_.'files/config/tmpEtc.config.php';
+			$this->db_tmp_config_file = _XE_PATH_.'files/config/tmpDB.config.php';
+			$this->etc_tmp_config_file = _XE_PATH_.'files/config/tmpEtc.config.php';
 		}
 
 		/**
@@ -237,7 +237,7 @@
 			if(ini_get('safe_mode')) {
 				if(!$ftp_info->ftp_user || !$ftp_info->ftp_password) return new Object(-1,'msg_safe_mode_ftp_needed');
 
-				require_once(_DAOL_PATH_.'libs/ftp.class.php');
+				require_once(_XE_PATH_.'libs/ftp.class.php');
 				$oFtp = new ftp();
 				if(!$oFtp->ftp_connect($ftp_info->ftp_host, $ftp_info->ftp_port)) return new Object(-1, sprintf(Context::getLang('msg_ftp_not_connected'), $ftp_info->ftp_host));
 
@@ -246,7 +246,7 @@
 					return new Object(-1,'msg_ftp_invalid_auth_info');
 				}
 
-				if(!is_dir(_DAOL_PATH_.'files') && !$oFtp->ftp_mkdir($ftp_info->ftp_root_path.'files')) {
+				if(!is_dir(_XE_PATH_.'files') && !$oFtp->ftp_mkdir($ftp_info->ftp_root_path.'files')) {
 					$oFtp->ftp_quit();
 					return new Object(-1,'msg_ftp_mkdir_fail');
 				}
@@ -256,7 +256,7 @@
 					return new Object(-1,'msg_ftp_chmod_fail');
 				}
 
-				if(!is_dir(_DAOL_PATH_.'files/config') && !$oFtp->ftp_mkdir($ftp_info->ftp_root_path.'files/config')) {
+				if(!is_dir(_XE_PATH_.'files/config') && !$oFtp->ftp_mkdir($ftp_info->ftp_root_path.'files/config')) {
 					$oFtp->ftp_quit();
 					return new Object(-1,'msg_ftp_mkdir_fail');
 				}
@@ -291,7 +291,7 @@
 			}
 			else
 			{
-				require_once(_DAOL_PATH_.'libs/ftp.class.php');
+				require_once(_XE_PATH_.'libs/ftp.class.php');
 				$oFtp = new ftp();
 				if(!$oFtp->ftp_connect('localhost', $ftp_info->ftp_port)) return new Object(-1, sprintf(Context::getLang('msg_ftp_not_connected'), 'localhost'));
 

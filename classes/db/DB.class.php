@@ -2,34 +2,34 @@
 	if(!defined('__XE_LOADED_DB_CLASS__')){
 		define('__XE_LOADED_DB_CLASS__', 1);
 
-		require(_DAOL_PATH_.'classes/xml/xmlquery/DBParser.class.php');
-		require(_DAOL_PATH_.'classes/xml/xmlquery/QueryParser.class.php');
-		require(_DAOL_PATH_.'classes/xml/xmlquery/argument/Argument.class.php');
-		require(_DAOL_PATH_.'classes/xml/xmlquery/argument/SortArgument.class.php');
-		require(_DAOL_PATH_.'classes/xml/xmlquery/argument/ConditionArgument.class.php');
+		require(_XE_PATH_.'classes/xml/xmlquery/DBParser.class.php');
+		require(_XE_PATH_.'classes/xml/xmlquery/QueryParser.class.php');
+		require(_XE_PATH_.'classes/xml/xmlquery/argument/Argument.class.php');
+		require(_XE_PATH_.'classes/xml/xmlquery/argument/SortArgument.class.php');
+		require(_XE_PATH_.'classes/xml/xmlquery/argument/ConditionArgument.class.php');
 
-		require(_DAOL_PATH_.'classes/db/queryparts/expression/Expression.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/expression/SelectExpression.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/expression/InsertExpression.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/expression/UpdateExpression.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/expression/UpdateExpressionWithoutArgument.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/expression/ClickCountExpression.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/table/Table.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/table/JoinTable.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/table/CubridTableWithHint.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/table/MysqlTableWithHint.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/table/MssqlTableWithHint.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/table/IndexHint.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/condition/ConditionGroup.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/condition/Condition.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/condition/ConditionWithArgument.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/condition/ConditionWithoutArgument.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/condition/ConditionSubquery.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/expression/StarExpression.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/order/OrderByColumn.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/limit/Limit.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/Query.class.php');
-		require(_DAOL_PATH_.'classes/db/queryparts/Subquery.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/expression/Expression.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/expression/SelectExpression.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/expression/InsertExpression.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/expression/UpdateExpression.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/expression/UpdateExpressionWithoutArgument.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/expression/ClickCountExpression.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/table/Table.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/table/JoinTable.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/table/CubridTableWithHint.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/table/MysqlTableWithHint.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/table/MssqlTableWithHint.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/table/IndexHint.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/condition/ConditionGroup.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/condition/Condition.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/condition/ConditionWithArgument.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/condition/ConditionWithoutArgument.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/condition/ConditionSubquery.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/expression/StarExpression.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/order/OrderByColumn.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/limit/Limit.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/Query.class.php');
+		require(_XE_PATH_.'classes/db/queryparts/Subquery.class.php');
 	}
 
 	/**
@@ -152,7 +152,7 @@
 			if(!isset($GLOBALS['__DB__'])) $GLOBALS['__DB__'] = array();
 			if(!isset($GLOBALS['__DB__'][$db_type])) {
 				$class_name = 'DB'.ucfirst($db_type);
-				$class_file = _DAOL_PATH_."classes/db/$class_name.class.php";
+				$class_file = _XE_PATH_."classes/db/$class_name.class.php";
 				if(!file_exists($class_file)) return new Object(-1, 'msg_db_not_setted');
 
 				// get a singletone instance of the database driver class
@@ -177,8 +177,8 @@
 		 * @return void
 		 */
 		function DB(){
-			$this->count_cache_path = _DAOL_PATH_.$this->count_cache_path;
-			$this->cache_file = _DAOL_PATH_.$this->cache_file;
+			$this->count_cache_path = _XE_PATH_.$this->count_cache_path;
+			$this->cache_file = _XE_PATH_.$this->cache_file;
 		}
 
 		/**
@@ -250,7 +250,7 @@
 				return $this->supported_list;
 			}
 			$get_supported_list = array();
-			$db_classes_path = _DAOL_PATH_."classes/db/";
+			$db_classes_path = _XE_PATH_."classes/db/";
 			$filter = "/^DB([^\.]+)\.class\.php/i";
 			$supported_list = FileHandler::readDir($db_classes_path, $filter, TRUE);
 			sort($supported_list);
@@ -260,7 +260,7 @@
 				$db_type = $supported_list[$i];
 
 				$class_name = sprintf("DB%s%s", strtoupper(substr($db_type,0,1)), strtolower(substr($db_type,1)));
-				$class_file = sprintf(_DAOL_PATH_."classes/db/%s.class.php", $class_name);
+				$class_file = sprintf(_XE_PATH_."classes/db/%s.class.php", $class_name);
 				if(!file_exists($class_file)) continue;
 
 				unset($oDB);
@@ -338,7 +338,7 @@
 				$log['errstr'] = $this->errstr;
 
 				if(__DEBUG_DB_OUTPUT__ == 1){
-					$debug_file = _DAOL_PATH_."files/_debug_db_query.php";
+					$debug_file = _XE_PATH_."files/_debug_db_query.php";
 					$buff = array();
 					if(!file_exists($debug_file)) $buff[] = '<?php exit(); ?>';
 					$buff[] = print_r($log, TRUE);
@@ -355,7 +355,7 @@
 			// if __LOG_SLOW_QUERY__ if defined, check elapsed time and leave query log
 			if(__LOG_SLOW_QUERY__ > 0 && $elapsed_time > __LOG_SLOW_QUERY__) {
 				$buff = '';
-				$log_file = _DAOL_PATH_.'files/_db_slow_query.php';
+				$log_file = _XE_PATH_.'files/_db_slow_query.php';
 				if(!file_exists($log_file)) {
 					$buff = '<?php exit();?>'."\n";
 				}
@@ -436,7 +436,7 @@
 					return new Object(-1, 'msg_invalid_queryid');
 				}
 
-				$xml_file = sprintf('%s%s/%s/queries/%s.xml', _DAOL_PATH_, $target, $module, $id);
+				$xml_file = sprintf('%s%s/%s/queries/%s.xml', _XE_PATH_, $target, $module, $id);
 				if(!file_exists($xml_file)){
 					$this->actDBClassFinish();
 					return new Object(-1, 'msg_invalid_queryid');
@@ -461,14 +461,14 @@
 		 */
 		function checkQueryCacheFile($query_id,$xml_file){
 			// first try finding cache file
-			$cache_file = sprintf('%s%s%s.%s.%s.cache.php', _DAOL_PATH_, $this->cache_file, $query_id, __DAOL_VERSION__, $this->db_type);
+			$cache_file = sprintf('%s%s%s.%s.%s.cache.php', _XE_PATH_, $this->cache_file, $query_id, __DAOL_VERSION__, $this->db_type);
 
 			if(file_exists($cache_file)) $cache_time = filemtime($cache_file);
 			else $cache_time = -1;
 
 			// if there is no cache file or is not new, find original xml query file and parse it
-			if($cache_time < filemtime($xml_file) || $cache_time < filemtime(_DAOL_PATH_.'classes/db/DB.class.php') || $cache_time < filemtime(_DAOL_PATH_.'classes/xml/XmlQueryParser.150.class.php')) {
-				require_once(_DAOL_PATH_.'classes/xml/XmlQueryParser.150.class.php');
+			if($cache_time < filemtime($xml_file) || $cache_time < filemtime(_XE_PATH_.'classes/db/DB.class.php') || $cache_time < filemtime(_XE_PATH_.'classes/xml/XmlQueryParser.150.class.php')) {
+				require_once(_XE_PATH_.'classes/xml/XmlQueryParser.150.class.php');
 				$oParser = new XmlQueryParser();
 				$oParser->parse($query_id, $xml_file, $cache_file);
 			}

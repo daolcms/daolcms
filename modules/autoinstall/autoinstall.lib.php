@@ -1,5 +1,5 @@
 <?php
-	require_once(_DAOL_PATH_.'libs/ftp.class.php');
+	require_once(_XE_PATH_.'libs/ftp.class.php');
 
 	/**
 	 * Module installer
@@ -212,7 +212,7 @@
 		 * @return array Returns file list
 		 */
 		function _unPack() {
-			require_once(_DAOL_PATH_.'libs/tar.class.php');
+			require_once(_XE_PATH_.'libs/tar.class.php');
 
 			$oTar = new tar();
 			$oTar->openTAR($this->download_file);

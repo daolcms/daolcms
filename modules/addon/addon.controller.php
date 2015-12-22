@@ -27,7 +27,7 @@
 			$site_module_info = Context::get('site_module_info');
 			$site_srl = $site_module_info->site_srl;
 
-			$addon_path = _DAOL_PATH_.'files/cache/addons/';
+			$addon_path = _XE_PATH_.'files/cache/addons/';
 
 			$addon_file = $addon_path.$site_srl.$type.'.acivated_addons.cache.php';
 
@@ -159,7 +159,7 @@
 			$addon_list = $oAddonModel->getInsertedAddons($site_srl, $gtype);
 			foreach($addon_list as $addon => $val) {
 				if($val->addon == "smartphone") continue;
-				if(!is_dir(_DAOL_PATH_.'addons/'.$addon)) continue;
+				if(!is_dir(_XE_PATH_.'addons/'.$addon)) continue;
 				if(($type == "pc" && $val->is_used != 'Y') || ($type == "mobile" && $val->is_used_m != 'Y') || ($gtype == 'global' && $val->is_fixed != 'Y')) continue;
 
 				$extra_vars = unserialize($val->extra_vars);
@@ -196,7 +196,7 @@
 
 			$buff = sprintf('<?php if(!defined("__XE__")) exit(); $_m = Context::get(\'mid\'); %s ?>', $buff);
 
-			$addon_path = _DAOL_PATH_.'files/cache/addons/';
+			$addon_path = _XE_PATH_.'files/cache/addons/';
 			if(!is_dir($addon_path)) FileHandler::makeDir($addon_path);
 
 			if($gtype == 'site') $addon_file = $addon_path.$site_srl.$type.'.acivated_addons.cache.php';
@@ -232,7 +232,7 @@
 		 * @return void
 		 **/
 		function removeAddonConfig($site_srl) {
-			$addon_path = _DAOL_PATH_.'files/cache/addons/';
+			$addon_path = _XE_PATH_.'files/cache/addons/';
 			$addon_file = $addon_path.$site_srl.'.acivated_addons.cache.php';
 			if(file_exists($addon_file)) FileHandler::removeFile($addon_file);
 

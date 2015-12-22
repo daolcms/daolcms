@@ -1,5 +1,5 @@
 <?php
-	require_once(_DAOL_PATH_.'modules/comment/comment.item.php');
+	require_once(_XE_PATH_.'modules/comment/comment.item.php');
 
 	/**
 	 * comment

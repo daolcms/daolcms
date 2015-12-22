@@ -1,6 +1,6 @@
 <?php
 
-require_once _DAOL_PATH_ . "libs/phpmailer/phpmailer.php";
+require_once _XE_PATH_ . "libs/phpmailer/phpmailer.php";
 
 /**
 * Mailing class for XpressEngine

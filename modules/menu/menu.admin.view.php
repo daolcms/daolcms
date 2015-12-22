@@ -127,8 +127,8 @@
 		 */
 		function dispMenuAdminSiteMap()
 		{
-			Context::loadLang(_DAOL_PATH_.'modules/document/lang/');
-			Context::loadLang(_DAOL_PATH_.'modules/layout/lang/');
+			Context::loadLang(_XE_PATH_.'modules/document/lang/');
+			Context::loadLang(_XE_PATH_.'modules/layout/lang/');
 			$site_srl = Context::get('site_srl');
 			$site_module_info = Context::get('site_module_info');
 
@@ -185,7 +185,7 @@
 			Context::set('layout_list', $layoutList);
 
 			// choice theme file
-			$theme_file = _DAOL_PATH_.'files/theme/theme_info.php';
+			$theme_file = _XE_PATH_.'files/theme/theme_info.php';
 			if(is_readable($theme_file))
 			{
 				include($theme_file);

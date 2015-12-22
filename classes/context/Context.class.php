@@ -237,7 +237,7 @@ class Context {
 		$this->setLangType($this->lang_type);
 
 		// load module module's language file according to language setting
-		$this->loadLang(_DAOL_PATH_.'modules/module/lang');
+		$this->loadLang(_XE_PATH_.'modules/module/lang');
 
 		// set session handler
 		if(Context::isInstalled() && $this->db_info->use_db_session == 'Y'){
@@ -280,10 +280,10 @@ class Context {
 
 		// load common language file
 		$this->lang = &$GLOBALS['lang'];
-		$this->loadLang(_DAOL_PATH_.'common/lang/');
+		$this->loadLang(_XE_PATH_.'common/lang/');
 
 		// check if using rewrite module
-		if(file_exists(_DAOL_PATH_.'.htaccess')&&$this->db_info->use_rewrite == 'Y') $this->allow_rewrite = true;
+		if(file_exists(_XE_PATH_.'.htaccess')&&$this->db_info->use_rewrite == 'Y') $this->allow_rewrite = true;
 		else $this->allow_rewrite = false;
 
 		// set locations for javascript use
@@ -450,7 +450,7 @@ class Context {
 	function loadLangSupported() {
 		static $lang_supported = null;
 		if(!$lang_supported) {
-			$langs = file(_DAOL_PATH_.'common/lang/lang.info');
+			$langs = file(_XE_PATH_.'common/lang/lang.info');
 			foreach($langs as $val) {
 				list($lang_prefix, $lang_text) = explode(',',$val);
 				$lang_text = trim($lang_text);
@@ -468,10 +468,10 @@ class Context {
 	function loadLangSelected() {
 		static $lang_selected = null;
 		if(!$lang_selected) {
-			$orig_lang_file = _DAOL_PATH_.'common/lang/lang.info';
-			$selected_lang_file = _DAOL_PATH_.'files/config/lang_selected.info';
+			$orig_lang_file = _XE_PATH_.'common/lang/lang.info';
+			$selected_lang_file = _XE_PATH_.'files/config/lang_selected.info';
 			if(!FileHandler::hasContent($selected_lang_file)) {
-				$old_selected_lang_file = _DAOL_PATH_.'files/cache/lang_selected.info';
+				$old_selected_lang_file = _XE_PATH_.'files/cache/lang_selected.info';
 				FileHandler::moveFile($old_selected_lang_file, $selected_lang_file);
 			}
 
@@ -889,7 +889,7 @@ class Context {
 
 	function decodeIdna($domain){
 		if(strpos($domain, 'xn--') !== FALSE){
-			require_once(_DAOL_PATH_ . 'libs/idna_convert/idna_convert.class.php');
+			require_once(_XE_PATH_ . 'libs/idna_convert/idna_convert.class.php');
 			$IDN = new idna_convert(array('idn_version' => 2008));
 			$domain = $IDN->decode($domain);
 		}
@@ -1906,7 +1906,7 @@ class Context {
 	 * @retrun string The path of the config file that contains database settings
 	 */
 	function getConfigFile() {
-		return _DAOL_PATH_.'files/config/db.config.php';
+		return _XE_PATH_.'files/config/db.config.php';
 	}
 
 	/**
@@ -1915,7 +1915,7 @@ class Context {
 	 * @return string The path of the config file that contains FTP settings
 	 */
 	function getFTPConfigFile() {
-		return _DAOL_PATH_.'files/config/ftp.config.php';
+		return _XE_PATH_.'files/config/ftp.config.php';
 	}
 	
 	/**
@@ -1924,7 +1924,7 @@ class Context {
 	 * @return string The path of the config file that contains SMTP settings
 	 */
 	function getSMTPConfigFile() {
-		return _DAOL_PATH_.'files/config/smtp.config.php';
+		return _XE_PATH_.'files/config/smtp.config.php';
 	}
 
 	/**
@@ -1963,7 +1963,7 @@ class Context {
 	 * @return string Converted path
 	 */
 	function pathToUrl($path) {
-		$xe   = _DAOL_PATH_;
+		$xe   = _XE_PATH_;
 		$path = strtr($path, "\\", "/");
 
 		$base_url = preg_replace('@^https?://[^/]+/?@', '', Context::getRequestUri());

@@ -129,7 +129,7 @@
 			// Display check_env if not installable
 			if(!$this->install_enable) return $this->dispInstallCheckEnv();
 
-			include _DAOL_PATH_.'files/config/tmpDB.config.php';
+			include _XE_PATH_.'files/config/tmpDB.config.php';
 
 			Context::set('time_zone', $GLOBALS['time_zone']);
 			Context::set('db_type', $db_info->db_type);

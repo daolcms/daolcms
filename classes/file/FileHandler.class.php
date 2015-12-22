@@ -14,7 +14,7 @@ class FileHandler {
 	 **/
 	function getRealPath($source){
 		$temp = explode('/', $source);
-		if($temp[0] == '.') $source = _DAOL_PATH_.substr($source, 2);
+		if($temp[0] == '.') $source = _XE_PATH_.substr($source, 2);
 		return $source;
 	}
 
@@ -211,7 +211,7 @@ class FileHandler {
 			else $file = $file;
 
 			if($concat_prefix){
-				$file = sprintf('%s%s', str_replace(_DAOL_PATH_, '', $path), $file);
+				$file = sprintf('%s%s', str_replace(_XE_PATH_, '', $path), $file);
 			}
 
 			$output[] = $file;
@@ -238,7 +238,7 @@ class FileHandler {
 			if($oFtp == null){
 				if(!Context::isFTPRegisted()) return;
 
-				require_once(_DAOL_PATH_.'libs/ftp.class.php');
+				require_once(_XE_PATH_.'libs/ftp.class.php');
 				$oFtp = new ftp();
 				if(!$ftp_info->ftp_host) $ftp_info->ftp_host = "127.0.0.1";
 				if(!$ftp_info->ftp_port) $ftp_info->ftp_port = 21;
@@ -252,10 +252,10 @@ class FileHandler {
 			if(!$ftp_path) $ftp_path = "/";
 		}
 
-		$path_string = str_replace(_DAOL_PATH_,'',$path_string);
+		$path_string = str_replace(_XE_PATH_,'',$path_string);
 		$path_list = explode('/', $path_string);
 
-		$path = _DAOL_PATH_;
+		$path = _XE_PATH_;
 		for($i=0;$i<count($path_list);$i++){
 			if(!$path_list[$i]) continue;
 			$path .= $path_list[$i].'/';

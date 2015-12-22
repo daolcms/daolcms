@@ -734,7 +734,7 @@
 			$output = executeQueryArray('module.getLang', $args);
 			if(!$output->toBool() || !$output->data) return;
 			// Set the cache directory
-			$cache_path = _DAOL_PATH_.'files/cache/lang_defined/';
+			$cache_path = _XE_PATH_.'files/cache/lang_defined/';
 			if(!is_dir($cache_path)) FileHandler::makeDir($cache_path);
 
 			$langMap = array();

@@ -354,7 +354,7 @@
 			if(!$ignore_cache && file_exists($cache_file)) {
 				$filemtime = filemtime($cache_file);
 				// Should be modified compared to the time of the cache or in the future if creating more than widget.controller.php file a return value of the cache
-				if($filemtime + $widget_cache * 60 > time() && $filemtime > filemtime(_DAOL_PATH_.'modules/widget/widget.controller.php')) {
+				if($filemtime + $widget_cache * 60 > time() && $filemtime > filemtime(_XE_PATH_.'modules/widget/widget.controller.php')) {
 					$cache_body = FileHandler::readFile($cache_file);
 					$cache_body = preg_replace('@<\!--#Meta:@', '<!--Meta:', $cache_body);
 
@@ -399,7 +399,7 @@
 			 **/
 			$widget_content = '';
 			if($widget != 'widgetContent' && $widget != 'widgetBox') {
-				if(!is_dir(sprintf(_DAOL_PATH_.'widgets/%s/',$widget))) return;
+				if(!is_dir(sprintf(_XE_PATH_.'widgets/%s/',$widget))) return;
 				// Hold the contents of the widget parameter
 				$widget_content = $this->getCache($widget, $args);
 			}

@@ -230,7 +230,7 @@
 				}
 				// Output to a file
 				if($buff && __DEBUG_OUTPUT__ == 0) {
-					$debug_file = _DAOL_PATH_.'files/_debug_message.php';
+					$debug_file = _XE_PATH_.'files/_debug_message.php';
 					$buff = sprintf("[%s %s:%d]\n%s\n", date('Y-m-d H:i:s'), $file_name, $line_num, print_r($buff, true));
 
 					$buff = str_repeat('=', 40)."\n".$buff.str_repeat('-', 40);

@@ -565,7 +565,7 @@ class syndicationModel extends syndication
 
 	function getResentPingLogPath()
 	{
-		$target_filename = _DAOL_PATH_.'files/cache/tmp/syndication_ping_log';
+		$target_filename = _XE_PATH_.'files/cache/tmp/syndication_ping_log';
 		if(!file_exists($target_filename))
 		{
 			FileHandler::writeFile($target_filename, '');

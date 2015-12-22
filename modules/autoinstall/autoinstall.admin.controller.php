@@ -1,6 +1,6 @@
 <?php
 
-	require_once(_DAOL_PATH_.'modules/autoinstall/autoinstall.lib.php');
+	require_once(_XE_PATH_.'modules/autoinstall/autoinstall.lib.php');
 
 	/**
 	 * autoinstall module admin controller class
