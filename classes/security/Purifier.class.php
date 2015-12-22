@@ -13,7 +13,7 @@ class Purifier {
 		$this->_checkCacheDir();
 
 		// purifier setting
-		require_once _XE_PATH_ . 'classes/security/htmlpurifier/library/HTMLPurifier.auto.php';
+		require_once _DAOL_PATH_ . 'classes/security/htmlpurifier/library/HTMLPurifier.auto.php';
 		require_once 'HTMLPurifier.func.php';
 
 		$this->_setConfig();
@@ -120,7 +120,7 @@ class Purifier {
 	}
 
 	private function _getWhiteDomainRegx(){
-		require_once(_XE_PATH_ . 'classes/security/EmbedFilter.class.php');
+		require_once(_DAOL_PATH_ . 'classes/security/EmbedFilter.class.php');
 		$oEmbedFilter = EmbedFilter::getInstance();
 		$whiteIframeUrlList = $oEmbedFilter->getWhiteIframeUrlList();
 
@@ -145,7 +145,7 @@ class Purifier {
 
 	private function _checkCacheDir(){
 		// check htmlpurifier cache directory
-		$this->_cacheDir = _XE_PATH_ . 'files/cache/htmlpurifier';
+		$this->_cacheDir = _DAOL_PATH_ . 'files/cache/htmlpurifier';
 		FileHandler::makeDir($this->_cacheDir);
 	}
 

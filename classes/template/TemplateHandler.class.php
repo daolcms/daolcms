@@ -76,7 +76,7 @@ class TemplateHandler {
 		$this->filename = $tpl_filename;
 		$this->file = $tpl_file;
 
-		$this->web_path = $this->xe_path.'/'.ltrim(preg_replace('@^'.preg_quote(_XE_PATH_,'@').'|\./@','',$this->path),'/');
+		$this->web_path = $this->xe_path.'/'.ltrim(preg_replace('@^'.preg_quote(_DAOL_PATH_,'@').'|\./@','',$this->path),'/');
 
 		// get compiled file name
 		$hash = md5($this->file . __DAOL_VERSION__);
@@ -613,7 +613,7 @@ class TemplateHandler {
 			}
 		}
 
-		$path = preg_replace('/^'.preg_quote(_XE_PATH_,'/').'/', '', $path);
+		$path = preg_replace('/^'.preg_quote(_DAOL_PATH_,'/').'/', '', $path);
 
 		return $path;
 	}

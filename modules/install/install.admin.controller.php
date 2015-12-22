@@ -94,7 +94,7 @@
 			if($db_info->default_url && substr($default_url, -1) !== '/') $default_url = $default_url.'/';
 			
 			/* convert NON Alphabet URL to punycode URL - Alphabet URL will not be changed */
-			require_once(_XE_PATH_ . 'libs/idna_convert/idna_convert.class.php');
+			require_once(_DAOL_PATH_ . 'libs/idna_convert/idna_convert.class.php');
 			$IDN = new idna_convert(array('idn_version' => 2008));
 			$db_info->default_url = $IDN->encode($db_info->default_url);
 			
@@ -236,7 +236,7 @@
 				$buff .= sprintf("%s,%s\n", $langs[$i], $lang_supported[$langs[$i]]);
 
 			}
-			FileHandler::writeFile(_XE_PATH_.'files/config/lang_selected.info', trim($buff));
+			FileHandler::writeFile(_DAOL_PATH_.'files/config/lang_selected.info', trim($buff));
 			//$this->setMessage('success_updated');
 		}
 
@@ -262,7 +262,7 @@
 			$mobicon_size = array('57','114');
 			$target_file = $icon['tmp_name'];
 			$type = $icon['type'];
-			$target_filename = _XE_PATH_.'files/attach/xeicon/'.$iconname;
+			$target_filename = _DAOL_PATH_.'files/attach/xeicon/'.$iconname;
 
 			list($width, $height, $type_no, $attrs) = @getimagesize($target_file);
 			if($iconname == 'favicon.ico' && preg_match('/^.*(x-icon|\.icon)$/i',$type)){

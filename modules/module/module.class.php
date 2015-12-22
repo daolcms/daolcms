@@ -88,7 +88,7 @@
 				{
 					$skin_path = explode('.', $item->skin);
 					if(count($skin_path) != 2) continue;
-					if(is_dir(sprintf(_XE_PATH_ . 'themes/%s/modules/%s', $skin_path[0], $skin_path[1]))) return true;
+					if(is_dir(sprintf(_DAOL_PATH_ . 'themes/%s/modules/%s', $skin_path[0], $skin_path[1]))) return true;
 				}
 			}
 
@@ -337,7 +337,7 @@
 				{
 					$skin_path = explode('.', $item->skin);
 					if(count($skin_path) != 2) continue;
-					if(is_dir(sprintf(_XE_PATH_ . 'themes/%s/modules/%s', $skin_path[0], $skin_path[1])))
+					if(is_dir(sprintf(_DAOL_PATH_ . 'themes/%s/modules/%s', $skin_path[0], $skin_path[1])))
 					{
 						unset($args);
 						$args->skin = $item->skin;

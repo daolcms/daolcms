@@ -702,7 +702,7 @@
 			if(__DEBUG_PROTECT__ === 1 && __DEBUG_PROTECT_IP__ != $_SERVER['REMOTE_ADDR']){
 				return;
 			}
-			$debug_file = _XE_PATH_.'files/'.$file;
+			$debug_file = _DAOL_PATH_.'files/'.$file;
 			if(function_exists("memory_get_usage")){
 				$debug_output = sprintf("[%s %s:%d] - mem(%s)\n%s\n", date('Y-m-d H:i:s'), $file_name, $line_num, FileHandler::filesize(memory_get_usage()), print_r($debug_output, true));
 			}
@@ -814,7 +814,7 @@
 	}
 	
 	function purifierHtml(&$content){
-		require_once(_XE_PATH_.'classes/security/Purifier.class.php');
+		require_once(_DAOL_PATH_.'classes/security/Purifier.class.php');
 		$oPurifier = Purifier::getInstance();
 		$oPurifier->purify($content);
 	}
@@ -826,7 +826,7 @@
 	 * @return string
 	 **/
 	function removeHackTag($content){
-		require_once(_XE_PATH_.'classes/security/EmbedFilter.class.php');
+		require_once(_DAOL_PATH_.'classes/security/EmbedFilter.class.php');
 		$oEmbedFilter = EmbedFilter::getInstance();
 		$oEmbedFilter->check($content);
 		
@@ -867,7 +867,7 @@
 	 * @return bool
 	 */
 	function checkUploadedFile($file){
-		require_once(_XE_PATH_ . 'classes/security/UploadFileFilter.class.php');
+		require_once(_DAOL_PATH_ . 'classes/security/UploadFileFilter.class.php');
 		return UploadFileFilter::check($file);
 	}
 
@@ -1200,10 +1200,10 @@
 	 */
 	function requirePear(){
 		if(version_compare(PHP_VERSION, "5.3.0") < 0){
-			set_include_path(_XE_PATH_ . "libs/PEAR" . PATH_SEPARATOR . get_include_path());
+			set_include_path(_DAOL_PATH_ . "libs/PEAR" . PATH_SEPARATOR . get_include_path());
 		}
 		else{
-			set_include_path(_XE_PATH_. "libs/PEAR.1.9.5" . PATH_SEPARATOR . get_include_path());
+			set_include_path(_DAOL_PATH_. "libs/PEAR.1.9.5" . PATH_SEPARATOR . get_include_path());
 		}
 	}
 
@@ -1223,7 +1223,7 @@
 		$referer = $_SERVER["HTTP_REFERER"];
 		
 		if(strpos($default_url, 'xn--') !== FALSE && strpos($referer, 'xn--') === FALSE){
-			require_once(_XE_PATH_ . 'libs/idna_convert/idna_convert.class.php');
+			require_once(_DAOL_PATH_ . 'libs/idna_convert/idna_convert.class.php');
 			$IDN = new idna_convert(array('idn_version' => 2008));
 			$referer = $IDN->encode($referer);
 		}

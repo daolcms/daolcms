@@ -63,9 +63,9 @@
 		 */
 		function getAdminFTPList()
 		{
-			Context::loadLang('./modules/autoinstall/lang');
+			Context::loadLang(_DAOL_PATH_.'modules/autoinstall/lang');
 			set_time_limit(5);
-			require_once(_XE_PATH_.'libs/ftp.class.php');
+			require_once(_DAOL_PATH_.'libs/ftp.class.php');
 			$ftp_info =  Context::getRequestVars();
 			if(!$ftp_info->ftp_user || !$ftp_info->ftp_password)
 			{
@@ -231,7 +231,7 @@
 		 * @return array
 		 */
 		function getThemeList(){
-			$path = _XE_PATH_.'themes';
+			$path = _DAOL_PATH_.'themes';
 			$list = FileHandler::readDir($path);
 
 			$theme_info = array();
@@ -253,7 +253,7 @@
 		function getThemeInfo($theme_name, $layout_list = null){
 			if ($GLOBALS['__ThemeInfo__'][$theme_name]) return $GLOBALS['__ThemeInfo__'][$theme_name];
 
-			$info_file = _XE_PATH_.'themes/'.$theme_name.'/conf/info.xml';
+			$info_file = _DAOL_PATH_.'themes/'.$theme_name.'/conf/info.xml';
 			if(!file_exists($info_file)) return;
 
 			$oXmlParser = new XmlParser();
@@ -266,13 +266,13 @@
 			$theme_info = new stdClass();
 			$theme_info->name = $theme_name;
 			$theme_info->title = $xml_obj->title->body;
-			$thumbnail = './themes/'.$theme_name.'/thumbnail.png';
+			$thumbnail = _DAOL_PATH_.'themes/'.$theme_name.'/thumbnail.png';
 			$theme_info->thumbnail = (file_exists($thumbnail))?$thumbnail:null;
 			$theme_info->version = $xml_obj->version->body;
 			sscanf($xml_obj->date->body, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$theme_info->date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$theme_info->description = $xml_obj->description->body;
-			$theme_info->path = './themes/'.$theme_name.'/';
+			$theme_info->path = _DAOL_PATH_.'themes/'.$theme_name.'/';
 
 			if(!is_array($xml_obj->publisher)) $publisher_list[] = $xml_obj->publisher;
 			else $publisher_list = $xml_obj->publisher;
@@ -383,7 +383,7 @@
 		 */
 		function getModulesSkinList(){
 			if ($GLOBALS['__ThemeModuleSkin__']['__IS_PARSE__']) return $GLOBALS['__ThemeModuleSkin__'];
-			$searched_list = FileHandler::readDir('./modules');
+			$searched_list = FileHandler::readDir(_DAOL_PATH_.'modules');
 			sort($searched_list);
 
 			$searched_count = count($searched_list);
@@ -393,7 +393,7 @@
 
 			$oModuleModel = &getModel('module');
 			foreach($searched_list as $val) {
-				$skin_list = $oModuleModel->getSkins('./modules/'.$val);
+				$skin_list = $oModuleModel->getSkins(_DAOL_PATH_.'modules/'.$val);
 
 				if (is_array($skin_list) && count($skin_list) > 0 && !in_array($val, $exceptionModule)){
 					if(!$GLOBALS['__ThemeModuleSkin__'][$val]){
@@ -417,7 +417,7 @@
 		function getAdminMenuLang()
 		{
 			$currentLang = Context::getLangType();
-			$cacheFile = sprintf('./files/cache/menu/admin_lang/adminMenu.%s.lang.php', $currentLang);
+			$cacheFile = sprintf(_DAOL_PATH_.'files/cache/menu/admin_lang/adminMenu.%s.lang.php', $currentLang);
 
 			// Update if no cache file exists or it is older than xml file
 			if(!is_readable($cacheFile))
@@ -544,7 +544,7 @@
 
 				foreach($list as $k => $v)
 				{
-					if(!is_dir('./modules/' . $v->module))
+					if(!is_dir(_DAOL_PATH_.'modules/' . $v->module))
 					{
 						unset($list[$k]);
 					}
@@ -589,13 +589,12 @@
 				$virtual_site = $site_info->site_srl . '/';
 			}
 
-			$file_exsit = FileHandler::readFile(_XE_PATH_ . 'files/attach/xeicon/' . $virtual_site . $iconname);
+			$file_exsit = FileHandler::readFile(_DAOL_PATH_.'files/attach/xeicon/' . $virtual_site . $iconname);
 			if(!$file_exsit && $default === true){
-				$icon_url = './modules/admin/tpl/img/' . $default_icon_name;
+				$icon_url = _DAOL_PATH_.'modules/admin/tpl/img/' . $default_icon_name;
 			}
 			elseif($file_exsit){
-				$default_url = Context::getDefaultUrl();
-				$icon_url = $default_url . 'files/attach/xeicon/' . $virtual_site . $iconname;
+				$icon_url = _DAOL_PATH_.'files/attach/xeicon/' . $virtual_site . $iconname;
 			}
 			
 			return $icon_url;

@@ -242,7 +242,7 @@
 		 */
 		function _moveCommentToTrash($commentSrlList, &$oCommentController, &$oDB)
 		{
-			require_once(_XE_PATH_.'modules/trash/model/TrashVO.php');
+			require_once(_DAOL_PATH_.'modules/trash/model/TrashVO.php');
 
 			if(is_array($commentSrlList))
 			{
