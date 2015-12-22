@@ -65,7 +65,7 @@
 		{
 			Context::loadLang('./modules/autoinstall/lang');
 			set_time_limit(5);
-			require_once(_XE_PATH_.'libs/ftp.class.php');
+			require_once(_DAOL_PATH_.'libs/ftp.class.php');
 			$ftp_info =  Context::getRequestVars();
 			if(!$ftp_info->ftp_user || !$ftp_info->ftp_password)
 			{
@@ -231,7 +231,7 @@
 		 * @return array
 		 */
 		function getThemeList(){
-			$path = _XE_PATH_.'themes';
+			$path = _DAOL_PATH_.'themes';
 			$list = FileHandler::readDir($path);
 
 			$theme_info = array();
@@ -253,7 +253,7 @@
 		function getThemeInfo($theme_name, $layout_list = null){
 			if ($GLOBALS['__ThemeInfo__'][$theme_name]) return $GLOBALS['__ThemeInfo__'][$theme_name];
 
-			$info_file = _XE_PATH_.'themes/'.$theme_name.'/conf/info.xml';
+			$info_file = _DAOL_PATH_.'themes/'.$theme_name.'/conf/info.xml';
 			if(!file_exists($info_file)) return;
 
 			$oXmlParser = new XmlParser();
@@ -589,13 +589,12 @@
 				$virtual_site = $site_info->site_srl . '/';
 			}
 
-			$file_exsit = FileHandler::readFile(_XE_PATH_ . 'files/attach/xeicon/' . $virtual_site . $iconname);
+			$file_exsit = FileHandler::readFile(_DAOL_PATH_.'files/attach/xeicon/' . $virtual_site . $iconname);
 			if(!$file_exsit && $default === true){
 				$icon_url = './modules/admin/tpl/img/' . $default_icon_name;
 			}
 			elseif($file_exsit){
-				$default_url = Context::getDefaultUrl();
-				$icon_url = $default_url . 'files/attach/xeicon/' . $virtual_site . $iconname;
+				$icon_url = _DAOL_PATH_.'files/attach/xeicon/' . $virtual_site . $iconname;
 			}
 			
 			return $icon_url;

@@ -49,7 +49,7 @@
 				$browserType = mobileXE::getBrowserType();
 				if(!$browserType) return;
 
-				$class_file = sprintf('%saddons/mobile/classes/%s.class.php', _XE_PATH_, $browserType);
+				$class_file = sprintf('%saddons/mobile/classes/%s.class.php', _DAOL_PATH_, $browserType);
 				require_once($class_file);
 				// Download mobile language settings (cookies, not willing to come up when you click create cache file ...- is initialized ..)
 				$this->lang = FileHandler::readFile('./files/cache/addons/mobile/setLangType/personal_settings/'.md5(trim($_SERVER['HTTP_USER_AGENT']).trim($_SERVER['HTTP_PHONE_NUMBER']).trim($_SERVER['HTTP_HTTP_PHONE_NUMBER'])).'.php');
@@ -58,7 +58,7 @@
 					$this->lang = str_replace(array('<?php /**','**/ ?>'),array('',''),$this->lang);
 					if(isset($lang_supported[$this->lang])) Context::setLangType($this->lang);
 				}
-				Context::loadLang(_XE_PATH_.'addons/mobile/lang');
+				Context::loadLang(_DAOL_PATH_.'addons/mobile/lang');
 
 				$instance = new wap();
 
@@ -136,7 +136,7 @@
 			// Save instance
 			$this->oModule = $oModule;
 			// Of the current module if there is a menu by menu
-			$menu_cache_file = sprintf(_XE_PATH_.'files/cache/menu/%d.php', $this->module_info->menu_srl);
+			$menu_cache_file = sprintf(_DAOL_PATH_.'files/cache/menu/%d.php', $this->module_info->menu_srl);
 			if(!file_exists($menu_cache_file)) return;
 
 			include $menu_cache_file;

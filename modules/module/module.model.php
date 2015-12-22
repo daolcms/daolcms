@@ -20,7 +20,7 @@
 		function isIDExists($id, $site_srl = 0) {
 			if(!preg_match('/^[a-z]{1}([a-z0-9_]+)$/i',$id)) return true;
 			// directory and rss/atom/api reserved checking, etc.
-			$dirs = FileHandler::readDir(_XE_PATH_);
+			$dirs = FileHandler::readDir(_DAOL_PATH_);
 			$dirs[] = 'rss';
 			$dirs[] = 'atom';
 			$dirs[] = 'api';
@@ -118,7 +118,7 @@
 					if(!$output->data) {
 						// Create a table if sites table doesn't exist
 						$oDB = &DB::getInstance();
-						if(!$oDB->isTableExists('sites')) $oDB->createTableByXmlFile(_XE_PATH_.'modules/module/schemas/sites.xml');
+						if(!$oDB->isTableExists('sites')) $oDB->createTableByXmlFile(_DAOL_PATH_.'modules/module/schemas/sites.xml');
 						if(!$oDB->isTableExists('sites')) return;
 						// Get mid, language
 						$mid_output = $oDB->executeQuery('module.getDefaultMidInfo', $args);
@@ -512,7 +512,7 @@
 			if(!file_exists($xml_file)) return;
 
 			// Check if cached file exists
-			$cache_file = sprintf(_XE_PATH_ . "files/cache/module_info/%s.%s.%s.php", $module, Context::getLangType(), __DAOL_VERSION__);
+			$cache_file = sprintf(_DAOL_PATH_ . "files/cache/module_info/%s.%s.%s.php", $module, Context::getLangType(), __DAOL_VERSION__);
 			debugPrint($cache_file);
 
 			// Update if no cache file exists or it is older than xml file

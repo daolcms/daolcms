@@ -8,7 +8,7 @@
  * @version 0.1
  */
 
-require_once(_XE_PATH_.'modules/trash/model/TrashVO.php');
+require_once(_DAOL_PATH_.'modules/trash/model/TrashVO.php');
 
 class trash extends ModuleObject {
 	/**

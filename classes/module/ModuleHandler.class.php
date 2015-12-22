@@ -760,7 +760,7 @@
 
 				// Get base class name and load the file contains it
 				if(!class_exists($module, false)){
-					$high_class_file = sprintf('%s%s%s.class.php', _XE_PATH_,$class_path, $module);
+					$high_class_file = sprintf('%s%s%s.class.php', _DAOL_PATH_,$class_path, $module);
 					if(!file_exists($high_class_file)) return NULL;
 					require_once($high_class_file);
 				}
@@ -803,7 +803,7 @@
 		function _getModuleFilePath($module, $type, $kind, &$classPath, &$highClassFile, &$classFile, &$instanceName){
 			$classPath = ModuleHandler::getModulePath($module);
 
-			$highClassFile = sprintf('%s%s%s.class.php', _XE_PATH_,$classPath, $module);
+			$highClassFile = sprintf('%s%s%s.class.php', _DAOL_PATH_,$classPath, $module);
 			$highClassFile = FileHandler::getRealPath($highClassFile);
 
 			$types = explode(' ', 'view controller model api wap mobile class');

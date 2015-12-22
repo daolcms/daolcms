@@ -47,12 +47,12 @@
 			FileHandler::makeDir('./files/cache');
 
 			// remove module extend cache
-			FileHandler::removeFile(_XE_PATH_.'files/config/module_extend.php');
+			FileHandler::removeFile(_DAOL_PATH_.'files/config/module_extend.php');
 			
 			// remove debug files
-			FileHandler::removeFile(_XE_PATH_.'files/_debug_message.php');
-			FileHandler::removeFile(_XE_PATH_.'files/_debug_db_query.php');
-			FileHandler::removeFile(_XE_PATH_.'files/_db_slow_query.php');
+			FileHandler::removeFile(_DAOL_PATH_.'files/_debug_message.php');
+			FileHandler::removeFile(_DAOL_PATH_.'files/_debug_db_query.php');
+			FileHandler::removeFile(_DAOL_PATH_.'files/_db_slow_query.php');
 
 			$oModuleModel = &getModel('module');
 			$module_list = $oModuleModel->getModuleList();
@@ -121,7 +121,7 @@
 		 */
 		function procAdminInsertThemeInfo(){
 			$vars = Context::getRequestVars();
-			$theme_file = _XE_PATH_.'files/theme/theme_info.php';
+			$theme_file = _DAOL_PATH_.'files/theme/theme_info.php';
 
 			$theme_output = sprintf('$theme_info->theme=\'%s\';', $vars->themeItem);
 			$theme_output = $theme_output.sprintf('$theme_info->layout=%s;', $vars->layout);
@@ -325,7 +325,7 @@
 			$oModuleModel = &getModel('module');
 			$oAdminConfig = $oModuleModel->getModuleConfig('admin');
 
-			FileHandler::removeFile(_XE_PATH_.$oAdminConfig->adminLogo);
+			FileHandler::removeFile(_DAOL_PATH_.$oAdminConfig->adminLogo);
 			unset($oAdminConfig->adminLogo);
 
 			$oModuleController = &getController('module');
@@ -381,9 +381,9 @@
 		 */
 		function procAdminRemoveIcons(){
 			$iconname = Context::get('iconname');
-			$file_exist = FileHandler::hasContent(_XE_PATH_.'files/attach/xeicon/'.$iconname);
+			$file_exist = FileHandler::hasContent(_DAOL_PATH_.'files/attach/xeicon/'.$iconname);
 			if($file_exist) {
-				FileHandler::removeFile(_XE_PATH_.'files/attach/xeicon/'.$iconname);
+				FileHandler::removeFile(_DAOL_PATH_.'files/attach/xeicon/'.$iconname);
 			} else {
 				return new Object(-1,'fail_to_delete');
 			}

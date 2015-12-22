@@ -20,7 +20,7 @@ if(Context::get('module')=='admin') return;
 // Manage when to call it
 if($called_position != 'before_module_proc' && $called_position != 'after_module_proc' ) return;
 // Ignore if not mobile browser
-require_once(_XE_PATH_.'addons/mobile/classes/mobile.class.php');
+require_once(_DAOL_PATH_.'addons/mobile/classes/mobile.class.php');
 if(!mobileXE::getBrowserType()) return;
 // Generate mobile instance
 $oMobile = &mobileXE::getInstance();

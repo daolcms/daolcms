@@ -3,7 +3,7 @@
 /* Copyright (C) DAOL Project <http://www.daolcms.org> */
 
 
-include _XE_PATH_ . 'classes/security/phphtmlparser/src/htmlparser.inc';
+include _DAOL_PATH_.'classes/security/phphtmlparser/src/htmlparser.inc';
 
 class EmbedFilter {
 

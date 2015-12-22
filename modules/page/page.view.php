@@ -25,7 +25,7 @@
 			switch($this->module_info->page_type)
 			{
 				case 'WIDGET' : {
-									$this->cache_file = sprintf("%sfiles/cache/page/%d.%s.%s.cache.php", _XE_PATH_, $this->module_info->module_srl, Context::getLangType(), Context::getSslStatus());
+									$this->cache_file = sprintf("%sfiles/cache/page/%d.%s.%s.cache.php", _DAOL_PATH_, $this->module_info->module_srl, Context::getLangType(), Context::getSslStatus());
 									$this->interval = (int)($this->module_info->page_caching_interval);
 									break;
 								}

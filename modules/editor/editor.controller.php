@@ -147,7 +147,7 @@
 				$editor_config = $oEditorModel->getEditorConfig($module_srl);
 				$content_style = $editor_config->content_style;
 				if($content_style) {
-					$path = _XE_PATH_.'modules/editor/styles/'.$content_style.'/';
+					$path = _DAOL_PATH_.'modules/editor/styles/'.$content_style.'/';
 					if(is_dir($path) && file_exists($path.'style.ini')) {
 						$ini = file($path.'style.ini');
 						for($i=0,$c=count($ini);$i<$c;$i++) {
@@ -319,7 +319,7 @@
 			else $output = executeQuery('editor.getComponentList', $args);
 			$db_list = $output->data;
 			// Get a list of files
-			$downloaded_list = FileHandler::readDir(_XE_PATH_.'modules/editor/components');
+			$downloaded_list = FileHandler::readDir(_DAOL_PATH_.'modules/editor/components');
 			// Get information about log-in status and its group
 			$is_logged = Context::get('is_logged');
 			if($is_logged) {
@@ -385,8 +385,8 @@
 
 				$component_list->{$component_name} = $xml_info;
 				// Get buttons, icons, images
-				$icon_file = _XE_PATH_.'modules/editor/components/'.$component_name.'/icon.gif';
-				$component_icon_file = _XE_PATH_.'modules/editor/components/'.$component_name.'/component_icon.gif';
+				$icon_file = _DAOL_PATH_.'modules/editor/components/'.$component_name.'/icon.gif';
+				$component_icon_file = _DAOL_PATH_.'modules/editor/components/'.$component_name.'/component_icon.gif';
 				if(file_exists($icon_file)) $component_list->{$component_name}->icon = true;
 				if(file_exists($component_icon_file)) $component_list->{$component_name}->component_icon = true;
 			}

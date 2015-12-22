@@ -802,7 +802,7 @@
 					$site_module_info = $oModuleModel->getDefaultMid();
 					Context::set('site_module_info', $site_module_info);
 				}
-				$cache_file = sprintf('%sfiles/cache/lang_defined/%d.%s.php', _XE_PATH_, $site_module_info->site_srl, Context::getLangType());
+				$cache_file = sprintf('%sfiles/cache/lang_defined/%d.%s.php', _DAOL_PATH_, $site_module_info->site_srl, Context::getLangType());
 				if(!file_exists($cache_file)) {
 					$oModuleAdminController = &getAdminController('module');
 					$oModuleAdminController->makeCacheDefinedLangCode($site_module_info->site_srl);
@@ -810,7 +810,7 @@
 
 				if(file_exists($cache_file))
 				{
-					$moduleAdminControllerMtime = filemtime(_XE_PATH_ . 'modules/module/module.admin.controller.php');
+					$moduleAdminControllerMtime = filemtime(_DAOL_PATH_.'modules/module/module.admin.controller.php');
 					$cacheFileMtime = filemtime($cache_file);
 					if($cacheFileMtime < $moduleAdminControllerMtime)
 					{

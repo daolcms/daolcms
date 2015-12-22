@@ -41,11 +41,11 @@
 			if(!$editor_config->sel_comment_editor_colorset) $editor_config->sel_comment_editor_colorset= 'moono';
 			
 			$component_list = $oEditorModel->getComponentList(false, $site_srl, true);			
-			$editor_skin_list = FileHandler::readDir(_XE_PATH_.'modules/editor/skins');
+			$editor_skin_list = FileHandler::readDir(_DAOL_PATH_.'modules/editor/skins');
 			
 			$skin_info = $oModuleModel->loadSkinInfo($this->module_path,$editor_config->editor_skin);
 			
-			$contents = FileHandler::readDir(_XE_PATH_.'modules/editor/styles');
+			$contents = FileHandler::readDir(_DAOL_PATH_.'modules/editor/styles');
 			for($i=0,$c=count($contents);$i<$c;$i++) {
 				$style = $contents[$i];
 				$info = $oModuleModel->loadSkinInfo($this->module_path,$style,'styles');
