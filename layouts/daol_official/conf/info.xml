@@ -110,7 +110,7 @@
 			<title xml:lang="ko">배너 주소 3</title>
 			<title xml:lang="en">Banner URL 3</title>
 			<description xml:lang="ko">배너 3번 슬라이드를 클릭하면 이동될 주소입니다.</description>
-			<description xml:lang="en">The domain address of the banner slide 3.<description>
+			<description xml:lang="en">The domain address of the banner slide 3.</description>
 		</var>
 		<var name="banner_image_4" type="image">
 			<title xml:lang="ko">배너 이미지 4</title>
