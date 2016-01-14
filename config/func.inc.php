@@ -1150,18 +1150,20 @@
 	 * @param string $agent if set, use this value instead HTTP_USER_AGENT
 	 * @return bool
 	 */
-	function isCrawler($agent = null){
-		if(!$agent) $agent = $_SERVER['HTTP_USER_AGENT'];
-		$check_agent = array('bot', 'spider', 'google', 'yahoo', 'daum', 'teoma', 'fish', 'hanrss', 'facebook');
-		$check_ip = array(
-			'211.245.21.110-211.245.21.119' /* mixsh */
-		);
-
-		foreach($check_agent as $str){
-			if(stristr($agent, $str) != FALSE) return true;
+	function isCrawler($agent = NULL){
+		if(!$agent){
+			$agent = $_SERVER['HTTP_USER_AGENT'];
 		}
-
-		return IpFilter::filter($check_ip, '211.245.21.113');
+		$check_agent = array('bot', 'spider', 'spyder', 'crawl', 'http://', 'google', 'yahoo', 'slurp', 'yeti', 'daum', 'teoma', 'fish', 'hanrss', 'facebook', 'yandex', 'infoseek', 'askjeeves', 'stackrambler');
+		$check_ip = array(
+			/*'211.245.21.110-211.245.21.119' mixsh is closed */
+		);
+		foreach($check_agent as $str){
+			if(stristr($agent, $str) != FALSE){
+				return TRUE;
+			}
+		}
+		return IpFilter::filter($check_ip);
 	}
 
 	/**
