@@ -80,12 +80,16 @@
 		 **/
 		function insertUniqueVisitor($site_srl=0) {
 			$args = new stdClass();
-			$args->regdate = '0,' . date('Ymd');
 			if($site_srl) {
+				$args->regdate = '0';
 				$args->site_srl = $site_srl;
 				$output = executeQuery('counter.updateSiteCounterUnique', $args);
-			}
-			else {
+				$args->regdate = date('Ymd');
+				$output = executeQuery('counter.updateSiteCounterUnique', $args);
+			} else {
+				$args->regdate = '0';
+				$output = executeQuery('counter.updateCounterUnique', $args);
+				$args->regdate = date('Ymd');
 				$output = executeQuery('counter.updateCounterUnique', $args);
 			}
 		}
@@ -97,6 +101,7 @@
 		 * @return void
 		 **/
 		function insertPageView($site_srl=0) {
+			$args = new stdClass();
 			if($site_srl) { 
 				$args->regdate = '0';
 				$args->site_srl = $site_srl;
