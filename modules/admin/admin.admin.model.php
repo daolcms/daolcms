@@ -591,10 +591,10 @@
 
 			$file_exsit = FileHandler::readFile(_DAOL_PATH_.'files/attach/xeicon/' . $virtual_site . $iconname);
 			if(!$file_exsit && $default === true){
-				$icon_url = './modules/admin/tpl/img/' . $default_icon_name;
+				$icon_url = '/modules/admin/tpl/img/' . $default_icon_name;
 			}
 			elseif($file_exsit){
-				$icon_url = _DAOL_PATH_.'files/attach/xeicon/' . $virtual_site . $iconname;
+				$icon_url = '/files/attach/xeicon/' . $virtual_site . $iconname;
 			}
 			
 			return $icon_url;
