@@ -16,7 +16,7 @@
 		 **/
 		function init(){
 			// Error occurs if already installed
-			if(Context::isInstalled()) {
+			if(Context::isInstalled()){
 				return new Object(-1, 'msg_already_installed');
 			}
 
@@ -102,7 +102,7 @@
 			// Create a db temp config file
 			if(!$this->makeDBConfigFile()) return new Object(-1, 'msg_install_failed');
 
-			if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))) {
+			if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))){
 				$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'act', 'dispInstallConfigForm');
 				header('location:'.$returnUrl);
 				return;
@@ -120,7 +120,7 @@
 			// Create a db temp config file
 			if(!$this->makeEtcConfigFile($config_info)) return new Object(-1, 'msg_install_failed');
 
-			if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))) {
+			if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))){
 				$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'act', 'dispInstallManagerForm');
 				header('location:'.$returnUrl);
 				return;
@@ -188,7 +188,7 @@
 			// Display a message that installation is completed
 			$this->setMessage('msg_install_completed');
 
-			if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))) {
+			if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))){
 				$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('');
 				header('location:'.$returnUrl);
 				return;
@@ -234,34 +234,34 @@
 			}
 			$buff .= "?".">";
 			// If safe_mode
-			if(ini_get('safe_mode')) {
+			if(ini_get('safe_mode')){
 				if(!$ftp_info->ftp_user || !$ftp_info->ftp_password) return new Object(-1,'msg_safe_mode_ftp_needed');
 
 				require_once(_DAOL_PATH_.'libs/ftp.class.php');
 				$oFtp = new ftp();
 				if(!$oFtp->ftp_connect($ftp_info->ftp_host, $ftp_info->ftp_port)) return new Object(-1, sprintf(Context::getLang('msg_ftp_not_connected'), $ftp_info->ftp_host));
 
-				if(!$oFtp->ftp_login($ftp_info->ftp_user, $ftp_info->ftp_password)) {
+				if(!$oFtp->ftp_login($ftp_info->ftp_user, $ftp_info->ftp_password)){
 					$oFtp->ftp_quit();
 					return new Object(-1,'msg_ftp_invalid_auth_info');
 				}
 
-				if(!is_dir(_DAOL_PATH_.'files') && !$oFtp->ftp_mkdir($ftp_info->ftp_root_path.'files')) {
+				if(!is_dir(_DAOL_PATH_.'files') && !$oFtp->ftp_mkdir($ftp_info->ftp_root_path.'files')){
 					$oFtp->ftp_quit();
 					return new Object(-1,'msg_ftp_mkdir_fail');
 				}
 
-				if(!$oFtp->ftp_site("CHMOD 777 ".$ftp_info->ftp_root_path.'files')) {
+				if(!$oFtp->ftp_site("CHMOD 777 ".$ftp_info->ftp_root_path.'files')){
 					$oFtp->ftp_quit();
 					return new Object(-1,'msg_ftp_chmod_fail');
 				}
 
-				if(!is_dir(_DAOL_PATH_.'files/config') && !$oFtp->ftp_mkdir($ftp_info->ftp_root_path.'files/config')) {
+				if(!is_dir(_DAOL_PATH_.'files/config') && !$oFtp->ftp_mkdir($ftp_info->ftp_root_path.'files/config')){
 					$oFtp->ftp_quit();
 					return new Object(-1,'msg_ftp_mkdir_fail');
 				}
 
-				if(!$oFtp->ftp_site("CHMOD 777 ".$ftp_info->ftp_root_path.'files/config')) {
+				if(!$oFtp->ftp_site("CHMOD 777 ".$ftp_info->ftp_root_path.'files/config')){
 					$oFtp->ftp_quit();
 					return new Object(-1,'msg_ftp_chmod_fail');
 				}
@@ -273,7 +273,7 @@
 			FileHandler::WriteFile($config_file, $buff);
 		}
 
-		function procInstallCheckFtp() {
+		function procInstallCheckFtp(){
 			$ftp_info = Context::gets('ftp_user','ftp_password','ftp_port','sftp');
 			$ftp_info->ftp_port = (int)$ftp_info->ftp_port;
 			if(!$ftp_info->ftp_port) $ftp_info->ftp_port = 21;
@@ -281,21 +281,18 @@
 
 			if(!$ftp_info->ftp_user || !$ftp_info->ftp_password) return new Object(-1,'msg_safe_mode_ftp_needed');
 
-			if($ftp_info->sftp == 'Y')
-			{
+			if($ftp_info->sftp == 'Y'){
 				$connection = ssh2_connect('localhost', $ftp_info->ftp_port);
-				if(!ssh2_auth_password($connection, $ftp_info->ftp_user, $ftp_info->ftp_password))
-				{
+				if(!ssh2_auth_password($connection, $ftp_info->ftp_user, $ftp_info->ftp_password)){
 					return new Object(-1,'msg_ftp_invalid_auth_info');
 				}
 			}
-			else
-			{
+			else{
 				require_once(_DAOL_PATH_.'libs/ftp.class.php');
 				$oFtp = new ftp();
 				if(!$oFtp->ftp_connect('localhost', $ftp_info->ftp_port)) return new Object(-1, sprintf(Context::getLang('msg_ftp_not_connected'), 'localhost'));
 
-				if(!$oFtp->ftp_login($ftp_info->ftp_user, $ftp_info->ftp_password)) {
+				if(!$oFtp->ftp_login($ftp_info->ftp_user, $ftp_info->ftp_password)){
 					$oFtp->ftp_quit();
 					return new Object(-1,'msg_ftp_invalid_auth_info');
 				}
@@ -309,14 +306,13 @@
 		/**
 		 * @brief Result returned after checking the installation environment
 		 **/
-		function checkInstallEnv() {
+		function checkInstallEnv(){
 			// Check each item
 			$checklist = array();
 			// 0. check your version of php (5.2.2 is not supported)
 			if(phpversion()=='5.2.2') $checklist['php_version'] = false;    
 
-			else if(version_compare(PHP_VERSION, '5.3.10') == -1)
-			{
+			else if(version_compare(PHP_VERSION, '5.3.10') == -1){
 				$checklist['php_version'] = true;
 				Context::set('phpversion_warning', true);
 			}
@@ -354,20 +350,21 @@
 		/**
 		 * @brief License agreement
 		 **/
-		function procInstallLicenseAggrement() {
+		function procInstallLicenseAggrement(){
 			$vars = Context::getRequestVars();
 			
 			$license_agreement = ($vars->license_agreement == 'Y') ? true : false;
 			
-			if($license_agreement) {
+			if($license_agreement){
 				$currentTime = $_SERVER['REQUEST_TIME'];
 				FileHandler::writeFile($this->flagLicenseAgreement, $currentTime);
-			} else {
+			}
+			else{
 				FileHandler::removeFile($this->flagLicenseAgreement);
 				return new Object(-1, 'msg_must_accept_license_agreement');
 			}
 			
-			if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))) {
+			if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))){
 				$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'act', 'dispInstallCheckEnv');
 				$this->setRedirectUrl($returnUrl);
 			}
@@ -377,7 +374,7 @@
 		 * @brief Create files and subdirectories
 		 * Local evironment setting before installation by using DB information
 		 **/
-		function makeDefaultDirectory() {
+		function makeDefaultDirectory(){
 			$directory_list = array(
 					'./files/config',
 					'./files/cache/queries',
@@ -385,7 +382,7 @@
 					'./files/cache/template_compiled',
 				);
 
-			foreach($directory_list as $dir) {
+			foreach($directory_list as $dir){
 				FileHandler::makeDir($dir);
 			}
 		}
@@ -395,7 +392,7 @@
 		 *
 		 * Create a table by using schema xml file in the shcema directory of each module
 		 **/
-		function installDownloadedModule() {
+		function installDownloadedModule(){
 			$oModuleModel = &getModel('module');
 			// Create a table ny finding schemas/*.xml file in each module
 			$module_list = FileHandler::readDir('./modules/', NULL, false, true);
@@ -415,15 +412,14 @@
 			// Determine the order of module installation depending on category
 			$install_step = array('system','content','member');
 			// Install all the remaining modules
-			foreach($install_step as $category) {
-				if(count($modules[$category])) {
-					foreach($modules[$category] as $module) {
+			foreach($install_step as $category){
+				if(count($modules[$category])){
+					foreach($modules[$category] as $module){
 						if($module == 'module') continue;
 						$this->installModule($module, sprintf('./modules/%s', $module));
 
 						$oModule = &getClass($module);
-						if(is_object($oModule) && method_exists($oModule, 'checkUpdate'))
-						{
+						if(is_object($oModule) && method_exists($oModule, 'checkUpdate')){
 							if($oModule->checkUpdate()) $oModule->moduleUpdate();
 						}
 					}
@@ -432,15 +428,14 @@
 			}
 			// Install all the remaining modules
 			if(count($modules)) {
-				foreach($modules as $category => $module_list) {
-					if(count($module_list)) {
-						foreach($module_list as $module) {
+				foreach($modules as $category => $module_list){
+					if(count($module_list)){
+						foreach($module_list as $module){
 							if($module == 'module') continue;
 							$this->installModule($module, sprintf('./modules/%s', $module));
 
 							$oModule = &getClass($module);
-							if($oModule && method_exists($oModule, 'checkUpdate') && method_exists($oModule, 'moduleUpdate'))
-							{
+							if($oModule && method_exists($oModule, 'checkUpdate') && method_exists($oModule, 'moduleUpdate')){
 								if($oModule->checkUpdate()) $oModule->moduleUpdate();
 							}
 						}
@@ -454,7 +449,7 @@
 		/**
 		 * @brief Install an each module
 		 **/
-		function installModule($module, $module_path) {
+		function installModule($module, $module_path){
 			// create db instance
 			$oDB = &DB::getInstance();
 			// Create a table if the schema xml exists in the "schemas" directory of the module
@@ -462,7 +457,7 @@
 			$schema_files = FileHandler::readDir($schema_dir, NULL, false, true);
 
 			$file_cnt = count($schema_files);
-			for($i=0;$i<$file_cnt;$i++) {
+			for($i=0;$i<$file_cnt;$i++){
 				$file = trim($schema_files[$i]);
 				if(!$file || substr($file,-4)!='.xml') continue;
 				$output = $oDB->createTableByXmlFile($file);
@@ -516,8 +511,9 @@
 				else if($key == 'admin_ip_list'){
 					$buff .= sprintf('$db_info->%s = array(\'%s\');' . PHP_EOL, $key, implode('\', \'', $val));
 				}
-				else
+				else{
 					$buff .= sprintf("\$db_info->%s = '%s';" . PHP_EOL, $key, str_replace("'","\\'",$val));
+				}
 			}
 			$buff .= "?>";
 			return $buff;
@@ -527,7 +523,7 @@
 		 * @brief Create DB temp config file
 		 * Create the config file when all settings are completed
 		 **/
-		function makeDBConfigFile() {
+		function makeDBConfigFile(){
 			$db_tmp_config_file = $this->db_tmp_config_file;
 
 			$db_info = Context::getDBInfo();
@@ -545,11 +541,11 @@
 		 * @brief Create etc config file
 		 * Create the config file when all settings are completed
 		 **/
-		function makeEtcConfigFile($config_info) {
+		function makeEtcConfigFile($config_info){
 			$etc_tmp_config_file = $this->etc_tmp_config_file;
 
 			$buff = '<?php if(!defined("__ZBXE__")) exit();'."\n";
-			foreach($config_info as $key => $val) {
+			foreach($config_info as $key => $val){
 				$buff .= sprintf("\$db_info->%s = '%s';\n", $key, str_replace("'","\\'",$val));
 			}
 			$buff .= "?>";
@@ -564,7 +560,7 @@
 		 * @brief Create config file
 		 * Create the config file when all settings are completed
 		 **/
-		function makeConfigFile() {
+		function makeConfigFile(){
 			$config_file = Context::getConfigFile();
 			//if(file_exists($config_file)) return;
 
@@ -575,7 +571,7 @@
 
 			FileHandler::writeFile($config_file, $buff);
 
-			if(@file_exists($config_file)) {
+			if(@file_exists($config_file)){
 				FileHandler::removeFile($this->db_tmp_config_file);
 				FileHandler::removeFile($this->etc_tmp_config_file);
 				return true;

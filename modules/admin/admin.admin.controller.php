@@ -40,7 +40,7 @@
 		 * Regenerate all cache files
 		 * @return void
 		 */
-		function procAdminRecompileCacheFile() {
+		function procAdminRecompileCacheFile(){
 			// rename cache dir
 			$temp_cache_dir = './files/cache_'. time();
 			FileHandler::rename('./files/cache', $temp_cache_dir);
@@ -58,7 +58,7 @@
 			$module_list = $oModuleModel->getModuleList();
 
 			// call recompileCache for each module
-			foreach($module_list as $module) {
+			foreach($module_list as $module){
 				$oModule = null;
 				$oModule = &getClass($module->module);
 				if(method_exists($oModule, 'recompileCache')) $oModule->recompileCache();
@@ -91,8 +91,7 @@
 
 			// remove duplicate indexes (only for CUBRID)
 			$db_type = &Context::getDBType();
-			if($db_type == 'cubrid')
-			{
+			if($db_type == 'cubrid'){
 				$db = &DB::getInstance();
 				$db->deleteDuplicateIndexes();
 			}
@@ -108,8 +107,8 @@
 		 * Logout
 		 * @return void
 		 */
-		function procAdminLogout() {
-			$oMemberController = &getController('member');
+		function procAdminLogout(){
+			$oMemberController = getController('member');
 			$oMemberController->procMemberLogout();
 
 			header('Location: '.getNotEncodedUrl('', 'module','admin'));
@@ -152,8 +151,7 @@
 					$theme_output = $theme_output.sprintf('$theme_info->skin_info[%s]=\'%s\';', $module, $val);
 					$skin_args->skin = $val;
 					$skin_args->module = $module;
-					if ($module == 'page')
-					{
+					if ($module == 'page'){
 						$article_output = executeQueryArray('page.getArticlePageSrls');
 						if (count($article_output->data)>0){
 							$article_module_srls = array();
@@ -193,8 +191,7 @@
 		 * Toggle favorite
 		 * @return void
 		 */
-		function procAdminToggleFavorite()
-		{
+		function procAdminToggleFavorite(){
 			$siteSrl = Context::get('site_srl');
 			$moduleName = Context::get('module_name');
 
@@ -204,16 +201,14 @@
 			if (!$output->toBool()) return $output;
 
 			// if exists, delete favorite
-			if ($output->get('result'))
-			{
+			if ($output->get('result')){
 				$favoriteSrl = $output->get('favoriteSrl');
 				$output = $this->_deleteFavorite($favoriteSrl);
 				$result = 'off';
 			}
 
 			// if not exists, insert favorite
-			else
-			{
+			else{
 				$output = $this->_insertFavorite($siteSrl, $moduleName);
 				$result = 'on';
 			}
@@ -229,44 +224,36 @@
 		 * Cleanning favorite
 		 * @return Object
 		 */
-		function cleanFavorite()
-		{
+		function cleanFavorite(){
 			$oModel = getAdminModel('admin');
 			$output = $oModel->getFavoriteList();
-			if(!$output->toBool())
-			{
+			if(!$output->toBool()){
 				return $output;
 			}
 
 			$favoriteList = $output->get('favoriteList');
-			if(!$favoriteList)
-			{
+			if(!$favoriteList){
 				return new Object();
 			}
 
 			$deleteTargets = array();
-			foreach($favoriteList as $favorite)
-			{
-				if($favorite->type == 'module')
-				{
+			foreach($favoriteList as $favorite){
+				if($favorite->type == 'module'){
 					$modulePath = './modules/' . $favorite->module;
 					$modulePath = FileHandler::getRealPath($modulePath);
-					if(!is_dir($modulePath))
-					{
+					if(!is_dir($modulePath)){
 						$deleteTargets[] = $favorite->admin_favorite_srl;
 					}
 				}
 			}
 
-			if(!count($deleteTargets))
-			{
+			if(!count($deleteTargets)){
 				return new Object();
 			}
 
 			$args->admin_favorite_srls = $deleteTargets;
 			$output = executeQuery('admin.deleteFavorites', $args);
-			if(!$output->toBool())
-			{
+			if(!$output->toBool()){
 				return $output;
 			}
 
@@ -277,16 +264,14 @@
 		 * Admin config update
 		 * @return void
 		 */
-		function procAdminUpdateConfig()
-		{
+		function procAdminUpdateConfig(){
 			$adminTitle = Context::get('adminTitle');
 			$file = $_FILES['adminLogo'];
 
 			$oModuleModel = &getModel('module');
 			$oAdminConfig = $oModuleModel->getModuleConfig('admin');
 
-			if($file['tmp_name'])
-			{
+			if($file['tmp_name']){
 				$target_path = 'files/attach/images/admin/';
 				FileHandler::makeDir($target_path);
 
@@ -304,8 +289,7 @@
 			if($adminTitle) $oAdminConfig->adminTitle = strip_tags($adminTitle);
 			else unset($oAdminConfig->adminTitle);
 
-			if($oAdminConfig)
-			{
+			if($oAdminConfig){
 				$oModuleController = &getController('module');
 				$oModuleController->insertModuleConfig('admin', $oAdminConfig);
 			}
@@ -320,8 +304,7 @@
 		 * Admin logo delete
 		 * @return void
 		 */
-		function procAdminDeleteLogo()
-		{
+		function procAdminDeleteLogo(){
 			$oModuleModel = &getModel('module');
 			$oAdminConfig = $oModuleModel->getModuleConfig('admin');
 
@@ -341,8 +324,7 @@
 		 * Insert favorite
 		 * @return object query result
 		 */
-		function _insertFavorite($siteSrl, $module, $type = 'module')
-		{
+		function _insertFavorite($siteSrl, $module, $type = 'module'){
 			$args = new stdClass();
 			$args->adminFavoriteSrl = getNextSequence();
 			$args->site_srl = $siteSrl;
@@ -356,8 +338,7 @@
 		 * Delete favorite
 		 * @return object query result
 		 */
-		function _deleteFavorite($favoriteSrl)
-		{
+		function _deleteFavorite($favoriteSrl){
 			$args = new stdClass();
 			$args->admin_favorite_srl = $favoriteSrl;
 			$output = executeQuery('admin.deleteFavorite', $args);
@@ -368,8 +349,7 @@
 		 * Delete all favorite
 		 * @return object query result
 		 */
-		function _deleteAllFavorite()
-		{
+		function _deleteAllFavorite(){
 			$args = null;
 			$output = executeQuery('admin.deleteAllFavorite', $args);
 			return $output;

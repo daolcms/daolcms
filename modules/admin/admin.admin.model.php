@@ -7,8 +7,7 @@
 	 * @package /modules/admin
 	 * @version 0.1
 	 */
-	class adminAdminModel extends admin
-	{
+	class adminAdminModel extends admin{
 		/**
 		 * Ftp root path
 		 * @var string
@@ -24,16 +23,13 @@
 		 * Add file list to Object after sftp connect
 		 * @return void|Object
 		 */
-		function getSFTPList()
-		{
+		function getSFTPList(){
 			$ftp_info =  Context::getRequestVars();
-			if(!$ftp_info->ftp_host)
-			{
+			if(!$ftp_info->ftp_host){
 				$ftp_info->ftp_host = "127.0.0.1";
 			}
 			$connection = ssh2_connect($ftp_info->ftp_host, $ftp_info->ftp_port);
-			if(!ssh2_auth_password($connection, $ftp_info->ftp_user, $ftp_info->ftp_password))
-			{
+			if(!ssh2_auth_password($connection, $ftp_info->ftp_user, $ftp_info->ftp_password)){
 				return new Object(-1,'msg_ftp_invalid_auth_info');
 			}
 
@@ -42,13 +38,11 @@
 			$dh = @opendir($curpwd);
 			if(!$dh) return new Object(-1, 'msg_ftp_invalid_path');
 			$list = array();
-			while(($file = readdir($dh)) !== false) {
-				if(is_dir($curpwd.$file))
-				{
+			while(($file = readdir($dh)) !== false){
+				if(is_dir($curpwd.$file)){
 					$file .= "/";
 				}
-				else
-				{
+				else{
 					continue;
 				}
 				$list[] = $file;
@@ -61,32 +55,27 @@
 		 * Add file list to Object after ftp connect
 		 * @return void|Object
 		 */
-		function getAdminFTPList()
-		{
+		function getAdminFTPList(){
 			Context::loadLang('./modules/autoinstall/lang');
 			set_time_limit(5);
 			require_once(_DAOL_PATH_.'libs/ftp.class.php');
 			$ftp_info =  Context::getRequestVars();
-			if(!$ftp_info->ftp_user || !$ftp_info->ftp_password)
-			{
+			if(!$ftp_info->ftp_user || !$ftp_info->ftp_password){
 				return new Object(-1, 'msg_ftp_invalid_auth_info');
 			}
 
 			$this->pwd = $ftp_info->ftp_root_path;
 
-			if(!$ftp_info->ftp_host)
-			{
+			if(!$ftp_info->ftp_host){
 				$ftp_info->ftp_host = "127.0.0.1";
 			}
 
-			if (!$ftp_info->ftp_port || !is_numeric ($ftp_info->ftp_port)) {
+			if (!$ftp_info->ftp_port || !is_numeric ($ftp_info->ftp_port)){
 				$ftp_info->ftp_port = "21";
 			}
 
-			if($ftp_info->sftp == 'Y')
-			{
-				if(!function_exists(ssh2_sftp))
-				{
+			if($ftp_info->sftp == 'Y'){
+				if(!function_exists(ssh2_sftp)){
 					return new Object(-1,'disable_sftp_support');
 				}
 				return $this->getSFTPList();
@@ -94,12 +83,11 @@
 
 			$oFtp = new ftp();
 			if($oFtp->ftp_connect($ftp_info->ftp_host, $ftp_info->ftp_port)){
-				if($oFtp->ftp_login($ftp_info->ftp_user, $ftp_info->ftp_password)) {
+				if($oFtp->ftp_login($ftp_info->ftp_user, $ftp_info->ftp_password)){
 					$_list = $oFtp->ftp_rawlist($this->pwd);
 					$oFtp->ftp_quit();
 				}
-				else
-				{
+				else{
 					return new Object(-1,'msg_ftp_invalid_auth_info');
 				}
 			}
@@ -114,8 +102,7 @@
 					if(strpos($v,'d') === 0 || strpos($v, '<DIR>')) $list[] = substr(strrchr($v,' '),1) . '/';
 				}
 			}
-			else
-			{
+			else{
 				return new Object(-1,'msg_ftp_no_directory');
 			}
 			$this->add('list', $list);
@@ -126,7 +113,7 @@
 		 * @param string $type 'WORKING', 'INSTALL'
 		 * @return string
 		 */
-		function getEnv($type='WORKING') {
+		function getEnv($type='WORKING'){
 
 			 $skip = array(
 					 	'ext' => array('pcre','json','hash','dom','session','spl','standard','date','ctype','tokenizer','apache2handler','filter','posix','reflection','pdo')
@@ -153,7 +140,7 @@
 			$info['use_ssl'] = $db_info->use_ssl;
 
 			$info['phpext'] = '';
-			foreach (get_loaded_extensions() as $ext) {
+			foreach (get_loaded_extensions() as $ext){
 				$ext = strtolower($ext);
 				if(in_array($ext, $skip['ext'])) continue;
 				$info['phpext'] .= '|'. $ext;
@@ -181,10 +168,8 @@
 			$info['layout'] = "";
 			$oLayoutModel = getModel('layout');
 			$layout_list = $oLayoutModel->getDownloadedLayoutList();
-			foreach($layout_list as $layout)
-			{
-				if(in_array($layout->layout, $skip['layout']))
-				{
+			foreach($layout_list as $layout){
+				if(in_array($layout->layout, $skip['layout'])){
 					continue;
 				}
 				$info['layout'] .= '|' . $layout->layout;
@@ -194,10 +179,8 @@
 			$info['widget'] = "";
 			$oWidgetModel = getModel('widget');
 			$widget_list = $oWidgetModel->getDownloadedWidgetList();
-			foreach($widget_list as $widget)
-			{
-				if(in_array($widget->widget, $skip['widget']))
-				{
+			foreach($widget_list as $widget){
+				if(in_array($widget->widget, $skip['widget'])){
 					continue;
 				}
 				$info['widget'] .= '|' . $widget->widget;
@@ -207,10 +190,8 @@
 			$info['widgetstyle'] = "";
 			$oWidgetModel = getModel('widget');
 			$widgetstyle_list = $oWidgetModel->getDownloadedWidgetStyleList();
-			foreach($widgetstyle_list as $widgetstyle)
-			{
-				if(in_array($widgetstyle->widgetStyle, $skip['widgetstyle']))
-				{
+			foreach($widgetstyle_list as $widgetstyle){
+				if(in_array($widgetstyle->widgetStyle, $skip['widgetstyle'])){
 					continue;
 				}
 				$info['widgetstyle'] .= '|' . $widgetstyle->widgetStyle;
@@ -277,7 +258,7 @@
 			if(!is_array($xml_obj->publisher)) $publisher_list[] = $xml_obj->publisher;
 			else $publisher_list = $xml_obj->publisher;
 
-			foreach($publisher_list as $publisher) {
+			foreach($publisher_list as $publisher){
 				$publisher_obj = new stdClass();
 				$publisher_obj->name = $publisher->name->body;
 				$publisher_obj->email_address = $publisher->attrs->email_address;
@@ -392,7 +373,7 @@
 			$exceptionModule = array('editor', 'poll', 'homepage', 'textyle');
 
 			$oModuleModel = &getModel('module');
-			foreach($searched_list as $val) {
+			foreach($searched_list as $val){
 				$skin_list = $oModuleModel->getSkins('./modules/'.$val);
 
 				if (is_array($skin_list) && count($skin_list) > 0 && !in_array($val, $exceptionModule)){
@@ -414,25 +395,20 @@
 		 * Return admin menu language
 		 * @return array
 		 */
-		function getAdminMenuLang()
-		{
+		function getAdminMenuLang(){
 			$currentLang = Context::getLangType();
 			$cacheFile = sprintf('./files/cache/menu/admin_lang/adminMenu.%s.lang.php', $currentLang);
 
 			// Update if no cache file exists or it is older than xml file
-			if(!is_readable($cacheFile))
-			{
+			if(!is_readable($cacheFile)){
 				$oModuleModel = &getModel('module');
 				$installed_module_list = $oModuleModel->getModulesXmlInfo();
 
 				$this->gnbLangBuffer = '<?php ';
-				foreach($installed_module_list AS $key=>$value)
-				{
+				foreach($installed_module_list AS $key=>$value){
 					$moduleActionInfo = $oModuleModel->getModuleActionXml($value->module);
-					if(is_object($moduleActionInfo->menu))
-					{
-						foreach($moduleActionInfo->menu AS $key2=>$value2)
-						{
+					if(is_object($moduleActionInfo->menu)){
+						foreach($moduleActionInfo->menu AS $key2=>$value2){
 							$lang->menu_gnb_sub[$key2] = $value2->title;
 							$this->gnbLangBuffer .=sprintf('$lang->menu_gnb_sub[\'%s\'] = \'%s\';', $key2, $value2->title);
 						}
@@ -452,19 +428,16 @@
 		 * @param bool $isGetModuleInfo
 		 * @return object
 		 */
-		function getFavoriteList($siteSrl = 0, $isGetModuleInfo = false)
-		{
+		function getFavoriteList($siteSrl = 0, $isGetModuleInfo = false){
 			$args = new stdClass();
 			$args->site_srl = $siteSrl;
 			$output = executeQueryArray('admin.getFavoriteList', $args);
 			if (!$output->toBool()) return $output;
 			if (!$output->data) return new Object();
 
-			if($isGetModuleInfo && is_array($output->data))
-			{
+			if($isGetModuleInfo && is_array($output->data)){
 				$oModuleModel = &getModel('module');
-				foreach($output->data AS $key=>$value)
-				{
+				foreach($output->data AS $key=>$value){
 					$moduleInfo = $oModuleModel->getModuleInfoXml($value->module);
 					$output->data[$key]->admin_index_act = $moduleInfo->admin_index_act;
 					$output->data[$key]->title = $moduleInfo->title;
@@ -482,8 +455,7 @@
 		 * @param string $module
 		 * @return object
 		 */
-		function isExistsFavorite($siteSrl, $module)
-		{
+		function isExistsFavorite($siteSrl, $module){
 			$args = new stdClass();
 			$args->site_srl = $siteSrl;
 			$args->module = $module;
@@ -491,13 +463,11 @@
 			if (!$output->toBool()) return $output;
 
 			$returnObject = new Object();
-			if ($output->data)
-			{
+			if ($output->data){
 				$returnObject->add('result', true);
 				$returnObject->add('favoriteSrl', $output->data->admin_favorite_srl);
 			}
-			else
-			{
+			else{
 				$returnObject->add('result', false);
 			}
 
@@ -508,8 +478,7 @@
 		 * Return site list
 		 * @return void
 		 */
-		function getSiteAllList()
-		{
+		function getSiteAllList(){
 			if(Context::get('domain')) $domain = Context::get('domain');
 			$siteList = $this->getAllSitesThatHaveModules($domain);
 			$this->add('site_list', $siteList);
@@ -521,8 +490,7 @@
 		 *
 		 * @return array
 		 */
-		function getAllSitesThatHaveModules($domain = null)
-		{
+		function getAllSitesThatHaveModules($domain = null){
 			$args = new stdClass();
 			if($domain) $args->domain = $domain;
 			$columnList = array('domain', 'site_srl');
@@ -532,26 +500,21 @@
 			if($output->toBool()) $siteList = $output->data;
 
 			$oModuleModel = &getModel('module');
-			foreach($siteList as $key => $value)
-			{
+			foreach($siteList as $key => $value){
 				$args->site_srl = $value->site_srl;
 				$list = $oModuleModel->getModuleSrlList($args);
 
-				if(!is_array($list))
-				{
+				if(!is_array($list)){
 					$list = array($list);
 				}
 
-				foreach($list as $k => $v)
-				{
-					if(!is_dir('./modules/' . $v->module))
-					{
+				foreach($list as $k => $v){
+					if(!is_dir('./modules/' . $v->module)){
 						unset($list[$k]);
 					}
 				}
 
-				if(!count($list))
-				{
+				if(!count($list)){
 					unset($siteList[$key]);
 				}
 			}
@@ -563,8 +526,7 @@
 		 * @param string $date
 		 * @return int
 		 */
-		function getSiteCountByDate($date = '')
-		{
+		function getSiteCountByDate($date = ''){
 			$args = new stdClass();
 			if($date) $args->regDate = date('Ymd', strtotime($date));
 

@@ -20,7 +20,7 @@
 			// Error occurs if already installed
 			if(Context::isInstalled()) return $this->stop('msg_already_installed');
 			// Install a controller
-			$oInstallController = &getController('install');
+			$oInstallController = getController('install');
 			$this->install_enable = $oInstallController->checkInstallEnv();
 			// If the environment is installable, execute installController::makeDefaultDirectory()
 			if($this->install_enable) $oInstallController->makeDefaultDirectory();
@@ -29,7 +29,7 @@
 		/**
 		 * @brief Display license messages
 		 **/
-		function dispInstallIntroduce() {
+		function dispInstallIntroduce(){
 			/**
 				 * If './config/install.config.php' file is created and has array shown in the example below, DAOLCMS will be installed using config file.
 				 * ex )
@@ -55,8 +55,7 @@
 			if(file_exists($install_config_file)){
 				include $install_config_file;
 				if(is_array($install_config)){
-					foreach($install_config as $k => $v) 
-					{
+					foreach($install_config as $k => $v){
 						$v = ($k == 'db_table_prefix') ? $v.'_' : $v;
 						Context::set($k,$v,true);
 					}
@@ -78,7 +77,7 @@
 		/**
 		 * @brief Display messages about installation environment
 		 **/
-		function dispInstallLicenseAgreement() {
+		function dispInstallLicenseAgreement(){
 			$this->setTemplateFile('license_agreement');
 			
 			$lang_type = Context::getLangType();
@@ -88,21 +87,22 @@
 		/**
 		 * @brief Display messages about installation environment
 		 **/
-		function dispInstallCheckEnv() {
+		function dispInstallCheckEnv(){
 			$this->setTemplateFile('check_env');
 		}
 
 		/**
 		 * @brief Choose a DB
 		 **/
-		function dispInstallSelectDB() {
+		function dispInstallSelectDB(){
 			// Display check_env if it is not installable
 			if(!$this->install_enable) return $this->dispInstallCheckEnv();
 			// Enter ftp information
-			if(ini_get('safe_mode') && !Context::isFTPRegisted()) {
+			if(ini_get('safe_mode') && !Context::isFTPRegisted()){
 				Context::set('progressMenu', '3');
 				$this->setTemplateFile('ftp');
-			} else {
+			}
+			else{
 				Context::set('progressMenu', '4');
 				$this->setTemplateFile('select_db');
 			}
@@ -111,7 +111,7 @@
 		/**
 		 * @brief Display a screen to enter DB and administrator's information
 		 **/
-		function dispInstallDBForm() {
+		function dispInstallDBForm(){
 			// Display check_env if not installable
 			if(!$this->install_enable) return $this->dispInstallCheckEnv();
 			// Return to the start-up screen if db_type is not specified
@@ -125,7 +125,7 @@
 		/**
 		 * @brief Display a screen to enter DB and administrator's information
 		 **/
-		function dispInstallConfigForm() {
+		function dispInstallConfigForm(){
 			// Display check_env if not installable
 			if(!$this->install_enable) return $this->dispInstallCheckEnv();
 
@@ -139,9 +139,9 @@
 		/**
 		 * @brief Display a screen to enter DB and administrator's information
 		 **/
-		function dispInstallManagerForm() {
+		function dispInstallManagerForm(){
 			// Display check_env if not installable
-			if(!$this->install_enable) {
+			if(!$this->install_enable){
 				return $this->dispInstallCheckEnv();
 			}
 

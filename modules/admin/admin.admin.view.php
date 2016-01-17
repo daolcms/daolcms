@@ -8,7 +8,7 @@
 	 * @package /modules/admin
 	 * @version 0.1
 	 */
-	class adminAdminView extends admin{
+	class adminAdminView extends admin {
 		/**
 		 * layout list
 		 * @var array

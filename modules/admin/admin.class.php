@@ -13,7 +13,7 @@
 		 * Install admin module
 		 * @return Object
 		 */
-		function moduleInstall() {
+		function moduleInstall(){
 			return new Object();
 		}
 
@@ -21,7 +21,7 @@
 		 * If update is necessary it returns true
 		 * @return bool
 		 */
-		function checkUpdate() {
+		function checkUpdate(){
 			$oDB = &DB::getInstance();
 			if(!$oDB->isColumnExists("admin_favorite", "type")) return true;
 
@@ -32,10 +32,9 @@
 		 * Update module
 		 * @return Object
 		 */
-		function moduleUpdate() {
+		function moduleUpdate(){
 			$oDB = &DB::getInstance();
-			if(!$oDB->isColumnExists("admin_favorite", "type"))
-			{
+			if(!$oDB->isColumnExists("admin_favorite", "type")){
 				$oAdminAdminModel = &getAdminModel('admin');
 				$output = $oAdminAdminModel->getFavoriteList();
 				$favoriteList = $output->get('favoriteList');
@@ -43,12 +42,10 @@
 				$oDB->dropColumn('admin_favorite', 'admin_favorite_srl');
 				$oDB->addColumn('admin_favorite',"admin_favorite_srl","number",11,0);
 				$oDB->addColumn('admin_favorite',"type","varchar",30, 'module');
-				if(is_array($favoriteList))
-				{
+				if(is_array($favoriteList)){
 					$oAdminAdminController = &getAdminController('admin');
 					$oAdminAdminController->_deleteAllFavorite();
-					foreach($favoriteList AS $key=>$value)
-					{
+					foreach($favoriteList AS $key=>$value){
 						$oAdminAdminController->_insertFavorite($value->site_srl, $value->module);
 					}
 				}
@@ -60,15 +57,14 @@
 		 * Regenerate cache file
 		 * @return void
 		 */
-		function recompileCache() {
+		function recompileCache(){
 		}
 
 		/**
 		 * Regenerate xe admin default menu
 		 * @return void
 		 */
-		function createXeAdminMenu()
-		{
+		function createXeAdminMenu(){
 			//insert menu
 			$args = new stdClass();
 			$args->title = '__XE_ADMIN__';
@@ -80,14 +76,12 @@
 
 			// gnb item create
 			$gnbList = array('dashboard', 'menu', 'user', 'content', 'theme', 'extensions', 'configuration');
-			foreach($gnbList AS $key=>$value)
-			{
+			foreach($gnbList AS $key=>$value){
 				//insert menu item
 				$args->menu_srl = $menuSrl;
 				$args->menu_item_srl = getNextSequence();
 				$args->name = '{$lang->menu_gnb[\''.$value.'\']}';
-				if($value == 'dashboard')
-				{
+				if($value == 'dashboard'){
 					$args->url = 'index.php?module=admin';
 				}
 				else $args->url = '#';
@@ -98,10 +92,8 @@
 			$oMenuAdminModel = &getAdminModel('menu');
 			$columnList = array('menu_item_srl', 'name');
 			$output = $oMenuAdminModel->getMenuItems($menuSrl, 0, $columnList);
-			if(is_array($output->data))
-			{
-				foreach($output->data AS $key=>$value)
-				{
+			if(is_array($output->data)){
+				foreach($output->data AS $key=>$value){
 					preg_match('/\{\$lang->menu_gnb\[(.*?)\]\}/i', $value->name, $m);
 					$gnbDBList[$m[1]] = $value->menu_item_srl;
 				}
@@ -214,13 +206,10 @@
 			$args->group_srls = $adminGroupSrl;
 			$oModuleModel = &getModel('module');
 
-			foreach($gnbModuleList AS $key=>$value)
-			{
-				if(is_array($value['subMenu']))
-				{
+			foreach($gnbModuleList AS $key=>$value){
+				if(is_array($value['subMenu'])){
 					$moduleActionInfo = $oModuleModel->getModuleActionXml($value['module']);
-					foreach($value['subMenu'] AS $key2=>$value2)
-					{
+					foreach($value['subMenu'] AS $key2=>$value2){
 						$gnbKey = "'".$this->_getGnbKey($value2)."'";
 
 						//insert menu item
@@ -242,9 +231,8 @@
 		 * Return parent menu key by child menu
 		 * @return string
 		 */
-		function _getGnbKey($menuName)
-		{
-			switch($menuName) {
+		function _getGnbKey($menuName){
+			switch($menuName){
 				case 'siteMap':
 					return 'menu';
 					break;

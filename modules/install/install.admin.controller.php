@@ -70,7 +70,7 @@
 			if($default_url && substr($default_url, -1) !== '/') $default_url = $default_url.'/';
 
 			/* convert NON Alphabet URL to punycode URL - Alphabet URL will not be changed */
-			require_once(_DAOL_PATH_ .'libs/idna_convert/idna_convert.class.php');
+			require_once(_DAOL_PATH_.'libs/idna_convert/idna_convert.class.php');
 			$IDN = new idna_convert(array('idn_version' => 2008));
 			$default_url = $IDN->encode($default_url);
 
@@ -244,7 +244,7 @@
 
 			$lang_supported = Context::loadLangSupported();
 			$buff = null;
-			for($i=0;$i<count($langs);$i++) {
+			for($i=0;$i<count($langs);$i++){
 				$buff .= sprintf("%s,%s\n", $langs[$i], $lang_supported[$langs[$i]]);
 
 			}
