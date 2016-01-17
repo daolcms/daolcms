@@ -8,7 +8,7 @@
 	 * @package /modules/admin
 	 * @version 0.1
 	 */
-	class adminAdminView extends admin{
+	class adminAdminView extends admin {
 		/**
 		 * layout list
 		 * @var array
@@ -358,7 +358,7 @@
 		 */
 		function dispAdminTheme(){
 			// choice theme file
-			$theme_file = _XE_PATH_.'files/theme/theme_info.php';
+			$theme_file = _DAOL_PATH_.'files/theme/theme_info.php';
 			if(is_readable($theme_file)){
 				@include($theme_file);
 				Context::set('current_layout', $theme_info->layout);

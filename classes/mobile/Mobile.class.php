@@ -45,7 +45,7 @@ class Mobile {
 			return ($this->ismobile = false);
 		}
 
-		$xe_web_path = Context::pathToUrl(_XE_PATH_);
+		$xe_web_path = Context::pathToUrl(_DAOL_PATH_);
 
 		// default setting. if there is cookie for a device, XE do not have to check if it is mobile or not and it will enhance performace of the server.
 		$this->ismobile = FALSE;

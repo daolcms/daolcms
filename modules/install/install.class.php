@@ -10,28 +10,28 @@
 		/**
 		 * @brief Implement if additional tasks are necessary when installing
 		 **/
-		function moduleInstall() {
+		function moduleInstall(){
 			return new Object();
 		}
 
 		/**
 		 * @brief a method to check if successfully installed
 		 **/
-		function checkUpdate() {
+		function checkUpdate(){
 			return false;
 		}
 
 		/**
 		 * @brief Execute update
 		 **/
-		function moduleUpdate() {
+		function moduleUpdate(){
 			return new Object();
 		}
 
 		/**
 		 * @brief Re-generate the cache file
 		 **/
-		function recompileCache() {
+		function recompileCache(){
 		}
 	}
 ?>

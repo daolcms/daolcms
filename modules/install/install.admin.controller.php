@@ -47,31 +47,7 @@
 		 * @brief Change settings
 		 **/
 		function procInstallAdminSaveTimeZone(){
-			$use_rewrite = Context::get('use_rewrite');
-			if($use_rewrite!='Y') $use_rewrite = 'N';
-
-			$use_sso = Context::get('use_sso');
-			if($use_sso !='Y') $use_sso = 'N';
-
-			$time_zone = Context::get('time_zone');
-
-			$qmail_compatibility = Context::get('qmail_compatibility');
-			if($qmail_compatibility!='Y') $qmail_compatibility = 'N';
-
-			$use_db_session = Context::get('use_db_session');
-			if($use_db_session!='Y') $use_db_session = 'N';
-
-			$use_ssl = Context::get('use_ssl');
-			if(!$use_ssl) $use_ssl = 'none';
-
-			$use_html5 = Context::get('use_html5');
-			if(!$use_html5) $use_html5 = 'N';
-
-			$http_port = Context::get('http_port');
-			$https_port = Context::get('https_port');
-
-			$use_mobile_view = Context::get('use_mobile_view');
-			if($use_mobile_view!='Y') $use_mobile_view = 'N';
+			$db_info = Context::getDBInfo();
 
 			$admin_ip_list = Context::get('admin_ip_list');
 
@@ -81,24 +57,51 @@
 				if(preg_match('/(<\?|<\?php|\?>)/xsm', $admin_ip_list)){
 					$admin_ip_list = '';
 				}
+				$admin_ip_list .= ',127.0.0.1,' . $_SERVER['REMOTE_ADDR'];
 				$admin_ip_list = explode(',',trim($admin_ip_list, ','));
 				$admin_ip_list = array_unique($admin_ip_list);
 				if(!IpFilter::validate($admin_ip_list)){
 					return new Object(-1, 'msg_invalid_ip');
 				}
 			}
+			
+			$default_url = Context::get('default_url');
+			if($default_url && strncasecmp('http://', $default_url, 7) !== 0 && strncasecmp('https://', $default_url, 8) !== 0) $default_url = 'http://'.$default_url;
+			if($default_url && substr($default_url, -1) !== '/') $default_url = $default_url.'/';
 
-			$db_info = Context::getDBInfo();
-			$db_info->default_url = Context::get('default_url');
-			if($db_info->default_url && strncasecmp('http://', $default_url, 7) !== 0 && strncasecmp('https://', $default_url, 8) !== 0) $default_url = 'http://'.$default_url;
-			if($db_info->default_url && substr($default_url, -1) !== '/') $default_url = $default_url.'/';
-			
 			/* convert NON Alphabet URL to punycode URL - Alphabet URL will not be changed */
-			require_once(_XE_PATH_ . 'libs/idna_convert/idna_convert.class.php');
+			require_once(_DAOL_PATH_.'libs/idna_convert/idna_convert.class.php');
 			$IDN = new idna_convert(array('idn_version' => 2008));
-			$db_info->default_url = $IDN->encode($db_info->default_url);
-			
+			$default_url = $IDN->encode($default_url);
+
+			$time_zone = Context::get('time_zone');
 			$db_info->time_zone = $time_zone;
+			
+			$use_mobile_view = Context::get('use_mobile_view');
+			if($use_mobile_view!='Y') $use_mobile_view = 'N';
+			
+			$use_ssl = Context::get('use_ssl');
+			if(!$use_ssl) $use_ssl = 'none';
+
+			$http_port = Context::get('http_port');
+			$https_port = Context::get('https_port');
+
+			$use_rewrite = Context::get('use_rewrite');
+			if($use_rewrite!='Y') $use_rewrite = 'N';
+
+			$use_sso = Context::get('use_sso');
+			if($use_sso !='Y') $use_sso = 'N';
+
+			$use_db_session = Context::get('use_db_session');
+			if($use_db_session!='Y') $use_db_session = 'N';
+
+			$qmail_compatibility = Context::get('qmail_compatibility');
+			if($qmail_compatibility!='Y') $qmail_compatibility = 'N';
+
+			$use_html5 = Context::get('use_html5');
+			if(!$use_html5) $use_html5 = 'N';
+
+			$db_info->default_url = $default_url;
 			$db_info->qmail_compatibility = $qmail_compatibility;
 			$db_info->use_db_session = $use_db_session;
 			$db_info->use_rewrite = $use_rewrite;
@@ -115,20 +118,29 @@
 			else if($db_info->https_port) unset($db_info->https_port);
 
 			unset($db_info->lang_type);
-			Context::setDBInfo($db_info);
-
-			$oInstallController = getController('install');
-			$oInstallController->makeConfigFile();
-
 			$site_args = new stdClass();
 			$site_args->site_srl = 0;
 			$site_args->index_module_srl = Context::get('index_module_srl');
 			$site_args->default_language = Context::get('change_lang_type');
 			$site_args->domain = $db_info->default_url;
-			$oModuleController = &getController('module');
+			$oModuleController = getController('module');
 			$oModuleController->updateSite($site_args);
 
-			$this->setMessage('success_updated');
+			$oInstallController = getController('install');
+			if(!$oInstallController->makeConfigFile()){
+				return new Object(-1, 'msg_invalid_request');
+			}
+			else{
+				Context::setDBInfo($db_info);
+				if($default_url){
+					$site_args = new stdClass;
+					$site_args->site_srl = 0;
+					$site_args->domain = $default_url;
+					$oModuleController = getController('module');
+					$oModuleController->updateSite($site_args);
+				}
+				$this->setRedirectUrl(Context::get('error_return_url'));
+			}
 		}
 
 		function procInstallAdminRemoveFTPInfo(){
@@ -232,11 +244,11 @@
 
 			$lang_supported = Context::loadLangSupported();
 			$buff = null;
-			for($i=0;$i<count($langs);$i++) {
+			for($i=0;$i<count($langs);$i++){
 				$buff .= sprintf("%s,%s\n", $langs[$i], $lang_supported[$langs[$i]]);
 
 			}
-			FileHandler::writeFile(_XE_PATH_.'files/config/lang_selected.info', trim($buff));
+			FileHandler::writeFile(_DAOL_PATH_.'files/config/lang_selected.info', trim($buff));
 			//$this->setMessage('success_updated');
 		}
 
@@ -262,7 +274,7 @@
 			$mobicon_size = array('57','114');
 			$target_file = $icon['tmp_name'];
 			$type = $icon['type'];
-			$target_filename = _XE_PATH_.'files/attach/xeicon/'.$iconname;
+			$target_filename = _DAOL_PATH_.'files/attach/xeicon/'.$iconname;
 
 			list($width, $height, $type_no, $attrs) = @getimagesize($target_file);
 			if($iconname == 'favicon.ico' && preg_match('/^.*(x-icon|\.icon)$/i',$type)){

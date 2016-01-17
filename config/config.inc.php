@@ -20,7 +20,7 @@
 	/**
 	 * Display the version info of DAOL CMS.
 	 */
-	define('__DAOL_VERSION__', '1.0.1.5');
+	define('__DAOL_VERSION__', '1.0.1.6');
 	/**
 	 * Display the version info of XE(XDT EX).
 	 */
@@ -51,8 +51,8 @@
 	ini_set('session.use_only_cookies', 0);
 
 
-	if(file_exists(_XE_PATH_.'config/package.inc.php')) {
-		require _XE_PATH_.'config/package.inc.php';
+	if(file_exists(_DAOL_PATH_.'config/package.inc.php')) {
+		require _DAOL_PATH_.'config/package.inc.php';
 	}
 	else {
 		/**
@@ -92,8 +92,8 @@
 	 * define('__ENABLE_PHPUNIT_TEST__', 0);
 	 * define('__PROXY_SERVER__', 'http://domain:port/path');
 	 */
-	if(file_exists(_XE_PATH_.'config/config.user.inc.php')){
-		require _XE_PATH_.'config/config.user.inc.php';
+	if(file_exists(_DAOL_PATH_.'config/config.user.inc.php')){
+		require _DAOL_PATH_.'config/config.user.inc.php';
 	}
 
 	if(!defined('__DEBUG__')){
@@ -214,7 +214,7 @@
 
 	// Require specific files when using Firebug console output
 	if((__DEBUG_OUTPUT__ == 2) && version_compare(PHP_VERSION, '6.0.0') === -1) {
-		require _XE_PATH_.'libs/FirePHPCore/FirePHP.class.php';
+		require _DAOL_PATH_.'libs/FirePHPCore/FirePHP.class.php';
 	}
 
 	// Set Timezone as server time
@@ -224,38 +224,38 @@
 
 	if(!defined('__XE_LOADED_CLASS__')){
 		// Require a function-defined-file for simple use
-		require(_XE_PATH_.'config/func.inc.php');
+		require(_DAOL_PATH_.'config/func.inc.php');
 
 		if(__DEBUG__) define('__StartTime__', getMicroTime());
 
 		// include the class files
 		//TODO When _autoload() can be used for PHP5 based applications, it will be removed.
 		if(__DEBUG__) define('__ClassLoadStartTime__', getMicroTime());
-		require(_XE_PATH_.'classes/object/Object.class.php');
-		require(_XE_PATH_.'classes/extravar/Extravar.class.php');
-		require(_XE_PATH_.'classes/handler/Handler.class.php');
-		require(_XE_PATH_.'classes/xml/XmlParser.class.php');
-		require(_XE_PATH_.'classes/xml/XmlGenerator.class.php');
-		require(_XE_PATH_.'classes/xml/XmlJsFilter.class.php');
-		require(_XE_PATH_.'classes/xml/XmlLangParser.class.php');
-		require(_XE_PATH_.'classes/cache/CacheHandler.class.php');
-		require(_XE_PATH_.'classes/context/Context.class.php');
-		require(_XE_PATH_.'classes/db/DB.class.php');
-		require(_XE_PATH_.'classes/file/FileHandler.class.php');
-		require(_XE_PATH_.'classes/widget/WidgetHandler.class.php');
-		require(_XE_PATH_.'classes/editor/EditorHandler.class.php');
-		require(_XE_PATH_.'classes/module/ModuleObject.class.php');
-		require(_XE_PATH_.'classes/module/ModuleHandler.class.php');
-		require(_XE_PATH_.'classes/display/DisplayHandler.class.php');
-		require(_XE_PATH_.'classes/template/TemplateHandler.class.php');
-		require(_XE_PATH_.'classes/mail/Mail.class.php');
-		require(_XE_PATH_.'classes/page/PageHandler.class.php');
-		require(_XE_PATH_.'classes/mobile/Mobile.class.php');
-		require(_XE_PATH_.'classes/validator/Validator.class.php');
-		require(_XE_PATH_.'classes/frontendfile/FrontEndFileHandler.class.php');
-		require(_XE_PATH_.'classes/security/Password.class.php'); 
-		require(_XE_PATH_.'classes/security/Security.class.php');
-		require(_XE_PATH_ . 'classes/security/IpFilter.class.php');
+		require(_DAOL_PATH_.'classes/object/Object.class.php');
+		require(_DAOL_PATH_.'classes/extravar/Extravar.class.php');
+		require(_DAOL_PATH_.'classes/handler/Handler.class.php');
+		require(_DAOL_PATH_.'classes/xml/XmlParser.class.php');
+		require(_DAOL_PATH_.'classes/xml/XmlGenerator.class.php');
+		require(_DAOL_PATH_.'classes/xml/XmlJsFilter.class.php');
+		require(_DAOL_PATH_.'classes/xml/XmlLangParser.class.php');
+		require(_DAOL_PATH_.'classes/cache/CacheHandler.class.php');
+		require(_DAOL_PATH_.'classes/context/Context.class.php');
+		require(_DAOL_PATH_.'classes/db/DB.class.php');
+		require(_DAOL_PATH_.'classes/file/FileHandler.class.php');
+		require(_DAOL_PATH_.'classes/widget/WidgetHandler.class.php');
+		require(_DAOL_PATH_.'classes/editor/EditorHandler.class.php');
+		require(_DAOL_PATH_.'classes/module/ModuleObject.class.php');
+		require(_DAOL_PATH_.'classes/module/ModuleHandler.class.php');
+		require(_DAOL_PATH_.'classes/display/DisplayHandler.class.php');
+		require(_DAOL_PATH_.'classes/template/TemplateHandler.class.php');
+		require(_DAOL_PATH_.'classes/mail/Mail.class.php');
+		require(_DAOL_PATH_.'classes/page/PageHandler.class.php');
+		require(_DAOL_PATH_.'classes/mobile/Mobile.class.php');
+		require(_DAOL_PATH_.'classes/validator/Validator.class.php');
+		require(_DAOL_PATH_.'classes/frontendfile/FrontEndFileHandler.class.php');
+		require(_DAOL_PATH_.'classes/security/Password.class.php'); 
+		require(_DAOL_PATH_.'classes/security/Security.class.php');
+		require(_DAOL_PATH_.'classes/security/IpFilter.class.php');
 		if(__DEBUG__) $GLOBALS['__elapsed_class_load__'] = getMicroTime() - __ClassLoadStartTime__;
 	}
 ?>

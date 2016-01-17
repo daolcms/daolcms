@@ -522,7 +522,7 @@
 		 **/
 		function getCacheFile($filter_enabled= true, $site_srl = 0){
 			$lang = Context::getLangType();
-			$cache_path = _XE_PATH_.'files/cache/editor/cache/';
+			$cache_path = _DAOL_PATH_.'files/cache/editor/cache/';
 			if(!is_dir($cache_path)) FileHandler::makeDir($cache_path);
 			$cache_file = $cache_path.'component_list.' . $lang .'.';
 			if($filter_enabled) $cache_file .= 'filter.';
@@ -554,7 +554,7 @@
 			if(count($component_list)){
 				foreach($component_list as $key => $val){
 					if(!trim($key)) continue;
-					if(!is_dir(_XE_PATH_.'modules/editor/components/'.$key)){
+					if(!is_dir(_DAOL_PATH_.'modules/editor/components/'.$key)){
 						FileHandler::removeFile($cache_file);
 						return $this->getComponentList($filter_enabled, $site_srl);
 					}
