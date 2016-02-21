@@ -158,7 +158,7 @@ class Context {
 		
 		// include ssl action cache file
 		$theInstance->sslActionCacheFile = FileHandler::getRealPath($theInstance->sslActionCacheFile);
-		if(is_readable($theInstance->sslActionCacheFile){
+		if(is_readable($theInstance->sslActionCacheFile)){
 			require_once($theInstance->sslActionCacheFile);
 			if(isset($sslActions)){
 				$theInstance->ssl_actions = $sslActions;
