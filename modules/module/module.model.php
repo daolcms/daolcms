@@ -930,7 +930,7 @@
 					$args->site_srl = $site_srl;
 					$output = executeQuery('module.getModuleConfig', $args);
 					if($output->data->config) $config = unserialize($output->data->config);
-					else $config = new stdClass();
+					else $config = null;
 					//insert in cache
 					if($oCacheHandler->isSupport()){
 						$oCacheHandler->put($cache_key, $config);
