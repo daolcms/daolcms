@@ -907,7 +907,7 @@
 			foreach($m[1] as $idx=>$name){
 				if(substr($name,0,2) == 'on') continue;
 
-				$val = preg_replace('/&#(?:x([a-fA-F0-9]+)|0*(\d+));/e','chr("\\1"?0x00\\1:\\2+0)',$m[3][$idx].$m[4][$idx]);
+				$val = preg_replace_callback('/&#(?:x([a-fA-F0-9]+)|0*(\d+));/', function($n) {return chr($n[1] ? ('0x00' . $n[1]) : ($n[2] + 0)); }, $m[3][$idx] . $m[4][$idx]);
 				$val = preg_replace('/^\s+|[\t\n\r]+/', '', $val);
 
 				if(preg_match('/^[a-z]+script:/i', $val)) continue;

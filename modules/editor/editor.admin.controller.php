@@ -133,6 +133,7 @@
 			$oModuleController = &getController('module');
 			$configVars = Context::getRequestVars();
 			
+			$config = new stdClass;
 			$config->editor_skin = $configVars->editor_skin;
 			$config->editor_height = $configVars->editor_height;
 			$config->comment_editor_skin = $configVars->comment_editor_skin;

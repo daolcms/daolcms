@@ -85,7 +85,7 @@
 		 * @param string $type type of message (error, info, update)
 		 * @return void
 		 **/
-		function setMessage($message, $type = null){
+		function setMessage($message = 'success', $type = null){
 			parent::setMessage($message);
 			$this->setMessageType($type);
 		}
@@ -309,7 +309,7 @@
 		 * set the directory path of the layout directory
 		 * @return string
 		 **/
-		function getLayoutPath() {
+		function getLayoutPath($layout_name = "", $layout_type = "P"){
 			return $this->layout_path;
 		}
 

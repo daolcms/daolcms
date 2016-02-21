@@ -851,7 +851,7 @@
 		 * this method is protected
 		 * @return boolean
 		 */
-		function _begin(){
+		function _begin($transactionLevel = 0){
 			return TRUE;
 		}
 
@@ -872,7 +872,7 @@
 		 * this method is protected
 		 * @return boolean
 		 */
-		function _rollback(){
+		function _rollback($transactionLevel = 0){
 			return TRUE;
 		}
 
