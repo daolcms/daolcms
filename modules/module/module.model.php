@@ -917,9 +917,8 @@
 		function getModuleConfig($module, $site_srl = 0){
 			$config = false;
 			// cache controll
-			$oCacheHandler = CacheHandler::getInstance('object', null, true);
+			$oCacheHandler = CacheHandler::getInstance('object');
 			if($oCacheHandler->isSupport()){
-				$object_key = 'module_config:' . $module . '_' . $site_srl;
 				$cache_key = $oCacheHandler->getGroupKey('site_and_module', $object_key);
 				$config = $oCacheHandler->get($cache_key);
 			}
