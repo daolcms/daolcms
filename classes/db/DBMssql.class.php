@@ -115,7 +115,7 @@
 		 * this method is private
 		 * @return boolean
 		 */
-		function _begin() {
+		function _begin($transactionLevel = 0){
 			$connection = $this->_getConnection('master');
 			if(sqlsrv_begin_transaction($connection) === false) return;
 			return true;
@@ -126,7 +126,7 @@
 		 * this method is private
 		 * @return boolean
 		 */
-		function _rollback() {
+		function _rollback($transactionLevel = 0){
 			$connection = $this->_getConnection('master');
 			sqlsrv_rollback($connection);
 			return true;

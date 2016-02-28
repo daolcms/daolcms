@@ -48,7 +48,7 @@
 		 * this method is private
 		 * @return boolean
 		 */
-		function _begin() {
+		function _begin($transactionLevel = 0){
 			$connection = $this->_getConnection('master');
 			$this->_query("begin", $connection);
 			return true;
@@ -59,7 +59,7 @@
 		 * this method is private
 		 * @return boolean
 		 */
-		function _rollback() {
+		function _rollback($transactionLevel = 0){
 			$connection = $this->_getConnection('master');
 			$this->_query("rollback", $connection);
 			return true;

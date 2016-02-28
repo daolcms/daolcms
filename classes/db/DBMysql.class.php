@@ -138,7 +138,7 @@ class DBMysql extends DB {
 	 * this method is private
 	 * @return boolean
 	 */
-	function _begin() {
+	function _begin($transactionLevel = 0){
 		return true;
 	}
 
@@ -147,7 +147,7 @@ class DBMysql extends DB {
 	 * this method is private
 	 * @return boolean
 	 */
-	function _rollback() {
+	function _rollback($transactionLevel = 0){
 		return true;
 	}
 

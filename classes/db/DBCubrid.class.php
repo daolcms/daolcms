@@ -149,8 +149,7 @@
 		 * this method is private
 		 * @return boolean
 		 */
-		function _begin()
-		{
+		function _begin($transactionLevel = 0){
 			if(__CUBRID_VERSION__ >= '8.4.0')
 			{
 				$connection = $this->_getConnection('master');
@@ -164,8 +163,7 @@
 		 * this method is private
 		 * @return boolean
 		 */
-		function _rollback()
-		{
+		function _rollback($transactionLevel = 0){
 			$connection = $this->_getConnection('master');
 			@cubrid_rollback ($connection);
 			return TRUE;
