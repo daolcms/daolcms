@@ -230,14 +230,14 @@
 		/**
 		 * @brief Begin transaction
 		 **/
-		function _begin() {
+		function _begin($transactionLevel = 0){
 			return true;
 		}
 
 		/**
 		 * @brief Rollback
 		 **/
-		function _rollback() {
+		function _rollback($transactionLevel = 0){
 			$connection = $this->_getConnection('master');
 			ibase_rollback($connection);
 			return true;

@@ -914,29 +914,30 @@
 		 * @brief Return module configurations
 		 * Global configuration is used to manage board, member and others
 		 **/
-		function getModuleConfig($module, $site_srl = 0) {
+		function getModuleConfig($module, $site_srl = 0){
+			$config = false;
 			// cache controll
-			$oCacheHandler = &CacheHandler::getInstance('object');
+			$oCacheHandler = CacheHandler::getInstance('object');
 			if($oCacheHandler->isSupport()){
-					$cache_key = 'object:module_config:module_'.$module.'_site_srl_'.$site_srl;
-					$config = $oCacheHandler->get($cache_key);
+				$cache_key = $oCacheHandler->getGroupKey('site_and_module', $object_key);
+				$config = $oCacheHandler->get($cache_key);
 			}
-			if(!$config) {
-				if(!$GLOBALS['__ModuleConfig__'][$site_srl][$module]) {
+			if($config === false){
+				if(!$GLOBALS['__ModuleConfig__'][$site_srl][$module]){
+					$args = new stdClass();
 					$args->module = $module;
 					$args->site_srl = $site_srl;
 					$output = executeQuery('module.getModuleConfig', $args);
-					$config = unserialize($output->data->config);
+					if($output->data->config) $config = unserialize($output->data->config);
+					else $config = null;
 					//insert in cache
-					if($oCacheHandler->isSupport()) {
-						if($config)
-							$oCacheHandler->put($cache_key,$config);
+					if($oCacheHandler->isSupport()){
+						$oCacheHandler->put($cache_key, $config);
 					}
 					$GLOBALS['__ModuleConfig__'][$site_srl][$module] = $config;
 				}
 				return $GLOBALS['__ModuleConfig__'][$site_srl][$module];
 			}
-
 			return $config;
 		}
 

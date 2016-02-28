@@ -3,7 +3,7 @@
  * documentController class
  * document the module's controller class
  *
- * @author NHN (developers@xpressengine.com)
+ * @author NAVER (developers@xpressengine.com)
  * @Adaptor DAOL Project (developer@daolcms.org)
  * @package /modules/document
  * @version 0.1
@@ -249,8 +249,8 @@ class documentController extends document {
 			$obj->email_address = $logged_info->email_address;
 			$obj->homepage = $logged_info->homepage;
 		}
-		// If the tile is empty, extract string from the contents.
-		$obj->title = htmlspecialchars($obj->title);
+		// If the title is empty, extract string from the contents.
+		$obj->title = htmlspecialchars($obj->title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 		settype($obj->title, "string");
 		if($obj->title == '') $obj->title = cut_str(strip_tags($obj->content),20,'...');
 		// If no tile extracted from the contents, leave it untitled.
@@ -427,7 +427,8 @@ class documentController extends document {
 			$obj->email_address = $source_obj->get('email_address');
 			$obj->homepage = $source_obj->get('homepage');
 		}
-		// If the tile is empty, extract string from the contents.
+		// If the title is empty, extract string from the contents.
+		$obj->title = htmlspecialchars($obj->title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 		settype($obj->title, "string");
 		if($obj->title == '') $obj->title = cut_str(strip_tags($obj->content),20,'...');
 		// If no tile extracted from the contents, leave it untitled.

@@ -112,8 +112,7 @@ class DBPostgresql extends DB
 	/**
 	 * @brief Begin transaction
 	 **/
-	function _begin()
-	{
+	function _begin($transactionLevel = 0){
 		$connection = $this->_getConnection('master');
 		if (!$this->_query('BEGIN')) return false;
 		return true;
@@ -122,8 +121,7 @@ class DBPostgresql extends DB
 	/**
 	 * @brief Rollback
 	 **/
-	function _rollback()
-	{
+	function _rollback($transactionLevel = 0){
 		if (!$this->_query('ROLLBACK')) return false;
 		return true;
 	}

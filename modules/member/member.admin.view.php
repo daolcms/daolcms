@@ -422,7 +422,7 @@
 					}
 
 					$replace = array_merge($extentionReplace, $replace);
-					$inputTag = preg_replace('@%(\w+)%@e', '$replace[$1]', $template);
+					$inputTag = preg_replace_callback('@%(\w+)%@', function($n) use($replace) { return $replace[$n[1]]; }, $template);
 
 					if($extendForm->description)
 						$inputTag .= '<p style="color:#999;">'.$extendForm->description.'</p>';
