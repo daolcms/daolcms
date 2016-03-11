@@ -79,6 +79,15 @@
 			// update the document if it is existed
 			if($is_update) {
 				if(!$oDocument->isGranted()) return new Object(-1,'msg_not_permitted');
+				
+				if($this->module_info->use_anonymous == 'Y'){
+					$obj->member_srl = $oDocument->get('member_srl') * -1;
+					$oDocument->add('member_srl', $obj->member_srl);
+				}
+				
+				if($this->module_info->protect_content=="Y" && $oDocument->get('comment_count')>0 && $this->grant->manager==false){
+					return new Object(-1,'msg_protect_content');
+				}
 
 				if(!$this->grant->manager) {
 					// notice & document style same as before if not manager
@@ -86,8 +95,14 @@
 					$obj->title_color = $oDocument->get('title_color');
 					$obj->title_bold = $oDocument->get('title_bold');
 				}
+				
+				// modify list_order if document status is temp
+				if($oDocument->get('status') == 'TEMP'){
+					$obj->last_update = $obj->regdate = date('YmdHis');
+					$obj->update_order = $obj->list_order = (getNextSequence() * -1);
+				}
 
-				$output = $oDocumentController->updateDocument($oDocument, $obj);
+				$output = $oDocumentController->updateDocument($oDocument, $obj, true);
 				$msg_code = 'success_updated';
 
 			// insert a new document otherwise
