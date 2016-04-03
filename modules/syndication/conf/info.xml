@@ -24,8 +24,8 @@
 	<description xml:lang="tr">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
 	<description xml:lang="vi">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
 	<description xml:lang="mm">Module for better search result, sending and receiving information to search service provider by using Syndication Terms.</description>
-	<version>4.0.0</version>
-	<date>2014-09-17</date>
+	<version>5.0.0</version>
+	<date>2016-03-08</date>
 	<category>interlock</category>
 
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org/">

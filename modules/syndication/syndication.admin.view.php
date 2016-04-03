@@ -46,6 +46,7 @@ class syndicationAdminView extends syndication
 		Context::set('year', $module_config->year);
 		Context::set('syndication_token', $module_config->syndication_token);
 		Context::set('syndication_password', $module_config->syndication_password);
+		Context::set('uri_scheme', (Context::getSslStatus() == 'always') ? 'https://' : 'http://');
 
 		$output = executeQueryArray('syndication.getExceptModules');
 		$except_module_list = array();
