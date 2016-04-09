@@ -1,0 +1,14 @@
+<h3 class="h1">SEO</h3>
+
+<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
+<div class="cnb">
+	<ul>
+		<li class="active"|cond="$act == 'dispSeoAdminSetting' && $setting_section == 'general'"><a href="{getUrl('act','dispSeoAdminSetting', 'setting_section','general')}">기본 설정</a></li>
+		<li class="active"|cond="$act == 'dispSeoAdminSetting' && $setting_section == 'analytics'"><a href="{getUrl('act','dispSeoAdminSetting', 'setting_section','analytics')}">Analytics</a></li>
+		<li class="active"|cond="$act == 'dispSeoAdminSetting' && $setting_section == 'miscellaneous'"><a href="{getUrl('act','dispSeoAdminSetting', 'setting_section','miscellaneous')}">기타</a></li>
+	</ul>
+</div>
+
