@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<lang>
+	<item name="etc">
+		<value xml:lang="ko"><![CDATA[기타]]></value>
+		<value xml:lang="en"><![CDATA[ETC]]></value>
+	</item>
+	<item name="default_setting">
+		<value xml:lang="ko"><![CDATA[기본 설정]]></value>
+		<value xml:lang="en"><![CDATA[Default Setting]]></value>
+	</item>
+	<item name="use_seo">
+		<value xml:lang="ko"><![CDATA[기능 활성화]]></value>
+		<value xml:lang="en"><![CDATA[Activate SEO]]></value>
+	</item>
+	<item name="use_seo_check">
+		<value xml:lang="ko"><![CDATA[검색엔진 최적화 기능 사용]]></value>
+		<value xml:lang="en"><![CDATA[Using Search Engine Optimization]]></value>
+	</item>
+	<item name="site_img">
+		<value xml:lang="ko"><![CDATA[사이트 대표 이미지]]></value>
+		<value xml:lang="en"><![CDATA[Site Representative Image]]></value>
+	</item>
+	<item name="site_img_help">
+		<value xml:lang="ko"><![CDATA[페이스북 공유 시 문서에 이미지가 없으면 기본 이미지로 사용됩니다. (추천 : 1200x600, 600x315, 200x200)]]></value>
+		<value xml:lang="en"><![CDATA[If no images on the document will be used as the default image when Facebook shares. (Recommend : 1200x600, 600x315, 200x200)]]></value>
+	</item>
+	<item name="document_title_optimization">
+		<value xml:lang="ko"><![CDATA[문서 제목 최적화]]></value>
+		<value xml:lang="en"><![CDATA[Document Title Optimization]]></value>
+	</item>
+	<item name="document_title_optimization_help">
+		<value xml:lang="ko"><![CDATA[<em>사용 권장</em> 사이트 이름 및 문서의 제목을 효과적으로 표시할 수 있습니다.<br><span>예시 - 메인 페이지</span>'사이트 이름 - 사이트 부제'<br><span>예시 - 모듈 페이지</span> '페이지 제목 - 사이트 이름'<br><span>예시 - 글(게시물)</span> '글 제목 - 사이트 이름']]></value>
+		<value xml:lang="en"><![CDATA[<em>Recommend To Use</em> You can display the site name and document title effectively.<br><span>ex) - Main Page</span> 'Site Name - Site Subtitle'<br><span>ex) - Module Page</span> 'Page Title - Site Name'<br><span>ex) - Article(Content)</span> 'Article Title - Site Name']]></value>
+	</item>
+	<item name="use_document_title_optimization">
+		<value xml:lang="ko"><![CDATA[문서 제목 최적화 기능 사용]]></value>
+		<value xml:lang="en"><![CDATA[Using Document Title Optimization]]></value>
+	</item>
+	<item name="site_name">
+		<value xml:lang="ko"><![CDATA[사이트 이름]]></value>
+		<value xml:lang="en"><![CDATA[Site Name]]></value>
+	</item>
+	<item name="site_name_help">
+		<value xml:lang="ko"><![CDATA[모든 페이지의 제목으로 사용되며 '모듈 브라우저 타이틀 - 사이트 이름' 또는 '글 제목 - 사이트 이름'과 같이 표시됩니다.]]></value>
+		<value xml:lang="en"><![CDATA[Used as the title of every page and displayed as 'Module Browser Title - Site Name' Or 'Article Title - Site Name']]></value>
+	</item>
+	<item name="site_subtitle">
+		<value xml:lang="ko"><![CDATA[사이트 부제]]></value>
+		<value xml:lang="en"><![CDATA[Site Subtitle]]></value>
+	</item>
+	<item name="site_subtitle_help">
+		<value xml:lang="ko"><![CDATA[사이트의 부제, 슬로건, 캐치프레이즈. 시작 페이지에서만 표시되며 '사이트 이름 - 사이트 부제'와 같이 표시됩니다.]]></value>
+		<value xml:lang="en"><![CDATA[Only display Index page. Subtitles, slogans, catch phrases for your site. Display as 'Site Name - Site Subtitle']]></value>
+	</item>
+	<item name="default_meta_tag">
+		<value xml:lang="ko"><![CDATA[기본 메타태그]]></value>
+		<value xml:lang="en"><![CDATA[Default Meta Tag]]></value>
+	</item>
+	<item name="default_meta_tag_help">
+		<value xml:lang="ko"><![CDATA[사이트 전역에 사용 될 <code>&lt;meta&gt;</code> 태그 설정.]]></value>
+		<value xml:lang="en"><![CDATA[<code>&lt;meta&gt;</code> tag setting for throughout the site.]]></value>
+	</item>
+	<item name="site_keyword">
+		<value xml:lang="ko"><![CDATA[사이트 키워드 (eywords)]]></value>
+		<value xml:lang="en"><![CDATA[Site Keywords (keywords)]]></value>
+	</item>
+	<item name="site_keyword_help">
+		<value xml:lang="ko"><![CDATA[여러 키워드는 콤마(,)로 구분하여 입력하세요.]]></value>
+		<value xml:lang="en"><![CDATA[If enter multiple keywords, please separated by commas.]]></value>
+	</item>
+	<item name="site_description">
+		<value xml:lang="ko"><![CDATA[사이트 설명 (description)]]></value>
+		<value xml:lang="en"><![CDATA[Site Description (description)]]></value>
+	</item>
+	<item name="site_description_help">
+		<value xml:lang="ko"><![CDATA[사이트의 부제, 슬로건, 캐치프레이즈. 시작 페이지에서만 표시되며 '사이트 이름 - 사이트 부제'와 같이 표시됩니다.]]></value>
+		<value xml:lang="en"><![CDATA[Only display Index page. Subtitles, slogans, catch phrases for your site. Display as 'Site Name - Site Subtitle']]></value>
+	</item>
+	<item name="google_help">
+		<value xml:lang="ko"><![CDATA[Google Analytics 추적 코드를 자동으로 삽입하고, 최적화 된 URL을 추적하도록 돕습니다.]]></value>
+		<value xml:lang="en"><![CDATA[Automatically inserted Google Analytics tracking code, helping to track the optimized URL.]]></value>
+	</item>
+	<item name="google_warn">
+		<value xml:lang="ko"><![CDATA[<em>이미 추적 코드를 사용 중이면 삽입한 추적 코드를 제거하거나 이 설정을 입력하지 마세요.</em>]]></value>
+		<value xml:lang="en"><![CDATA[<em>If already use Google tracking code, remove another Google tracking code or do not use it.</em>]]></value>
+	</item>
+	<item name="google_id">
+		<value xml:lang="ko"><![CDATA[속성 ID]]></value>
+		<value xml:lang="en"><![CDATA[Tracking ID]]></value>
+	</item>
+	<item name="except_admin">
+		<value xml:lang="ko"><![CDATA[관리자 제외]]></value>
+		<value xml:lang="en"><![CDATA[Except Admin]]></value>
+	</item>
+	<item name="except_admin_help">
+		<value xml:lang="ko"><![CDATA[관리자 접속 시 추적 코드를 사용하지 않음]]></value>
+		<value xml:lang="en"><![CDATA[If admin access, do not use tracking code.]]></value>
+	</item>
+		<item name="naver_help">
+		<value xml:lang="ko"><![CDATA[Naver Analytics 추적 코드를 자동으로 삽입합니다.]]></value>
+		<value xml:lang="en"><![CDATA[Automatically inserted NAVER Analytics tracking code.]]></value>
+	</item>
+	<item name="naver_warn">
+		<value xml:lang="ko"><![CDATA[<em>이미 추적 코드를 사용 중이면 삽입한 추적 코드를 제거하거나 이 설정을 입력하지 마세요.</em>]]></value>
+		<value xml:lang="en"><![CDATA[<em>If already use NAVER tracking code, remove another NAVER tracking code or do not use it.</em>]]></value>
+	</item>
+	<item name="naver_id">
+		<value xml:lang="ko"><![CDATA[발급 ID]]></value>
+		<value xml:lang="en"><![CDATA[Issued ID]]></value>
+	</item>
+	<item name="facebook_help">
+		<value xml:lang="ko"><![CDATA[페이스북 앱 연동 설정이 필요한 때 활용할 수 있습니다.]]></value>
+		<value xml:lang="en"><![CDATA[You can use this when you need a Facebook app interworking settings.]]></value>
+	</item>
+	<item name="facebook_app_id">
+		<value xml:lang="ko"><![CDATA[페이스북 앱의 app_id]]></value>
+		<value xml:lang="en"><![CDATA[Facebook App's app_id]]></value>
+	</item>
+	<item name="facebook_admin_help">
+		<value xml:lang="ko"><![CDATA[페이스북 앱의 관리자. 이메일이나 페이스북의 개인 주소가 아닌 숫자로 된 고유ID를 입력해야 합니다. 여러명을 지정 시 콤마(,)로 구분.]]></value>
+		<value xml:lang="en"><![CDATA[You must enter a unique ID number that does not Facebook's personally address or the e-mail, If enter multiple unique ID, please separated by commas.]]></value>
+	</item>
+</lang>

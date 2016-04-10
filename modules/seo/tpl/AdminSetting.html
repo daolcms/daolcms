@@ -11,18 +11,18 @@
 		{@ $use_multilang = true}
 		<ul>
 			<li>
-				<h2>기본 설정</h2>
-				<p class="q">기능 활성화</p>
+				<h2>{$lang->default_setting}</h2>
+				<p class="q">{$lang->use_seo}</p>
 				<p class="a">
-					<label><input type="checkbox" name="enable" id="enable" value="Y" checked="checked"|cond="$config->enable == 'Y'" /> 검색엔진 최적화 기능 사용</label>
+					<label><input type="checkbox" name="enable" id="enable" value="Y" checked="checked"|cond="$config->enable == 'Y'" /> {$lang->use_seo_check}</label>
 				</p>
 				
 				<br>
 				
-				<p class="q">사이트 대표 이미지</p>
+				<p class="q">{$lang->site_img}</p>
 				<p class="a">
 					<input type="file" name="site_image" id="site_image" />
-					<p class="desc">페이스북 공유 시 문서에 이미지가 없으면 기본 이미지로 사용됩니다. (추천 : 1200x600, 600x315, 200x200)</p>
+					<p class="desc">{$lang->site_img_help}</p>
 					<div class="x_thumbnail" cond="$config->site_image_url">
 						<img src="{$config->site_image_url}" alt="지정된 사이트 대표 이미지" />
 					</div>
@@ -30,57 +30,50 @@
 			</li>
 			
 			<li>
-				<h2>문서 제목 최적화</h2>
-				<p>
-					<em>사용 권장</em> 사이트 이름 및 문서의 제목을 효과적으로 표시할 수 있습니다.
-					<br>
-					<span>예시 - 메인 페이지</span> '사이트 이름 - 사이트 부제'
-					<br>
-					<span>예시 - 모듈 페이지</span> '페이지 제목 - 사이트 이름'
-					<br>
-					<span>예시 - 글(게시물)</span> '글 제목 - 사이트 이름'
-				</p>
-				<p class="q">문서 제목 최적화</p>
+				<h2>{$lang->document_title_optimization}</h2>
+				<p>{$lang->document_title_optimization_help}</p>
+				
+				<p class="q">{$lang->document_title_optimization}</p>
 				<p class="a">
-					<label><input type="checkbox" name="use_optimize_title" id="use_optimize_title" value="Y" checked="checked"|cond="$config->use_optimize_title == 'Y'" /> 문서 제목 최적화 기능 사용</label>
+					<label><input type="checkbox" name="use_optimize_title" id="use_optimize_title" value="Y" checked="checked"|cond="$config->use_optimize_title == 'Y'" /> {$lang->use_document_title_optimization}</label>
 				</p>
 				
 				<br>
 				
-				<p class="q">사이트 이름</p>
+				<p class="q">{$lang->site_name}</p>
 				<p class="a multiLangEdit">
 					<input type="hidden" name="site_name" id="site_name" value="<!--@if(strpos($config->site_name, '$user_lang->') === false)-->{$config->site_name}<!--@else-->{htmlspecialchars($config->site_name)}<!--@end-->" class="vLang" />
 					<input type="text" id="site_name" value="{$config->site_name}" class="vLang" />
 					<span class="desc"><a href="#langEdit" class="editUserLang tgAnchor">{$lang->cmd_set_multilingual}</a></span>
-					<p class="desc">모든 페이지의 제목으로 사용되며 '모듈 브라우저 타이틀 - 사이트 이름' 또는 '글 제목 - 사이트 이름'과 같이 표시됩니다..</p>
+					<p class="desc">{$lang->site_name_help}</p>
 				</p>
 				
-				<p class="q">사이트 부제</p>
+				<p class="q">{$lang->site_subtitle}</p>
 				<p class="a multiLangEdit">
 					<input type="hidden" name="site_slogan" id="site_slogan" value="<!--@if(strpos($config->site_slogan, '$user_lang->') === false)-->{$config->site_slogan}<!--@else-->{htmlspecialchars($config->site_slogan)}<!--@end-->" class="vLang" />
 					<input type="text" id="site_slogan" value="{$config->site_slogan}" class="vLang" />
 					<span class="desc"><a href="#langEdit" class="editUserLang tgAnchor">{$lang->cmd_set_multilingual}</a></span>
-					<p class="desc">사이트의 부제, 슬로건, 캐치프레이즈. 시작 페이지에서만 표시되며 '사이트 이름 - 사이트 부제'와 같이 표시됩니다.</p>
+					<p class="desc">{$lang->site_subtitle_help}</p>
 				</p>
 			</li>
 
 			<li>
-				<h2>기본 메타태그</h2>
-				<p>사이트 전역에 사용 될 <code>&lt;meta&gt;</code> 태그 설정.</p>
-				<p class="q">사이트 키워드 (keywords)</label>
+				<h2>{$lang->default_meta_tag}</h2>
+				<p>{$lang->default_meta_tag_help}</p>
+				<p class="q">{$lang->site_keyword}</label>
 				<p class="a multiLangEdit">
 					<input type="hidden" name="site_keywords" id="site_keywords" value="<!--@if(strpos($config->site_keywords, '$user_lang->') === false)-->{$config->site_keywords}<!--@else-->{htmlspecialchars($config->site_keywords)}<!--@end-->" class="vLang" />
 					<input type="text" id="site_keywords" value="{$config->site_keywords}" class="vLang" />
 					<span class="desc"><a href="#langEdit" class="editUserLang tgAnchor">{$lang->cmd_set_multilingual}</a></span>
-					<p class="desc">여러 키워드는 콤마(,)로 구분하여 입력하세요.</p>
+					<p class="desc">{$lang->site_keyword_help}</p>
 				</p>
 				
-				<p class="q">사이트 설명 (description)</p>
+				<p class="q">{$lang->site_description}</p>
 				<p class="a multiLangEdit">
 					<input type="hidden" name="site_description" id="site_description" value="<!--@if(strpos($config->site_description, '$user_lang->') === false)-->{$config->site_description}<!--@else-->{htmlspecialchars($config->site_description)}<!--@end-->" class="vLang" />
 					<input type="text" id="site_description" value="{$config->site_description}" class="vLang" />
 					<span class="desc"><a href="#langEdit" class="editUserLang tgAnchor">{$lang->cmd_set_multilingual}</a></span>
-					<p class="desc">사이트의 부제, 슬로건, 캐치프레이즈. 시작 페이지에서만 표시되며 '사이트 이름 - 사이트 부제'와 같이 표시됩니다.</p>
+					<p class="desc">{$lang->site_description_help}</p>
 				</p>
 			</li>
 		</ul>
@@ -92,36 +85,36 @@
 			<li>
 				<h2>Google</h2>
 				<p>
-					Google Analytics 추적 코드를 자동으로 삽입하고, 최적화 된 URL을 추적하도록 돕습니다.<br>
-					<em>이미 추적 코드를 사용 중이면 삽입한 추적 코드를 제거하거나 이 설정을 입력하지 마세요.</em>
+					{$lang->google_help}<br>
+					{$lang->google_warn}
 				</p>
 				
-				<p class="q">속성 ID</p>
+				<p class="q">{$lang->google_id}</p>
 				<p class="a">
 					<input type="text" name="ga_id" id="ga_id" value="{$config->ga_id}" placeholder="UA-XXXXXXXX-X" />
 				</p>
 				
-				<p class="q">관리자 제외</p>
+				<p class="q">{$lang->except_admin}</p>
 				<p class="a">
-					<label><input type="checkbox" name="ga_except_admin" id="ga_except_admin" value="Y" checked="checked"|cond="$config->ga_except_admin == 'Y'" /> 관리자 접속 시 추적 코드를 사용하지 않음</label>
+					<label><input type="checkbox" name="ga_except_admin" id="ga_except_admin" value="Y" checked="checked"|cond="$config->ga_except_admin == 'Y'" /> {$lang->except_admin_help}</label>
 				</p>
 			</li>
 
 			<li>
 				<h2>NAVER</h2>
 				<p>
-					Naver Analytics 추적 코드를 자동으로 삽입합니다.<br>
-					<em>이미 추적 코드를 사용 중이면 삽입한 추적 코드를 제거하거나 이 설정을 입력하지 마세요.</em>
+					{$lang->naver_help}<br>
+					{$lang->naver_warn}
 				</p>
 				
-				<p class="q">발급 ID</p>
+				<p class="q">{$lang->naver_id}</p>
 				<p class="a">
 					<input type="text" name="na_id" id="na_id" value="{$config->na_id}" />
 				</p>
 				
-				<p class="q">관리자 제외</p>
+				<p class="q">{$lang->except_admin}</p>
 				<p class="a">
-					<label><input type="checkbox" name="na_except_admin" id="na_except_admin" value="Y" checked="checked"|cond="$config->na_except_admin == 'Y'" /> 관리자 접속 시 추적 코드를 사용하지 않음</label>
+					<label><input type="checkbox" name="na_except_admin" id="na_except_admin" value="Y" checked="checked"|cond="$config->na_except_admin == 'Y'" /> {$lang->except_admin_help}</label>
 				</p>
 			</li>
 		</ul>
@@ -132,17 +125,17 @@
 		<ul>
 			<li class="section <!--@if(false && !$config->fb_app_id && !$config->fb_admins)-->collapsed<!--@endif-->">
 				<h2>Facebook</h2>
-				<p>페이스북 앱 연동 설정이 필요한 때 활용할 수 있습니다.</p>
+				<p>{$lang->facebook_help}</p>
 				<p class="q">Facebook App ID</p>
 				<p class="a">
 					<input type="text" name="fb_app_id" id="fb_app_id" value="{$config->fb_app_id}" />
-					<p class="desc">페이스북 앱의 app_id</p>
+					<p class="desc">{$lang->facebook_app_id}</p>
 				</p>
 
 				<p class="q">Facebook Admin</p>
 				<p class="a">
 					<input type="text" name="fb_admins" id="fb_admins" value="{$config->fb_admins}" />
-					<p class="desc">페이스북 앱의 관리자. 이메일이나 페이스북의 개인 주소가 아닌 숫자로 된 고유ID를 입력해야 합니다. 여러명을 지정 시 콤마(,)로 구분.</p>
+					<p class="desc">{$lang->facebook_admin_help}</p>
 				</p>
 			</li>
 		</ul>
