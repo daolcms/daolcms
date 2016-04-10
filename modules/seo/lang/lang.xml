@@ -73,8 +73,8 @@
 		<value xml:lang="en"><![CDATA[Site Description (description)]]></value>
 	</item>
 	<item name="site_description_help">
-		<value xml:lang="ko"><![CDATA[사이트의 부제, 슬로건, 캐치프레이즈. 시작 페이지에서만 표시되며 '사이트 이름 - 사이트 부제'와 같이 표시됩니다.]]></value>
-		<value xml:lang="en"><![CDATA[Only display Index page. Subtitles, slogans, catch phrases for your site. Display as 'Site Name - Site Subtitle']]></value>
+		<value xml:lang="ko"><![CDATA[사이트의 주제에 관한 설명. 200자 미만으로 너무 길지 않고 의도적으로 너무 많은 키워드를 반복하는 것은 좋지 않습니다.]]></value>
+		<value xml:lang="en"><![CDATA[A description of the subject matter of the site. To less than 200 characters long, it is not recommended to do so intentionally repeat too many keywords.]]></value>
 	</item>
 	<item name="google_help">
 		<value xml:lang="ko"><![CDATA[Google Analytics 추적 코드를 자동으로 삽입하고, 최적화 된 URL을 추적하도록 돕습니다.]]></value>
@@ -92,7 +92,7 @@
 		<value xml:lang="ko"><![CDATA[관리자 제외]]></value>
 		<value xml:lang="en"><![CDATA[Except Admin]]></value>
 	</item>
-	<item name="except_admin_help">
+	<item name="except_admin_check">
 		<value xml:lang="ko"><![CDATA[관리자 접속 시 추적 코드를 사용하지 않음]]></value>
 		<value xml:lang="en"><![CDATA[If admin access, do not use tracking code.]]></value>
 	</item>

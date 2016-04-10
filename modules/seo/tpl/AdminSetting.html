@@ -60,7 +60,7 @@
 			<li>
 				<h2>{$lang->default_meta_tag}</h2>
 				<p>{$lang->default_meta_tag_help}</p>
-				<p class="q">{$lang->site_keyword}</label>
+				<p class="q">{$lang->site_keyword}</p>
 				<p class="a multiLangEdit">
 					<input type="hidden" name="site_keywords" id="site_keywords" value="<!--@if(strpos($config->site_keywords, '$user_lang->') === false)-->{$config->site_keywords}<!--@else-->{htmlspecialchars($config->site_keywords)}<!--@end-->" class="vLang" />
 					<input type="text" id="site_keywords" value="{$config->site_keywords}" class="vLang" />
@@ -96,7 +96,7 @@
 				
 				<p class="q">{$lang->except_admin}</p>
 				<p class="a">
-					<label><input type="checkbox" name="ga_except_admin" id="ga_except_admin" value="Y" checked="checked"|cond="$config->ga_except_admin == 'Y'" /> {$lang->except_admin_help}</label>
+					<label><input type="checkbox" name="ga_except_admin" id="ga_except_admin" value="Y" checked="checked"|cond="$config->ga_except_admin == 'Y'" /> {$lang->except_admin_check}</label>
 				</p>
 			</li>
 
@@ -114,7 +114,7 @@
 				
 				<p class="q">{$lang->except_admin}</p>
 				<p class="a">
-					<label><input type="checkbox" name="na_except_admin" id="na_except_admin" value="Y" checked="checked"|cond="$config->na_except_admin == 'Y'" /> {$lang->except_admin_help}</label>
+					<label><input type="checkbox" name="na_except_admin" id="na_except_admin" value="Y" checked="checked"|cond="$config->na_except_admin == 'Y'" /> {$lang->except_admin_check}</label>
 				</p>
 			</li>
 		</ul>
