@@ -145,7 +145,15 @@
 
 			if($member_info) {
 				foreach($member_info as $key => $val) {
-				  if($key != 'regdate') $message->{$key} = $val;
+					 if($key === 'title') continue;
+					 if($key === 'content') continue;
+					 if($key === 'sender_srl') continue;
+					 if($key === 'password') continue;
+					 if($key === 'regdate') continue;
+					 
+					 $message->{$key} = $val;
+ 
+ 				$message->{$key} = $val;
 				}
 			}
 			// change the status if is a received and not yet read message
