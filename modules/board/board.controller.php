@@ -2,6 +2,7 @@
 	/**
 	 * @class  boardController
 	 * @author NHN (developers@xpressengine.com)
+	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief  board module Controller class
 	 **/
 
@@ -10,13 +11,13 @@
 		/**
 		 * @brief initialization
 		 **/
-		function init() {
+		function init(){
 		}
 
 		/**
 		 * @brief insert document
 		 **/
-		function procBoardInsertDocument() {
+		function procBoardInsertDocument(){
 			// check grant
 			if($this->module_info->module != "board") return new Object(-1, "msg_invalid_request");
 			if(!$this->grant->write_document) return new Object(-1, 'msg_not_permitted');
@@ -34,7 +35,7 @@
 			if($obj->title == '') $obj->title = 'Untitled';
 
 			// unset document style if the user is not the document manager
-			if(!$this->grant->manager) {
+			if(!$this->grant->manager){
 				unset($obj->title_color);
 				unset($obj->title_bold);
 			}
@@ -50,61 +51,72 @@
 
 			// update the document if it is existed
 			$is_update = false;
-			if($oDocument->isExists() && $oDocument->document_srl == $obj->document_srl)
-			{
+			if($oDocument->isExists() && $oDocument->document_srl == $obj->document_srl){
 				$is_update = true;
 			}
 
 			// if use anonymous is true
-			if($this->module_info->use_anonymous == 'Y') {
+			if($this->module_info->use_anonymous == 'Y'){
 				$obj->notify_message = 'N';
 				$this->module_info->admin_mail = '';
-				if($is_update===false)
-				{
+				if($is_update===false){
 					$obj->member_srl = -1*$logged_info->member_srl;
 				}
 				$obj->email_address = $obj->homepage = $obj->user_id = '';
 				$obj->user_name = $obj->nick_name = 'anonymous';
 				$bAnonymous = true;
-				if($is_update===false)
-				{
-			$oDocument->add('member_srl', $obj->member_srl);
+				if($is_update===false){
+					$oDocument->add('member_srl', $obj->member_srl);
 				}
 			}
-			else
-			{
+			else{
 				$bAnonymous = false;
 			}
 
 			// update the document if it is existed
-			if($is_update) {
+			if($is_update){
 				if(!$oDocument->isGranted()) return new Object(-1,'msg_not_permitted');
+				
+				if($this->module_info->use_anonymous == 'Y'){
+					$obj->member_srl = $oDocument->get('member_srl') * -1;
+					$oDocument->add('member_srl', $obj->member_srl);
+				}
+				
+				if($this->module_info->protect_content=="Y" && $oDocument->get('comment_count')>0 && $this->grant->manager==false){
+					return new Object(-1,'msg_protect_content');
+				}
 
-				if(!$this->grant->manager) {
+				if(!$this->grant->manager){
 					// notice & document style same as before if not manager
 					$obj->is_notice = $oDocument->get('is_notice');
 					$obj->title_color = $oDocument->get('title_color');
 					$obj->title_bold = $oDocument->get('title_bold');
 				}
+				
+				// modify list_order if document status is temp
+				if($oDocument->get('status') == 'TEMP'){
+					$obj->last_update = $obj->regdate = date('YmdHis');
+					$obj->update_order = $obj->list_order = (getNextSequence() * -1);
+				}
 
-				$output = $oDocumentController->updateDocument($oDocument, $obj);
+				$output = $oDocumentController->updateDocument($oDocument, $obj, true);
 				$msg_code = 'success_updated';
-
+			}
 			// insert a new document otherwise
-			} else {
+			else {
 				$output = $oDocumentController->insertDocument($obj, $bAnonymous);
 				$msg_code = 'success_registed';
 				$obj->document_srl = $output->get('document_srl');
 
 				// send an email to admin user
-				if($output->toBool() && $this->module_info->admin_mail) {
+				if($output->toBool() && $this->module_info->admin_mail){
 					$oMail = new Mail();
 					$oMail->setTitle($obj->title);
 					$oMail->setContent( sprintf("From : <a href=\"%s\">%s</a><br/>\r\n%s", getFullUrl('','document_srl',$obj->document_srl), getFullUrl('','document_srl',$obj->document_srl), $obj->content));
 					$oMail->setSender($obj->nick_name, $obj->email_address);
 
 					$target_mail = explode(',',$this->module_info->admin_mail);
-					for($i=0;$i<count($target_mail);$i++) {
+					for($i=0;$i<count($target_mail);$i++){
 						$email_address = trim($target_mail[$i]);
 						if(!$email_address) continue;
 						$oMail->setReceiptor($email_address, $email_address);
@@ -127,7 +139,7 @@
 		/**
 		 * @brief delete the document
 		 **/
-		function procBoardDeleteDocument() {
+		function procBoardDeleteDocument(){
 			// get the document_srl 
 			$document_srl = Context::get('document_srl');
 
@@ -151,7 +163,7 @@
 		/**
 		 * @brief vote
 		 **/
-		function procBoardVoteDocument() {
+		function procBoardVoteDocument(){
 			// generate document module controller object
 			$oDocumentController = &getController('document');
 
@@ -162,7 +174,7 @@
 		/**
 		 * @brief insert comments
 		 **/
-		function procBoardInsertComment() {
+		function procBoardInsertComment(){
 			// check grant
 			if(!$this->grant->write_comment) return new Object(-1, 'msg_not_permitted');
 			$logged_info = Context::get('logged_info');
@@ -177,7 +189,7 @@
 			if(!$oDocument->isExists()) return new Object(-1,'msg_not_permitted');
 
 			// For anonymous use, remove writer's information and notifying information
-			if($this->module_info->use_anonymous == 'Y') {
+			if($this->module_info->use_anonymous == 'Y'){
 				$obj->notify_message = 'N';
 				$this->module_info->admin_mail = '';
 
@@ -186,8 +198,7 @@
 				$obj->user_name = $obj->nick_name = 'anonymous';
 				$bAnonymous = true;
 			}
-			else
-			{
+			else{
 				$bAnonymous = false;
 			}
 
@@ -199,47 +210,48 @@
 
 			// check the comment is existed
 			// if the comment is not existed, then generate a new sequence
-			if(!$obj->comment_srl) {
+			if(!$obj->comment_srl){
 				$obj->comment_srl = getNextSequence();
-			} else {
+			}
+			else {
 				$comment = $oCommentModel->getComment($obj->comment_srl, $this->grant->manager);
 			}
 
 			// if comment_srl is not existed, then insert the comment 
-			if($comment->comment_srl != $obj->comment_srl) {
+			if($comment->comment_srl != $obj->comment_srl){
 
 				// parent_srl is existed
-				if($obj->parent_srl) {
+				if($obj->parent_srl){
 					$parent_comment = $oCommentModel->getComment($obj->parent_srl);
 					if(!$parent_comment->comment_srl) return new Object(-1, 'msg_invalid_request');
 
 					$output = $oCommentController->insertComment($obj, $bAnonymous);
-
+				}
 				// parent_srl is not existed
-				} else {
+				else {
 					$output = $oCommentController->insertComment($obj, $bAnonymous);
 				}
 
-		/*
+				/*
 				// send an email
-				if($output->toBool() && $this->module_info->admin_mail) {
+				if($output->toBool() && $this->module_info->admin_mail){
 					$oMail = new Mail();
 					$oMail->setTitle($oDocument->getTitleText());
 					$oMail->setContent( sprintf("From : <a href=\"%s#comment_%d\">%s#comment_%d</a><br/>\r\n%s", getFullUrl('','document_srl',$obj->document_srl),$obj->comment_srl, getFullUrl('','document_srl',$obj->document_srl), $obj->comment_srl, $obj->content));
 					$oMail->setSender($obj->user_name, $obj->email_address);
 
 					$target_mail = explode(',',$this->module_info->admin_mail);
-					for($i=0;$i<count($target_mail);$i++) {
+					for($i=0;$i<count($target_mail);$i++){
 						$email_address = trim($target_mail[$i]);
 						if(!$email_address) continue;
 						$oMail->setReceiptor($email_address, $email_address);
 						$oMail->send();
 					}
 				}
-		*/
-				
+				*/
+			}
 			// update the comment if it is not existed
-			} else {
+			else {
 				// check the grant
 				if(!$comment->isGranted()) return new Object(-1,'msg_not_permitted');
 
@@ -258,7 +270,7 @@
 		/**
 		 * @brief delete the comment
 		 **/
-		function procBoardDeleteComment() {
+		function procBoardDeleteComment(){
 			// get the comment_srl
 			$comment_srl = Context::get('comment_srl');
 			if(!$comment_srl) return $this->doError('msg_invalid_request');
@@ -278,7 +290,7 @@
 		/**
 		 * @brief delete the tracjback
 		 **/
-		function procBoardDeleteTrackback() {
+		function procBoardDeleteTrackback(){
 			$trackback_srl = Context::get('trackback_srl');
 
 			// generate trackback module controller object
@@ -295,7 +307,7 @@
 		/**
 		 * @brief check the password for document and comment
 		 **/
-		function procBoardVerificationPassword() {
+		function procBoardVerificationPassword(){
 			// get the id number of the document and the comment
 			$password = Context::get('password');
 			$document_srl = Context::get('document_srl');
@@ -304,7 +316,7 @@
 			$oMemberModel = &getModel('member');
 
 			// if the comment exists
-			if($comment_srl) {
+			if($comment_srl){
 				// get the comment information
 				$oCommentModel = &getModel('comment');
 				$oComment = $oCommentModel->getComment($comment_srl);
@@ -314,7 +326,8 @@
 				if(!$oMemberModel->isValidPassword($oComment->get('password'),$password)) return new Object(-1, 'msg_invalid_password');
 
 				$oComment->setGrant();
-			} else {
+			}
+			else {
 				 // get the document information
 				$oDocumentModel = &getModel('document');
 				$oDocument = $oDocumentModel->getDocument($document_srl);
@@ -330,7 +343,7 @@
 		/**
 		 * @brief the trigger for displaying 'view document' link when click the user ID
 		 **/
-		function triggerMemberMenu(&$obj) {
+		function triggerMemberMenu(&$obj){
 			$member_srl = Context::get('target_srl');
 			$mid = Context::get('cur_mid');
 
@@ -346,9 +359,10 @@
 			if($cur_module_info->module != 'board') return new Object();
 
 			// get the member information
-			if($member_srl == $logged_info->member_srl) {
+			if($member_srl == $logged_info->member_srl){
 				$member_info = $logged_info;
-			} else {
+			}
+			else {
 				$oMemberModel = &getModel('member');
 				$member_info = $oMemberModel->getMemberInfoByMemberSrl($member_srl);
 			}
@@ -362,6 +376,5 @@
 
 			return new Object();
 		}
-
 	}
 ?>

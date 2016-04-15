@@ -6,6 +6,7 @@
 	 **/
 
 	class rss extends ModuleObject {
+		public $gzhandler_enable = false;
 
 		/**
 		 * Additional tasks required to accomplish during the installation

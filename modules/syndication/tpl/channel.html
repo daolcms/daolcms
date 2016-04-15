@@ -1,15 +1,16 @@
 {'<?xml version="1.0" encoding="utf-8"?>'}
 <feed xmlns="http://webmastertool.naver.com">
-	<!--#include("./include.channel.html")-->
-	<!--@if($articles->list)-->
-		<!--@if($articles->next_url)--><link rel="next-in-thread" href="{htmlspecialchars($articles->next_url)}" /><!--@end-->
-		<!--@foreach($articles->list as $key => $article)-->
-		<!--#include("./include.articles.html")-->
-		<!--@end-->
-	<!--@elseif($deleted->list)-->
-		<!--@if($deleted->next_url)--><link rel="next-in-thread" href="{htmlspecialchars($deleted->next_url)}" /><!--@end-->
-		<!--@foreach($deleted->list as $key => $delete)-->
-		<!--#include("./include.deleted.html")-->
-		<!--@end-->
-	<!--@end-->
+	<include target="./include.channel.html" />
+
+	<block cond="$articles->list">
+		<block loop="$articles->list => $key, $article">
+			<include target="./include.articles.html" />
+		</block>
+	</block>
+
+	<block cond="$deleted->list">
+		<block loop="$deleted->list => $key, $delete">
+			<include target="./include.deleted.html" />
+		</block>
+	</block>
 </feed>
