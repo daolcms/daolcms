@@ -152,8 +152,6 @@
 					 if($key === 'regdate') continue;
 					 
 					 $message->{$key} = $val;
- 
- 				$message->{$key} = $val;
 				}
 			}
 			// change the status if is a received and not yet read message
