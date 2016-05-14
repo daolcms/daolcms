@@ -43,6 +43,8 @@ class seoController extends seo
 	{
 		if (Context::getResponseMethod() != 'HTML') return;
 		if (Context::get('module') == 'admin') return;
+		
+		require_once(_DAOL_PATH_ . 'libs/idna_convert/idna_convert.class.php');
 
 		$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
 
@@ -64,6 +66,8 @@ class seoController extends seo
 
 		$oModuleModel = getModel('module');
 		$config = $this->getConfig();
+		$IDN = new idna_convert(array('idn_version' => 2008));
+		$request_uri = $IDN->encode(Context::get('request_uri'));
 
 		$logged_info = Context::get('logged_info');
 		$current_module_info = Context::get('current_module_info');
@@ -195,7 +199,7 @@ class seoController extends seo
 		foreach ($piece->image as $img) {
 			if(!$img['url']) {
 				if(!$img['filepath']) continue;
-				$img['url'] = Context::get('request_uri') . $img['filepath'];
+				$img['url'] = $request_uri . $img['filepath'];
 			}
 
 			$this->addMeta('og:image', $img['url']);
