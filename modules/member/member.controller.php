@@ -1895,10 +1895,17 @@
 				$args->user_id = $orgMemberInfo->user_id;
 			}
 
-			// Check if ID is prohibited
-			if($args->user_id && $oMemberModel->isDeniedID($args->user_id)){
-				return new Object(-1,'denied_user_id');
+			if($logged_info->is_admin !== 'Y'){
+				// Check if ID is prohibited
+				if($args->user_id && $oMemberModel->isDeniedID($args->user_id)){
+					return new Object(-1,'denied_user_id');
+				}
+				// Check if nickname is prohibited
+				if($args->nick_name && $oMemberModel->isDeniedNickName($args->nick_name)){
+					return new Object(-1, 'denied_nick_name');
+				}
 			}
+			
 			// Check if ID is duplicate
 			if($args->user_id){
 				$member_srl = $oMemberModel->getMemberSrlByUserID($args->user_id);
@@ -1906,10 +1913,7 @@
 					return new Object(-1,'msg_exists_user_id');
 				}
 			}
-			// Check if nickname is prohibited
-			if($args->nick_name && $oMemberModel->isDeniedNickName($args->nick_name)){
-				return new Object(-1, 'denied_nick_name');
-			}
+			
 			// Check if nickname is duplicate
 			$member_srl = $oMemberModel->getMemberSrlByNickName($args->nick_name);
 			if($member_srl && $args->member_srl != $member_srl){
