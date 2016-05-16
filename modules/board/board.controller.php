@@ -78,7 +78,7 @@
 				if(!$oDocument->isGranted()) return new Object(-1,'msg_not_permitted');
 				
 				if($this->module_info->use_anonymous == 'Y'){
-					$obj->member_srl = $oDocument->get('member_srl') * -1;
+					$obj->member_srl = abs($oDocument->get('member_srl')) * -1;
 					$oDocument->add('member_srl', $obj->member_srl);
 				}
 				
