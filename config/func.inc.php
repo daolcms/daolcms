@@ -1097,7 +1097,7 @@
 		if($urldecode) $string = urldecode($string);
 
 		$sample = iconv('utf-8', 'utf-8', $string);
-		$is_utf8 = (md5($sample) == md5($string));
+		$is_utf8 = (md5($sample) === md5($string));
 
 		if(!$urldecode) $string = urldecode($string);
 
