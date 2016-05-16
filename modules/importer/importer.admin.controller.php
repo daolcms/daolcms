@@ -965,6 +965,7 @@
 					}
 
 					if(file_exists($file_obj->file)) {
+						$random = new Password();
 						// Set upload path by checking if the attachement is an image or other kind of file
 						if(preg_match("/\.(jpe?g|gif|png|wm[va]|mpe?g|avi|swf|flv|mp[1-4]|as[fx]|wav|midi?|moo?v|qt|r[am]{1,2}|m4v)$/i", $file_obj->source_filename))
 						{
@@ -975,7 +976,7 @@
 							$path = sprintf("./files/attach/images/%s/%s", $module_srl, getNumberingPath($upload_target_srl, 3));
 
 							$ext = substr(strrchr($file_obj->source_filename,'.'),1);
-							$_filename = md5(crypt(rand(1000000, 900000), rand(0, 100))).'.'.$ext;
+							$_filename = $random->createSecureSalt(32, 'hex').'.'.$ext;
 							$filename  = $path.$_filename;
 
 							$idx = 1;
@@ -988,7 +989,7 @@
 						}
 						else {
 							$path = sprintf("./files/attach/binaries/%s/%s", $module_srl, getNumberingPath($upload_target_srl,3));
-							$filename = $path.md5(crypt(rand(1000000,900000), rand(0,100)));
+							$filename = $path.$random->createSecureSalt(32, 'hex');
 							$file_obj->direct_download = 'N';
 						}
 						// Create a directory
@@ -1003,7 +1004,7 @@
 							$file_obj->file_size = filesize($filename);
 							$file_obj->comment = NULL;
 							$file_obj->member_srl = 0;
-							$file_obj->sid = md5(rand(rand(1111111,4444444),rand(4444445,9999999)));
+							$file_obj->sid = $random->createSecureSalt(32, 'hex');
 							$file_obj->isvalid = 'Y';
 							$output = executeQuery('file.insertFile', $file_obj);
 
