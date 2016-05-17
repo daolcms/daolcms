@@ -34,6 +34,10 @@
 			$oModuleController->insertTrigger('module.deleteModule', 'comment', 'controller', 'triggerDeleteModuleComments', 'after');
 			// 2008. 02. 22 add comment setting when a new module added
 			$oModuleController->insertTrigger('module.dispAdditionSetup', 'comment', 'view', 'triggerDispCommentAdditionSetup', 'before');
+			
+			if(!is_dir('./files/cache/tmp')){
+				FileHandler::makeDir('./files/cache/tmp');
+			}
 
 			return new Object();
 		}
@@ -145,7 +149,10 @@
 		 * Regenerate cache file
 		 * @return void
 		 */
-		function recompileCache() {
+		function recompileCache(){
+			if(!is_dir('./files/cache/tmp')){
+				FileHandler::makeDir('./files/cache/tmp');
+			}
 		}
 	}
 ?>
