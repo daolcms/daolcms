@@ -18,7 +18,7 @@ class boardAdminController extends board {
 	/**
 	 * @brief insert borad module
 	 **/
-	function procBoardAdminInsertBoard($args = null(){
+	function procBoardAdminInsertBoard($args = null()){
 		// generate module model/controller object
 		$oModuleController = getController('module');
 		$oModuleModel = getModel('module');
