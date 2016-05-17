@@ -417,29 +417,37 @@
 			}
 			
 			// get an image file from the doc content if no file attached. 
-			if(!$source_file) {
+			$is_tmp_file = false;
+			if(!$source_file){
+				$random = new Password();
 				$content = $this->get('content');
-				$target_src = null;
-				preg_match_all("!src=(\"|')([^\"' ]*?)(\"|')!is", $content, $matches, PREG_SET_ORDER);
-				$cnt = count($matches);
-				for($i=0;$i<$cnt;$i++) {
-					$target_src = $matches[$i][2];
-					if(preg_match('/\/(common|modules|widgets|addons|layouts)\//i', $target_src)) continue;
-					else {
-						if(!preg_match('/^(http|https):\/\//i',$target_src)) $target_src = Context::getRequestUri().$target_src;
-						$tmp_file = sprintf('./files/cache/tmp/%d', md5(rand(111111,999999).$this->comment_srl));
-						if(!is_dir('./files/cache/tmp')) FileHandler::makeDir('./files/cache/tmp');
-						FileHandler::getRemoteFile($target_src, $tmp_file);
-						if(!file_exists($tmp_file)) continue;
-						else {
-							list($_w, $_h, $_t, $_a) = @getimagesize($tmp_file);
-							if($_w<$width || $_h<$height) continue;
-
-							$source_file = $tmp_file;
-							$is_tmp_file = true;
-							break;
-						}
+				
+				preg_match_all("!<img[^>]*src=(?:\"|\')([^\"\']*?)(?:\"|\')!is", $content, $matches, PREG_SET_ORDER);
+				
+				foreach($matches as $target_image){
+					$target_src = trim($target_image[1]);
+					if(preg_match('/\/(common|modules|widgets|addons|layouts|m\.layouts)\//i', $target_src)) continue;
+					
+					if(!preg_match('/^(http|https):\/\//i',$target_src)){
+						$target_src = Context::getRequestUri().$target_src;
 					}
+					
+					$target_src = htmlspecialchars_decode($target_src);
+					
+					$tmp_file = _DAOL_PATH_ . 'files/cache/tmp/' . $random->createSecureSalt(32, 'hex');
+					FileHandler::getRemoteFile($target_src, $tmp_file);
+					if(!file_exists($tmp_file)) continue;
+					
+					$imageinfo = getimagesize($tmp_file);
+					list($_w, $_h) = $imageinfo;
+					if($imageinfo === false || ($_w < ($width * 0.3) && $_h < ($height * 0.3))){
+						FileHandler::removeFile($tmp_file);
+						continue;
+					}
+					
+					$source_file = $tmp_file;
+					$is_tmp_file = true;
+					break;
 				}
 			}
 
