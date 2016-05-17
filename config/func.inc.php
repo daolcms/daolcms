@@ -921,15 +921,13 @@
 		if($tag === 'object') array_push($filter_arrts, 'data');
 		if($tag === 'param') array_push($filter_arrts, 'value');
 		
-		foreach($filter_arrts as $attr)
-		{
+		foreach($filter_arrts as $attr){
 			if(!isset($attrs[$attr])) continue;
 		
 			$attr_value = rawurldecode($attrs[$attr]);
 			$attr_value = htmlspecialchars_decode($attr_value, ENT_COMPAT);
 			$attr_value = preg_replace('/\s+|[\t\n\r]+/', '', $attr_value);
-			if(preg_match('@(\?|&|;)(act=(\w+))@i', $attr_value, $m) && $m[3] !== 'procFileDownload')
-			{
+			if(preg_match('@(\?|&|;)(act=(\w+))@i', $attr_value, $m) && $m[3] !== 'procFileDownload'){
 				unset($attrs[$attr]);
 			}
 		}
