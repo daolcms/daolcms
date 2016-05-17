@@ -20,7 +20,7 @@
 	<description xml:lang="ru">Запись информации пользователей или форума, используя XML-файл.</description>
 	<description xml:lang="tr">Bu modül, XML dosyasından üye ve makale verilerinin içeri aktarımı içindir.</description>
 	<version>1.0</version>
-	<date>2007-12-13</date>
+	<date>2016-05-17</date>
 	<category>migration</category>
 
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org/">
