@@ -19,7 +19,7 @@
 	<description xml:lang="es">Este módulo es para crear/manejar los menús que que son conectados con los diseños o módulos.</description>
 	<description xml:lang="ru">Этот модуль служит для создания/управления меню, соединяюще лейауты и модули.</description>
 	<description xml:lang="tr">Bu modül, yerleşim düzenlerine ya da modüllere bağlı menüleri oluşturmak/yönetmek içindir.</description>
-	<version>0.1</version>
+	<version>1.0</version>
 	<date>2007-02-28</date>
 	<category>construction</category>
 

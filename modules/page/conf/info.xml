@@ -19,7 +19,7 @@
 	<description xml:lang="es">Este módulo is para crear página para enlazar con contenidos.</description>
 	<description xml:lang="ru">Этот модуль служит для создания страниц, чтобы связать их с содержимым.</description>
 	<description xml:lang="tr">Bu modül içeriklere bağlanacak sayfaları oluşturmak içindir.</description>
-	<version>0.2</version>
+	<version>1.0</version>
 	<date>2011-06-15</date>
 	<category>service</category>
 

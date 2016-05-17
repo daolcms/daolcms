@@ -17,7 +17,7 @@
 	<description xml:lang="zh-TW">可以藉由此模組安裝、更新程式包括模組、面板、版面等。</description>
 	<description xml:lang="vi">Với Module này, bạn có thể cập nhật và cài đặt các phiên bản một cách tự động. Bao gồm Module, Layout, Widget, Addon, ... từ trang chủ XE bằng một bấm chuột.</description>
 	<description xml:lang="tr">Bu modülle; modüller, dış görünümler, yerleşim düzenleri vs. gibi programlarınızı www.xpressengine.com adresinden tek tıkla kurabilir ve sürümlerini yükseltebilirsiniz.</description>
-	<version>0.3</version>
+	<version>1.0</version>
 	<date>2009-11-11</date>
 	<category>system</category>
 

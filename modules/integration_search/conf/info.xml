@@ -43,7 +43,7 @@
 	<description xml:lang="tr">
 		Seçili modüller için toplu arama desteği sunar. Gizli makaleler dışındaki tüm makaleler aranacaktır.Bu yüzden hedefin, gizli modülü içermemesine dikkat ediniz.
 	</description>
-	<version>0.1</version>
+	<version>1.0</version>
 	<date>2007-07-24</date>
 	<category>service</category>
 

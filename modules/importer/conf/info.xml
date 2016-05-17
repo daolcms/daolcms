@@ -19,7 +19,7 @@
 	<description xml:lang="es">Ingresa la información del usuario o los datos del tablero utilizando el archivo XML.</description>
 	<description xml:lang="ru">Запись информации пользователей или форума, используя XML-файл.</description>
 	<description xml:lang="tr">Bu modül, XML dosyasından üye ve makale verilerinin içeri aktarımı içindir.</description>
-	<version>0.2</version>
+	<version>1.0</version>
 	<date>2007-12-13</date>
 	<category>migration</category>
 

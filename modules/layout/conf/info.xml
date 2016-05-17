@@ -19,7 +19,7 @@
 	<description xml:lang="es">Este módulo es para crear y manejar el diseño.</description>
 	<description xml:lang="ru">Этот модуль служит для создания/управления лейаутами.</description>
 	<description xml:lang="tr">Bu modül yerleşim düzenleri(layout) oluşturmak ve yönetmek içindir.</description>
-	<version>0.1</version>
+	<version>1.0</version>
 	<date>2007-02-28</date>
 	<category>construction</category>
 

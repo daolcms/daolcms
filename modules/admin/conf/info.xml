@@ -19,7 +19,7 @@
 	<description xml:lang="es">Este módulo muestra una lista de características de cada módulo, en donde puede activar la función de la administracion aplicando el diseño del administrador.</description>
 	<description xml:lang="ru">Этот модуль показывает список возможностей каждого модуля, и позволяет Вам использовать несколько менеджеров, применяя лейаут для администратора.</description>
 	<description xml:lang="tr">Bu modül size, her modülün özelliklerini barındıran bir liste gösterir ve yöneticiler için yerleşim düzeni uygulayarak, yöneticilerin birkaçını kullanma imkanı sunar.</description>
-	<version>0.1</version>
+	<version>1.0</version>
 	<date>2007-02-28</date>
 	<category>system</category>
 
