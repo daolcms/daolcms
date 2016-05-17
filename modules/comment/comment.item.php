@@ -377,8 +377,22 @@
 			if($this->isSecret() && !$this->isGranted()) return;
 			// If signiture height setting is omitted, create a square
 			if(!$height) $height = $width;
-			// return false if neigher attached file nor image;
-			if(!$this->hasUploadedFiles() && !preg_match("!<img!is", $this->get('content'))) return;
+			
+			$content = $this->get('content');
+			if(!$this->hasUploadedFiles()){
+				if(!$content){
+					$args = new stdClass();
+					$args->comment_srl = $this->comment_srl;
+					$output = executeQuery('document.getComment', $args, array('content'));
+					if($output->toBool() && $output->data){
+						$content = $output->data->content;
+						$this->add('content', $content);
+					}
+				}
+				
+				if(!preg_match("!<img!is", $content)) return;
+			}
+			
 			// get thumbail generation info on the doc module configuration.
 			if(!in_array($thumbnail_type, array('crop','ratio'))) $thumbnail_type = 'crop';
 			// Define thumbnail information
@@ -420,7 +434,6 @@
 			$is_tmp_file = false;
 			if(!$source_file){
 				$random = new Password();
-				$content = $this->get('content');
 				
 				preg_match_all("!<img[^>]*src=(?:\"|\')([^\"\']*?)(?:\"|\')!is", $content, $matches, PREG_SET_ORDER);
 				
