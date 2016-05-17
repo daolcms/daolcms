@@ -48,8 +48,10 @@
 		<permission action="dispBoardAdminExtraVars" target="manager" />
 		<permission action="dispBoardAdminBoardAdditionSetup" target="manager" />
 		<permission action="dispBoardAdminSkinInfo" target="manager" />
+		<permission action="dispBoardAdminListSetup" target="manager" />
 
 		<permission action="procBoardAdminInsertBoard" target="manager" />
+		<permission action="procBoardAdminInsertListConfig" target="manager" />
 		<permission action="procBoardAdminUpdateBoardFroBasic" target="manager" />
 		<permission action="procBoardAdminSaveCategorySettings" target="manager" />
 

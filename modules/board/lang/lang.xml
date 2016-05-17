@@ -166,6 +166,18 @@
 		<value xml:lang="tr"><![CDATA[Genel Pano Ayarları]]></value>
 		<value xml:lang="vi"><![CDATA[Thiết lập Module]]></value>
 	</item>
+	<item name="cmd_view_info">
+		<value xml:lang="ko"><![CDATA[게시판 정보]]></value>
+		<value xml:lang="en"><![CDATA[Board Info]]></value>
+		<value xml:lang="jp"><![CDATA[掲示板情報]]></value>
+		<value xml:lang="zh-CN"><![CDATA[版面信息]]></value>
+		<value xml:lang="zh-TW"><![CDATA[討論板資料]]></value>
+		<value xml:lang="fr"><![CDATA[Information des Panneaux]]></value>
+		<value xml:lang="ru"><![CDATA[Информация форума]]></value>
+		<value xml:lang="es"><![CDATA[Información del Tablero]]></value>
+		<value xml:lang="tr"><![CDATA[Pano Bilgisi]]></value>
+		<value xml:lang="vi"><![CDATA[Xem thông tin Board]]></value>
+	</item>
 	<item name="cmd_board_info">
 		<value xml:lang="ko"><![CDATA[게시판 정보]]></value>
 		<value xml:lang="en"><![CDATA[Board Info]]></value>
