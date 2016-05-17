@@ -17,7 +17,7 @@ class boardAdminView extends board {
 	function init(){
 		// check module_srl is existed or not
 		$module_srl = Context::get('module_srl');
-		if(!$module_srl && $this->module_srl(){
+		if(!$module_srl && $this->module_srl){
 			$module_srl = $this->module_srl;
 			Context::set('module_srl', $module_srl);
 		}
@@ -26,9 +26,9 @@ class boardAdminView extends board {
 		$oModuleModel = getModel('module');
 
 		// get the module infomation based on the module_srl
-		if($module_srl(){
+		if($module_srl){
 			$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
-			if(!$module_info(){
+			if(!$module_info){
 				Context::set('module_srl','');
 				$this->act = 'list';
 			}
@@ -136,7 +136,7 @@ class boardAdminView extends board {
 	 * @brief display the module insert form
 	 **/
 	function dispBoardAdminInsertBoard(){
-		if(!in_array($this->module_info->module, array('admin', 'board','blog','guestbook'))(){
+		if(!in_array($this->module_info->module, array('admin', 'board','blog','guestbook'))){
 			return $this->alertMessage('msg_invalid_request');
 		}
 
@@ -178,7 +178,8 @@ class boardAdminView extends board {
 		// setup extra_order_target
 		$module_extra_vars = $oDocumentModel->getExtraKeys($this->module_info->module_srl);
 		$extra_order_target = array();
-		foreach($module_extra_vars as $oExtraItem){
+		foreach($module_extra_vars as $oExtraItem)
+		{
 			$extra_order_target[$oExtraItem->eid] = $oExtraItem->name;
 		}
 		Context::set('extra_order_target', $extra_order_target);
@@ -213,7 +214,7 @@ class boardAdminView extends board {
 	 **/
 	function dispBoardAdminDeleteBoard(){
 		if(!Context::get('module_srl')) return $this->dispBoardAdminContent();
-		if(!in_array($this->module_info->module, array('admin', 'board','blog','guestbook'))(){
+		if(!in_array($this->module_info->module, array('admin', 'board','blog','guestbook'))){
 			return $this->alertMessage('msg_invalid_request');
 		}
 
@@ -294,7 +295,7 @@ class boardAdminView extends board {
 	/**
 	 * @brief board module message
 	 **/
-	function alertMessage($message(){
+	function alertMessage($message){
 		$script =  sprintf('<script> xAddEventListener(window,"load", function(){ alert("%s"); } );</script>', Context::getLang($message));
 		Context::addHtmlHeader( $script );
 	}

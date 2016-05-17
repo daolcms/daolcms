@@ -64,8 +64,7 @@ class boardController extends board {
 		if($this->module_info->use_anonymous == 'Y'){
 			$this->module_info->admin_mail = '';
 			$obj->notify_message = 'N';
-			if($is_update===false)
-			{
+			if($is_update===false){
 				$obj->member_srl = -1*$logged_info->member_srl;
 			}
 			$obj->email_address = $obj->homepage = $obj->user_id = '';
@@ -93,7 +92,7 @@ class boardController extends board {
 				return new Object(-1,'msg_not_permitted');
 			}
 
-			if($this->module_info->use_anonymous == 'Y'(){
+			if($this->module_info->use_anonymous == 'Y'){
 				$obj->member_srl = abs($oDocument->get('member_srl')) * -1;
 				$oDocument->add('member_srl', $obj->member_srl);
 			}
@@ -277,7 +276,6 @@ class boardController extends board {
 				}
 
 				$output = $oCommentController->insertComment($obj, $bAnonymous);
-
 			}
 			// parent_srl is not existed
 			else{
@@ -389,7 +387,8 @@ class boardController extends board {
 			// get the document information
 			$oDocumentModel = getModel('document');
 			$oDocument = $oDocumentModel->getDocument($document_srl);
-			if(!$oDocument->isExists()){
+			if(!$oDocument->isExists())
+			{
 				return new Object(-1, 'msg_invalid_request');
 			}
 
