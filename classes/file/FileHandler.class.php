@@ -377,6 +377,10 @@ class FileHandler {
 	 * @return string If success, the content of the target file. Otherwise: none
 	 **/
 	function getRemoteResource($url, $body = null, $timeout = 3, $method = 'GET', $content_type = null, $headers = array(), $cookies = array(), $post_data = array(), $request_config = array()){
+		require_once(_DAOL_PATH_ . 'libs/idna_convert/idna_convert.class.php');
+		$IDN = new idna_convert(array('idn_version' => 2008));
+		$url = $IDN->encode($url);
+		
 		try{
 			requirePear();
 			require_once('HTTP/Request.php');
