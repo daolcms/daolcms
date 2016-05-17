@@ -903,7 +903,7 @@ class boardView extends board {
 	function dispBoardDeleteTrackback(){
 		$oTrackbackModel = getModel('trackback');
 
-		if(!$oTrackbackModel{
+		if(!$oTrackbackModel){
 			return;
 		}
 
