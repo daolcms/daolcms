@@ -313,6 +313,9 @@ class document extends ModuleObject
 	 * @return void
 	 */
 	function recompileCache() {
+		if(!is_dir('./files/cache/tmp')){
+			FileHandler::makeDir('./files/cache/tmp');
+		}
 	}
 
 	/**
