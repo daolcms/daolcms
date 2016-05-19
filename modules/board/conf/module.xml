@@ -96,8 +96,10 @@
 		<action name="dispBoardAdminSkinInfo" type="view" menu_name="board" standalone="true"  />
 		<action name="dispBoardAdminMobileSkinInfo" type="view" menu_name="board" standalone="true"  />
 		<action name="dispBoardAdminGrantInfo" type="view" menu_name="board" standalone="true"  />
+		<action name="dispBoardAdminListSetup" type="view" menu_name="board" standalone="true" />
 		<action name="dispBoardAdminCategoryInfo" type="view" menu_name="board" standalone="true"  />
 		<action name="procBoardAdminInsertBoard" type="controller" ruleset="insertBoard" standalone="true" />
+		<action name="procBoardAdminInsertListConfig" type="controller" standalone="true" />
 		<action name="procBoardAdminDeleteBoard" type="controller" standalone="true" />
 		<action name="procBoardAdminUpdateBoardFroBasic" type="controller" ruleset="insertBoardForBasic" standalone="true" />
 		<action name="procBoardAdminSaveCategorySettings" type="controller" ruleset="saveCategorySettings" standalone="true" />

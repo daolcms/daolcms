@@ -232,6 +232,24 @@ class boardAdminView extends board {
 		// setup the template file
 		$this->setTemplateFile('board_delete');
 	}
+	
+	/**
+	 * @brief setup the board list
+	 **/
+	function dispBoardAdminListSetup() {
+		$oBoardModel = getModel('board');
+		
+		// setup the extra vaiables
+		Context::set('extra_vars', $oBoardModel->getDefaultListConfig($this->module_info->module_srl));
+		
+		// setup the list config (install the default value if there is no list config)
+		Context::set('list_config', $oBoardModel->getListConfig($this->module_info->module_srl));
+		
+		$security = new Security();
+		$security->encodeHTML('extra_vars..name','list_config..name');
+		
+		$this->setTemplateFile('list_setting');
+	}
 
 	/**
 	 * @brief display category information
