@@ -1266,6 +1266,7 @@
 			}
 		}
 	}
+	
 	function changeValueInUrl($key, $requestKey, $dbKey, $urlName = 'success_return_url'){
 		if($requestKey != $dbKey){
 			$arrayUrl = parse_url(Context::get('success_return_url'));
