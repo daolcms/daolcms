@@ -1248,6 +1248,38 @@
 
 		return true;
 	}
+	
+	/**
+	 * menu exposure check by isShow column
+	 * @param array $menu
+	 * @return void
+	 */
+	function recurciveExposureCheck(&$menu){
+		if(is_array($menu)){
+			foreach($menu AS $key=>$value){
+				if(!$value['isShow']){
+					unset($menu[$key]);
+				}
+				if(is_array($value['list']) && count($value['list']) > 0){
+					recurciveExposureCheck($menu[$key]['list']);
+				}
+			}
+		}
+	}
+	function changeValueInUrl($key, $requestKey, $dbKey, $urlName = 'success_return_url'){
+		if($requestKey != $dbKey){
+			$arrayUrl = parse_url(Context::get('success_return_url'));
+			if($arrayUrl['query']){
+				parse_str($arrayUrl['query'], $parsedStr);
+				
+				if(isset($parsedStr[$key])){
+					$parsedStr[$key] = $requestKey;
+					$successReturnUrl .= $arrayUrl['path'].'?'.http_build_query($parsedStr);
+					Context::set($urlName, $successReturnUrl);
+				}
+			}
+		}
+	}
 
 	/**
 	 * Print raw html header
