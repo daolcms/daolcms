@@ -19,8 +19,8 @@
 	<description xml:lang="es">Programa básico para la estadística de la conección.</description>
 	<description xml:lang="ru">Базовая программа статистики подключений.</description>
 	<description xml:lang="tr">Temel bağlantı istatistik programı.</description>
-	<version>0.1</version>
-	<date>2007-02-28</date>
+	<version>1.0</version>
+	<date>2016-05-17</date>
 	<category>statistics</category>
 
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org/">

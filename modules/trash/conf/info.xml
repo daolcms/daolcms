@@ -12,8 +12,8 @@
 	<title xml:lang="tr">Geri Dönüşüm Kutusu</title>
 	<description xml:lang="ko">문서, 댓글 등을 완전히 삭제하지 않고 복구 가능한 상태로 만들어 관리하는 모듈입니다.</description>
 	<description xml:lang="en">The document and comment management module that creates a recoverable state without completely delete.</description>
-	<version>0.1</version>
-	<date>2011-05-12</date>
+	<version>1.0</version>
+	<date>2016-05-17</date>
 	<category>content</category>
 	
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org/">

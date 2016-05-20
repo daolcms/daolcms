@@ -19,8 +19,8 @@
 	<description xml:lang="es">Módulo para manejar etiquetas.</description>
 	<description xml:lang="ru">Модуль для управления тегами.</description>
 	<description xml:lang="tr">Etiketleri yönetme modülü.</description>
-	<version>0.1</version>
-	<date>2007-02-28</date>
+	<version>1.0</version>
+	<date>2016-05-17</date>
 	<category>content</category>
 
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org/">

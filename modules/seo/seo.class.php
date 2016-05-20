@@ -19,6 +19,11 @@ class seo extends ModuleObject
 	{
 		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('seo');
+		
+		require_once(_DAOL_PATH_ . 'libs/idna_convert/idna_convert.class.php');
+		$IDN = new idna_convert(array('idn_version' => 2008));
+		$request_uri = $IDN->encode(Context::get('request_uri'));
+		
 		if (!$config) $config = new stdClass;
 		if (!$config->enable) $config->enable = 'Y';
 		if (!$config->use_optimize_title) $config->use_optimize_title = 'N';
@@ -26,7 +31,7 @@ class seo extends ModuleObject
 		if (!$config->ga_track_subdomain) $config->ga_track_subdomain = 'N';
 		if ($config->site_image) 
 		{
-			$config->site_image_url = Context::get('request_uri') . 'files/attach/site_image/' . $config->site_image;
+			$config->site_image_url = $request_uri . 'files/attach/site_image/' . $config->site_image;
 
 			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
 			if($oCacheHandler->isSupport()) {

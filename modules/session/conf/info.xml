@@ -37,8 +37,8 @@
 		Bu modül oturum verisini yönetir.
 		Siz sadece oturum ayarı veya kullanımı değil ayrıca oturum bilgilerini kullanan kullanıcıların oturum-seviyesi verilerini de elde edeceksiniz.
 	</description>
-	<version>0.1</version>
-	<date>2008-06-18</date>
+	<version>1.0</version>
+	<date>2016-05-17</date>
 	<category>system</category>
 
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org/">

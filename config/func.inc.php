@@ -921,15 +921,13 @@
 		if($tag === 'object') array_push($filter_arrts, 'data');
 		if($tag === 'param') array_push($filter_arrts, 'value');
 		
-		foreach($filter_arrts as $attr)
-		{
+		foreach($filter_arrts as $attr){
 			if(!isset($attrs[$attr])) continue;
 		
 			$attr_value = rawurldecode($attrs[$attr]);
 			$attr_value = htmlspecialchars_decode($attr_value, ENT_COMPAT);
 			$attr_value = preg_replace('/\s+|[\t\n\r]+/', '', $attr_value);
-			if(preg_match('@(\?|&|;)(act=)@i', $attr_value))
-			{
+			if(preg_match('@(\?|&|;)(act=(\w+))@i', $attr_value, $m) && $m[3] !== 'procFileDownload'){
 				unset($attrs[$attr]);
 			}
 		}
@@ -1097,7 +1095,7 @@
 		if($urldecode) $string = urldecode($string);
 
 		$sample = iconv('utf-8', 'utf-8', $string);
-		$is_utf8 = (md5($sample) == md5($string));
+		$is_utf8 = (md5($sample) === md5($string));
 
 		if(!$urldecode) $string = urldecode($string);
 
@@ -1249,6 +1247,39 @@
 		}
 
 		return true;
+	}
+	
+	/**
+	 * menu exposure check by isShow column
+	 * @param array $menu
+	 * @return void
+	 */
+	function recurciveExposureCheck(&$menu){
+		if(is_array($menu)){
+			foreach($menu AS $key=>$value){
+				if(!$value['isShow']){
+					unset($menu[$key]);
+				}
+				if(is_array($value['list']) && count($value['list']) > 0){
+					recurciveExposureCheck($menu[$key]['list']);
+				}
+			}
+		}
+	}
+	
+	function changeValueInUrl($key, $requestKey, $dbKey, $urlName = 'success_return_url'){
+		if($requestKey != $dbKey){
+			$arrayUrl = parse_url(Context::get('success_return_url'));
+			if($arrayUrl['query']){
+				parse_str($arrayUrl['query'], $parsedStr);
+				
+				if(isset($parsedStr[$key])){
+					$parsedStr[$key] = $requestKey;
+					$successReturnUrl .= $arrayUrl['path'].'?'.http_build_query($parsedStr);
+					Context::set($urlName, $successReturnUrl);
+				}
+			}
+		}
 	}
 
 	/**

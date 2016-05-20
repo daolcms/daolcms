@@ -19,8 +19,8 @@
 	<description xml:lang="es">Este módulo is para crear y manejar los otros módulos.</description>
 	<description xml:lang="ru">Этот модуль служит для создания/управления другими модулями.</description>
 	<description xml:lang="tr">Bu modül, başka modüller oluşturmak ve yönetmek içindir.</description>
-	<version>0.1</version>
-	<date>2007-02-28</date>
+	<version>1.0</version>
+	<date>2016-05-17</date>
 	<category>system</category>
 
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org/">

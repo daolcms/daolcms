@@ -4,8 +4,8 @@
 	<title xml:lang="en">SEO</title>
 	<description xml:lang="ko">검색엔진 최적화</description>
 	<description xml:lang="en">Module for SEO</description>
-	<version>1.8.18</version>
-	<date>2016-03-08</date>
+	<version>1.8.19</version>
+	<date>2016-04-15</date>
 	<license>MIT</license>
 	
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org/">

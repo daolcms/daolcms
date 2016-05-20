@@ -19,8 +19,8 @@
 	<description xml:lang="es">Este módulo es para el manejo y la configuración de los usuarios.</description>
 	<description xml:lang="ru">Этот модуль служит для управления и конфигурирования пользователей.</description>
 	<description xml:lang="tr">Bu modül üyeleri yönetmek/yapılandırmak için kullanılır</description>
-	<version>0.1</version>
-	<date>2007-02-28</date>
+	<version>1.0</version>
+	<date>2016-05-17</date>
 	<category>member</category>
 
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org/">

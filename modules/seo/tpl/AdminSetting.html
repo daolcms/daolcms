@@ -146,22 +146,5 @@
 	</div>
 </form>
 
-<script>
-jQuery(function($){
-	var config = $('.x_form-horizontal .default .x_control-group:not(.default), .x_form-horizontal .section:not(.default),.x_nav-tabs>li:not(.x_active)');
-	if(!$('#enable').is(':checked'))
-	{
-		config.hide();
-	}
-	$('#enable').change(function(){
-		if($(this).is(':checked')){
-			config.slideDown(200);
-		} else {
-			config.slideUp(200);
-		}
-	});
-});
-</script>
-
 <include target="../../module/tpl/include.multilang.html" />
 <include target="../../module/tpl/include.multilang.textarea.html" />
