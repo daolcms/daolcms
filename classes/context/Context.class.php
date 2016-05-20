@@ -1517,7 +1517,7 @@ class Context {
 	 * @return void
 	 */
 	function addSSLAction($action){
-		is_a($this,'Context')?$self=&$this:$self=&Context::getInstance();
+		is_a($this, 'Context') ? $self = $this : $self = self::getInstance();
 
 		if(!is_readable($self->sslActionCacheFile)){
 			$buff = '<?php if(!defined("__XE__"))exit;';
@@ -1525,8 +1525,33 @@ class Context {
 		}
 
 		if(!isset($self->ssl_actions[$action])){
+			$self->ssl_actions[$action] = 1;
 			$sslActionCacheString = sprintf('$sslActions[\'%s\'] = 1;', $action);
 			FileHandler::writeFile($self->sslActionCacheFile, $sslActionCacheString, 'a');
+		}
+	}
+
+	/**
+	 * Register if actions are to be encrypted by SSL. Those actions are sent to https in common/js/xml_handler.js
+	 *
+	 * @param string $action act name
+	 * @return void
+	 */
+	function addSSLActions($action_array){
+		is_a($this, 'Context') ? $self = $this : $self = self::getInstance();
+
+		if(!is_readable($self->sslActionCacheFile)){
+			unset($self->ssl_actions);
+			$buff = '<?php if(!defined("__XE__"))exit;';
+			FileHandler::writeFile($self->sslActionCacheFile, $buff);
+		}
+
+		foreach($action_array as $action){
+			if(!isset($self->ssl_actions[$action])){
+				$self->ssl_actions[$action] = 1;
+				$sslActionCacheString = sprintf('$sslActions[\'%s\'] = 1;', $action);
+				FileHandler::writeFile($self->sslActionCacheFile, $sslActionCacheString, 'a');
+			}
 		}
 	}
 
