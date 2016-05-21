@@ -12,21 +12,12 @@
 	<input cond="$mid || $module_srl" type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
 	<input cond="$logged_info->is_admin != 'Y'" type="hidden" name="board_name" value="{$module_info->mid}" />
 
+	<h3 class="xeAdmin">기본</h3>
 	<ul>
 		<li cond="$logged_info->is_admin == 'Y'">
 			<p class="q"><label for="board_name">{$lang->mid}</label></p>
 			<p class="a"><input type="text" name="board_name" id="board_name" value="{$module_info->mid}" />
 			<p class="desc">{$lang->about_mid}</p>
-		</li>
-		<li>
-			<p class="q"><label for="module_category_srl">{$lang->module_category}</label></p>
-			<p class="a">
-				<select name="module_category_srl" id="module_category_srl">
-					<option value="0">{$lang->notuse}</option>
-					<option loop="$module_category => $key, $val" value="{$key}" selected="selected"|cond="$module_info->module_category_srl == $key">{$val->title}</option>
-				</select>
-			</p>
-			<p class="desc">{$lang->about_module_category}</p>
 		</li>
 		<li>
 			<p class="q"><label for="browser_title">{$lang->browser_title}</label></p>
@@ -62,6 +53,25 @@
 			<p class="a"><input type="checkbox" name="is_skin_fix" id="is_skin_fix" value="Y" checked="checked"|cond="$module_info->is_skin_fix == 'Y'" /> <label for="is_skin_fix">{$lang->about_skin_fix}</label></p>
 		</li>
 		<li>
+			<p class="q"><label for="list_count">{$lang->list_count}</label></p>
+			<p class="a"><input type="text" name="list_count" id="list_count" value="{$module_info->list_count?$module_info->list_count:20}" /></p>
+			<p class="desc">{$lang->about_list_count}</p>
+		</li>
+		<li>
+			<p class="q"><label for="search_list_count">{$lang->search_list_count}</label></p>
+			<p class="a"><input type="text" name="search_list_count" id="search_list_count" value="{$module_info->search_list_count?$module_info->search_list_count:20}" /></p>
+			<p class="desc">{$lang->about_search_list_count}</p>
+		</li>
+		<li>
+			<p class="q"><label for="page_count">{$lang->page_count}</label></p>
+			<p class="a"><input type="text" name="page_count" id="page_count" value="{$module_info->page_count?$module_info->page_count:10}" /></p>
+			<p class="desc">{$lang->about_page_count}</p>
+		</li>
+	</ul>
+	
+	<h3 class="xeAdmin">모바일</h3>
+	<ul>
+		<li>
 			<p class="q">{$lang->mobile_view}</p>
 			<p class="a"><input type="checkbox" name="use_mobile" id="use_mobile" value="Y" checked="checked"|cond="$module_info->use_mobile == 'Y'" /> <label for="use_mobile">{$lang->about_mobile_view}</label></p>
 		</li>
@@ -85,20 +95,40 @@
 			<p class="desc">{$lang->about_skin}</p>
 		</li>
 		<li>
-			<p class="q">{$lang->use_category}</p>
-			<p class="a"><input type="checkbox" name="use_category" id="use_category" value="Y" checked="checked"|cond="$module_info->use_category == 'Y'" /> <label for="use_category">{$lang->about_use_category}</label></p>
+			<p class="q">{$lang->list_count}</p>
+			<p class="a"><input type="text" name="mobile_list_count" id="mobile_list_count" value="{$module_info->mobile_list_count?$module_info->mobile_list_count:20}" /></p>
+			<p class="desc">{$lang->about_list_count}</p>
 		</li>
 		<li>
-			<p class="q"><label for="order_target">{$lang->order_target}</label></p>
+			<p class="q">{$lang->search_list_count}</p>
+			<p class="a"><input type="text" name="mobile_search_list_count" id="mobile_search_list_count" value="{$module_info->mobile_search_list_count?$module_info->mobile_search_list_count:20}" /></p>
+			<p class="desc">{$lang->about_search_list_count}</p>
+		</li>
+		<li>
+			<p class="q">{$lang->page_count}</p>
+			<p class="a"><input type="text" name="mobile_page_count" id="mobile_page_count" value="{$module_info->mobile_page_count?$module_info->mobile_page_count:5}" /></p>
+			<p class="desc">{$lang->about_mobile_page_count}</p>
+		</li>
+	</ul>
+	
+	<h3 class="xeAdmin">고급</h3>
+	<ul>
+		<li>
+			<p class="q"><label for="module_category_srl">{$lang->module_category}</label></p>
 			<p class="a">
-				<select name="order_target" id="order_target">
-					<option loop="$order_target=> $key, $val" value="{$key}" selected="selected"|cond="$module_info->order_target== $key">{$val}</option>
+				<select name="module_category_srl" id="module_category_srl">
+					<option value="0">{$lang->notuse}</option>
+					<option loop="$module_category => $key, $val" value="{$key}" selected="selected"|cond="$module_info->module_category_srl == $key">{$val->title}</option>
 				</select>
 			</p>
+			<p class="desc">{$lang->about_module_category}</p>
 		</li>
 		<li>
 			<p class="q"><label for="order_type">{$lang->order_type}</label></p>
 			<p class="a">
+				<select name="order_target" id="order_target">
+					<option loop="$order_target=> $key, $val" value="{$key}" selected="selected"|cond="$module_info->order_target== $key">{$val}</option>
+				</select>
 				<select name="order_type" id="order_type">
 					<option value="asc" selected="selected"|cond="$module_info->order_type != 'desc'">{$lang->order_asc}</option>
 					<option value="desc" selected="selected"|cond="$module_info->order_type == 'desc'">{$lang->order_desc}</option>
@@ -106,19 +136,8 @@
 			</p>
 		</li>
 		<li>
-			<p class="q"><label for="list_count">{$lang->list_count}</label></p>
-			<p class="a"><input type="text" name="list_count" id="list_count" value="{$module_info->list_count?$module_info->list_count:20}" /></p>
-			<p class="desc">{$lang->about_list_count}</p>
-		</li>
-		<li>
-			<p class="q"><label for="search_list_count">{$lang->search_list_count}</label></p>
-			<p class="a"><input type="text" name="search_list_count" id="search_list_count" value="{$module_info->search_list_count?$module_info->search_list_count:20}" /></p>
-			<p class="desc">{$lang->about_search_list_count}</p>
-		</li>
-		<li>
-			<p class="q"><label for="page_count">{$lang->page_count}</label></p>
-			<p class="a"><input type="text" name="page_count" id="page_count" value="{$module_info->page_count?$module_info->page_count:20}" /></p>
-			<p class="desc">{$lang->about_page_count}</p>
+			<p class="q">{$lang->use_category}</p>
+			<p class="a"><input type="checkbox" name="use_category" id="use_category" value="Y" checked="checked"|cond="$module_info->use_category == 'Y'" /> <label for="use_category">{$lang->about_use_category}</label></p>
 		</li>
 		<li>
 			<p class="q">{$lang->except_notice}</p>
@@ -131,6 +150,10 @@
 		<li>
 			<p class="q">{$lang->consultation}</p>
 			<p class="a"><input type="checkbox" name="consultation" id="consultation" value="Y" checked="checked"|cond="$module_info->consultation == 'Y'" /> <label for="consultation">{$lang->about_consultation}</label></p>
+		</li>
+		<li>
+			<p class="q">{$lang->protect_content}</p>
+			<p class="a"><input type="checkbox" name="protect_content" id="protect_content" value="Y" checked="checked"|cond="$module_info->protect_content == 'Y'" /> {$lang->about_protect_content}</label></p>
 		</li>
 		<li>
 			<p class="q">{$lang->status}</p>
