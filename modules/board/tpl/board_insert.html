@@ -12,7 +12,7 @@
 	<input cond="$mid || $module_srl" type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
 	<input cond="$logged_info->is_admin != 'Y'" type="hidden" name="board_name" value="{$module_info->mid}" />
 
-	<h3 class="xeAdmin">기본</h3>
+	<h2>{$lang->subtitle_primary}</h2>
 	<ul>
 		<li cond="$logged_info->is_admin == 'Y'">
 			<p class="q"><label for="board_name">{$lang->mid}</label></p>
@@ -68,8 +68,9 @@
 			<p class="desc">{$lang->about_page_count}</p>
 		</li>
 	</ul>
+	<br />
 	
-	<h3 class="xeAdmin">모바일</h3>
+	<h2>{$lang->mobile_settings}</h2>
 	<ul>
 		<li>
 			<p class="q">{$lang->mobile_view}</p>
@@ -110,8 +111,9 @@
 			<p class="desc">{$lang->about_mobile_page_count}</p>
 		</li>
 	</ul>
+	<br />
 	
-	<h3 class="xeAdmin">고급</h3>
+	<h2>{$lang->subtitle_advanced}</h2>
 	<ul>
 		<li>
 			<p class="q"><label for="module_category_srl">{$lang->module_category}</label></p>
