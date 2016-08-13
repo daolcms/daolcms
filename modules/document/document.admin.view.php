@@ -46,8 +46,8 @@
 			$args->module_srl = Context::get('module_srl');
 
 			// get a list
-			$oDocumentModel = &getModel('document');
-			$columnList = array('document_srl', 'module_srl', 'title', 'member_srl', 'nick_name', 'readed_count', 'voted_count', 'blamed_count', 'regdate', 'ipaddress', 'status');
+			$oDocumentModel = getModel('document');
+			$columnList = array('document_srl', 'module_srl', 'title', 'member_srl', 'nick_name', 'readed_count', 'voted_count', 'blamed_count', 'regdate', 'ipaddress', 'status', 'category_srl');
 			$output = $oDocumentModel->getDocumentList($args, false, true, $columnList);
 
 			// get Status name list
