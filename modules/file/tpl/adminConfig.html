@@ -28,11 +28,11 @@
 		</li>
 		<li>
 			<p class="q"><label for="filesize">{$lang->about_allowed_filesize}</label></p>
-			<p class="a"><input id="filesize" type="text" name="allowed_filesize" value="{$config->allowed_filesize}" style="width:40px" /> MB /{$upload_max_filesize}</p>
+			<p class="a"><input id="filesize" type="text" step="any" name="allowed_filesize" value="{$config->allowed_filesize}" style="width:40px" /> MB / {$upload_max_filesize}</p>
 		</li>
 		<li>
 			<p class="q"><label for="attachSize">{$lang->about_allowed_attach_size}</label></p>
-			<p class="a"><input id="attachSize" type="text" name="allowed_attach_size" value="{$config->allowed_attach_size}" style="width:40px" /> MB</p>
+			<p class="a"><input id="attachSize" type="text" step="any" name="allowed_attach_size" value="{$config->allowed_attach_size}" style="width:40px" /> MB</p>
 		</li>
 		<li>
 			<p class="q"><label for="allowedFiletypes">{$lang->allowed_filetypes}</label></p>
