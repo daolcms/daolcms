@@ -403,11 +403,24 @@ class FileHandler {
 					$request_config['proxy_password'] = rawurldecode($parsed_url['pass'] ? $parsed_url['pass'] : '');
 					$request_config['proxy_type'] = $parsed_url['scheme'] ? $parsed_url['scheme'] : 'http';
 				}
+				
 				if(count($request_config) && method_exists($oRequest, 'setConfig')){
 					foreach($request_config as $key=>$val){
 						$oRequest->setConfig($key, $val);
 					}
 				}
+				if(method_exists($oRequest, 'setConfig')){
+					if(extension_loaded('curl')){
+						$oRequest->setConfig('adapter', 'curl');
+					}
+					elseif(version_compare(PHP_VERSION, '5.6', '<')){
+						$oRequest->setConfig('ssl_verify_host', false);
+					}
+					if(file_exists(_XE_PATH_ . 'libs/cacert/cacert.pem')){
+						$oRequest->setConfig('ssl_cafile', _XE_PATH_ . 'libs/cacert/cacert.pem');
+					}
+				}
+				
 				if(count($headers) > 0){
 					foreach($headers as $key => $val){
 						$oRequest->addHeader($key, $val);
