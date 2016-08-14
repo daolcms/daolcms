@@ -16,7 +16,6 @@
 		<name xml:lang="ko">NAVER</name>
 		<name xml:lang="en">NAVER</name>
 	</author>
-	
 	<license>LGPL v2</license>
 	
 	<extra_vars>
@@ -25,7 +24,7 @@
 			<title xml:lang="en">Board Title Image</title>
 			<title xml:lang="jp">掲示板タイトル画像</title>
 			<description xml:lang="ko">작성하면 화면에 표시 됨</description>
-			<description xml:lang="en">Display on Writing page</description>
+			<description xml:lang="en">Display on Writing Page</description>
 			<description xml:lang="jp">作成すると画面に表示される</description>
 		</var>
 		<var name="title_alt" type="text">
