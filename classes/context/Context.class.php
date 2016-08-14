@@ -504,57 +504,68 @@ class Context {
 	 */
 	function checkSSO(){
 		// pass if it's not GET request or XE is not yet installed
-		if($this->db_info->use_sso != 'Y' || isCrawler()) return true;
-		$checkActList = array('rss'=>1, 'atom'=>1);
-		if(Context::getRequestMethod()!='GET' || !Context::isInstalled() || isset($checkActList[Context::get('act')])) return true;
+		if($this->db_info->use_sso != 'Y' || isCrawler()){
+			return TRUE;
+		}
+		$checkActList = array('rss' => 1, 'atom' => 1);
+		if(self::getRequestMethod() != 'GET' || !self::isInstalled() || isset($checkActList[self::get('act')])){
+			return TRUE;
+		}
 
 		// pass if default URL is not set
 		$default_url = trim($this->db_info->default_url);
-		if(!$default_url) return true;
-		if(substr($default_url,-1)!='/') $default_url .= '/';
+		if(!$default_url){
+			return TRUE;
+		}
+
+		if(substr_compare($default_url, '/', -1) !== 0){
+			$default_url .= '/';
+		}
 
 		// for sites recieving SSO valdiation
-		if($default_url == Context::getRequestUri()){
-			if(Context::get('default_url')){
-				$url = base64_decode(Context::get('default_url'));
+		if($default_url == self::getRequestUri()){
+			if(self::get('url')){
+				$url = base64_decode(self::get('url'));
 				$url_info = parse_url($url);
-				
-				$oModuleModel = getModel('module');
-				$target_domain = (stripos($url, $default_url) !== 0) ? $url_info['host'] : $default_url;
-				$site_info = $oModuleModel->getSiteInfoByDomain($target_domain);
-				if(!$site_info->site_srl){
-					$oModuleObject = new ModuleObject();
-					$oModuleObject->stop('msg_invalid_request');
+				if(!Password::checkSignature($url, self::get('sig'))){
+					echo self::get('lang')->msg_invalid_request;
 					return false;
 				}
 
-				$url_info['query'].= ($url_info['query']?'&':'').'SSOID='.session_id();
-				$redirect_url = sprintf('%s://%s%s%s?%s',$url_info['scheme'],$url_info['host'],$url_info['port']?':'.$url_info['port']:'',$url_info['path'], $url_info['query']);
-				header('location:'.$redirect_url);
-				return false;
+				$url_info['query'].= ($url_info['query'] ? '&' : '') . 'SSOID=' . urlencode(session_id()) . '&sig=' . urlencode(Password::createSignature(session_id()));
+				$redirect_url = sprintf('%s://%s%s%s?%s', $url_info['scheme'], $url_info['host'], $url_info['port'] ? ':' . $url_info['port'] : '', $url_info['path'], $url_info['query']);
+				header('location:' . $redirect_url);
+
+				return FALSE;
 			}
-		// for sites requesting SSO validation
+			// for sites requesting SSO validation
 		}
 		else{
 			// result handling : set session_name()
-			if(Context::get('SSOID')){
-				$session_name = Context::get('SSOID');
+			if($session_name = self::get('SSOID')){
+				if(!Password::checkSignature($session_name, self::get('sig'))){
+					echo self::get('lang')->msg_invalid_request;
+					return false;
+				}
+				
 				setcookie(session_name(), $session_name);
 
-				$url = preg_replace('/([\?\&])$/','',str_replace('SSOID='.$session_name,'',Context::getRequestUrl()));
-				header('location:'.$url);
-				return false;
-			// send SSO request
+				$url = preg_replace('/[\?\&]SSOID=.+$/', '', self::getRequestUrl());
+				header('location:' . $url);
+				return FALSE;
+				// send SSO request
 			}
-			else if($_COOKIE['sso']!=md5(Context::getRequestUri()) && !Context::get('SSOID')){
-				setcookie('sso',md5(Context::getRequestUri()),0,'/');
-				$url = sprintf("%s?default_url=%s", $default_url, base64_encode(Context::getRequestUrl()));
-				header('location:'.$url);
-				return false;
+			else if(!self::get('SSOID') && $_COOKIE['sso'] != md5(self::getRequestUri())){
+				setcookie('sso', md5(self::getRequestUri()), 0, '/');
+				$origin_url = self::getRequestUrl();
+				$origin_sig = Password::createSignature($origin_url);
+				$url = sprintf("%s?url=%s&sig=%s", $default_url, urlencode(base64_encode($origin_url)), urlencode($origin_sig));
+				header('location:' . $url);
+				return FALSE;
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	/**
