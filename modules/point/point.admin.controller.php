@@ -57,6 +57,7 @@
 				else $config->disable_read_document = 'N';
 				$oMemberModel = getModel('member');
 				$group_list = $oMemberModel->getGroups();
+				$config->point_group = array();
 				// Per-level group configurations
 				foreach($group_list as $group){
 					// Admin group should not be connected to point.
@@ -72,9 +73,6 @@
 					}
 					if($args->{'point_group_'.$group_srl}){
 						$config->point_group[$group_srl] = $args->{'point_group_'.$group_srl};
-					}
-					else{
-						unset($config->point_group[$group_srl]);
 					}
 				}
 				$config->group_reset = $args->group_reset;
