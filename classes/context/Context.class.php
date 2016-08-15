@@ -836,11 +836,11 @@ class Context {
 		$obj = clone($source_obj);
 
 		foreach($charset_list as $charset){
-			array_walk($obj,'self::checkConvertFlag',$charset);
+			array_walk($obj,'Context::checkConvertFlag',$charset);
 			$flag = self::checkConvertFlag($flag = true);
 			if($flag){
 				if($charset == 'UTF-8') return $obj;
-				array_walk($obj,'self::doConvertEncoding',$charset);
+				array_walk($obj,'Context::doConvertEncoding',$charset);
 				return $obj;
 			}
 		}
@@ -859,7 +859,7 @@ class Context {
 		static $flag = true;
 		if($charset){
 			if(is_array($val))
-				array_walk($val,'self::checkConvertFlag',$charset);
+				array_walk($val,'Context::checkConvertFlag',$charset);
 			else if($val && iconv($charset,$charset,$val)!=$val) $flag = false;
 			else $flag = false;
 		}
@@ -881,7 +881,7 @@ class Context {
 	 */
 	function doConvertEncoding(&$val, $key = null, $charset){
 		if (is_array($val)){
-			array_walk($val,'self::doConvertEncoding',$charset);
+			array_walk($val,'Context::doConvertEncoding',$charset);
 		}
 		else $val = iconv($charset,'UTF-8',$val);
 	}
