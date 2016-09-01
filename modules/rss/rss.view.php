@@ -31,7 +31,7 @@
 			if(!$document_list) {
 				$site_module_info = Context::get('site_module_info');
 				$site_srl = $site_module_info->site_srl;
-				$mid = Context::get('mid'); // The target module id, if absent, then all
+				$mid = Context::getRequestVars()->mid; // The target module id, if absent, then all
 				$start_date = (int)Context::get('start_date');
 				$end_date = (int)Context::get('end_date');
 

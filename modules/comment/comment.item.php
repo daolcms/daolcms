@@ -398,12 +398,21 @@
 			// Define thumbnail information
 			$thumbnail_path = sprintf('files/cache/thumbnails/%s',getNumberingPath($this->comment_srl, 3));
 			$thumbnail_file = sprintf('%s%dx%d.%s.jpg', $thumbnail_path, $width, $height, $thumbnail_type);
+			$thumbnail_lockfile = sprintf('%s%dx%d.%s.lock', $thumbnail_path, $width, $height, $thumbnail_type);
 			$thumbnail_url  = Context::getRequestUri().$thumbnail_file;
 			// return false if a size of existing thumbnail file is 0. otherwise return the file path
-			if(file_exists($thumbnail_file)) {
-				if(filesize($thumbnail_file)<1) return false;
-				else return $thumbnail_url;
+			if(file_exists($thumbnail_file) || file_exists($thumbnail_lockfile)){
+				if(filesize($thumbnail_file)<1){
+					return FALSE;
+				}
+				else{
+					return $thumbnail_url;
+				}
 			}
+
+			// Create lockfile to prevent race condition
+			FileHandler::writeFile($thumbnail_lockfile, '', 'w');
+
 			// Target file
 			$source_file = null;
 			$is_tmp_file = false;
@@ -466,11 +475,20 @@
 
 			$output = FileHandler::createImageFile($source_file, $thumbnail_file, $width, $height, 'jpg', $thumbnail_type);
 
-			if($is_tmp_file) FileHandler::removeFile($source_file);
-			// return the thumbnail path if successfully generated.
-			if($output) return $thumbnail_url;
+			// Remove source file if it was temporary
+			if($is_tmp_file){
+				FileHandler::removeFile($source_file);
+			}
+			// Remove lockfile
+			FileHandler::removeFile($thumbnail_lockfile);
+			// Return the thumbnail path if it was successfully generated
+			if($output){
+				return $thumbnail_url;
+			}
 			// create an empty file not to attempt to generate the thumbnail afterwards
-			else FileHandler::writeFile($thumbnail_file, '','w');
+			else{
+				FileHandler::writeFile($thumbnail_file, '', 'w');
+			}
 
 			return;
 		}

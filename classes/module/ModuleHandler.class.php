@@ -1,7 +1,7 @@
 <?php
 	/**
 	* @class ModuleHandler
-	* @author NHN (developers@xpressengine.com)
+	* @author NAVER (developers@xpressengine.com)
 	* @Adaptor DAOL Project (developer@daolcms.org)
 	* Handling modules
 	*
@@ -280,7 +280,7 @@
 			$logged_info = Context::get('logged_info');
 			
 			// check CSRF for POST actions
-			if(Context::getRequestMethod() === 'POST' && Context::isInstalled() && $this->act !== 'procFileUpload' && !checkCSRF()){
+			if($_SERVER['REQUEST_METHOD'] !== 'GET' && Context::isInstalled() && $this->act !== 'procFileUpload' && !checkCSRF()){
 				$this->error = 'msg_invalid_request';
 				$oMessageObject = &ModuleHandler::getModuleInstance('message', $display_mode);
 				$oMessageObject->setError(-1);

@@ -41,6 +41,11 @@
 			<title xml:lang="zh-TW">發表評論</title>
 			<title xml:lang="es">yorum yaz</title>
 		</grant>
+		<grant name="consultation_read" default="manager">
+			<title xml:lang="ko">상담글 조회</title>
+			<title xml:lang="en">Consultation Document Read</title>
+			<title xml:lang="jp">相談文照会</title>
+		</grant>
 	</grants>
 	<permissions>
 		<permission action="dispBoardAdminInsertBoard" target="manager" />
@@ -52,6 +57,10 @@
 
 		<permission action="procBoardAdminInsertBoard" target="manager" />
 		<permission action="procBoardAdminInsertListConfig" target="manager" />
+		<permission action="procBoardAdminUpdateBoardFroBasic" target="manager" />
+		<permission action="procBoardAdminSaveCategorySettings" target="manager" />
+
+		<permission action="getBoardAdminSimpleSetup" target="manager" />
 	</permissions>
 	<actions>
 		<action name="dispBoardContent" type="view" index="true" />
@@ -83,20 +92,24 @@
 		<action name="procBoardUploadFile" type="controller" />
 		<action name="procBoardDownloadFile" type="controller" />
 
-		<action name="dispBoardAdminContent" type="view" standalone="true" admin_index="true" menu_name="board" menu_index="true" />
-		<action name="dispBoardAdminBoardInfo" type="view" standalone="true"  menu_name="board" />
-		<action name="dispBoardAdminExtraVars" type="view" standalone="true"  menu_name="board" />
-		<action name="dispBoardAdminBoardAdditionSetup" type="view" standalone="true" menu_name="board"  />
-		<action name="dispBoardAdminInsertBoard" type="view" standalone="true" setup_index="true" menu_name="board"  />
-		<action name="dispBoardAdminDeleteBoard" type="view" standalone="true" menu_name="board"  />
-		<action name="dispBoardAdminSkinInfo" type="view" standalone="true" menu_name="board"  />
-		<action name="dispBoardAdminMobileSkinInfo" type="view" standalone="true" menu_name="board"  />
-		<action name="dispBoardAdminGrantInfo" type="view" standalone="true" menu_name="board"  />
-		<action name="dispBoardAdminListSetup" type="view" standalone="true" menu_name="board"  />
-		<action name="dispBoardAdminCategoryInfo" type="view" menu_name="board"  />
-		<action name="procBoardAdminInsertBoard" type="controller" standalone="true" ruleset="insertBoard" />
-		<action name="procBoardAdminDeleteBoard" type="controller" standalone="true" />
+		<action name="dispBoardAdminContent" type="view" admin_index="true" menu_name="board" menu_index="true" standalone="true" />
+		<action name="dispBoardAdminBoardInfo" type="view" menu_name="board" standalone="true" />
+		<action name="dispBoardAdminExtraVars" type="view" menu_name="board" standalone="true" />
+		<action name="dispBoardAdminBoardAdditionSetup" type="view" menu_name="board" standalone="true"  />
+		<action name="dispBoardAdminInsertBoard" type="view" setup_index="true" menu_name="board" standalone="true" />
+		<action name="dispBoardAdminDeleteBoard" type="view" menu_name="board" standalone="true"  />
+		<action name="dispBoardAdminSkinInfo" type="view" menu_name="board" standalone="true"  />
+		<action name="dispBoardAdminMobileSkinInfo" type="view" menu_name="board" standalone="true"  />
+		<action name="dispBoardAdminGrantInfo" type="view" menu_name="board" standalone="true"  />
+		<action name="dispBoardAdminListSetup" type="view" menu_name="board" standalone="true" />
+		<action name="dispBoardAdminCategoryInfo" type="view" menu_name="board" standalone="true"  />
+		<action name="procBoardAdminInsertBoard" type="controller" ruleset="insertBoard" standalone="true" />
 		<action name="procBoardAdminInsertListConfig" type="controller" standalone="true" />
+		<action name="procBoardAdminDeleteBoard" type="controller" standalone="true" />
+		<action name="procBoardAdminUpdateBoardFroBasic" type="controller" ruleset="insertBoardForBasic" standalone="true" />
+		<action name="procBoardAdminSaveCategorySettings" type="controller" ruleset="saveCategorySettings" standalone="true" />
+
+		<action name="getBoardAdminSimpleSetup" type="model" simple_setup_index="true" />
 
 		<action name="dispBoardCategory" type="mobile" />
 		<action name="getBoardCommentPage" type="mobile" />

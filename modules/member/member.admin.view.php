@@ -139,6 +139,8 @@
 			Context::set('editor_skin_list', $oEditorModel->getEditorSkinList());
 
 			// get an editor
+			$option = new stdClass();
+			$option->skin = $oEditorModel->getEditorConfig()->editor_skin;
 			$option->primary_key_name = 'temp_srl';
 			$option->content_key_name = 'agreement';
 			$option->allow_fileupload = false;
@@ -221,8 +223,10 @@
 			Context::set('member_info', $memberInfo);
 			
 			// get an editor for the signature
-			if($memberInfo->member_srl) {                
-				$oEditorModel = &getModel('editor');
+			if($memberInfo->member_srl){
+				$oEditorModel = getModel('editor');
+				$option = new stdClass();
+				$option->skin = $oEditorModel->getEditorConfig()->editor_skin;
 				$option->primary_key_name = 'member_srl';
 				$option->content_key_name = 'signature';
 				$option->allow_fileupload = false;

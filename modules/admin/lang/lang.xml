@@ -1540,4 +1540,14 @@
 		<value xml:lang="zh-CN"><![CDATA[管理设置]]></value>
 		<value xml:lang="tr"><![CDATA[Yönetici Ayarları]]></value>
 	</item>
+	<item name="desktop_settings">
+		<value xml:lang="ko"><![CDATA[PC 설정]]></value>
+		<value xml:lang="en"><![CDATA[PC Settings]]></value>
+		<value xml:lang="jp"><![CDATA[PC設定]]></value>
+	</item>
+	<item name="mobile_settings">
+		<value xml:lang="ko"><![CDATA[모바일 설정]]></value>
+		<value xml:lang="en"><![CDATA[Mobile Settings]]></value>
+		<value xml:lang="jp"><![CDATA[モバイル設定]]></value>
+	</item>
 </lang>
