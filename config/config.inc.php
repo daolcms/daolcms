@@ -211,6 +211,16 @@
 		 */
 		define('__PROXY_SERVER__', null);
 	}
+	
+	if(!defined('__ERROR_LOG__')){
+		/**
+		 * __ERROR_LOG__ is function of print PHP error log. It print over the warning error.
+		 *
+		 * 0: Not used
+		 * 1: Enabled
+		 */
+		define('__ERROR_LOG__', 0);
+	}
 
 	// Require specific files when using Firebug console output
 	if((__DEBUG_OUTPUT__ == 2) && version_compare(PHP_VERSION, '6.0.0') === -1) {

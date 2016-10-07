@@ -670,55 +670,80 @@
 	 * @param string $file Target file name
 	 * @return void
 	 **/
-	function debugPrint($debug_output = null, $display_option = true, $file = '_debug_message.php'){
-		if(!(__DEBUG__ & 1)) return;
+	function debugPrint($debug_output = NULL, $display_option = TRUE, $file = '_debug_message.php'){
+		static $debug_file;
+
+		if(!(__DEBUG__ & 1)){
+			return;
+		}
 
 		static $firephp;
 		$bt = debug_backtrace();
-		if(is_array($bt)) $first = array_shift($bt);
-		$file_name = array_pop(explode(DIRECTORY_SEPARATOR, $first['file']));
-		$line_num = $first['line'];
+		if(is_array($bt)){
+			$bt_debug_print = array_shift($bt);
+			$bt_called_function = array_shift($bt);
+		}
+		$file_name = str_replace(_DAOL_PATH_, '', $bt_debug_print['file']);
+		$line_num = $bt_debug_print['line'];
+		$function = $bt_called_function['class'] . $bt_called_function['type'] . $bt_called_function['function'];
 
 		if(__DEBUG_OUTPUT__ == 2 && version_compare(PHP_VERSION, '6.0.0') === -1){
-			if(!isset($firephp)) $firephp = FirePHP::getInstance(true);
-			if(function_exists("memory_get_usage")){
-				$label = sprintf('[%s:%d] (m:%s)', $file_name, $line_num, FileHandler::filesize(memory_get_usage()));
+			if(!isset($firephp)){
+				$firephp = FirePHP::getInstance(TRUE);
 			}
-			else{
-				$label = sprintf('[%s:%d] ', $file_name, $line_num);
-			}
+			$type = FirePHP::INFO;
+
+			$label = sprintf('[%s:%d] %s() (Memory usage: current=%s, peak=%s)', $file_name, $line_num, $function, FileHandler::filesize(memory_get_usage()), FileHandler::filesize(memory_get_peak_usage()));
+
 			// Check a FirePHP option
-			if($display_option === 'TABLE') $label = $display_option;
+			if($display_option === 'TABLE'){
+				$label = $display_option;
+			}
+			if($display_option === 'ERROR'){
+				$type = $display_option;
+			}
 			// Check if the IP specified by __DEBUG_PROTECT__ option is same as the access IP.
 			if(__DEBUG_PROTECT__ === 1 && __DEBUG_PROTECT_IP__ != $_SERVER['REMOTE_ADDR']){
 				$debug_output = 'The IP address is not allowed. Change the value of __DEBUG_PROTECT_IP__ into your IP address in config/config.user.inc.php or config/config.inc.php';
-				$label = null;
+				$label = NULL;
 			}
 
-			$firephp->fb($debug_output, $label);
-
+			$firephp->fb($debug_output, $label, $type);
 		}
 		else{
 			if(__DEBUG_PROTECT__ === 1 && __DEBUG_PROTECT_IP__ != $_SERVER['REMOTE_ADDR']){
 				return;
 			}
-			$debug_file = _DAOL_PATH_.'files/'.$file;
-			if(function_exists("memory_get_usage")){
-				$debug_output = sprintf("[%s %s:%d] - mem(%s)\n%s\n", date('Y-m-d H:i:s'), $file_name, $line_num, FileHandler::filesize(memory_get_usage()), print_r($debug_output, true));
+
+			$print = array();
+			if(!$debug_file) $debug_file =  _XE_PATH_ . 'files/' . $file;
+			$debug_file_exist = file_exists($debug_file);
+			if(!$debug_file_exist) $print[] = '<?php exit() ?>';
+
+			if($display_option === TRUE || $display_option === 'ERROR'){
+				$print[] = '['.date('Y-m-d H:i:s').']';
+				$print[] = str_repeat('=', 80);
+			}
+			$type = gettype($debug_output);
+			if(!in_array($type, array('array', 'object', 'resource'))){
+				$print[] = 'DEBUG : ' . var_export($debug_output, TRUE);
 			}
 			else{
-				$debug_output = sprintf("[%s %s:%d]\n%s\n", date('Y-m-d H:i:s'), $file_name, $line_num, print_r($debug_output, true));
+				$print[] = 'DEBUG : ' . trim(preg_replace('/\r?\n/', "\n" . '        ', print_r($debug_output, true)));
 			}
+			$backtrace_args = defined('\DEBUG_BACKTRACE_IGNORE_ARGS') ? \DEBUG_BACKTRACE_IGNORE_ARGS : 0;
+			$backtrace = debug_backtrace($backtrace_args);
 
-			if($display_option === true) $debug_output = str_repeat('=', 40)."\n".$debug_output.str_repeat('-', 40);
-			$debug_output = "\n<?php\n/*".$debug_output."*/\n?>\n";
-
-			if(@!$fp = fopen($debug_file, 'a')) return;
-			fwrite($fp, $debug_output);
-			fclose($fp);
+			if(count($backtrace) > 1 && $backtrace[1]['function'] === 'debugPrint' && !$backtrace[1]['class']){
+				array_shift($backtrace);
+			}
+			foreach($backtrace as $val){
+				$print[] = '        - ' . $val['file'] . ' line ' . $val['line'];
+			}
+			$print[] = PHP_EOL;
+			@file_put_contents($debug_file, implode(PHP_EOL, $print), FILE_APPEND|LOCK_EX);
 		}
 	}
-
 
 	/**
 	 * microtime() return
