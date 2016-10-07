@@ -87,7 +87,7 @@ class CacheFile extends CacheBase{
 		$cache_file = $this->getCacheFileName($key);
 
 		if(file_exists($cache_file)){
-			if($modified_time > 0 && filemtime($cache_file) < $modified_timed){
+			if($modified_time > 0 && filemtime($cache_file) < $modified_time){
 				FileHandler::removeFile($cache_file);
 				return false;
 			}
@@ -110,7 +110,7 @@ class CacheFile extends CacheBase{
 			return false;
 		}
 
-		if($modified_time > 0 && filemtime($cache_file) < $modified_timed){
+		if($modified_time > 0 && filemtime($cache_file) < $modified_time){
 			FileHandler::removeFile($cache_file);
 			return false;
 		}
