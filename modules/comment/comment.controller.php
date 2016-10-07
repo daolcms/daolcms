@@ -821,7 +821,7 @@
 				$oMemberModel = &getModel('member');
 				$member_srl = $oMemberModel->getLoggedMemberSrl();
 				// session registered if the author information matches to the current logged-in user's.
-				if($member_srl && $member_srl == $oComment->get('member_srl')) {
+				if($member_srl && $member_srl == abs($oComment->get('member_srl'))) {
 					$_SESSION['voted_comment'][$comment_srl] = true;
 					return new Object(-1, $failed_voted);
 				}
@@ -918,7 +918,7 @@
 				$oMemberModel = &getModel('member');
 				$member_srl = $oMemberModel->getLoggedMemberSrl();
 				// session registered if the author information matches to the current logged-in user's.
-				if($member_srl && $member_srl == $oComment->get('member_srl')) {
+				if($member_srl && $member_srl == abs($oComment->get('member_srl'))) {
 					$_SESSION['declared_comment'][$comment_srl] = true;
 					return new Object(-1, 'failed_declared');
 				}
