@@ -1,7 +1,7 @@
 <?php
 /**
  * @class TemplateHandler
- * @author NHN (developers@xpressengine.com)
+ * @author NAVER (developers@xpressengine.com)
  * @Adaptor DAOL Project (developer@daolcms.org)
  * template compiler
  * @version 0.1
@@ -33,7 +33,7 @@ class TemplateHandler {
 
 		$__templatehandler_root_tpl = null;
 
-		$this->xe_path  = rtrim(preg_replace('/([^\.^\/]+)\.php$/i','',$_SERVER['SCRIPT_NAME']),'/');
+		$this->xe_path  = rtrim(getScriptPath(), '/');
 	}
 
 	/**

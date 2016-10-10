@@ -7,7 +7,7 @@ define('RELEASE_SSL',2);
  * Manages Context such as request arguments/environment variables
  * It has dual method structure, easy-to use methods which can be called as self::methodname(),and methods called with static object.
  *
- * @author NHN (developers@xpressengine.com)
+ * @author NAVER (developers@xpressengine.com)
  * @Adaptor DAOL Project (developer@daolcms.org)
  */
 class Context {
@@ -1611,8 +1611,10 @@ class Context {
 	 */
 	function getAbsFileUrl($file){
 		$file = self::normalizeFilePath($file);
-		if(strpos($file,'./')===0) $file = dirname($_SERVER['SCRIPT_NAME']).'/'.substr($file,2);
-		elseif(strpos($file,'../')===0) $file = self::normalizeFilePath(dirname($_SERVER['SCRIPT_NAME'])."/{$file}");
+		$script_path = getScriptPath();
+
+		if(strpos($file,'./')===0) $file = $script_path . substr($file,2);
+		elseif(strpos($file,'../')===0) $file = self::normalizeFilePath($script_path . "{$file}");
 
 		return $file;
 	}
