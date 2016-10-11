@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * Handle front end files
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 **/
 	class FrontEndFileHandler extends Handler{
@@ -310,17 +310,18 @@
 		 */
 		function _getAbsFileUrl($path){
 			$path = $this->_normalizeFilePath($path);
+			$script_path = getScriptPath();
 
 			if(strpos($path, './') === 0){
-				if (dirname($_SERVER['SCRIPT_NAME']) == '/' || dirname($_SERVER['SCRIPT_NAME']) == '\\'){
+				if ($script_path == '/' || $script_path == '\\'){
 					$path = '/' . substr($path, 2);
 				}
 				else{
-					$path = dirname($_SERVER['SCRIPT_NAME']) . '/' . substr($path, 2);
+					$path = $script_path . substr($path, 2);
 				}
 			}
 			else if(strpos($file, '../') === 0){
-				$path= $this->_normalizeFilePath(dirname($_SERVER['SCRIPT_NAME']) . "/{$path}");
+				$path = $this->_normalizeFilePath($script_path . $path);
 			}
 
 			return $path;

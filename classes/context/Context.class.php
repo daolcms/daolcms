@@ -7,7 +7,7 @@ define('RELEASE_SSL',2);
  * Manages Context such as request arguments/environment variables
  * It has dual method structure, easy-to use methods which can be called as self::methodname(),and methods called with static object.
  *
- * @author NHN (developers@xpressengine.com)
+ * @author NAVER (developers@xpressengine.com)
  * @Adaptor DAOL Project (developer@daolcms.org)
  */
 class Context {
@@ -348,7 +348,7 @@ class Context {
 	 * @return void
 	 */
 	function loadDBInfo(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 
 		if(!$self->isInstalled()) return;
 
@@ -402,7 +402,7 @@ class Context {
 	 * @return string DB's db_type
 	 */
 	function getDBType(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		return $self->db_info->master_db["db_type"];
 	}
 
@@ -413,7 +413,7 @@ class Context {
 	 * @return void
 	 */
 	function setDBInfo($db_info){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		$self->db_info = $db_info;
 	}
 
@@ -423,7 +423,7 @@ class Context {
 	 * @return object DB information
 	 */
 	function getDBInfo(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		return $self->db_info;
 	}
 
@@ -585,7 +585,7 @@ class Context {
 	 * @return object FTP information
 	 */
 	function getFTPInfo(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		if(!$self->isFTPRegisted()) return null;
 
 		$ftp_config_file = $self->getFTPConfigFile();
@@ -611,7 +611,7 @@ class Context {
 	 * @return object SMTP information
 	 */
 	function getSMTPInfo(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		if(!$self->isSMTPRegisted()) return null;
 
 		$smtp_config_file = $self->getSMTPConfigFile();
@@ -628,7 +628,7 @@ class Context {
 	 */
 	function addBrowserTitle($site_title){
 		if(!$site_title) return;
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 
 		if($self->site_title) $self->site_title .= ' - '.$site_title;
 		else $self->site_title = $site_title;
@@ -642,7 +642,7 @@ class Context {
 	 */
 	function setBrowserTitle($site_title){
 		if(!$site_title) return;
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		$self->site_title = $site_title;
 	}
 	
@@ -665,7 +665,7 @@ class Context {
 	 * @return string Browser title(htmlspecialchars applied)
 	 */
 	function getBrowserTitle(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 
 		$oModuleController = &getController('module');
 		$oModuleController->replaceDefinedLangCode($self->site_title);
@@ -687,7 +687,7 @@ class Context {
 	function loadLang($path){
 		global $lang;
 
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		if(!is_object($lang)) $lang = new stdClass;
 		if(!$self->lang_type) return;
 
@@ -774,7 +774,7 @@ class Context {
 	 * @return void
 	 */
 	function setLangType($lang_type = 'ko'){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 
 		$self->lang_type = $lang_type;
 		$self->set('lang_type', $lang_type);
@@ -788,7 +788,7 @@ class Context {
 	 * @return string Language type
 	 */
 	function getLangType(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		return $self->lang_type;
 	}
 
@@ -917,7 +917,7 @@ class Context {
 	 * @return void
 	 */
 	function setResponseMethod($method='HTML'){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 
 		$methods = array('HTML'=>1, 'XMLRPC'=>1, 'JSON'=>1);
 		$self->response_method = isset($methods[$method]) ? $method : 'HTML';
@@ -929,7 +929,7 @@ class Context {
 	 * @return string Response method. If it's not set, returns request method.
 	 */
 	function getResponseMethod(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 
 		if($self->response_method) return $self->response_method;
 
@@ -946,7 +946,7 @@ class Context {
 	 * @return void
 	 */
 	function setRequestMethod($type=''){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 
 		($type && $self->request_method=$type) or
 		((strpos($_SERVER['CONTENT_TYPE'], 'json') || strpos($_SERVER['HTTP_CONTENT_TYPE'], 'json')) && $self->request_method = 'JSON') or
@@ -1141,7 +1141,7 @@ class Context {
 	 * @return bool True: exists, False: otherwise
 	 */
 	function isUploaded(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		return $self->is_uploaded;
 	}
 
@@ -1184,7 +1184,7 @@ class Context {
 	 * @return string Request method type. (Optional - GET|POST|XMLRPC|JSON)
 	 */
 	function getRequestMethod(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		return $self->request_method;
 	}
 
@@ -1220,7 +1220,7 @@ class Context {
 		static $site_module_info = null;
 		static $current_info = null;
 
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 
 		// retrieve virtual site information
 		if(is_null($site_module_info)) $site_module_info = self::get('site_module_info');
@@ -1459,7 +1459,7 @@ class Context {
 	 * @return void
 	 */
 	function set($key, $val, $set_to_get_vars=0){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		$self->context->{$key} = $val;
 		if($set_to_get_vars === false) return;
 		if($val === NULL || $val === ''){
@@ -1476,7 +1476,7 @@ class Context {
 	 * @return string Key
 	 */
 	function get($key){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 
 		if(!isset($self->context->{$key})) return null;
 		return $self->context->{$key};
@@ -1490,7 +1490,7 @@ class Context {
 	function gets(){
 		$num_args = func_num_args();
 		if($num_args<1) return;
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 
 		$args_list = func_get_args();
 		foreach($args_list as $v){
@@ -1505,7 +1505,7 @@ class Context {
 	 * @return object All data
 	 */
 	function getAll(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		return $self->context;
 	}
 
@@ -1515,7 +1515,7 @@ class Context {
 	 * @return Object Request variables.
 	 */
 	function getRequestVars(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		if($self->get_vars) return clone($self->get_vars);
 		return new stdClass;
 	}
@@ -1528,7 +1528,7 @@ class Context {
 	 * @return void
 	 */
 	function addSSLAction($action){
-		is_a($this, 'Context') ? $self = $this : $self = self::getInstance();
+		$self = self::getInstance();
 
 		if(!is_readable($self->sslActionCacheFile)){
 			$buff = '<?php if(!defined("__XE__"))exit;';
@@ -1549,7 +1549,7 @@ class Context {
 	 * @return void
 	 */
 	function addSSLActions($action_array){
-		is_a($this, 'Context') ? $self = $this : $self = self::getInstance();
+		$self = self::getInstance();
 
 		if(!is_readable($self->sslActionCacheFile)){
 			unset($self->ssl_actions);
@@ -1572,7 +1572,7 @@ class Context {
 	 * @return string act
 	 */
 	function getSSLActions(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		return $self->ssl_actions;
 	}
 
@@ -1583,7 +1583,7 @@ class Context {
 	 * @return bool If SSL exists, return true.
 	 */
 	function isExistsSSLAction($action){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		return isset($self->ssl_actions[$action]);
 	}
 
@@ -1611,8 +1611,10 @@ class Context {
 	 */
 	function getAbsFileUrl($file){
 		$file = self::normalizeFilePath($file);
-		if(strpos($file,'./')===0) $file = dirname($_SERVER['SCRIPT_NAME']).'/'.substr($file,2);
-		elseif(strpos($file,'../')===0) $file = self::normalizeFilePath(dirname($_SERVER['SCRIPT_NAME'])."/{$file}");
+		$script_path = getScriptPath();
+
+		if(strpos($file,'./')===0) $file = $script_path . substr($file,2);
+		elseif(strpos($file,'../')===0) $file = self::normalizeFilePath($script_path . "{$file}");
 
 		return $file;
 	}
@@ -1634,7 +1636,7 @@ class Context {
 	 *
 	 */
 	function loadFile($args){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 
 		$self->oFrontEndFileHandler->loadFile($args);
 	}
@@ -1648,7 +1650,7 @@ class Context {
 	 * @return void
 	 */
 	function unloadFile($file, $targetIe = '', $media = 'all'){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		$self->oFrontEndFileHandler->unloadFile($file, $targetIe, $media);
 	}
 
@@ -1660,7 +1662,7 @@ class Context {
 	 */
 
 	function unloadAllFiles($type = 'all'){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		$self->oFrontEndFileHandler->unloadAllFiles($type);
 	}
 
@@ -1688,7 +1690,7 @@ class Context {
 			$file = $validator->getJsPath();
 		}
 
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		$self->oFrontEndFileHandler->loadFile(array($file, $type, $targetie, $index));
 	}
 
@@ -1702,7 +1704,7 @@ class Context {
 	 * @return void
 	 */
 	function unloadJsFile($file, $optimized = false, $targetie = ''){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		$self->oFrontEndFileHandler->unloadFile($file, $targetie);
 	}
 
@@ -1712,7 +1714,7 @@ class Context {
 	 * @return void
 	 */
 	function unloadAllJsFiles(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		$self->oFrontEndFileHandler->unloadAllFiles('js');
 	}
 
@@ -1754,7 +1756,7 @@ class Context {
 	 * @return array Returns javascript file list. Array contains file, targetie.
 	 */
 	function getJsFile($type='head'){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		return $self->oFrontEndFileHandler->getJsFileList($type);
 	}
 
@@ -1771,7 +1773,7 @@ class Context {
 	 *
 	 */
 	function addCSSFile($file, $optimized=false, $media='all', $targetie='',$index=0){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		$self->oFrontEndFileHandler->loadFile(array($file, $media, $targetie, $index));
 	}
 
@@ -1786,7 +1788,7 @@ class Context {
 	 * @return void
 	 */
 	function unloadCSSFile($file, $optimized = false, $media = 'all', $targetie = ''){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		$self->oFrontEndFileHandler->unloadFile($file, $targetie, $media);
 	}
 
@@ -1796,7 +1798,7 @@ class Context {
 	 * @return void
 	 */
 	function unloadAllCSSFiles(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		$self->oFrontEndFileHandler->unloadAllFiles('css');
 	}
 
@@ -1806,7 +1808,7 @@ class Context {
 	 * @return array Returns css file list. Array contains file, media, targetie.
 	 */
 	function getCSSFile(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		return $self->oFrontEndFileHandler->getCssFileList();
 	}
 
@@ -1819,7 +1821,7 @@ class Context {
 	function loadJavascriptPlugin($plugin_name){
 		static $loaded_plugins = array();
 
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		if($plugin_name == 'ui.datepicker') $plugin_name = 'ui';
 
 		if($loaded_plugins[$plugin_name]) return;
@@ -1849,7 +1851,7 @@ class Context {
 	 * @return void
 	 */
 	function addHtmlHeader($header){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		$self->html_header .= "\n".$header;
 	}
 
@@ -1859,7 +1861,7 @@ class Context {
 	 * @return string Added html code before </head>
 	 */
 	function getHtmlHeader(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		return $self->html_header;
 	}
 
@@ -1869,7 +1871,7 @@ class Context {
 	 * @param string $class_name class name
 	 */
 	function addBodyClass($class_name){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		$self->body_class[] = $class_name;
 	}
 
@@ -1879,7 +1881,7 @@ class Context {
 	 * @return string Return class to html body
 	 */
 	function getBodyClass(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		$self->body_class = array_unique($self->body_class);
 
 		return count($self->body_class)?sprintf(' class="%s"', implode(' ',$self->body_class)):'';
@@ -1891,7 +1893,7 @@ class Context {
 	 * @param string $header Add html code after <body>
 	 */
 	function addBodyHeader($header){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		$self->body_header .= "\n".$header;
 	}
 
@@ -1901,7 +1903,7 @@ class Context {
 	 * @return string Added html code after <body>
 	 */
 	function getBodyHeader(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		return $self->body_header;
 	}
 
@@ -1911,7 +1913,7 @@ class Context {
 	 * @param string $footer Add html code before </body>
 	 */
 	function addHtmlFooter($footer){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		$self->html_footer .= ($self->Htmlfooter?"\n":'').$footer;
 	}
 
@@ -1921,7 +1923,7 @@ class Context {
 	 * @return string Added html code before </body>
 	 */
 	function getHtmlFooter(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 		return $self->html_footer;
 	}
 
@@ -2024,7 +2026,7 @@ class Context {
 	 * @return array The list of meta tags
 	 */
 	function getMetaTag(){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 
 		if(!is_array($self->meta_tags)) $self->meta_tags = array();
 
@@ -2048,7 +2050,7 @@ class Context {
 	 * @return void
 	 */
 	function addMetaTag($name, $content, $is_http_equiv = false){
-		is_a($this,'Context')?$self=&$this:$self=&self::getInstance();
+		$self = self::getInstance();
 
 		$key = $name."\t".($is_http_equiv ? '1' : '0');
 		$map = &$self->meta_tags;

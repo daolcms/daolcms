@@ -196,21 +196,26 @@
 		function getDocumentList($obj, $except_notice = false, $load_extra_vars=true, $columnList = array()) {
 			$sort_check = $this->_setSortIndex($obj, $load_extra_vars);
 			$obj->sort_index = $sort_check->sort_index;
-			// cache controll
-			$oCacheHandler = &CacheHandler::getInstance('object');
-			if($oCacheHandler->isSupport()){
-				$object_key = 'object:'.$obj->module_srl.'_category_srl:'.$obj->category_srl.'_list_count:'.$obj->list_count.'_search_target:'.$obj->search_target.'_search_keyword:'.$obj->search_keyword.'_page'.$obj->page.'_sort_index:'.$obj->sort_index.'_order_type:'.$obj->order_type;
-				$cache_key = $oCacheHandler->getGroupKey('documentList', $object_key);
-				$output = $oCacheHandler->get($cache_key);
-
-				if($output){
-					return $output;
-				}
+			unset($obj->use_alternate_output);
+			
+			// Call trigger (before)
+			// This trigger can be used to set an alternative output using a different search method
+			$output = ModuleHandler::triggerCall('document.getDocumentList', 'before', $obj);
+			if($output instanceof Object && !$output->toBool()){
+				return $output;
 			}
 
-			$this->_setSearchOption($obj, $args, $query_id, $use_division);
+			// If an alternate output is set, use it instead of running the default queries
+			$use_alternate_otuput = (isset($obj->use_alternate_output) && $obj->use_alternate_output instanceof Object);
+			if (!$use_alternate_otuput){
+				$this->_setSearchOption($obj, $args, $query_id, $use_division);
+			}
 
-			if($sort_check->isExtraVars && substr_count($obj->search_target,'extra_vars')){
+			if ($use_alternate_otuput){
+				$output = $obj->use_alternate_output;
+				unset($obj->use_alternate_output);
+			}
+			elseif($sort_check->isExtraVars && substr_count($obj->search_target,'extra_vars')){
 				$query_id = 'document.getDocumentListWithinExtraVarsExtraSort';
 				$args->sort_index = str_replace('documents.','',$args->sort_index);
 				$output = executeQueryArray($query_id, $args);
@@ -292,9 +297,10 @@
 					$output->data[$number] = $GLOBALS['XE_DOCUMENT_LIST'][$document->document_srl];
 				}
 			}
-			//insert in cache
-			if($oCacheHandler->isSupport()) $oCacheHandler->put($cache_key,$output);
 
+			// Call trigger (after)
+			// This trigger can be used to modify search results
+			ModuleHandler::triggerCall('document.getDocumentList', 'after', $output);
 			return $output;
 		}
 
