@@ -393,7 +393,7 @@
 			// Return if it checks enabled only
 			if($filter_enabled) {
 				$cache_file = $oEditorModel->getCacheFile($filter_enabled, $site_srl);
-				$buff = sprintf('<?php if(!defined("__ZBXE__")) exit(); $component_list = unserialize("%s"); ?>', str_replace('"','\\"',serialize($component_list)));
+				$buff = sprintf('<?php if(!defined("__XE__")) exit(); $component_list = unserialize("%s"); ?>', str_replace('"','\\"',serialize($component_list)));
 				FileHandler::writeFile($cache_file, $buff);
 				return $component_list;
 			}
@@ -414,7 +414,7 @@
 			}
 
 			$cache_file = $oEditorModel->getCacheFile($filter_enabled, $site_srl);
-			$buff = sprintf('<?php if(!defined("__ZBXE__")) exit(); $component_list = unserialize("%s"); ?>', str_replace('"','\\"',serialize($component_list)));
+			$buff = sprintf('<?php if(!defined("__XE__")) exit(); $component_list = unserialize("%s"); ?>', str_replace('"','\\"',serialize($component_list)));
 			FileHandler::writeFile($cache_file, $buff);
 
 			return $component_list;

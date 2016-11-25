@@ -170,7 +170,7 @@
 				$ftp_info->ftp_password = Context::get('ftp_password');
 			}
 
-			$buff = '<?php if(!defined("__ZBXE__")) exit();'."\n";
+			$buff = '<?php if(!defined("__XE__")) exit();'."\n";
 			foreach($ftp_info as $key => $val){
 				if(!$val) continue;
 				if(preg_match('/(<\?|<\?php|\?>|fputs|fopen|fwrite|fgets|fread|\/\*|\*\/|chr\()/xsm', preg_replace('/\s/', '', $val))){
@@ -195,7 +195,7 @@
 			$smtp_info->smtp_user = Context::get('smtp_user');
 			$smtp_info->smtp_password = Context::get('smtp_password');
 
-			$buff = '<?php if(!defined("__ZBXE__")) exit();'."\n";
+			$buff = '<?php if(!defined("__XE__")) exit();'."\n";
 			foreach($smtp_info as $key => $val){
 				if(!$val) continue;
 				if(preg_match('/(<\?|<\?php|\?>|fputs|fopen|fwrite|fgets|fread|\/\*|\*\/|chr\()/xsm', preg_replace('/\s/', '', $val))){

@@ -1639,7 +1639,7 @@ class documentController extends document {
 		if(!$list){
 			$xml_buff = "<root />";
 			FileHandler::writeFile($xml_file, $xml_buff);
-			FileHandler::writeFile($php_file, '<?php if(!defined("__ZBXE__")) exit(); ?>');
+			FileHandler::writeFile($php_file, '<?php if(!defined("__XE__")) exit(); ?>');
 			return $xml_file;
 		}
 		// Change to an array if only a single data is obtained
@@ -1693,7 +1693,7 @@ class documentController extends document {
 		$php_output = $this->getPhpCacheCode($tree[0], $tree, $module_info->site_srl, $php_header_buff);
 		$php_buff = sprintf(
 				'<?php '.
-				'if(!defined("__ZBXE__")) exit(); '.
+				'if(!defined("__XE__")) exit(); '.
 				'%s; '.
 				'%s; '.
 				'$menu->list = array(%s); '.

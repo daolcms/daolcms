@@ -227,7 +227,7 @@
 			if(!$ftp_info->ftp_host) $ftp_info->ftp_host = '127.0.0.1';
 			if(!$ftp_info->ftp_root_path) $ftp_info->ftp_root_path = '/';
 
-			$buff = '<?php if(!defined("__ZBXE__")) exit();'."\n";
+			$buff = '<?php if(!defined("__XE__")) exit();'."\n";
 			$buff[] = "\$ftp_info = new stdClass();";
 			foreach($ftp_info as $key => $val) {
 				$buff .= sprintf("\$ftp_info->%s = '%s';\n", $key, str_replace("'","\\'",$val));
@@ -499,7 +499,7 @@
 		}
 
 		function _getDBConfigFileContents($db_info){
-			$buff = '<?php if(!defined("__ZBXE__")) exit();'."\n";
+			$buff = '<?php if(!defined("__XE__")) exit();'."\n";
 			$db_info = get_object_vars($db_info);
 			foreach($db_info as $key => $val) {
 				if($key == 'master_db'){
@@ -544,7 +544,7 @@
 		function makeEtcConfigFile($config_info){
 			$etc_tmp_config_file = $this->etc_tmp_config_file;
 
-			$buff = '<?php if(!defined("__ZBXE__")) exit();'."\n";
+			$buff = '<?php if(!defined("__XE__")) exit();'."\n";
 			foreach($config_info as $key => $val){
 				$buff .= sprintf("\$db_info->%s = '%s';\n", $key, str_replace("'","\\'",$val));
 			}

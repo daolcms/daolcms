@@ -174,7 +174,7 @@
 
 			$theme_buff = sprintf(
 				'<?php '.
-				'if(!defined("__ZBXE__")) exit(); '.
+				'if(!defined("__XE__")) exit(); '.
 				'%s'.
 				'?>',
 				$theme_output

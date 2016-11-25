@@ -6,16 +6,7 @@
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	**/
 
-	if(!defined('__XE__') && !defined('__ZBXE__')) exit();
-
-	// define clone for php5
-	if (version_compare(phpversion(), '5.0') < 0){
-		eval('
-			function clone($object){
-			return $object;
-			}
-		');
-	}
+	if(!defined('__XE__')) exit();
 
 	// define an empty function to avoid errors when iconv function doesn't exist
 	if(!function_exists('iconv')){

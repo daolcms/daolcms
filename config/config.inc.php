@@ -15,7 +15,7 @@
 		@error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING ^ E_STRICT);
 	}
 
-	if(!defined('__ZBXE__')) exit();
+	if(!defined('__XE__')) exit();
 
 	/**
 	 * Display the version info of DAOL CMS.
