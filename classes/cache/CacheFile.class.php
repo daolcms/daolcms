@@ -124,24 +124,24 @@ class CacheFile extends CacheBase{
 	 * Delete variable from the cache(private)
 	 *
 	 * @param string $_key Used to store the value.
-	 * @return void
+	 * @return bool
 	 */
 	function _delete($_key){
 		$cache_file = $this->getCacheFileName($_key);
 		if(function_exists('opcache_invalidate')){
 			@opcache_invalidate($cache_file, true);
 		}
-		FileHandler::removeFile($cache_file);
+		return FileHandler::removeFile($cache_file);
 	}
 
 	/**
 	 * Delete variable from the cache
 	 *
 	 * @param string $key Used to store the value.
-	 * @return void
+	 * @return bool
 	 */
 	function delete($key){
-		$this->_delete($key);
+		return $this->_delete($key);
 	}
 
 	/**
@@ -150,7 +150,7 @@ class CacheFile extends CacheBase{
 	 * @return bool Returns true on success or false on failure.
 	 */
 	function truncate(){
-		FileHandler::removeFilesInDir($this->cache_dir);
+		return FileHandler::removeFilesInDir($this->cache_dir);
 	}
 
 }

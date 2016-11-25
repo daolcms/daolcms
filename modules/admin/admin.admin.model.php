@@ -75,13 +75,16 @@
 			}
 
 			if($ftp_info->sftp == 'Y'){
-				if(!function_exists(ssh2_sftp)){
+				if(!function_exists('ssh2_sftp')){
 					return new Object(-1,'disable_sftp_support');
 				}
 				return $this->getSFTPList();
 			}
 
 			$oFtp = new ftp();
+            $list = array();
+            $_list = array();
+
 			if($oFtp->ftp_connect($ftp_info->ftp_host, $ftp_info->ftp_port)){
 				if($oFtp->ftp_login($ftp_info->ftp_user, $ftp_info->ftp_password)){
 					$_list = $oFtp->ftp_rawlist($this->pwd);
@@ -91,7 +94,7 @@
 					return new Object(-1,'msg_ftp_invalid_auth_info');
 				}
 			}
-			$list = array();
+
 
 			if($_list){
 				foreach($_list as $k => $v){
@@ -128,7 +131,7 @@
 			$info['type'] = ($type !='INSTALL' ? 'WORKING' : 'INSTALL');
 			$info['location'] = _DAOL_LOCATION_;
 			$info['package'] = _DAOL_PACKAGE_;
-			$info['host'] = $db_type->default_url ? $db_type->default_url : getFullUrl();
+			$info['host'] = getFullUrl();
 			$info['app'] = $_SERVER['SERVER_SOFTWARE'];
 			$info['daol_version'] = __DAOL_VERSION__;
 			$info['php'] = phpversion();

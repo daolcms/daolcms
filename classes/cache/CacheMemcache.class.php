@@ -2,7 +2,8 @@
 /**
  * Cache class for memcache
  *
- * @author NHN (developer@xpressengine.com)
+ * @author NAVER (developer@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  **/
 class CacheMemcache extends CacheBase {
 	/**

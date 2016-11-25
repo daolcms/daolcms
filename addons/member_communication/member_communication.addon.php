@@ -3,7 +3,7 @@ if(!defined('__XE__')) exit();
 
 /**
  * @file member_communication.addon.php
- * @author NHN (developers@xpressengine.com)
+ * @author NAVER (developers@xpressengine.com)
  * @brief Promote user communication
  *
  * - Pop-up the message if new message comes in
@@ -68,4 +68,3 @@ if($called_position == 'before_module_init' && $this->module != 'member') {
 			$oMemberController->addMemberPopupMenu(getUrl('','mid',Context::get('cur_mid'),'act','dispCommunicationAddFriend','target_srl',$member_srl), 'cmd_add_friend', '', 'popup');
 	}
 }
-?>

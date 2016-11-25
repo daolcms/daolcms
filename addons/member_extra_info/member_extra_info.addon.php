@@ -3,7 +3,7 @@ if(!defined('__XE__')) exit();
 
 /**
  * @file image_name.addon.php
- * @author NHN (developers@xpressengine.com)
+ * @author NAVER (developers@xpressengine.com)
  * @brief Display user image name/image mark
  *
  * Find member_srl in the part with <div class="member_MemberSerialNumber"> .... </div>
@@ -20,4 +20,3 @@ require_once('./addons/member_extra_info/member_extra_info.lib.php');
 $temp_output = preg_replace_callback('!<(div|span|a)([^\>]*)member_([0-9]+)([^\>]*)>(.*?)\<\/(div|span|a)\>!is', 'memberTransImageName', $output);
 if($temp_output) $output = $temp_output;
 unset($temp_output);
-?>

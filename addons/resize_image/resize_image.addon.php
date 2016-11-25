@@ -3,7 +3,7 @@ if(!defined('__XE__')) exit();
 
 /**
  * @file resize_image.addon.php
- * @author NHN (developers@xpressengine.com)
+ * @author NAVER (developers@xpressengine.com)
  * @brief Add-on to resize images in the body
  **/
 
@@ -15,4 +15,3 @@ if($called_position == 'after_module_proc' && (Context::getResponseMethod() == "
 		Context::loadFile(array('./addons/resize_image/js/resize_image.min.js', 'body', '', null), true);
 	}
 }
-?>

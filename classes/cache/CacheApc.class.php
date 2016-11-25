@@ -2,7 +2,8 @@
 /**
  * Cache class for APC
  *
- * @author NHN (developer@xpressengine.com)
+ * @author NAVER (developer@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  **/
 class CacheApc extends CacheBase {
 	/**
@@ -104,7 +105,7 @@ class CacheApc extends CacheBase {
 	 * Delete variable from the cache
 	 *
 	 * @param string $key Used to store the value.
-	 * @return void
+	 * @return bool|string[]
 	 */
 	function delete($key) {
 		$_key = md5(_DAOL_PATH_ . $key);

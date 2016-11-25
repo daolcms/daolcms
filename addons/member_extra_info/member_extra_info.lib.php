@@ -76,4 +76,3 @@
 
 		return preg_replace('/' . preg_quote($matches[5], '/') . '<\/' . $matches[6] . '>$/', '', $matches[0]) . $nick_name . '</' . $matches[6] . '>';
 	}
-?>

@@ -2,7 +2,8 @@
 /**
  * CacheHandler
  *
- * @author NHN (developer@xpressengine.com)
+ * @author NAVER (developer@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  **/
 class CacheHandler extends Handler {
 	/**
@@ -42,25 +43,36 @@ class CacheHandler extends Handler {
 	 * @param string $target type of cache (object|template)
 	 * @param object $info info. of DB
 	 * @param boolean $always_use_file If set true, use a file cache always
-	 * @return CacheHandler
+	 * @return void
 	 */
 	function CacheHandler($target, $info = null, $always_use_file = false) {
 		if(!$info) $info = Context::getDBInfo();
 		if($info){
-			if($target == 'object'){
-				if($info->use_object_cache =='apc') $type = 'apc';
-				else if(substr($info->use_object_cache,0,8)=='memcache'){
+            $type = "";
+            $url = "";
+
+			if($target == 'object') {
+				if($info->use_object_cache =='apc') {
+				    $type = 'apc';
+                } else if(substr($info->use_object_cache,0,8)=='memcache') {
 					$type = 'memcache';
 					$url = $info->use_object_cache;
-				} else if($info->use_object_cache == 'wincache') $type = 'wincache';
-				else if($info->use_object_cache =='file') $type = 'file';
-				else if($always_use_file) $type = 'file';
-			}else if($target == 'template'){
-				if($info->use_template_cache =='apc') $type = 'apc';
-				else if(substr($info->use_template_cache,0,8)=='memcache'){
+				} else if($info->use_object_cache == 'wincache') {
+				    $type = 'wincache';
+                } else if($info->use_object_cache =='file') {
+				    $type = 'file';
+                } else if($always_use_file) {
+				    $type = 'file';
+                }
+			} else if($target == 'template') {
+				if($info->use_template_cache =='apc') {
+				    $type = 'apc';
+                } else if(substr($info->use_template_cache,0,8)=='memcache') {
 					$type = 'memcache';
 					$url = $info->use_template_cache;
-				} else if($info->use_template_cache == 'wincache') $type = 'wincache';
+				} else if($info->use_template_cache == 'wincache') {
+				    $type = 'wincache';
+                }
 			}
 
 			if($type){
@@ -107,7 +119,7 @@ class CacheHandler extends Handler {
 	 * @param int $valid_time	Time for the variable to live in the cache in seconds.
 	 *							After the value specified in ttl has passed the stored variable will be deleted from the cache.
 	 *							If no ttl is supplied, use the default valid time.
-	 * @return bool|void Returns true on success or false on failure. If use CacheFile, returns void.
+	 * @return bool Returns true on success or false on failure. If use CacheFile, returns void.
 	 */
 	function put($key, $obj, $valid_time = 0){
 		if(!$this->handler) return false;
@@ -118,7 +130,7 @@ class CacheHandler extends Handler {
 	 * Delete Cache
 	 *
 	 * @param string $key Cache key
-	 * @return void
+	 * @return bool
 	 */
 	function delete($key){
 		if(!$this->handler) return false;
@@ -141,7 +153,7 @@ class CacheHandler extends Handler {
 	/**
 	 * Truncate all cache
 	 *
-	 * @return bool|void Returns true on success or false on failure. If use CacheFile, returns void.
+	 * @return bool Returns true on success or false on failure. If use CacheFile, returns void.
 	 */
 	function truncate(){
 		if(!$this->handler) return false;
@@ -212,7 +224,7 @@ class CacheBase{
 	 * @param int $valid_time	Time for the variable to live in the cache in seconds.
 	 *							After the value specified in ttl has passed the stored variable will be deleted from the cache.
 	 *							If no ttl is supplied, use the default valid time.
-	 * @return bool|void Returns true on success or false on failure. If use CacheFile, returns void.
+	 * @return bool Returns true on success or false on failure. If use CacheFile, returns void.
 	 */
 	function put($key, $obj, $valid_time = 0){
 		return false;
@@ -242,7 +254,7 @@ class CacheBase{
 	/**
 	 * Truncate all cache
 	 *
-	 * @return bool|void Returns true on success or false on failure. If use CacheFile, returns void.
+	 * @return bool Returns true on success or false on failure. If use CacheFile, returns void.
 	 */
 	function truncate(){
 		return false;
