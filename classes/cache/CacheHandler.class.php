@@ -48,31 +48,31 @@ class CacheHandler extends Handler {
 	function CacheHandler($target, $info = null, $always_use_file = false) {
 		if(!$info) $info = Context::getDBInfo();
 		if($info){
-            $type = "";
-            $url = "";
+			$type = "";
+			$url = "";
 
 			if($target == 'object') {
 				if($info->use_object_cache =='apc') {
-				    $type = 'apc';
-                } else if(substr($info->use_object_cache,0,8)=='memcache') {
+					$type = 'apc';
+				} else if(substr($info->use_object_cache,0,8)=='memcache') {
 					$type = 'memcache';
 					$url = $info->use_object_cache;
 				} else if($info->use_object_cache == 'wincache') {
-				    $type = 'wincache';
-                } else if($info->use_object_cache =='file') {
-				    $type = 'file';
-                } else if($always_use_file) {
-				    $type = 'file';
-                }
+					$type = 'wincache';
+				} else if($info->use_object_cache =='file') {
+					$type = 'file';
+				} else if($always_use_file) {
+					$type = 'file';
+				}
 			} else if($target == 'template') {
 				if($info->use_template_cache =='apc') {
-				    $type = 'apc';
-                } else if(substr($info->use_template_cache,0,8)=='memcache') {
+					$type = 'apc';
+				} else if(substr($info->use_template_cache,0,8)=='memcache') {
 					$type = 'memcache';
 					$url = $info->use_template_cache;
 				} else if($info->use_template_cache == 'wincache') {
-				    $type = 'wincache';
-                }
+					$type = 'wincache';
+				}
 			}
 
 			if($type){

@@ -82,8 +82,8 @@
 			}
 
 			$oFtp = new ftp();
-            $list = array();
-            $_list = array();
+			$list = array();
+			$_list = array();
 
 			if($oFtp->ftp_connect($ftp_info->ftp_host, $ftp_info->ftp_port)){
 				if($oFtp->ftp_login($ftp_info->ftp_user, $ftp_info->ftp_password)){
@@ -119,7 +119,7 @@
 		function getEnv($type='WORKING'){
 
 			 $skip = array(
-					 	'ext' => array('pcre','json','hash','dom','session','spl','standard','date','ctype','tokenizer','apache2handler','filter','posix','reflection','pdo')
+						'ext' => array('pcre','json','hash','dom','session','spl','standard','date','ctype','tokenizer','apache2handler','filter','posix','reflection','pdo')
 						,'module' => array('addon','admin','autoinstall', 'comment', 'communication', 'counter', 'document', 'editor', 'file', 'importer', 'install', 'integration_search', 'layout', 'member', 'menu', 'message', 'module', 'opage', 'page', 'point', 'poll', 'rss', 'session', 'spamfilter', 'tag',  'trackback', 'trash', 'widget')
 						,'addon' => array('autolink', 'blogapi', 'captcha', 'counter', 'member_communication', 'member_extra_info', 'mobile', 'openid_delegation_id', 'point_level_icon', 'resize_image' )
 						, 'layout' => array('default')
