@@ -42,7 +42,6 @@ if(Security::detectingXEE($xml)){
 	exit;
 }
 
-if(version_compare(PHP_VERSION, '5.2.11', '<=')) libxml_disable_entity_loader(true);
 $xml = new SimpleXMLElement($xml, LIBXML_NONET | LIBXML_NOENT);
 
 $method_name = (string)$xml->methodName;

@@ -189,12 +189,7 @@ class TemplateHandler {
 		$buff = preg_replace('@<!--//.*?-->@s', '', $buff);
 
 		// replace value of src in img/input/script tag
-		if(version_compare(PHP_VERSION, '5.3.0', '>=')){
-			$buff = preg_replace_callback('/<(?:img|input|script)(?:[^<>]*?)(?(?=cond=")(?:cond="[^"]+"[^<>]*)+|)[^<>]* src="(?!(?:https?|file):\/\/|[\/\{])([^"]+)"/is', array($this, '_replacePath'), $buff);
-		}
-		else{
-			$buff = preg_replace_callback('/<(?:img|input|script)[^<>]*src="(?!https?:\/\/|[\/\{])([^"]+)"/is', array($this, '_replacePath'), $buff);
-		}
+		$buff = preg_replace_callback('/<(?:img|input|script)(?:[^<>]*?)(?(?=cond=")(?:cond="[^"]+"[^<>]*)+|)[^<>]* src="(?!(?:https?|file):\/\/|[\/\{])([^"]+)"/is', array($this, '_replacePath'), $buff);
 
 		// replace loop and cond template syntax
 		$buff = $this->_parseInline($buff);

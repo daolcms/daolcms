@@ -573,7 +573,7 @@
 				$args->value = trim(Context::get($key));
 
 				// if request method is json, strip slashes
-				if (Context::getRequestMethod() == 'JSON' && version_compare(PHP_VERSION, "5.9.0", "<") && get_magic_quotes_gpc())
+				if (Context::getRequestMethod() == 'JSON' && version_compare(PHP_VERSION, "5.4.0", "<") && get_magic_quotes_gpc())
 				{
 					$args->value = stripslashes($args->value);
 				}

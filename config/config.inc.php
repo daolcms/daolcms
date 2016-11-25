@@ -27,7 +27,7 @@
 	define('__XE_VERSION__', '1.5.4.7');
 	
 	/**
-	 * Recommended version of PHP.
+	 * Minimum version of PHP.
 	 */
 	define('__DAOL_MIN_PHP_VERSION__', '5.3.0');
 
@@ -223,14 +223,12 @@
 	}
 
 	// Require specific files when using Firebug console output
-	if((__DEBUG_OUTPUT__ == 2) && version_compare(PHP_VERSION, '6.0.0') === -1) {
+	if(__DEBUG_OUTPUT__ == 2) {
 		require _DAOL_PATH_.'libs/FirePHPCore/FirePHP.class.php';
 	}
 
 	// Set Timezone as server time
-	if(version_compare(PHP_VERSION, '5.3.0') >= 0){
-		date_default_timezone_set(@date_default_timezone_get());
-	}
+	date_default_timezone_set(@date_default_timezone_get());
 
 	if(!defined('__XE_LOADED_CLASS__')){
 		// Require a function-defined-file for simple use
