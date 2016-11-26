@@ -3,7 +3,7 @@
     <title xml:lang="ko">CKEditor 스킨</title>
     <description xml:lang="ko">CKEditor</description>
     <version>1.0.0</version>
-    <date>2015-02-24</date>
+    <date>2016-11-25</date>
 
     <author email_address="developers@xpressengine.com" link="https://www.xpressengine.com">
         <name xml:lang="ko">NAVER</name>
@@ -12,9 +12,15 @@
     <colorset>
         <color name="moono">
             <title xml:lang="ko">Moono</title>
+            <title xml:lang="en">Moono</title>
         </color>
         <color name="moono-dark">
             <title xml:lang="ko">Moono Dark</title>
+            <title xml:lang="en">Moono Dark</title>
+        </color>
+        <color name="moono-lisa">
+            <title xml:lang="ko">Moono Lisa</title>
+            <title xml:lang="en">Moono Lisa</title>
         </color>
     </colorset>
 </skin>

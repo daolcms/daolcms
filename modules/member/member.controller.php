@@ -1299,7 +1299,6 @@
 		function putSignature($member_srl, $signature){
 			$signature = trim(removeHackTag($signature));
 			$signature = preg_replace('/<(\/?)(embed|object|param)/is', '&lt;$1$2', $signature);
-			$signature = removeHackTag($signature);
 
 			$check_signature = trim(str_replace(array('&nbsp;',"\n","\r"),'',strip_tags($signature,'<img><object>')));
 			$path = sprintf('files/member_extra_info/signature/%s/', getNumberingPath($member_srl));
@@ -1307,7 +1306,7 @@
 
 			if(!$check_signature) return FileHandler::removeFile($filename);
 
-			$buff = sprintf('<?php if(!defined("__ZBXE__")) exit();?>%s', $signature);
+			$buff = sprintf('<?php if(!defined("__XE__")) exit();?>%s', $signature);
 			FileHandler::makeDir($path);
 			FileHandler::writeFile($filename, $buff);
 		}

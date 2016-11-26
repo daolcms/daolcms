@@ -849,7 +849,7 @@
 				if(file_exists($filename)) {
 					$buff = FileHandler::readFile($filename);
 					$signature = trim(substr($buff, 40));
-					$GLOBALS['__member_info__']['signature'][$member_srl] = removeHackTag($signature);
+                    $GLOBALS['__member_info__']['signature'][$member_srl] = $signature;
 				} else $GLOBALS['__member_info__']['signature'][$member_srl] = null;
 			}
 			return $GLOBALS['__member_info__']['signature'][$member_srl];

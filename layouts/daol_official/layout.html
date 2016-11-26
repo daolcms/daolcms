@@ -4,6 +4,12 @@
 <!--%import("js/slides.js")-->
 <!--%import("js/banner.js")-->
 <!--@end-->
+{@
+$banner_img_1 = $layout_info->banner_image_1 ? $layout_info->banner_image_1 : "./layouts/daol_official/img/slider_default.png";
+$banner_img_2 = $layout_info->banner_image_2 ? $layout_info->banner_image_2 : "./layouts/daol_official/img/slider_default.png";
+$banner_img_3 = $layout_info->banner_image_3 ? $layout_info->banner_image_3 : "./layouts/daol_official/img/slider_default.png";
+$banner_img_4 = $layout_info->banner_image_4 ? $layout_info->banner_image_4 : "./layouts/daol_official/img/slider_default.png";
+}
 <div class="header">
 	<div class="header_login">
 		<div class="top_login">
@@ -58,16 +64,16 @@
 		<div id="slides">
 		   <div class="slides_container">
 				<div class="slide">
-				<a href="{$layout_info->banner_url_1}"><img src="{$layout_info->banner_image_1}" alt="sllde1" /></a>			
+				<a href="{$layout_info->banner_url_1}"><img src="{$banner_img_1}" alt="sllde1" /></a>
 			    </div>
 			    <div class="slide">
-			    <a href="{$layout_info->banner_url_2}"><img src="{$layout_info->banner_image_2}" alt="slide2" /></a>			
+			    <a href="{$layout_info->banner_url_2}"><img src="{$banner_img_2}" alt="slide2" /></a>
 			    </div>
 			    <div class="slide">
-			    <a href="{$layout_info->banner_url_3}"><img src="{$layout_info->banner_image_3}" alt="slide3" /></a>			
+			    <a href="{$layout_info->banner_url_3}"><img src="{$banner_img_3}" alt="slide3" /></a>
 			    </div>
 			    <div class="slide">
-			    <a href="{$layout_info->banner_url_4}"><img src="{$layout_info->banner_image_4}" alt="slide4" /></a>			
+			    <a href="{$layout_info->banner_url_4}"><img src="{$banner_img_4}" alt="slide4" /></a>
 			    </div>
 		    </div>
 	    </div>
