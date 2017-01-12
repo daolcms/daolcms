@@ -97,6 +97,7 @@
 			
 			$security = new Security();
 			$security->encodeHTML('member_list..user_name', 'member_list..nick_name', 'member_list..group_list..');
+			$security->encodeHTML('search_target', 'search_keyword');
 			
 			$this->setTemplateFile('member_list');
 		}
