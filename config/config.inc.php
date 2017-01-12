@@ -3,7 +3,7 @@
 	 * set the include of the class file and other environment configurations
 	 *
 	 * @file config/config.inc.php
-	 * @author NAVER
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 */
 
@@ -20,7 +20,7 @@
 	/**
 	 * Display the version info of DAOL CMS.
 	 */
-	define('__DAOL_VERSION__', '1.0.2.3');
+	define('__DAOL_VERSION__', '1.0.3.0-dev');
 	/**
 	 * Display the version info of XE(XDT EX).
 	 */
