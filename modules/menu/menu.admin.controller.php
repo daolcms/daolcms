@@ -794,7 +794,14 @@
 				// List variables
 				$names = $oMenuAdminModel->getMenuItemNames($node->name, $site_srl);
 				foreach($names as $key => $val) {
-					$name_arr_str .= sprintf('"%s"=>"%s",',$key, str_replace('\\','\\\\',htmlspecialchars($val)));
+					if(preg_match('/\{\$lang->menu_gnb(?:_sub)?\[\'([a-zA-Z_]+)\'\]\}/', $val) === 1)
+					{
+						$name_arr_str .= sprintf('"%s"=>"%s",', $key, $val);
+					}
+					else
+					{
+						$name_arr_str .= sprintf('"%s"=>\'%s\',', $key, str_replace(array('\\','\''), array('\\\\','\\\''), strip_tags($val)));
+					}
 				}
 				$name_str = sprintf('$_names = array(%s); print $_names[$lang_type];', $name_arr_str);
 
