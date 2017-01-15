@@ -106,9 +106,10 @@
             $this->group_list = $oMemberModel->getGroups();
             Context::set('group_list', $this->group_list);
 			//Security
-			$security = new Security();			
+			$security = new Security();
 			$security->encodeHTML('group_list..title','group_list..description');
-			$security->encodeHTML('member_list..');			
+			$security->encodeHTML('member_list..');
+			$security->encodeHTML('search_target', 'search_keyword');
 
 			// Set the template
             $this->setTemplateFile('member_list');

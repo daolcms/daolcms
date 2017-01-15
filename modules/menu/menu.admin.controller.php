@@ -694,7 +694,7 @@
 			if(!$list) {
 				$xml_buff = "<root />";
 				FileHandler::writeFile($xml_file, $xml_buff);
-				FileHandler::writeFile($php_file, '<?php if(!defined("__ZBXE__")) exit(); ?>');
+				FileHandler::writeFile($php_file, '<?php if(!defined("__XE__")) exit(); ?>');
 				return $xml_file;
 			}
 			// Change to an array if only a single data is obtained
@@ -756,7 +756,6 @@
 			$php_output = $this->getPhpCacheCode($tree[0], $tree, $site_srl, $domain);
 			$php_buff = sprintf(
 				'<?php '.
-				'if(!defined("__ZBXE__")) exit(); '.
 				'if(!defined("__XE__")) exit(); '.
 				'%s; '.
 				'%s; '.
@@ -795,7 +794,14 @@
 				// List variables
 				$names = $oMenuAdminModel->getMenuItemNames($node->name, $site_srl);
 				foreach($names as $key => $val) {
-					$name_arr_str .= sprintf('"%s"=>"%s",',$key, str_replace('\\','\\\\',htmlspecialchars($val)));
+					if(preg_match('/\{\$lang->menu_gnb(?:_sub)?\[\'([a-zA-Z_]+)\'\]\}/', $val) === 1)
+					{
+						$name_arr_str .= sprintf('"%s"=>"%s",', $key, $val);
+					}
+					else
+					{
+						$name_arr_str .= sprintf('"%s"=>\'%s\',', $key, str_replace(array('\\','\''), array('\\\\','\\\''), strip_tags($val)));
+					}
 				}
 				$name_str = sprintf('$_names = array(%s); print $_names[$lang_type];', $name_arr_str);
 

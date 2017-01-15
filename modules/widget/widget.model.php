@@ -225,7 +225,7 @@
 				}
 			}
 
-			$buff = '<?php if(!defined("__ZBXE__")) exit(); '.$buff.' ?>';
+			$buff = '<?php if(!defined("__XE__")) exit(); '.$buff.' ?>';
 			FileHandler::writeFile($cache_file, $buff);
 
 			if(is_readable($cache_file)) include($cache_file);

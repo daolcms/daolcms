@@ -6,16 +6,7 @@
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	**/
 
-	if(!defined('__XE__') && !defined('__ZBXE__')) exit();
-
-	// define clone for php5
-	if (version_compare(phpversion(), '5.0') < 0){
-		eval('
-			function clone($object){
-			return $object;
-			}
-		');
-	}
+	if(!defined('__XE__')) exit();
 
 	// define an empty function to avoid errors when iconv function doesn't exist
 	if(!function_exists('iconv')){
@@ -687,7 +678,7 @@
 		$line_num = $bt_debug_print['line'];
 		$function = $bt_called_function['class'] . $bt_called_function['type'] . $bt_called_function['function'];
 
-		if(__DEBUG_OUTPUT__ == 2 && version_compare(PHP_VERSION, '6.0.0') === -1){
+		if(__DEBUG_OUTPUT__ == 2){
 			if(!isset($firephp)){
 				$firephp = FirePHP::getInstance(TRUE);
 			}
@@ -1239,14 +1230,8 @@
 		if($required){
 			return;
 		}
-		
-		if(version_compare(PHP_VERSION, "5.3.0") < 0){
-			set_include_path(_DAOL_PATH_ . "libs/PEAR" . PATH_SEPARATOR . get_include_path());
-		}
-		else{
-			set_include_path(_DAOL_PATH_. "libs/PEAR.1.9.5" . PATH_SEPARATOR . get_include_path());
-		}
-		
+
+		set_include_path(_DAOL_PATH_. "libs/PEAR.1.9.5" . PATH_SEPARATOR . get_include_path());
 		$required = true;
 	}
 

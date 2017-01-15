@@ -3,7 +3,7 @@
 	 * set the include of the class file and other environment configurations
 	 *
 	 * @file config/config.inc.php
-	 * @Original_author NHN
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 */
 
@@ -15,42 +15,38 @@
 		@error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING ^ E_STRICT);
 	}
 
-	if(!defined('__ZBXE__')) exit();
+	if(!defined('__XE__')) exit();
 
 	/**
 	 * Display the version info of DAOL CMS.
 	 */
-	define('__DAOL_VERSION__', '1.0.2.4');
+	define('__DAOL_VERSION__', '1.0.2.5');
+	
 	/**
 	 * Display the version info of XE(XDT EX).
 	 */
 	define('__XE_VERSION__', '1.5.4.7');
 	
 	/**
-	 * Recommended version of PHP.
+	 * Minimum version of PHP usable by DAOL CMS.
 	 */
 	define('__DAOL_MIN_PHP_VERSION__', '5.3.0');
 
 	/**
-	 * @deprecated __ZBXE_VERSION__ will be removed. Use __XE_VERSION__ instead.
+	 * @deprecated __ZBXE_VERSION__ is deprecated and will be removed. Use __XE_VERSION__ instead.
 	 */
 	define('__ZBXE_VERSION__', __XE_VERSION__);
-
-	/**
-	 * The base path to where you installed zbXE Wanted
-	 */
-	define('_XE_PATH_', str_replace('config/config.inc.php', '', str_replace('\\', '/', __FILE__)));
 	
 	/**
-	 * The base path to where you installed DAOL CMS Wanted
+	 * The base path to where you installed DAOL CMS
 	 */
 	define('_DAOL_PATH_', str_replace('config/config.inc.php', '', str_replace('\\', '/', __FILE__)));
-
+	define('_XE_PATH_', _DAOL_PATH_);
 
 	// Set can use other method instead cookie to store session id(for file upload)
 	ini_set('session.use_only_cookies', 0);
 
-
+	// Include package setting file(official site, download site, etc)
 	if(file_exists(_DAOL_PATH_.'config/package.inc.php')) {
 		require _DAOL_PATH_.'config/package.inc.php';
 	}
@@ -79,8 +75,8 @@
 	}
 
 	/*
-	 * user configuration files which override the default settings
-	 * save the following information into config/config.user.inc.php
+	 * user configuration files can override the default settings
+	 * save the following information into config/config.user.inc.php(without heading *)
 	 * <?php
 	 * define('__DEBUG__', 0);
 	 * define('__DEBUG_OUTPUT__', 0);
@@ -172,7 +168,7 @@
 		 * Leave DB query information
 		 *
 		 * <pre>
-		 * 0: Do not add information to the query
+		 * 0: Do not add information about query
 		 * 1: Comment the XML Query ID
 		 * </pre>
 		 */
@@ -184,7 +180,7 @@
 		 * option to enable/disable a compression feature using ob_gzhandler
 		 *
 		 * <pre>
-		 * 0: Not used
+		 * 0: Disabled
 		 * 1: Enabled
 		 * Only particular servers may have a problem in IE browser when sending a compression
 		 * </pre>
@@ -197,7 +193,7 @@
 		 * decide to use/not use the php unit test (Path/tests/index.php)
 		 *
 		 * <pre>
-		 * 0: Not used
+		 * 0: Disabled
 		 * 1: Enabled
 		 * </pre>
 		 */
@@ -216,21 +212,19 @@
 		/**
 		 * __ERROR_LOG__ is function of print PHP error log. It print over the warning error.
 		 *
-		 * 0: Not used
+		 * 0: Disabled
 		 * 1: Enabled
 		 */
 		define('__ERROR_LOG__', 0);
 	}
 
 	// Require specific files when using Firebug console output
-	if((__DEBUG_OUTPUT__ == 2) && version_compare(PHP_VERSION, '6.0.0') === -1) {
+	if(__DEBUG_OUTPUT__ == 2) {
 		require _DAOL_PATH_.'libs/FirePHPCore/FirePHP.class.php';
 	}
 
 	// Set Timezone as server time
-	if(version_compare(PHP_VERSION, '5.3.0') >= 0){
-		date_default_timezone_set(@date_default_timezone_get());
-	}
+	date_default_timezone_set(@date_default_timezone_get());
 
 	if(!defined('__XE_LOADED_CLASS__')){
 		// Require a function-defined-file for simple use

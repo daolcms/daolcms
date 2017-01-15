@@ -1,9 +1,9 @@
 <?php
-	if(!defined("__ZBXE__")) exit();
+	if(!defined("__XE__")) exit();
 
 	/**
 	 * @file captcha.addon.php
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @brief Captcha for a particular action
 	 * English alphabets and voice verification added
 	 **/
@@ -347,5 +347,3 @@ EOD;
 			return false;
 		}
 	}
-
-?>

@@ -5,6 +5,7 @@
  * Wincache Handler
  *
  * @author Arnia (support@xpressengine.org)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  **/
 class CacheWincache extends CacheBase {
 	/**
@@ -116,11 +117,12 @@ class CacheWincache extends CacheBase {
 	 * Delete variable from the cache
 	 *
 	 * @param string $key Used to store the value.
-	 * @return void
+	 * @return bool
 	 */
 	function delete($key) {
 		$_key = md5(_DAOL_PATH_.$key);
 		$this->_delete($_key);
+		return true;
 	}
 
 	/**

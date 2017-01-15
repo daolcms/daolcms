@@ -42,7 +42,6 @@ if(Security::detectingXEE($xml)){
 	exit;
 }
 
-if(version_compare(PHP_VERSION, '5.2.11', '<=')) libxml_disable_entity_loader(true);
 $xml = new SimpleXMLElement($xml, LIBXML_NONET | LIBXML_NOENT);
 
 $method_name = (string)$xml->methodName;
@@ -147,6 +146,9 @@ if($called_position == 'before_module_proc'){
 			}
 
 			$fileinfo = $params[3]->value->struct->member;
+			$filename = "";
+			$filedata = "";
+
 			foreach($fileinfo as $key => $val){
 				$nodename = (string)$val->name;
 				if($nodename === 'bits'){
@@ -155,6 +157,11 @@ if($called_position == 'before_module_proc'){
 				else if($nodename === 'name'){
 					$filename = pathinfo((string)$val->value->string, PATHINFO_BASENAME);
 				}
+			}
+
+			if($filename == "" || $filedata == "") {
+				printContent(getXmlRpcFailure(1, 'Invalid file data'));
+				break;
 			}
 
 			if($logged_info->is_admin != 'Y'){
@@ -277,12 +284,16 @@ if($called_position == 'before_module_proc'){
 						break;
 					case 'tagwords' :
 						$tags = $val->value->array->data->value;
+						$tag_list = array();
+
 						foreach($tags as $tag)
 						{
 							$tag_list[] = (string)$tag->string;
 						}
 						if(count($tag_list))
+						{
 							$obj->tags = implode(',', $tag_list);
+						}
 						break;
 				}
 			}
@@ -393,11 +404,15 @@ if($called_position == 'before_module_proc'){
 						break;
 					case 'tagwords' :
 						$tags = $val->value->array->data->value;
+						$tag_list = array();
+
 						foreach($tags as $tag){
 							$tag_list[] = (string)$tag->string;
 						}
 						if(count($tag_list))
+						{
 							$obj->tags = implode(',', $tag_list);
+						}
 						break;
 				}
 			}
@@ -523,12 +538,12 @@ if($called_position == 'before_module_proc'){
 <?xml version="1.0" ?>
 <rsd version="1.0" xmlns="http://archipelago.phrasewise.com/rsd" >
 <service>
-    <engineName>DAOL CMS</engineName>
-    <engineLink>http://www.daolcms.org/ </engineLink>
-    <homePageLink>{$homepagelink}</homePageLink>
-    <apis>
-        <api name="MetaWeblog" preferred="true" apiLink="{$api_url}" blogID="" />
-    </apis>
+	<engineName>DAOL CMS</engineName>
+	<engineLink>http://www.daolcms.org/ </engineLink>
+	<homePageLink>{$homepagelink}</homePageLink>
+	<apis>
+		<api name="MetaWeblog" preferred="true" apiLink="{$api_url}" blogID="" />
+	</apis>
 </service>
 </rsd>
 RSDContent;

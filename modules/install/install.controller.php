@@ -227,7 +227,7 @@
 			if(!$ftp_info->ftp_host) $ftp_info->ftp_host = '127.0.0.1';
 			if(!$ftp_info->ftp_root_path) $ftp_info->ftp_root_path = '/';
 
-			$buff = '<?php if(!defined("__ZBXE__")) exit();'."\n";
+			$buff = '<?php if(!defined("__XE__")) exit();'."\n";
 			$buff[] = "\$ftp_info = new stdClass();";
 			foreach($ftp_info as $key => $val) {
 				$buff .= sprintf("\$ftp_info->%s = '%s';\n", $key, str_replace("'","\\'",$val));
@@ -309,14 +309,12 @@
 		function checkInstallEnv(){
 			// Check each item
 			$checklist = array();
-			// 0. check your version of php (5.2.2 is not supported)
-			if(phpversion()=='5.2.2') $checklist['php_version'] = false;    
-
+			// 0. check your version of php (php version below 5.3 is not supported and php version above 5.3.10 is recommended)
+			if(version_compare(PHP_VERSION, '5.3.0') == -1) $checklist['php_version'] = false;
 			else if(version_compare(PHP_VERSION, '5.3.10') == -1){
-				$checklist['php_version'] = true;
+				$checklist['php_version'] = false;
 				Context::set('phpversion_warning', true);
 			}
-
 			else $checklist['php_version'] = true;
 			// 1. Check permission
 			if(is_writable('./')||is_writable('./files')) $checklist['permission'] = true;
@@ -499,7 +497,7 @@
 		}
 
 		function _getDBConfigFileContents($db_info){
-			$buff = '<?php if(!defined("__ZBXE__")) exit();'."\n";
+			$buff = '<?php if(!defined("__XE__")) exit();'."\n";
 			$db_info = get_object_vars($db_info);
 			foreach($db_info as $key => $val) {
 				if($key == 'master_db'){
@@ -544,7 +542,7 @@
 		function makeEtcConfigFile($config_info){
 			$etc_tmp_config_file = $this->etc_tmp_config_file;
 
-			$buff = '<?php if(!defined("__ZBXE__")) exit();'."\n";
+			$buff = '<?php if(!defined("__XE__")) exit();'."\n";
 			foreach($config_info as $key => $val){
 				$buff .= sprintf("\$db_info->%s = '%s';\n", $key, str_replace("'","\\'",$val));
 			}
