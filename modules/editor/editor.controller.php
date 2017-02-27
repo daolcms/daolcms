@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * @class  editor
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief editor module's controller class
 	 **/
@@ -70,13 +70,26 @@
 		/**
 		 * @brief Save Editor's additional form for each module
 		 **/
-		function procEditorInsertModuleConfig() {
-			$module_srl = Context::get('target_module_srl');
-			// To configure many of modules at once
-			if(preg_match('/^([0-9,]+)$/',$module_srl)) $module_srl = explode(',',$module_srl);
-			else $module_srl = array($module_srl);
+		function procEditorInsertModuleConfig(){
+			$target_module_srl = Context::get('target_module_srl');
+			$target_module_srl = array_map('trim', explode(',', $target_module_srl));
+			$logged_info = Context::get('logged_info');
+			$module_srl = array();
+			$oModuleModel = getModel('module');
+			foreach($target_module_srl as $srl){
+				if(!$srl) continue;
+				$module_info = $oModuleModel->getModuleInfoByModuleSrl($srl);
+				if(!$module_info->module_srl){
+					return new Object(-1, 'msg_invalid_request');
+				}
+				$module_grant = $oModuleModel->getGrant($module_info, $logged_info);
+				if(!$module_grant->manager){
+					return new Object(-1, 'msg_not_permitted');
+				}
+				$module_srl[] = $srl;
+			}
 
-			$editor_config = null;
+			$editor_config = new stdClass;
 
 			$editor_config->editor_skin = Context::get('editor_skin');
 			$editor_config->comment_editor_skin = Context::get('comment_editor_skin');
@@ -121,10 +134,8 @@
 			if($editor_config->enable_autosave != 'Y') $editor_config->enable_autosave = 'N';
 
 			$oModuleController = &getController('module');
-			for($i=0;$i<count($module_srl);$i++) {
-				$srl = trim($module_srl[$i]);
-				if(!$srl) continue;
-				$oModuleController->insertModulePartConfig('editor',$srl,$editor_config);
+			foreach($module_srl as $srl){
+				$oModuleController->insertModulePartConfig('editor', $srl, $editor_config);
 			}
 
 			$this->setError(-1);
@@ -444,4 +455,3 @@
 			}
 		}
 	}
-?>
