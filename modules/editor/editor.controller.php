@@ -70,23 +70,20 @@
 		/**
 		 * @brief Save Editor's additional form for each module
 		 **/
-		function procEditorInsertModuleConfig() {
+		function procEditorInsertModuleConfig(){
 			$target_module_srl = Context::get('target_module_srl');
 			$target_module_srl = array_map('trim', explode(',', $target_module_srl));
 			$logged_info = Context::get('logged_info');
 			$module_srl = array();
 			$oModuleModel = getModel('module');
-			foreach($target_module_srl as $srl)
-			{
+			foreach($target_module_srl as $srl){
 				if(!$srl) continue;
 				$module_info = $oModuleModel->getModuleInfoByModuleSrl($srl);
-				if(!$module_info->module_srl)
-				{
+				if(!$module_info->module_srl){
 					return new Object(-1, 'msg_invalid_request');
 				}
 				$module_grant = $oModuleModel->getGrant($module_info, $logged_info);
-				if(!$module_grant->manager)
-				{
+				if(!$module_grant->manager){
 					return new Object(-1, 'msg_not_permitted');
 				}
 				$module_srl[] = $srl;
@@ -137,8 +134,7 @@
 			if($editor_config->enable_autosave != 'Y') $editor_config->enable_autosave = 'N';
 
 			$oModuleController = &getController('module');
-			foreach($module_srl as $srl)
-			{
+			foreach($module_srl as $srl){
 				$oModuleController->insertModulePartConfig('editor', $srl, $editor_config);
 			}
 

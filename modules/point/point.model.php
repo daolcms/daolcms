@@ -85,27 +85,21 @@
 			return $level;
 		}
 
-		function getMembersPointInfo()
-		{
+		function getMembersPointInfo(){
 			$member_srls = Context::get('member_srls');
 			$member_srls = array_unique(explode(',', $member_srls));
-			if(!count($member_srls))
-			{
+			if(!count($member_srls)){
 				return;
 			}
 			$logged_info = Context::get('logged_info');
-			if(!$logged_info->member_srl)
-			{
+			if(!$logged_info->member_srl){
 				return;
 			}
-			if(!getModel('module')->isSiteAdmin($logged_info))
-			{
-				if(in_array($logged_info->member_srl, $member_srls))
-				{
+			if(!getModel('module')->isSiteAdmin($logged_info)){
+				if(in_array($logged_info->member_srl, $member_srls)){
 					$member_srls = array($logged_info->member_srl);
 				}
-				else
-				{
+				else{
 					return;
 				}
 			}
@@ -114,8 +108,7 @@
 			$config = $oModuleModel->getModuleConfig('point');
 
 			$info = array();
-			foreach($member_srls as $v)
-			{
+			foreach($member_srls as $v){
 				$obj = new stdClass;
 				$obj->point = $this->getPoint($v);
 				$obj->level = $this->getLevel($obj->point, $config->level_step);
