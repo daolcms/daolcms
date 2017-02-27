@@ -111,13 +111,11 @@
 
 			// Check permissions
 			$logged_info = Context::get('logged_info');
-			if(!$logged_info->member_srl)
-			{
+			if(!$logged_info->member_srl){
 				return new Object(-1,'msg_not_permitted');
 			}
 			$module_grant = $oModuleModel->getGrant($page_info, $logged_info);
-			if(!$module_grant->manager)
-			{
+			if(!$module_grant->manager){
 				return new Object(-1,'msg_not_permitted');
 			}
 
@@ -164,13 +162,11 @@
 
 			// Check permissions
 			$logged_info = Context::get('logged_info');
-			if(!$logged_info->member_srl)
-			{
+			if(!$logged_info->member_srl){
 				return new Object(-1,'msg_not_permitted');
 			}
 			$module_grant = $oModuleModel->getGrant($page_info, $logged_info);
-			if(!$module_grant->manager)
-			{
+			if(!$module_grant->manager){
 				return new Object(-1,'msg_not_permitted');
 			}
 
@@ -201,13 +197,11 @@
 
 			// Check permissions
 			$logged_info = Context::get('logged_info');
-			if(!$logged_info->member_srl)
-			{
+			if(!$logged_info->member_srl){
 				return new Object(-1,'msg_not_permitted');
 			}
 			$module_grant = $oModuleModel->getGrant($page_info, $logged_info);
-			if(!$module_grant->manager)
-			{
+			if(!$module_grant->manager){
 				return new Object(-1,'msg_not_permitted');
 			}
 

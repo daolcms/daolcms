@@ -185,14 +185,12 @@
 
 			$oDocumentModel = getModel('document');
 			$oDocument = $oDocumentModel->getDocument($document_srl);
-			if ($oDocument->get('member_srl') != $logged_info->member_srl)
-			{
+			if ($oDocument->get('member_srl') != $logged_info->member_srl){
 				return new Object(-1,'msg_invalid_request');
 			}
 
 			$configStatusList = $oDocumentModel->getStatusList();
-			if ($oDocument->get('status') != $configStatusList['temp'])
-			{
+			if ($oDocument->get('status') != $configStatusList['temp']){
 				return new Object(-1,'msg_invalid_request');
 			}
 
