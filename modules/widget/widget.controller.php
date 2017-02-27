@@ -108,18 +108,19 @@
 			if(!$page_info->module_srl || $page_info->module != 'page') $err++;
 
 			if($err > 1) return new Object(-1,'msg_invalid_request');
+
 			// Check permissions
-			$is_logged = Context::get('is_logged');
 			$logged_info = Context::get('logged_info');
-			$user_group = $logged_info->group_list;
-			$is_admin = false;
-			if(count($user_group)&&count($page_info->grants['manager'])) {
-				$manager_group = $page_info->grants['manager'];
-				foreach($user_group as $group_srl => $group_info) {
-					if(in_array($group_srl, $manager_group)) $is_admin = true;
-				}
+			if(!$logged_info->member_srl)
+			{
+				return new Object(-1,'msg_not_permitted');
 			}
-			if(!$is_admin && !$is_logged && $logged_info->is_admin != 'Y' && !$oModuleModel->isSiteAdmin($logged_info) && !(is_array($page_info->admin_id) && in_array($logged_info->user_id, $page_info->admin_id))) return new Object(-1,'msg_not_permitted');
+			$module_grant = $oModuleModel->getGrant($page_info, $logged_info);
+			if(!$module_grant->manager)
+			{
+				return new Object(-1,'msg_not_permitted');
+			}
+
 			// Enter post
 			$oDocumentModel = &getModel('document');
 			$oDocumentController = &getController('document');
@@ -160,18 +161,18 @@
 			$columnList = array('module_srl', 'module');
 			$page_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl, $columnList);
 			if(!$page_info->module_srl || $page_info->module != 'page') return new Object(-1,'msg_invalid_request');
+
 			// Check permissions
-			$is_logged = Context::get('is_logged');
 			$logged_info = Context::get('logged_info');
-			$user_group = $logged_info->group_list;
-			$is_admin = false;
-			if(count($user_group)&&count($page_info->grants['manager'])) {
-				$manager_group = $page_info->grants['manager'];
-				foreach($user_group as $group_srl => $group_info) {
-					if(in_array($group_srl, $manager_group)) $is_admin = true;
-				}
+			if(!$logged_info->member_srl)
+			{
+				return new Object(-1,'msg_not_permitted');
 			}
-			if(!$is_admin && !$is_logged && $logged_info->is_admin != 'Y' && !$oModuleModel->isSiteAdmin($logged_info) && !(is_array($page_info->admin_id) && in_array($logged_info->user_id, $page_info->admin_id))) return new Object(-1,'msg_not_permitted');
+			$module_grant = $oModuleModel->getGrant($page_info, $logged_info);
+			if(!$module_grant->manager)
+			{
+				return new Object(-1,'msg_not_permitted');
+			}
 
 			$output = $oDocumentAdminController->copyDocumentModule(array($oDocument->get('document_srl')), $oDocument->get('module_srl'),0);
 			if(!$output->toBool()) return $output;
@@ -197,18 +198,18 @@
 			$oModuleModel = &getModel('module');
 			$page_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
 			if(!$page_info->module_srl || $page_info->module != 'page') return new Object(-1,'msg_invalid_request');
+
 			// Check permissions
-			$is_logged = Context::get('is_logged');
 			$logged_info = Context::get('logged_info');
-			$user_group = $logged_info->group_list;
-			$is_admin = false;
-			if(count($user_group)&&count($page_info->grants['manager'])) {
-				$manager_group = $page_info->grants['manager'];
-				foreach($user_group as $group_srl => $group_info) {
-					if(in_array($group_srl, $manager_group)) $is_admin = true;
-				}
+			if(!$logged_info->member_srl)
+			{
+				return new Object(-1,'msg_not_permitted');
 			}
-			if(!$is_admin && !$is_logged && $logged_info->is_admin != 'Y' && !$oModuleModel->isSiteAdmin($logged_info) && !(is_array($page_info->admin_id) && in_array($logged_info->user_id, $page_info->admin_id))) return new Object(-1,'msg_not_permitted');
+			$module_grant = $oModuleModel->getGrant($page_info, $logged_info);
+			if(!$module_grant->manager)
+			{
+				return new Object(-1,'msg_not_permitted');
+			}
 
 			$output = $oDocumentController->deleteDocument($oDocument->get('document_srl'), true);
 			if(!$output->toBool()) return $output;
