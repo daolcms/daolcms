@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * @class  memberController
-	 * @author NHN (developers@xpressengine.com)
+	 * @author MAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * Controller class of member module
 	 **/
@@ -182,9 +182,22 @@
 
 			$document_srl = (int)Context::get('document_srl');
 			if(!$document_srl) return new Object(-1,'msg_invalid_request');
-			// Variables
+
+			$oDocumentModel = getModel('document');
+			$oDocument = $oDocumentModel->getDocument($document_srl);
+			if ($oDocument->get('member_srl') != $logged_info->member_srl)
+			{
+				return new Object(-1,'msg_invalid_request');
+			}
+
+			$configStatusList = $oDocumentModel->getStatusList();
+			if ($oDocument->get('status') != $configStatusList['temp'])
+			{
+				return new Object(-1,'msg_invalid_request');
+			}
+
 			$oDocumentController = &getController('document');
-			$oDocumentController->deleteDocument($document_srl, true);
+			$oDocumentController->deleteDocument($document_srl);
 		}
 
 		/**
@@ -2246,4 +2259,3 @@
 			}
 		}
 	}
-?>
