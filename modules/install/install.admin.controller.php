@@ -149,6 +149,26 @@
 			if($_SESSION['ftp_password']) unset($_SESSION['ftp_password']);
 			$this->setMessage('success_deleted');
 		}
+		
+		function procInstallAdminSaveCDNInfo(){
+			$cdn_info = Context::getCDNInfo();		
+			$cdn_info->cdn_use = Context::get('cdn_use');
+			$cdn_info->cdn_type = Context::get('cdn_type');
+			
+			$buff = '<?php if(!defined("__XE__")) exit();'."\n";
+			foreach($cdn_info as $key => $val){
+				if(!$val) continue;
+				if(preg_match('/(<\?|<\?php|\?>|fputs|fopen|fwrite|fgets|fread|\/\*|\*\/|chr\()/xsm', preg_replace('/\s/', '', $val))){
+					continue;
+				}
+				$buff .= sprintf("\$cdn_info->%s = '%s';\n", $key, str_replace("'","\\'",$val));
+			}
+			$buff .= "?>";
+			$config_file = Context::getcdnConfigFile();
+			FileHandler::WriteFile($config_file, $buff);
+			$this->setMessage('success_updated');
+			$this->setRedirectUrl(Context::get('error_return_url'));
+		}
 
 		function procInstallAdminSaveFTPInfo(){
 			$ftp_info = Context::getFTPInfo();

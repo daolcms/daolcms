@@ -1,0 +1,32 @@
+<load target="./js/config.js" />
+<load target="../install/lang/lang.xml" />
+<load target="../../session/tpl/js/session.js" />
+
+<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+<form ruleset="installCDNInfo" action="./" method="post" id="cdn_form" class="form" enctype="multipart/form-data">
+	<input type="hidden" name="module" value="install" />
+	<input type="hidden" name="act" value="procInstallAdminSaveCDNInfo" />
+	<fieldset class="section">
+		<h1 class="h1">{$lang->menu_gnb_sub['adminConfigurationCDN']}</h1>
+		<ul>
+			<li>
+				<p class="q"><label>{$lang->cdn_use}</label></p>
+				<p class="a">
+					<input type="radio" name="cdn_use" id="cdn_use_y" value="Y" <!--@if($cdn_info->cdn_use == 'Y')-->checked="checked" <!--@end-->/> <label for="cdn_use_y">{$lang->cmd_yes}</label>
+					<input type="radio" name="cdn_use" id="cdn_use_n" value="N" <!--@if($cdn_info->cdn_use != 'Y')-->checked="checked" <!--@end-->/> <label for="cdn_use_n">{$lang->cmd_no}</label>
+				</p>
+			</li>
+			<li>
+				<p class="q"><label>{$lang->cdn_type}</label></p>
+				<p class="a">
+					<input type="radio" name="cdn_type" id="cdn_type_jsdelivr" value="jsdelivr" <!--@if( $cdn_info->cdn_type == '' || $cdn_info->cdn_type == 'jsdelivr')-->checked="checked" <!--@end-->/> <label for="cdn_type_tls">jsDelivr</label>
+				</p>
+			</li>
+		</ul>
+	</fieldset>
+	<div class="btnArea">
+		<span class="btn medium"><input type="submit" value="{$lang->cmd_save}" /></span>
+	</div>
+</form>

@@ -175,7 +175,7 @@
 				),
 				18=>array(
 					'module'=>'admin',
-					'subMenu'=>array('adminConfigurationGeneral', 'adminConfigurationFtp', 'adminConfigurationSMTP', 'adminMenuSetup'),
+					'subMenu'=>array('adminConfigurationGeneral', 'adminConfigurationCDN', 'adminConfigurationFtp', 'adminConfigurationSMTP', 'adminMenuSetup'),
 				),
 				19=>array(
 					'module'=>'file',
@@ -265,6 +265,7 @@
 					return 'extensions';
 					break;
 				case 'adminConfigurationGeneral':
+				case 'adminConfigurationCDN':
 				case 'adminConfigurationFtp':
 				case 'adminConfigurationSMTP':
 				case 'adminMenuSetup':

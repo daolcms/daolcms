@@ -38,6 +38,11 @@ class Context {
 	 */
 	var $db_info  = NULL;
 	/**
+	 * CDN info 
+	 * @var object
+	 */
+	var $cdn_info = NULL;
+	/**
 	 * FTP info 
 	 * @var object
 	 */
@@ -568,6 +573,32 @@ class Context {
 		return TRUE;
 	}
 
+	/**
+	 * Check if CDN info is registered
+	 *
+	 * @return bool True: CDN information is registered, False: otherwise
+	 */
+	function isCDNRegisted(){
+		$cdn_config_file = self::getCDNConfigFile();
+		if(file_exists($cdn_config_file)) return true;
+		return false;
+	}
+
+	/**
+	 * Get CDN information
+	 *
+	 * @return object CDN information
+	 */
+	function getCDNInfo(){
+		$self = self::getInstance();
+		if(!$self->isCDNRegisted()) return null;
+
+		$cdn_config_file = $self->getCDNConfigFile();
+		@include($cdn_config_file);
+
+		return $cdn_info;
+	}
+	
 	/**
 	 * Check if FTP info is registered
 	 *
@@ -1935,6 +1966,15 @@ class Context {
 		return _DAOL_PATH_.'files/config/db.config.php';
 	}
 
+	/**
+	 * Get CDN config file
+	 *
+	 * @return string The path of the config file that contains CDN settings
+	 */
+	function getCDNConfigFile(){
+		return _DAOL_PATH_.'files/config/cdn.config.php';
+	}
+	
 	/**
 	 * Get FTP config file
 	 *

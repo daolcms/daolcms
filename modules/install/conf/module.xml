@@ -23,7 +23,8 @@
 		<action name="procInstallCheckFTP" type="controller" standalone="true" />
 		<action name="procInstallAdminInstall" type="controller" standalone="true" />
 		<action name="procInstallAdminUpdate" type="controller" standalone="true" />
-		<action name="procInstallAdminSaveTimeZone" type="controller" standalone="true" />        
+		<action name="procInstallAdminSaveTimeZone" type="controller" standalone="true" />
+		<action name="procInstallAdminSaveCDNInfo" type="controller" standalone="true" ruleset="installCDNInfo" />
 		<action name="procInstallAdminSaveFTPInfo" type="controller" standalone="true" ruleset="installFtpInfo" />
 		<action name="procInstallAdminSaveSMTPInfo" type="controller" standalone="true" ruleset="installSMTPInfo" />
 		<action name="procInstallAdminRemoveFTPInfo" type="controller" standalone="true" />
