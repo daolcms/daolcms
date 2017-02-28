@@ -216,4 +216,3 @@ class XEHttpRequest {
 		return $ret;
 	}
 }
-?>

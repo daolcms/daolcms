@@ -58,4 +58,3 @@
 			$this->setTemplateFile('rss_admin_index');
 		}
 	}
-?>

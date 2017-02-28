@@ -606,4 +606,3 @@
 			Context::addHtmlHeader($js_code);
 		}
 	}
-?>

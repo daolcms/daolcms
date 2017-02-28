@@ -294,4 +294,3 @@
 			header("HTTP/1.0 $code $statusMessage");
 		}
 	}
-?>

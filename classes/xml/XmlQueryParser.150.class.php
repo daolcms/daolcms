@@ -121,4 +121,3 @@ class XmlQueryParser extends XmlParser {
 		return $xml_obj;
 	}
 }
-?>

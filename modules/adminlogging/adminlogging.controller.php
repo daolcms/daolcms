@@ -37,4 +37,3 @@
 			$output = executeQuery('adminlogging.insertLog', $args);
 		}
 	}
-?>

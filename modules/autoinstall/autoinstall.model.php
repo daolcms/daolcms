@@ -360,4 +360,3 @@
 			return getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminInstall', 'package_srl', $packageSrl);
 		}
    }
-?>

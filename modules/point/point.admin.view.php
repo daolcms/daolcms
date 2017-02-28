@@ -115,4 +115,3 @@
             $this->setTemplateFile('member_list');
         }
     }
-?>

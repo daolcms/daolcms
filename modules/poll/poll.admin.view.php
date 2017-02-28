@@ -159,4 +159,3 @@
 			$this->setTemplateFile('result');
 		}
 	}
-?>

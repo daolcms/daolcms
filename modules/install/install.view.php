@@ -148,4 +148,3 @@
 			$this->setTemplateFile('admin_form');
 		}
 	}
-?>

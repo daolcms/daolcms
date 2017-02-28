@@ -702,4 +702,3 @@ class DBMysql extends DB {
 		return $select . ' ' . $from . ' ' . $where . ' ' . $groupBy . ' ' . $orderBy . ' ' . $limit;
 	}
 }
-?>

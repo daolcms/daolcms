@@ -156,4 +156,3 @@
 			return new Object();
 		}
 	}
-?>

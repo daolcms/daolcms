@@ -290,4 +290,3 @@
 			FileHandler::copyFile($target_file, $target_filename);
 		}
 	}
-?>

@@ -66,4 +66,3 @@ class memberMobile extends memberView
 		}
 	}
 }
-?>

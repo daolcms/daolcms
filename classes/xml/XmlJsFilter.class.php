@@ -312,4 +312,3 @@
 			return sprintf('%s%s.%s.compiled.js',$this->compiled_path, md5($this->version.$xml_file),Context::getLangType());
 		}
 	}
-?>

@@ -132,4 +132,3 @@
 			$this->setTemplateFile('declared_list');
 		}
 	}
-?>

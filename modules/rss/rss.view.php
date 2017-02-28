@@ -235,4 +235,3 @@
 			return new Object();
 		}
 	}
-?>

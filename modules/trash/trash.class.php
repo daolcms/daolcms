@@ -42,4 +42,3 @@ class trash extends ModuleObject {
 
 	}
 }
-?>

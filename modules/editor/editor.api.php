@@ -10,4 +10,3 @@
 			$oModule->add('colorset', Context::get('colorset'));
 		}
 	}
-?>

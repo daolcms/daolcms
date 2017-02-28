@@ -113,4 +113,3 @@
 			return $this->setRedirectUrl($returnUrl, $output);
 		}
 	}
-?>

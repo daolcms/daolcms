@@ -123,5 +123,3 @@ class pageMobile extends pageView {
 		return $content;
 	}
 }
-
-?>

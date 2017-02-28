@@ -929,4 +929,3 @@
 			return $groupSrl;
 		}
 	}
-?>

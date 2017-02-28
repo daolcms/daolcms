@@ -37,5 +37,3 @@ class VirtualXMLDisplayHandler {
 		return $html;
 	}
 }
-
-?>

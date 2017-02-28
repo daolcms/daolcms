@@ -215,4 +215,3 @@
 			$this->setTemplateFile('document_trash_list');
 		}
 	}
-?>

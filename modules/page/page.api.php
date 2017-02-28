@@ -22,4 +22,3 @@
 			$oModule->add('page_content',$page_content);
 		}
 	}
-?>

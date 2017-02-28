@@ -437,4 +437,3 @@
 			return $this->recordLoginError($error, $message);
 		}
 	}
-?>

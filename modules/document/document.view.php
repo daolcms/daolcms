@@ -164,4 +164,3 @@
 			$this->setTemplateFile('saved_list_popup');
 		}
 	}
-?>

@@ -1063,4 +1063,3 @@
 			return $returnArray;
 		}
 	}
-?>

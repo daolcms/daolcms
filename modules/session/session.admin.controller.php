@@ -23,4 +23,3 @@
 			$this->add('result',Context::getLang('session_cleared'));
 		}
 	}
-?>

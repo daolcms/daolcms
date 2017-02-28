@@ -340,4 +340,3 @@
 			return $widgetStyle_info;
 		}
 	}
-?>

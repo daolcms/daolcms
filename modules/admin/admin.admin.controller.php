@@ -370,4 +370,3 @@
 			$this->setMessage('success_deleted');
 		}
 	}
-?>

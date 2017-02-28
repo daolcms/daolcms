@@ -1027,4 +1027,3 @@
 			Context::set('http_status_message', $statusMessage);
 		}
 	}
-?>

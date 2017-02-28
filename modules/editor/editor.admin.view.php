@@ -133,4 +133,3 @@
 			$this->setTemplateFile('setup_component');
 		}
 	}
-?>

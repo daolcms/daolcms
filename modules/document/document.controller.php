@@ -2194,4 +2194,3 @@ class documentController extends document {
 		}
 	}
 }
-?>

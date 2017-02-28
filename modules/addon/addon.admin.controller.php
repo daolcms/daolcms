@@ -216,4 +216,3 @@
 			return executeQuery('addon.updateSiteAddon', $args);
 		}
 	}
-?>

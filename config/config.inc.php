@@ -262,4 +262,3 @@
 		require(_DAOL_PATH_.'classes/security/IpFilter.class.php');
 		if(__DEBUG__) $GLOBALS['__elapsed_class_load__'] = getMicroTime() - __ClassLoadStartTime__;
 	}
-?>

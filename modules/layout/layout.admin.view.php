@@ -493,4 +493,3 @@
 			$this->setTemplateFile('copy_layout');
 		}
 	}
-?>

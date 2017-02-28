@@ -737,4 +737,3 @@
 			return $xml_info;
 		}
 	}
-?>

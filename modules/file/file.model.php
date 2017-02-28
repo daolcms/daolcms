@@ -310,4 +310,3 @@
 			return $file_grant;
 		}
 	}
-?>

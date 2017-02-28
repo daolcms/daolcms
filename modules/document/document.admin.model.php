@@ -102,4 +102,3 @@
 			return $output->data->count;
 		}
 	}
-?>

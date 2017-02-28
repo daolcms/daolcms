@@ -135,4 +135,3 @@
 			$this->setTemplateFile('widget_style_generate_code_in_page');
 		}
 	}
-?>

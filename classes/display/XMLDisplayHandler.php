@@ -42,5 +42,3 @@ class XMLDisplayHandler {
 		return $xmlDoc;
 	}
 }
-
-?>

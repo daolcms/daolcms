@@ -570,4 +570,3 @@
 			$this->setTemplateFile('delete_members');
 		}
 	}
-?>
