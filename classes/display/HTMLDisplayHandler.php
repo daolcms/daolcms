@@ -292,6 +292,9 @@ class HTMLDisplayHandler {
 	{
 		$oContext  = Context::getInstance();
 		$lang_type =  Context::getLangType();
+		
+		$cdn_info = Context::getCDNInfo();
+		Context::set('cdn_info', $cdn_info);
 
 		// add common JS/CSS files
 		if(__DEBUG__) {
@@ -303,7 +306,15 @@ class HTMLDisplayHandler {
 			$oContext->loadFile(array('./common/js/xml_handler.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/xml_js_filter.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/css/xe.css', 'all', '', -100000), true);
-		} else {
+		}
+		elseif ($cdn_info->cdn_use == 'Y' && $cdn_info->cdn_type == 'jsdelivr') {
+			$oContext->loadFile(array('//cdn.jsdelivr.net/jquery/1.11.0/jquery.min.js', 'head', '', -100000), true);
+			$oContext->loadFile(array('//cdn.jsdelivr.net/jquery.migrate/1.2.1/jquery-migrate.min.js', 'head', '', -100000), true);
+			$oContext->loadFile(array('./common/js/x.min.js', 'head', '', -100000), true);
+			$oContext->loadFile(array('./common/js/xe.min.js', 'head', '', -100000), true);
+			$oContext->loadFile(array('./common/css/xe.min.css', 'all', '', -100000), true);
+		}
+		else {
 			$oContext->loadFile(array('./common/js/jquery.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/x.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/xe.min.js', 'head', '', -100000), true);
@@ -316,7 +327,8 @@ class HTMLDisplayHandler {
 				$oContext->loadFile(array('./modules/admin/tpl/css/admin.css', 'all', '', 100000), true);
 				$oContext->loadFile(array("./modules/admin/tpl/css/admin_{$lang_type}.css", 'all', '', 100000), true);
 				$oContext->loadFile('./modules/admin/tpl/js/admin.js', true);
-			} else {
+			}
+			else {
 				$oContext->loadFile(array('./modules/admin/tpl/css/admin.min.css', 'all', '', 100000), true);
 				$oContext->loadFile(array("./modules/admin/tpl/css/admin_{$lang_type}.css", 'all', '',10000), true);
 				$oContext->loadFile('./modules/admin/tpl/js/admin.min.js', true);
