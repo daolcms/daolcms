@@ -25,7 +25,10 @@
 			<li>
 				<p class="q"><label>{$lang->cdn_type}</label></p>
 				<p class="a">
-					<input type="radio" name="cdn_type" id="cdn_type_jsdelivr" value="jsdelivr" <!--@if( $cdn_info->cdn_type == '' || $cdn_info->cdn_type == 'jsdelivr')-->checked="checked" <!--@end-->/> <label for="cdn_type_tls">jsDelivr</label>
+					<input type="radio" name="cdn_type" id="cdn_type_jsdelivr" value="jsdelivr" <!--@if( $cdn_info->cdn_type == '' || $cdn_info->cdn_type == 'jsdelivr')-->checked="checked" <!--@end-->/> <label for="cdn_type_jsdelivr">jsDelivr CDN</label>
+					<input type="radio" name="cdn_type" id="cdn_type_microsoft" value="microsoft" <!--@if( $cdn_info->cdn_type == 'microsoft')-->checked="checked" <!--@end-->/> <label for="cdn_type_microsoft">Microsoft CDN</label>
+					<input type="radio" name="cdn_type" id="cdn_type_cdnjs" value="cdnjs" <!--@if( $cdn_info->cdn_type == 'cdnjs')-->checked="checked" <!--@end-->/> <label for="cdn_type_cdnjs">cdnjs CDN</label>
+					<input type="radio" name="cdn_type" id="cdn_type_jquery" value="jquery" <!--@if( $cdn_info->cdn_type == 'jquery')-->checked="checked" <!--@end-->/> <label for="cdn_type_jquery">jQuery CDN</label>
 				</p>
 			</li>
 		</ul>

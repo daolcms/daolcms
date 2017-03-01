@@ -1866,6 +1866,10 @@ class Context {
 				$self->loadFile(array('//ajax.aspnetcdn.com/ajax/jquery.ui/1.10.4/jquery-ui.min.js', 'body', '', 0), true);
 				$self->loadFile(array('//ajax.aspnetcdn.com/ajax/jquery.ui/1.10.4/themes/smoothness/jquery-ui.css', 'all', '', 0), true);
 			}
+			if($cdn_info->cdn_type == 'cdnjs'){
+				$self->loadFile(array('//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js', 'body', '', 0), true);
+				$self->loadFile(array('//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.min.css', 'all', '', 0), true);
+			}
 			if($cdn_info->cdn_type == 'jquery'){
 				$self->loadFile(array('//code.jquery.com/ui/1.10.4/jquery-ui.min.js', 'body', '', 0), true);
 				$self->loadFile(array('//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css', 'all', '', 0), true);
