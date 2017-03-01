@@ -299,6 +299,20 @@ class HTMLDisplayHandler {
 			$oContext->loadFile(array('./common/js/xe.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/css/xe.min.css', 'all', '', -100000), true);
 		}
+		elseif($cdn_info->cdn_use == 'Y' && $cdn_info->cdn_type == 'microsoft'){
+			$oContext->loadFile(array('//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.0.min.js', 'head', '', -100000), true);
+			$oContext->loadFile(array('//ajax.aspnetcdn.com/ajax/jquery.migrate/jquery-migrate-1.2.1.min.js', 'head', '', -100000), true);
+			$oContext->loadFile(array('./common/js/x.min.js', 'head', '', -100000), true);
+			$oContext->loadFile(array('./common/js/xe.min.js', 'head', '', -100000), true);
+			$oContext->loadFile(array('./common/css/xe.min.css', 'all', '', -100000), true);
+		}
+		elseif($cdn_info->cdn_use == 'Y' && $cdn_info->cdn_type == 'jquery'){
+			$oContext->loadFile(array('//code.jquery.com/jquery-1.11.0.min.js', 'head', '', -100000), true);
+			$oContext->loadFile(array('//code.jquery.com/jquery-migrate-1.2.1.min.js', 'head', '', -100000), true);
+			$oContext->loadFile(array('./common/js/x.min.js', 'head', '', -100000), true);
+			$oContext->loadFile(array('./common/js/xe.min.js', 'head', '', -100000), true);
+			$oContext->loadFile(array('./common/css/xe.min.css', 'all', '', -100000), true);
+		}
 		else{
 			$oContext->loadFile(array('./common/js/jquery.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/x.min.js', 'head', '', -100000), true);

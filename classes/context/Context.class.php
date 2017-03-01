@@ -1862,6 +1862,14 @@ class Context {
 				$self->loadFile(array('//cdn.jsdelivr.net/jquery.ui/1.10.4/jquery-ui.min.js', 'body', '', 0), true);
 				$self->loadFile(array('//cdn.jsdelivr.net/jquery.ui/1.10.4/themes/jquery-ui.min.css', 'all', '', 0), true);
 			}
+			if($cdn_info->cdn_type == 'microsoft'){
+				$self->loadFile(array('//ajax.aspnetcdn.com/ajax/jquery.ui/1.10.4/jquery-ui.min.js', 'body', '', 0), true);
+				$self->loadFile(array('//ajax.aspnetcdn.com/ajax/jquery.ui/1.10.4/themes/smoothness/jquery-ui.css', 'all', '', 0), true);
+			}
+			if($cdn_info->cdn_type == 'jquery'){
+				$self->loadFile(array('//code.jquery.com/ui/1.10.4/jquery-ui.min.js', 'body', '', 0), true);
+				$self->loadFile(array('//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css', 'all', '', 0), true);
+			}
 			$self->loadFile(array('./common/js/plugins/ui/jquery.ui.datepicker-ko.js', 'body', '', 0), true);
 		}
 		else{
