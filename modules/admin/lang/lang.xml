@@ -1325,13 +1325,21 @@
 		<value xml:lang="en"><![CDATA[Server Environment]]></value>
 		<value xml:lang="jp"><![CDATA[サーバー情報]]></value>
 	</item>
+	<item name="cdn_warning">
+		<value xml:lang="ko"><![CDATA[CDN 사용 경고]]></value>
+		<value xml:lang="en"><![CDATA[Warning For Using CDN]]></value>
+	</item>
+	<item name="cdn_warning_detail">
+		<value xml:lang="ko"><![CDATA[CDN 서비스 제공 회사 서버에 문제가 발생할 경우, 접속 불가능 등 오류가 발생할 수 있습니다.]]></value>
+		<value xml:lang="en"><![CDATA[If the CDN service provider's server fails, you may experience connection errors.]]></value>
+	</item>
 	<item name="cdn_use">
 		<value xml:lang="ko"><![CDATA[CDN 설정 사용]]></value>
 		<value xml:lang="en"><![CDATA[Use CDN Settings?]]></value>
 	</item>
 	<item name="cdn_type">
 		<value xml:lang="ko"><![CDATA[CDN 서비스 선택]]></value>
-		<value xml:lang="en"><![CDATA[Select CDN service]]></value>
+		<value xml:lang="en"><![CDATA[Select CDN Service]]></value>
 	</item>
 	<item name="ftp_form_title">
 		<value xml:lang="ko"><![CDATA[FTP 계정 정보 입력]]></value>
