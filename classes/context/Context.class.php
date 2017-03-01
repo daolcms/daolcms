@@ -1853,25 +1853,37 @@ class Context {
 
 		$self = self::getInstance();
 		if($plugin_name == 'ui.datepicker') $plugin_name = 'ui';
-
-		if($loaded_plugins[$plugin_name]) return;
-		$loaded_plugins[$plugin_name] = true;
-
-		$plugin_path = './common/js/plugins/'.$plugin_name.'/';
-		$info_file   = $plugin_path.'plugin.load';
-		if(!is_readable($info_file)) return;
-
-		$list = file($info_file);
-		foreach($list as $filename){
-			$filename = trim($filename);
-			if(!$filename) continue;
-
-			if(substr($filename,0,2)=='./') $filename = substr($filename,2);
-			if(preg_match('/\.js$/i',  $filename))     $self->loadFile(array($plugin_path.$filename, 'body', '', 0), true);
-			elseif(preg_match('/\.css$/i', $filename)) $self->loadFile(array($plugin_path.$filename, 'all', '', 0), true);
+		
+		$cdn_info = self::getCDNInfo();
+		self::set('cdn_info', $cdn_info);
+		
+		if($cdn_info->cdn_use == 'Y' && $plugin_name == 'ui'){
+			if($cdn_info->cdn_type == 'jsdelivr'){
+				$self->loadFile(array('//cdn.jsdelivr.net/jquery.ui/1.10.4/jquery-ui.min.js', 'body', '', 0), true);
+				$self->loadFile(array('//cdn.jsdelivr.net/jquery.ui/1.10.4/themes/jquery-ui.min.css', 'all', '', 0), true);
+			}
+			$self->loadFile(array('./common/js/plugins/ui/jquery.ui.datepicker-ko.js', 'body', '', 0), true);
 		}
+		else{
+			if($loaded_plugins[$plugin_name]) return;
+			$loaded_plugins[$plugin_name] = true;
+			
+			$plugin_path = './common/js/plugins/'.$plugin_name.'/';
+			$info_file   = $plugin_path.'plugin.load';
+			if(!is_readable($info_file)) return;
 
-		if(is_dir($plugin_path.'lang')) $self->loadLang($plugin_path.'lang');
+			$list = file($info_file);
+			foreach($list as $filename){
+				$filename = trim($filename);
+				if(!$filename) continue;
+
+				if(substr($filename,0,2)=='./') $filename = substr($filename,2);
+				if(preg_match('/\.js$/i',  $filename))     $self->loadFile(array($plugin_path.$filename, 'body', '', 0), true);
+				elseif(preg_match('/\.css$/i', $filename)) $self->loadFile(array($plugin_path.$filename, 'all', '', 0), true);
+			}
+
+			if(is_dir($plugin_path.'lang')) $self->loadLang($plugin_path.'lang');
+		}
 	}
 
 	/**
