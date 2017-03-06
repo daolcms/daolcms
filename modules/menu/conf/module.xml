@@ -3,6 +3,9 @@
 	<grants />
 	<permissions />
 	<actions>
+		<action name="dispMenuMenu" type="mobile" standalone="true" />
+
+		<!-- admin -->
 		<action name="dispMenuAdminContent" type="view" standalone="true" />
 		<action name="dispMenuAdminInsert" type="view" standalone="true" />
 		<action name="dispMenuAdminManagement" type="view" standalone="true" />
@@ -25,8 +28,6 @@
 		<action name="procMenuAdminUploadButton" type="controller" standalone="true" />
 		<action name="procMenuAdminDeleteButton" type="controller" standalone="true" />
 		<action name="procMenuAdminAllActList" type="controller" standalone="true" />
-
-		<action name="dispMenuMenu" type="mobile" standalone="true" />
 	</actions>
 	<menus>
 		<menu name="siteMap">
