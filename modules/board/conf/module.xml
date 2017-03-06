@@ -88,10 +88,8 @@
 		<action name="procBoardDeleteComment" type="controller" />
 		<action name="procBoardDeleteTrackback" type="controller" />
 		<action name="procBoardVerificationPassword" type="controller" />
-		<action name="procBoardDeleteFile" type="controller" />
-		<action name="procBoardUploadFile" type="controller" />
-		<action name="procBoardDownloadFile" type="controller" />
-
+		
+		<!-- admin -->
 		<action name="dispBoardAdminContent" type="view" admin_index="true" menu_name="board" menu_index="true" standalone="true" />
 		<action name="dispBoardAdminBoardInfo" type="view" menu_name="board" standalone="true" />
 		<action name="dispBoardAdminExtraVars" type="view" menu_name="board" standalone="true" />

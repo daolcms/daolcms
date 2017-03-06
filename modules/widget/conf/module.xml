@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module>
 	<grants />
-	<permissions />
+	<permissions>
+		<permission action="dispWidgetGenerateCode" target="manager" />
+		<permission action="dispWidgetGenerateCodeInPage" target="manager" />
+		<permission action="dispWidgetStyleGenerateCodeInPage" target="manager" />
+		<permission action="procWidgetGenerateCode" target="manager" />
+		<permission action="procWidgetStyleGenerateCodeInPage" target="manager" />
+		<permission action="procWidgetInsertDocument" target="manager" />
+		<permission action="procWidgetCopyDocument" target="manager" />
+		<permission action="procWidgetDeleteDocument" target="manager" />
+		<permission action="procWidgetGenerateCodeInPage" target="manager" />
+		<permission action="procWidgetGetColorsetList" target="manager" />
+		<permission action="procWidgetStyleExtraImageUpload" target="manager" />
+	</permissions>
 	<actions>
 		<action name="dispWidgetInfo" type="view" standalone="true" />
 		<action name="dispWidgetGenerateCode" type="view" standalone="true" />
 		<action name="dispWidgetGenerateCodeInPage" type="view" standalone="true" />
 		<action name="dispWidgetStyleGenerateCodeInPage" type="view" standalone="true" />
-		
-		<action name="dispWidgetAdminDownloadedList" type="view" standalone="true" admin_index="true" menu_name="installedWidget" menu_index="true" />
-		<action name="dispWidgetAdminAddContent" type="view" standalone="true" />
-		<action name="dispWidgetAdminGenerateCode" type="view" menu_name="installedWidget" />
-		
+
 		<action name="procWidgetGenerateCode" type="controller" standalone="true" />
 		<action name="procWidgetStyleExtraImageUpload" type="controller" standalone="true" />
 		<action name="procWidgetStyleGenerateCodeInPage" type="controller" standalone="true" />
@@ -22,8 +30,10 @@
 		<action name="procWidgetGenerateCodeInPage" type="controller" standalone="true" ruleset="generateCodeInPage" />
 		<action name="procWidgetGetColorsetList" type="controller" standalone="true" />
 
-		<action name="procWidgetStyleExtraImageUpload" type="controller" standalone="true" />
-		<action name="procWidgetStyleGenerateCodeInPage" type="controller" standalone="true" />
+		<!-- admin -->
+		<action name="dispWidgetAdminDownloadedList" type="view" standalone="true" admin_index="true" menu_name="installedWidget" menu_index="true" />
+		<action name="dispWidgetAdminAddContent" type="view" standalone="true" />
+		<action name="dispWidgetAdminGenerateCode" type="view" menu_name="installedWidget" />
 	</actions>
 	<menus>
 		<menu name="installedWidget">
