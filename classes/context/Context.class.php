@@ -1119,6 +1119,9 @@ class Context {
 			elseif($key === 'vid'){
 				$result[$k] = urlencode($v);
 			}
+			elseif($key === 'xe_validator_id')}{
+				$result[$k] = htmlspecialchars($v, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
+			}
 			elseif(stripos($key, 'XE_VALIDATOR', 0) === 0){
 				unset($result[$k]);
 			}
