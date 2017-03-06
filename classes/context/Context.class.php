@@ -1100,9 +1100,9 @@ class Context {
 	 * @param string $do_stripslashes Whether to strip slashes
 	 * @return mixed filtered value. Type are string or array
 	 */
-	function _filterRequestVar($key, $val, $do_stripslashes = 1) {
+	function _filterRequestVar($key, $val, $do_stripslashes = 1){
 		$isArray = TRUE;
-		if(!is_array($val)) {
+		if(!is_array($val)){
 			$isArray = FALSE;
 			$val = array($val);
 		}
@@ -1110,22 +1110,26 @@ class Context {
 		$result = array();
 		foreach($val as $k => $v) {
 			$k = htmlentities($k);
-			if($key === 'page' || $key === 'cpage' || substr($key, -3) === 'srl') {
+			if($key === 'page' || $key === 'cpage' || substr($key, -3) === 'srl'){
 				$result[$k] = !preg_match('/^[0-9,]+$/', $v) ? (int)$v : $v;
-			} elseif($key === 'mid' || $key === 'search_keyword') {
+			}
+			elseif($key === 'mid' || $key === 'search_keyword'){
 				$result[$k] = htmlspecialchars($v);
-			} elseif($key === 'vid') {
+			}
+			elseif($key === 'vid'){
 				$result[$k] = urlencode($v);
-			} elseif(stripos($key, 'XE_VALIDATOR', 0) === 0) {
+			}
+			elseif(stripos($key, 'XE_VALIDATOR', 0) === 0){
 				unset($result[$k]);
-			} else {
+			}
+			else{
 				$result[$k] = $v;
 				
-				if($do_stripslashes && version_compare(PHP_VERSION, '5.4.0', '<') && get_magic_quotes_gpc()) {
+				if($do_stripslashes && version_compare(PHP_VERSION, '5.4.0', '<') && get_magic_quotes_gpc()){
 					$result[$k] = stripslashes($result[$k]);
 				}
 
-				if(!is_array($result[$k])) {
+				if(!is_array($result[$k])){
 					$result[$k] = trim($result[$k]);
 				}
 			}
