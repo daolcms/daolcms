@@ -120,7 +120,7 @@
 		 * will be written by classes/DB/DB***.class.php
 		 * @var array
 		 */
-		var $supported_list = array();
+		static $supported_list = array();
 
 		/**
 		 * location of query cache
@@ -145,7 +145,7 @@
 		 * @param string $db_type type of db
 		 * @return DB return DB object instance
 		 */
-		function &getInstance($db_type = NULL) {
+		function getInstance($db_type = NULL) {
 			if(!$db_type) $db_type = Context::getDBType();
 			if(!$db_type && Context::isInstalled()) return new Object(-1, 'msg_db_not_setted');
 
@@ -197,16 +197,15 @@
 		 * this list return by child class
 		 * @return array return enable DBMS list in supported dbms list
 		 */
-		function getEnableList(){
-			is_a($this, 'DB') ? $self = $this : $self = self::getInstance();
-			
-			if(!$self->supported_list){
+		public static function getEnableList(){
+			if(!self::$supported_list){
 				$oDB = new DB();
-				$self->supported_list = $oDB->_getSupportedList();
+				self::$supported_list = $oDB->_getSupportedList();
 			}
 			$enableList = array();
-			if(is_array($self->supported_list)){
-				foreach($self->supported_list AS $key => $value){
+
+			if(is_array(self::$supported_list)){
+				foreach(self::$supported_list AS $key => $value){
 					if($value->enable){
 						$enableList[] = $value;
 					}
@@ -220,16 +219,15 @@
 		 * this list return by child class
 		 * @return array return disable DBMS list in supported dbms list
 		 */
-		function getDisableList(){
-			is_a($this, 'DB') ? $self = $this : $self = self::getInstance();
-			
-			if(!$self->supported_list){
+		public static function getDisableList(){
+			if(!self::$supported_list){
 				$oDB = new DB();
-				$self->supported_list = $oDB->_getSupportedList();
+				self::$supported_list = $oDB->_getSupportedList();
 			}
 			$disableList = array();
-			if(is_array($self->supported_list)){
-				foreach($self->supported_list AS $key => $value){
+
+			if(is_array(self::$supported_list)){
+				foreach(self::$supported_list AS $key => $value){
 					if(!$value->enable){
 						$disableList[] = $value;
 					}
@@ -246,8 +244,8 @@
 		function _getSupportedList(){
 			static $get_supported_list = '';
 			if(is_array($get_supported_list)){
-				$this->supported_list = $get_supported_list;
-				return $this->supported_list;
+				self::$supported_list = $get_supported_list;
+				return self::$supported_list;
 			}
 			$get_supported_list = array();
 			$db_classes_path = _DAOL_PATH_."classes/db/";
@@ -275,8 +273,8 @@
 
 				$get_supported_list[] = $obj;
 			}
-			$this->supported_list = $get_supported_list;
-			return $this->supported_list;
+			self::$supported_list = $get_supported_list;
+			return self::$supported_list;
 		}
 
 		/**
@@ -1050,7 +1048,7 @@
 		 * @param boolean $force force load DBParser instance
 		 * @return DBParser
 		 */
-	   function &getParser($force = FALSE){
+		function getParser($force = FALSE){
 			static $dbParser = NULL;
 			if(!$dbParser || $force) {
 				$oDB = &DB::getInstance();
