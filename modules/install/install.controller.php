@@ -17,7 +17,7 @@
 		function init(){
 			// Error occurs if already installed
 			if(Context::isInstalled()){
-				return new Object(-1, 'msg_already_installed');
+				$this->stop('msg_already_installed');
 			}
 
 			$this->db_tmp_config_file = _DAOL_PATH_.'files/config/tmpDB.config.php';

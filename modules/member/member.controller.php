@@ -1712,7 +1712,7 @@
 			// Control of essential parameters
 			if($args->allow_mailing!='Y') $args->allow_mailing = 'N';
 			if($args->denied!='Y') $args->denied = 'N';
-			$args->allow_message= 'Y';
+			if(!$args->allow_message || ($args->allow_message && !in_array($args->allow_message, array('Y','N','F')))) $args->allow_message = 'Y';
 
 			if($logged_info->is_admin == 'Y'){
 				if($args->is_admin!='Y') $args->is_admin = 'N';
@@ -1941,7 +1941,7 @@
 			if(!$args->user_name) $args->user_name = $orgMemberInfo->user_name;
 			if(!$args->user_id) $args->user_id = $orgMemberInfo->user_id;
 			if(!$args->nick_name) $args->nick_name = $orgMemberInfo->nick_name;
-			if(!$args->description) $args->description = '';
+			if(!$args->description) $args->description = $orgMemberInfo->description;
 			if(!$args->birthday) $args->birthday = '';
 
 			$output = executeQuery('member.updateMember', $args);
