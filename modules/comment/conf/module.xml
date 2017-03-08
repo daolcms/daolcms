@@ -21,7 +21,7 @@
 		<action name="procCommentInsertModuleConfig" type="controller" standalone="true" ruleset="insertCommentModuleConfig" />
 		<action name="procCommentGetList" type="controller" standalone="true" />
 
-		<action name="isModuleUsingPublishValidation" type="controller "standalone="true" />
+		<action name="isModuleUsingPublishValidation" type="controller" standalone="true" />
 
 		<!-- admin -->
 		<action name="dispCommentAdminList" type="view" admin_index="true" standalone="true" menu_name="comment" menu_index="true" />
