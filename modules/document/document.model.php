@@ -562,6 +562,14 @@
 						$args->{$sort_check->sort_index} = $oDocument->get($sort_check->sort_index);
 					}
 				}
+				elseif($sort_check->sort_index === 'regdate'){
+					if($args->order_type === 'asc'){
+						$args->{'rev_' . $sort_check->sort_index} = $oDocument->get($sort_check->sort_index);
+					}
+					else{
+						$args->{$sort_check->sort_index} = $oDocument->get($sort_check->sort_index);
+					}
+				}
 				else{
 					return 1;
 				}

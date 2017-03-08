@@ -434,11 +434,12 @@
 			$file_obj->download_count = $xmlDoc->attachment->downloads->body;
 			$name = $xmlDoc->attachment->name->body;
 			// Set upload path by checking if the attachement is an image or other kind of file
-			if(preg_match("/\.(jpg|jpeg|gif|png|wmv|wma|mpg|mpeg|avi|swf|flv|mp1|mp2|mp3|mp4|asf|wav|asx|mid|midi|asf|mov|moov|qt|rm|ram|ra|rmm|m4v)$/i", $file_obj->source_filename)) {
+			if(preg_match("/\.(asf|asf|asx|avi|flv|gif|jpeg|jpg|m4a|m4v|mid|midi|moov|mov|mp1|mp2|mp3|mp4|mpeg|mpg|ogg|png|qt|ra|ram|rm|rmm|swf|wav|webm|webp|wma|wmv)$/i", $file_obj->source_filename)){
 				$path = sprintf("./files/attach/images/%s/%s", $module_srl,getNumberingPath($upload_target_srl,3));
 				$filename = $path.$file_obj->source_filename;
 				$file_obj->direct_download = 'Y';
-			} else {
+			}
+			else{
 				$path = sprintf("./files/attach/binaries/%s/%s", $module_srl, getNumberingPath($upload_target_srl,3));
 				$filename = $path.md5(crypt(rand(1000000,900000), rand(0,100)));
 				$file_obj->direct_download = 'N';

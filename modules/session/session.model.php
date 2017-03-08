@@ -10,14 +10,14 @@
 		/**
 		 * @brief Initialization
 		 **/
-		function init() {
+		function init(){
 		}
 
-		function getLifeTime() {
+		function getLifeTime(){
 			return $this->lifetime;
 		}
 
-		function read($session_key) {
+		function read($session_key){
 			if(!$session_key || !$this->session_started) return;
 			
 			$oCacheHandler = &CacheHandler::getInstance('object');
@@ -25,24 +25,8 @@
 				$cache_key = 'object:'.$session_key;
 				$output->data = $oCacheHandler->get($cache_key);
 			}
-			if(!$output->data) {
-
-				$args->session_key = $session_key;
-				$columnList = array('session_key', 'cur_mid', 'val');
-	            $output = executeQuery('session.getSession', $args, $columnList);
-	            // Confirm there is a table created if read error occurs
-	            if(!$output->toBool()) {
-	                $oDB = &DB::getInstance();
-	                if(!$oDB->isTableExists('session')) $oDB->createTableByXmlFile($this->module_path.'schemas/session.xml');
-	                if(!$oDB->isColumnExists("session","cur_mid")) $oDB->addColumn('session',"cur_mid","varchar",128);
-	                $output = executeQuery('session.getSession', $args);
-	            }
-	            // Check if there is a table created in case there is no "cur_mid" value in the sessions information
-	            if(!isset($output->data->cur_mid)) {
-	                $oDB = &DB::getInstance();
-	                if(!$oDB->isColumnExists("session","cur_mid")) $oDB->addColumn('session',"cur_mid","varchar",128);
-	            }
-	           
+			if(!$output->data){
+				return '';
 			}
 			return $output->data->val;
 		}
@@ -55,8 +39,8 @@
 		 * period_time: "n" specifies the time range in minutes since the last update
 		 * mid: a user who belong to a specified mid
 		 **/
-		function getLoggedMembers($args) {
-			if(!$args->site_srl) {
+		function getLoggedMembers($args){
+			if(!$args->site_srl){
 				$site_module_info = Context::get('site_module_info');
 				$args->site_srl = (int)$site_module_info->site_srl;
 			}
@@ -69,16 +53,16 @@
 			if(!$output->toBool()) return $output;
 
 			$member_srls = array();
-			if(count($output->data)) {
-				foreach($output->data as $key => $val) {
+			if(count($output->data)){
+				foreach($output->data as $key => $val){
 					$member_srls[$key] = $val->member_srl;
 					$member_keys[$val->member_srl] = $key;
 				}
 			}
 
-			if(Context::get('is_logged')) {
+			if(Context::get('is_logged')){
 				$logged_info = Context::get('logged_info');
-				if(!in_array($logged_info->member_srl, $member_srls)) {
+				if(!in_array($logged_info->member_srl, $member_srls)){
 					$member_srls[0] = $logged_info->member_srl;
 					$member_keys[$logged_info->member_srl] = 0;
 				}
@@ -88,8 +72,8 @@
 
 			$member_args->member_srl = implode(',',$member_srls);
 			$member_output = executeQueryArray('member.getMembers', $member_args);
-			if($member_output->data) {
-				foreach($member_output->data as $key => $val) {
+			if($member_output->data){
+				foreach($member_output->data as $key => $val){
 					$output->data[$member_keys[$val->member_srl]] = $val;
 				}
 			}
