@@ -16,7 +16,7 @@
 		 **/
 		function init(){
 			// Error occurs if already installed
-			if(Context::isInstalled()){
+			if($this->act !== 'procInstallLicenseAggrement' && Context::isInstalled()){
 				$this->stop('msg_already_installed');
 			}
 
