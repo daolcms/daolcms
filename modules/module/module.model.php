@@ -80,10 +80,11 @@
 			// test.xe.com
 			$domain = '';
 			if($default_url && $default_url_parse['host'] != $request_url_parse['host']) {
-				$url_info = parse_url($request_url);
-				$hostname = $url_info['host'];
+				$hostname = $request_url_parse['host'];
+ 				$path = $request_url_parse['path'];
+ 				$port = $request_url_parse['port'];
 				$path = preg_replace('/\/$/','',$url_info['path']);
-				$domain = sprintf('%s%s%s', $hostname, $url_info['port']&&$url_info['port']!=80?':'.$url_info['port']:'',$path);
+				$domain = sprintf('%s%s%s', $hostname, $port && ($port != 80 )? ':'.$port  : '', $path);
 			}
 			// xe.com/blog
 			if($domain === ''){

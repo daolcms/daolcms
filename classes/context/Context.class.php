@@ -229,7 +229,7 @@ class Context {
 		if($this->get('l')){
 			$this->lang_type = $this->get('l');
 			if($_COOKIE['lang_type'] != $this->lang_type){
-				setcookie('lang_type', $this->lang_type, time()+3600*24*1000, '/');
+				setcookie('lang_type', $this->lang_type, time()+3600*24*1000);
 			}
 		}
 		elseif($_COOKIE['lang_type']){
@@ -537,8 +537,20 @@ class Context {
 					return false;
 				}
 
-				$url_info['query'].= ($url_info['query'] ? '&' : '') . 'SSOID=' . urlencode(session_id()) . '&sig=' . urlencode(Password::createSignature(session_id()));
-				$redirect_url = sprintf('%s://%s%s%s?%s', $url_info['scheme'], $url_info['host'], $url_info['port'] ? ':' . $url_info['port'] : '', $url_info['path'], $url_info['query']);
+ 				$oModuleModel = getModel('module');
+ 				$domain = $url_info['host'] . $url_info['path'];
+ 				if(substr_compare($domain, '/', -1) === 0) $domain = substr($domain, 0, -1);
+ 				$site_info = $oModuleModel->getSiteInfoByDomain($domain);
+ 
+ 				if($site_info->site_srl)
+ 				{
+					$url_info['query'].= ($url_info['query'] ? '&' : '') . 'SSOID=' . urlencode(session_id()) . '&sig=' . urlencode(Password::createSignature(session_id()));
+					$redirect_url = sprintf('%s://%s%s%s?%s', $url_info['scheme'], $url_info['host'], $url_info['port'] ? ':' . $url_info['port'] : '', $url_info['path'], $url_info['query']);
+				}
+				else
+				{
+					$redirect_url = $url;
+				}
 				header('location:' . $redirect_url);
 
 				return FALSE;
