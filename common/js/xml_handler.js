@@ -258,7 +258,7 @@ $.exec_xml = window.exec_xml = function(module, act, params, callback_func, resp
 					stack.push('<' + key + '>' + xmlHelper(val) + '</' + key + '>');
 				});
 			}
-			else if (!$.isFunction(params) && typeof params == "string" && params.hasOwnProperty('replace')) {
+			else if (!$.isFunction(params)) {
 				stack.push('<![CDATA[' + params + ']]>');
 			}
 
