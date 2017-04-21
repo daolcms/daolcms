@@ -358,28 +358,28 @@ class Context {
 		if(!$self->isInstalled()) return;
 
 		include($self::getConfigFile());
- 
 
-				// If master_db information does not exist, the config file needs to be updated
-				if(!isset($db_info->master_db)){
-					$db_info->master_db = array();
-					$db_info->master_db["db_type"] = $db_info->db_type; unset($db_info->db_type);
-					$db_info->master_db["db_port"] = $db_info->db_port; unset($db_info->db_port);
-					$db_info->master_db["db_hostname"] = $db_info->db_hostname; unset($db_info->db_hostname);
-					$db_info->master_db["db_password"] = $db_info->db_password; unset($db_info->db_password);
-					$db_info->master_db["db_database"] = $db_info->db_database; unset($db_info->db_database);
-					$db_info->master_db["db_userid"] = $db_info->db_userid; unset($db_info->db_userid);
-					$db_info->master_db["db_table_prefix"] = $db_info->db_table_prefix; unset($db_info->db_table_prefix);
-					if(substr($db_info->master_db["db_table_prefix"],-1)!='_') $db_info->master_db["db_table_prefix"] .= '_';
+		// If master_db information does not exist, the config file needs to be updated
+		if(!isset($db_info->master_db)){
+			$db_info->master_db = array();
+			$db_info->master_db["db_type"] = $db_info->db_type; unset($db_info->db_type);
+			$db_info->master_db["db_port"] = $db_info->db_port; unset($db_info->db_port);
+			$db_info->master_db["db_hostname"] = $db_info->db_hostname; unset($db_info->db_hostname);
+			$db_info->master_db["db_password"] = $db_info->db_password; unset($db_info->db_password);
+			$db_info->master_db["db_database"] = $db_info->db_database; unset($db_info->db_database);
+			$db_info->master_db["db_userid"] = $db_info->db_userid; unset($db_info->db_userid);
+			$db_info->master_db["db_table_prefix"] = $db_info->db_table_prefix; unset($db_info->db_table_prefix);
 
-					$slave_db = $db_info->master_db;
-					$db_info->slave_db = array($slave_db);
-					
-					$self->setDBInfo($db_info);
+			if(substr($db_info->master_db["db_table_prefix"],-1)!='_') $db_info->master_db["db_table_prefix"] .= '_';
 
-					$oInstallController = &getController('install');
-					$oInstallController->makeConfigFile();
-				}
+			$slave_db = $db_info->master_db;
+			$db_info->slave_db = array($slave_db);
+			
+			$self->setDBInfo($db_info);
+
+			$oInstallController = &getController('install');
+			$oInstallController->makeConfigFile();
+		}
 		
 		if(!$db_info->use_prepared_statements){
 			$db_info->use_prepared_statements = 'Y';
