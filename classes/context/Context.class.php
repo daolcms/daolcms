@@ -357,8 +357,8 @@ class Context {
 
 		if(!$self->isInstalled()) return;
 
-		$config_file = $self->getConfigFile();
-		if(is_readable($config_file)) include($config_file);
+		include($self::getConfigFile());
+ 
 
 				// If master_db information does not exist, the config file needs to be updated
 				if(!isset($db_info->master_db)){
