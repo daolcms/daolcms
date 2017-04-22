@@ -5,6 +5,7 @@
 	<actions>
 		<action name="dispAdminIndex" type="view" standalone="true" index="true" />
 		<action name="dispAdminConfigGeneral" type="view" standalone="true" menu_name="adminConfigurationGeneral" menu_index="true" />
+		<action name="dispAdminConfigCDN" type="view" standalone="true" menu_name="adminConfigurationCDN" menu_index="true" />
 		<action name="dispAdminConfigFtp" type="view" standalone="true" menu_name="adminConfigurationFtp" menu_index="true" />
 		<action name="dispAdminConfigSMTP" type="view" standalone="true" menu_name="adminConfigurationSMTP" menu_index="true" />
 		<action name="dispAdminTheme" type="view" standalone="true" menu_name="theme" menu_index="true" />
@@ -49,6 +50,19 @@
 			<title xml:lang="vi">Admin Setup</title>
 			<title xml:lang="mn">Admin Setup</title>
 			<title xml:lang="tr">Admin Setup</title>
+		</menu>
+		<menu name="adminConfigurationCDN" type="all">
+			<title xml:lang="en">CDN Configuration</title>
+			<title xml:lang="ko">CDN 설정</title>
+			<title xml:lang="zh-CN">CDN 配置</title>
+			<title xml:lang="jp">CDN Configuration</title>
+			<title xml:lang="es">CDN Configuration</title>
+			<title xml:lang="ru">CDN Configuration</title>
+			<title xml:lang="fr">CDN Configuration</title>
+			<title xml:lang="zh-TW">CDN Configuration</title>
+			<title xml:lang="vi">CDN Configuration</title>
+			<title xml:lang="mn">CDN Configuration</title>
+			<title xml:lang="tr">CDN Configuration</title>
 		</menu>
 		<menu name="adminConfigurationFtp" type="all">
 			<title xml:lang="en">FTP Configuration</title>

@@ -60,4 +60,3 @@ class messageView extends message {
 		$this->setTemplateFile('system_message');
 	}
 }
-?>

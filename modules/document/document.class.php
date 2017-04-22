@@ -350,4 +350,3 @@ class document extends ModuleObject
 		else $this->getDefaultStatus();
 	}
 }
-?>

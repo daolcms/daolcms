@@ -3,20 +3,18 @@
 	<grants />
 	<permissions>
 		<!-- member -->
-		<permission action="dispDocumentManageDocument" target="member" />
 		<permission action="getDocumentCategories" target="member" />
+		<permission action="procDocumentTempSave" target="member" />
 
 		<!-- manager -->
-		<permission action="getDocumentCategoryTplInfo" target="manager" />
-		<permission action="procDocumentAddCart" target="manager" />
-		<permission action="procDocumentTempSave" target="manager" />
 		<permission action="procDocumentGetList" target="manager" />
-
+		
+		<permission action="getDocumentCategoryTplInfo" target="manager" />
 		<permission action="procDocumentInsertCategory" target="manager" />
 		<permission action="procDocumentDeleteCategory" target="manager" />
 		<permission action="procDocumentMoveCategory" target="manager" />
 		<permission action="procDocumentMakeXmlFile" target="manager" />
-		<permission action="procDocumentManageCheckedDocument" target="manager" />
+		
 		<permission action="procDocumentAdminMoveToTrash" target="manager" />
 
 		<permission action="dispDocumentAdminList" target="manager" />

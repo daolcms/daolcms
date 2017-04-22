@@ -174,4 +174,3 @@
 			executeQuery('counter.deleteSiteCounterLog',$args);
 		}
 	}
-?>

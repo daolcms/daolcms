@@ -178,4 +178,3 @@
 			return new Object();
 		}
 	}
-?>

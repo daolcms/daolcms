@@ -156,4 +156,3 @@
 			$this->setTemplateFile('filebox_add');
 		}
 	}
-?>

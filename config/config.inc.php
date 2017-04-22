@@ -20,7 +20,7 @@
 	/**
 	 * Display the version info of DAOL CMS.
 	 */
-	define('__DAOL_VERSION__', '1.0.2.7');
+	define('__DAOL_VERSION__', '1.0.3.0');
 	
 	/**
 	 * Display the version info of XE(XDT EX).
@@ -262,4 +262,3 @@
 		require(_DAOL_PATH_.'classes/security/IpFilter.class.php');
 		if(__DEBUG__) $GLOBALS['__elapsed_class_load__'] = getMicroTime() - __ClassLoadStartTime__;
 	}
-?>

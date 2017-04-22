@@ -286,4 +286,3 @@
 			$this->setTemplateFile('adminFileBox');
 		}
 	}
-?>

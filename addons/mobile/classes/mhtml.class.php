@@ -77,4 +77,3 @@
 			print("</body></html>\n");
 		}
 	}
-?>

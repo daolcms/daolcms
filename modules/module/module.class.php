@@ -386,4 +386,3 @@
 			$oModuleModel->loadModuleExtends();
 		}
 	}
-?>

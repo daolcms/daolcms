@@ -275,4 +275,3 @@
 			$this->setTemplateFile('add_friend_group');
 		}
 	}
-?>

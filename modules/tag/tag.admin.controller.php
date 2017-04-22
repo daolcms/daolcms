@@ -14,4 +14,3 @@
 			return executeQuery('tag.deleteModuleTags', $args);
 		}
 	}
-?>

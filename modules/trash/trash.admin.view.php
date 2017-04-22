@@ -47,4 +47,3 @@ class trashAdminView extends trash {
 		$this->setTemplateFile('trash_list');
 	}
 }
-?>

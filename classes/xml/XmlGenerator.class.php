@@ -53,5 +53,3 @@ class XmlGenerator{
 		return sprintf('<%s%s>%s</%s>'."\n", $node->node_name, $attrs, $body, $node->node_name);
 	}
 }
-
-?>

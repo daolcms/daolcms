@@ -717,4 +717,3 @@
 			return $this->get('member_srl');
 		}
 	}
-?>

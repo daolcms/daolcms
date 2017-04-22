@@ -1013,6 +1013,12 @@
 		<value xml:lang="zh-CN"><![CDATA[请注意，只有绑定的IP才能访问后台。IP信息将保存在 /files/config/db.config.php. 每行一个IP。]]></value>
 		<value xml:lang="tr"><![CDATA[Sadece bu IP adresi üzerinden yönetici sayfasına erişim mümkündür.IP-bant bilgileri /files/config/db.config.php dosyasında saklanır. Satıra birden fazla öğe girin.]]></value>
 	</item>
+	<item name="detail_about_cdn_info">
+		<value xml:lang="ko"><![CDATA[CDN 정보는 files/config/cdn.config.php 파일에 저장됩니다.]]></value>
+		<value xml:lang="en"><![CDATA[The information on CDN is stored in files/config/cdn.config.php.]]></value>
+		<value xml:lang="zh-CN"><![CDATA[CDN的信息保存在 /files/config/cdn.config.php。]]></value>
+		<value xml:lang="tr"><![CDATA[CDN bilgi, /files/config/cdn.config.php dosyasında saklanır.]]></value>
+	</item>
 	<item name="detail_about_ftp_info">
 		<value xml:lang="ko"><![CDATA[FTP 정보를 입력하면 쉬운 설치를 가능하도록 합니다. FTP정보는 files/config/ftp.config.php 파일에 저장됩니다. 쉬운 설치가 불가능한 경우 PHP의 safe_mode를 On으로 변경해야 합니다.]]></value>
 		<value xml:lang="en"><![CDATA[When you enter FTP information to enable easy installation. The information on FTP is stored in files/config/ftp.config.php. If you are unable to easy install, PHP's 'safe_mode' must be changed 'On']]></value>
@@ -1318,6 +1324,22 @@
 		<value xml:lang="ko"><![CDATA[서버 정보]]></value>
 		<value xml:lang="en"><![CDATA[Server Environment]]></value>
 		<value xml:lang="jp"><![CDATA[サーバー情報]]></value>
+	</item>
+	<item name="cdn_warning">
+		<value xml:lang="ko"><![CDATA[CDN 사용 경고]]></value>
+		<value xml:lang="en"><![CDATA[Warning For Using CDN]]></value>
+	</item>
+	<item name="cdn_warning_detail">
+		<value xml:lang="ko"><![CDATA[CDN 서비스 제공 회사 서버에 문제가 발생할 경우, 접속 불가능 등 오류가 발생할 수 있습니다.]]></value>
+		<value xml:lang="en"><![CDATA[If the CDN service provider's server fails, you may experience connection errors.]]></value>
+	</item>
+	<item name="cdn_use">
+		<value xml:lang="ko"><![CDATA[CDN 설정 사용]]></value>
+		<value xml:lang="en"><![CDATA[Use CDN Settings?]]></value>
+	</item>
+	<item name="cdn_type">
+		<value xml:lang="ko"><![CDATA[CDN 서비스 선택]]></value>
+		<value xml:lang="en"><![CDATA[Select CDN Service]]></value>
 	</item>
 	<item name="ftp_form_title">
 		<value xml:lang="ko"><![CDATA[FTP 계정 정보 입력]]></value>

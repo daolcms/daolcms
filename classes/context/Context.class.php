@@ -38,6 +38,11 @@ class Context {
 	 */
 	var $db_info  = NULL;
 	/**
+	 * CDN info 
+	 * @var object
+	 */
+	var $cdn_info = NULL;
+	/**
 	 * FTP info 
 	 * @var object
 	 */
@@ -224,7 +229,7 @@ class Context {
 		if($this->get('l')){
 			$this->lang_type = $this->get('l');
 			if($_COOKIE['lang_type'] != $this->lang_type){
-				setcookie('lang_type', $this->lang_type, time()+3600*24*1000, '/');
+				setcookie('lang_type', $this->lang_type, time()+3600*24*1000);
 			}
 		}
 		elseif($_COOKIE['lang_type']){
@@ -352,29 +357,29 @@ class Context {
 
 		if(!$self->isInstalled()) return;
 
-		$config_file = $self->getConfigFile();
-		if(is_readable($config_file)) include($config_file);
+		include($self::getConfigFile());
 
-				// If master_db information does not exist, the config file needs to be updated
-				if(!isset($db_info->master_db)){
-					$db_info->master_db = array();
-					$db_info->master_db["db_type"] = $db_info->db_type; unset($db_info->db_type);
-					$db_info->master_db["db_port"] = $db_info->db_port; unset($db_info->db_port);
-					$db_info->master_db["db_hostname"] = $db_info->db_hostname; unset($db_info->db_hostname);
-					$db_info->master_db["db_password"] = $db_info->db_password; unset($db_info->db_password);
-					$db_info->master_db["db_database"] = $db_info->db_database; unset($db_info->db_database);
-					$db_info->master_db["db_userid"] = $db_info->db_userid; unset($db_info->db_userid);
-					$db_info->master_db["db_table_prefix"] = $db_info->db_table_prefix; unset($db_info->db_table_prefix);
-					if(substr($db_info->master_db["db_table_prefix"],-1)!='_') $db_info->master_db["db_table_prefix"] .= '_';
+		// If master_db information does not exist, the config file needs to be updated
+		if(!isset($db_info->master_db)){
+			$db_info->master_db = array();
+			$db_info->master_db["db_type"] = $db_info->db_type; unset($db_info->db_type);
+			$db_info->master_db["db_port"] = $db_info->db_port; unset($db_info->db_port);
+			$db_info->master_db["db_hostname"] = $db_info->db_hostname; unset($db_info->db_hostname);
+			$db_info->master_db["db_password"] = $db_info->db_password; unset($db_info->db_password);
+			$db_info->master_db["db_database"] = $db_info->db_database; unset($db_info->db_database);
+			$db_info->master_db["db_userid"] = $db_info->db_userid; unset($db_info->db_userid);
+			$db_info->master_db["db_table_prefix"] = $db_info->db_table_prefix; unset($db_info->db_table_prefix);
 
-					$slave_db = $db_info->master_db;
-					$db_info->slave_db = array($slave_db);
-					
-					$self->setDBInfo($db_info);
+			if(substr($db_info->master_db["db_table_prefix"],-1)!='_') $db_info->master_db["db_table_prefix"] .= '_';
 
-					$oInstallController = &getController('install');
-					$oInstallController->makeConfigFile();
-				}
+			$slave_db = $db_info->master_db;
+			$db_info->slave_db = array($slave_db);
+			
+			$self->setDBInfo($db_info);
+
+			$oInstallController = &getController('install');
+			$oInstallController->makeConfigFile();
+		}
 		
 		if(!$db_info->use_prepared_statements){
 			$db_info->use_prepared_statements = 'Y';
@@ -532,8 +537,20 @@ class Context {
 					return false;
 				}
 
-				$url_info['query'].= ($url_info['query'] ? '&' : '') . 'SSOID=' . urlencode(session_id()) . '&sig=' . urlencode(Password::createSignature(session_id()));
-				$redirect_url = sprintf('%s://%s%s%s?%s', $url_info['scheme'], $url_info['host'], $url_info['port'] ? ':' . $url_info['port'] : '', $url_info['path'], $url_info['query']);
+ 				$oModuleModel = getModel('module');
+ 				$domain = $url_info['host'] . $url_info['path'];
+ 				if(substr_compare($domain, '/', -1) === 0) $domain = substr($domain, 0, -1);
+ 				$site_info = $oModuleModel->getSiteInfoByDomain($domain);
+ 
+ 				if($site_info->site_srl)
+ 				{
+					$url_info['query'].= ($url_info['query'] ? '&' : '') . 'SSOID=' . urlencode(session_id()) . '&sig=' . urlencode(Password::createSignature(session_id()));
+					$redirect_url = sprintf('%s://%s%s%s?%s', $url_info['scheme'], $url_info['host'], $url_info['port'] ? ':' . $url_info['port'] : '', $url_info['path'], $url_info['query']);
+				}
+				else
+				{
+					$redirect_url = $url;
+				}
 				header('location:' . $redirect_url);
 
 				return FALSE;
@@ -568,6 +585,32 @@ class Context {
 		return TRUE;
 	}
 
+	/**
+	 * Check if CDN info is registered
+	 *
+	 * @return bool True: CDN information is registered, False: otherwise
+	 */
+	function isCDNRegisted(){
+		$cdn_config_file = self::getCDNConfigFile();
+		if(file_exists($cdn_config_file)) return true;
+		return false;
+	}
+
+	/**
+	 * Get CDN information
+	 *
+	 * @return object CDN information
+	 */
+	function getCDNInfo(){
+		$self = self::getInstance();
+		if(!$self->isCDNRegisted()) return null;
+
+		$cdn_config_file = $self->getCDNConfigFile();
+		@include($cdn_config_file);
+
+		return $cdn_info;
+	}
+	
 	/**
 	 * Check if FTP info is registered
 	 *
@@ -1829,25 +1872,49 @@ class Context {
 
 		$self = self::getInstance();
 		if($plugin_name == 'ui.datepicker') $plugin_name = 'ui';
-
-		if($loaded_plugins[$plugin_name]) return;
-		$loaded_plugins[$plugin_name] = true;
-
-		$plugin_path = './common/js/plugins/'.$plugin_name.'/';
-		$info_file   = $plugin_path.'plugin.load';
-		if(!is_readable($info_file)) return;
-
-		$list = file($info_file);
-		foreach($list as $filename){
-			$filename = trim($filename);
-			if(!$filename) continue;
-
-			if(substr($filename,0,2)=='./') $filename = substr($filename,2);
-			if(preg_match('/\.js$/i',  $filename))     $self->loadFile(array($plugin_path.$filename, 'body', '', 0), true);
-			elseif(preg_match('/\.css$/i', $filename)) $self->loadFile(array($plugin_path.$filename, 'all', '', 0), true);
+		
+		$cdn_info = self::getCDNInfo();
+		self::set('cdn_info', $cdn_info);
+		
+		if($cdn_info->cdn_use == 'Y' && $plugin_name == 'ui'){
+			if($cdn_info->cdn_type == 'jsdelivr'){
+				$self->loadFile(array('//cdn.jsdelivr.net/jquery.ui/1.10.4/jquery-ui.min.js', 'body', '', 0), true);
+				$self->loadFile(array('//cdn.jsdelivr.net/jquery.ui/1.10.4/themes/jquery-ui.min.css', 'all', '', 0), true);
+			}
+			if($cdn_info->cdn_type == 'microsoft'){
+				$self->loadFile(array('//ajax.aspnetcdn.com/ajax/jquery.ui/1.10.4/jquery-ui.min.js', 'body', '', 0), true);
+				$self->loadFile(array('//ajax.aspnetcdn.com/ajax/jquery.ui/1.10.4/themes/smoothness/jquery-ui.css', 'all', '', 0), true);
+			}
+			if($cdn_info->cdn_type == 'cdnjs'){
+				$self->loadFile(array('//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js', 'body', '', 0), true);
+				$self->loadFile(array('//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.min.css', 'all', '', 0), true);
+			}
+			if($cdn_info->cdn_type == 'jquery'){
+				$self->loadFile(array('//code.jquery.com/ui/1.10.4/jquery-ui.min.js', 'body', '', 0), true);
+				$self->loadFile(array('//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css', 'all', '', 0), true);
+			}
+			$self->loadFile(array('./common/js/plugins/ui/jquery.ui.datepicker-ko.js', 'body', '', 0), true);
 		}
+		else{
+			if($loaded_plugins[$plugin_name]) return;
+			$loaded_plugins[$plugin_name] = true;
+			
+			$plugin_path = './common/js/plugins/'.$plugin_name.'/';
+			$info_file   = $plugin_path.'plugin.load';
+			if(!is_readable($info_file)) return;
 
-		if(is_dir($plugin_path.'lang')) $self->loadLang($plugin_path.'lang');
+			$list = file($info_file);
+			foreach($list as $filename){
+				$filename = trim($filename);
+				if(!$filename) continue;
+
+				if(substr($filename,0,2)=='./') $filename = substr($filename,2);
+				if(preg_match('/\.js$/i',  $filename))     $self->loadFile(array($plugin_path.$filename, 'body', '', 0), true);
+				elseif(preg_match('/\.css$/i', $filename)) $self->loadFile(array($plugin_path.$filename, 'all', '', 0), true);
+			}
+
+			if(is_dir($plugin_path.'lang')) $self->loadLang($plugin_path.'lang');
+		}
 	}
 
 	/**
@@ -1942,6 +2009,15 @@ class Context {
 		return _DAOL_PATH_.'files/config/db.config.php';
 	}
 
+	/**
+	 * Get CDN config file
+	 *
+	 * @return string The path of the config file that contains CDN settings
+	 */
+	function getCDNConfigFile(){
+		return _DAOL_PATH_.'files/config/cdn.config.php';
+	}
+	
 	/**
 	 * Get FTP config file
 	 *

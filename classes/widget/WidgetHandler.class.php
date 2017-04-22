@@ -11,4 +11,3 @@
 		var $widget_path = '';
 
 	}
-?>

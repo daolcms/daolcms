@@ -843,4 +843,3 @@
 			Context::set('name', $name);
 		}
 	}
-?>

@@ -775,4 +775,3 @@
 			return $output;
 		}
 	}
-?>

@@ -725,4 +725,3 @@
 			else return $lang->secret_name_list;
 		}
 	}
-?>

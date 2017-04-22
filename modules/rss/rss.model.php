@@ -46,4 +46,3 @@
 			return $module_rss_config;
 		}
 	}
-?>

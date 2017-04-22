@@ -98,4 +98,3 @@
 			$this->setTemplateFile("skin_info");
 		}
 	}
-?>

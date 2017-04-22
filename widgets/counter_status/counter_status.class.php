@@ -38,4 +38,3 @@
 			return $oTemplate->compile($tpl_path, $tpl_file);
 		}
 	}
-?>

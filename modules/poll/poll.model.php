@@ -136,4 +136,3 @@
 			$this->add('colorset_list', $colorsets);
 		}
 	}
-?>

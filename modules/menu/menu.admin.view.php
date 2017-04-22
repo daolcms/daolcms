@@ -272,4 +272,3 @@
 			return $arrangedMenuItemList;
 		}
 	}
-?>

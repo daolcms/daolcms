@@ -1189,4 +1189,3 @@
 			return new Object();
 		}
 	}
-?>

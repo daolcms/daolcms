@@ -30,4 +30,3 @@
 			$this->setRedirectUrl($returnUrl);
 		}
 	}
-?>

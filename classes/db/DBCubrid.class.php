@@ -1001,4 +1001,3 @@
 					return $select . ' ' . $from . ' ' . $where . ' ' . $groupBy . ' ' . $orderBy . ' ' . $limit;
 				}
 }
-?>

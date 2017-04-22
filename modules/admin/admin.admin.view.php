@@ -305,6 +305,19 @@
 		}
 
 		/**
+		 * Display CDN Configuration(settings) page
+		 * @return void
+		 */
+		function dispAdminConfigCDN(){
+		    Context::loadLang('modules/install/lang');
+
+			$cdn_info = Context::getCDNInfo();
+			Context::set('cdn_info', $cdn_info);
+
+			$this->setTemplateFile('config_cdn');
+		}
+
+		/**
 		 * Display FTP Configuration(settings) page
 		 * @return void
 		 */

@@ -690,4 +690,3 @@
 			return $attribute;
 		}
 	}
-?>

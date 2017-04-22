@@ -298,4 +298,3 @@
 			return $moduleInfoList;
 		}
 	}
-?>

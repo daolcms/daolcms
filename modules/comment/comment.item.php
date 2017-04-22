@@ -497,4 +497,3 @@
 			return $_SESSION['comment_management'][$this->comment_srl];
 		}
 	}
-?>

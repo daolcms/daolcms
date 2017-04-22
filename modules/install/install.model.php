@@ -89,4 +89,3 @@ class installModel extends install {
 		$this->add('list', $list);
 	}
 }
-?>
