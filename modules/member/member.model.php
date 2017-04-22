@@ -66,7 +66,7 @@
 			if (!$config->max_error_count_time) $config->max_error_count_time = 300;
 
 			if (!$config->signature_editor_skin || $config->signature_editor_skin == 'default') $config->signature_editor_skin = 'ckeditor';
-			if (!$config->sel_editor_colorset) $config->sel_editor_colorset = 'moono';
+			if (!$config->sel_editor_colorset) $config->sel_editor_colorset = 'moono-lisa';
 
 			$member_config = $config;
 
