@@ -31,9 +31,9 @@
 
 			if($upload_target_srl){
 				$tmp_files = $this->getFiles($upload_target_srl);
-				$file_count = count($tmp_files);
+				if($tmp_files instanceof Object && !$tmp_files->toBool()) return $tmp_files;
 
-				for($i=0;$i<$file_count;$i++){
+				foreach($tmp_files as $file_info) {
 					$file_info = $tmp_files[$i];
 					if(!$file_info->file_srl) continue;
 
@@ -201,6 +201,18 @@
 		 * @return array Returns array of object that contains file information. If no result returns null.
 		 **/
 		function getFiles($upload_target_srl, $columnList = array(), $sortIndex = 'file_srl', $ckValid = false){
+			$oDocumentModel = getModel('document');
+ 			$oCommentModel = getModel('document');
+ 			$targetItem = $oDocumentModel->getDocument($upload_target_srl);
+ 			if(!$targetItem->isExists())
+ 			{
+ 				$targetItem = $oCommentModel->getDocument($upload_target_srl);
+ 			}
+ 			if($targetItem->isExists() && $targetItem->isSecret() && !$targetItem->isGranted())
+ 			{
+ 				return $this->stop('msg_invalid_request');
+ 			}
+
 			$args = new stdClass();
 			$args->upload_target_srl = $upload_target_srl;
 			$args->sort_index = $sortIndex;
