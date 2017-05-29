@@ -766,7 +766,7 @@
 			return $this->get('module_srl');
 		}
 		function getTitle($cut_size = 0, $tail='...'){
-			$title = strip_tags($this->get('title'));
+			$title = htmlspecialchars($this->get('title'), ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 
 			if($cut_size) $title = cut_str($title, $cut_size, $tail);
 
@@ -774,7 +774,7 @@
 			if($this->get('title_bold') == 'Y') $attrs[] = 'font-weight:bold';
 			if($this->get('title_color') && $this->get('title_color') != 'N') $attrs[] = 'color:#'.$this->get('title_color');
 
-			if(count($attrs)) $title = sprintf("<span style=\"%s\">%s</span>", implode(';', $attrs), htmlspecialchars($title));
+			if(count($attrs)) $title = sprintf("<span style=\"%s\">%s</span>", implode(';', $attrs), $title);
 
 			return $title;
 		}
