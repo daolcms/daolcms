@@ -124,6 +124,10 @@
 			// Get document
 			$oDocumentModel = &getModel('document');
 			$oDocument = $oDocumentModel->getDocument($document_srl);
+			if($oDocument->isSecret() && !$oDocument->isGranted())
+ 			{
+ 				return new Object(-1, 'msg_is_secret');
+ 			}
 			// Variables
 			$args->document_srl = $document_srl;
 			$args->member_srl = $logged_info->member_srl;
