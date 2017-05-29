@@ -9,6 +9,7 @@
 
 		<permission action="procModuleAdminInsertGrant" target="manager" />
 
+		<permission action="getModuleSkinInfoList" target="manager" />
 		<permission action="getModuleAdminLangCode" target="manager" />
 		<permission action="getModuleAdminLangListByName" target="manager" />
 		<permission action="getModuleAdminLangListByValue" target="manager" />
