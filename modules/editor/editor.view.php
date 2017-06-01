@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * @class  editorView
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief view class of the editor module
 	 **/

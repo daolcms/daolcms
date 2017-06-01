@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * @class  layoutAdminView
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * admin view class of the layout module
 	 **/

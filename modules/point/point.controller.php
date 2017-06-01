@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * @class  pointController
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief Controller class of point modules
 	 **/

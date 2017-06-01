@@ -5,7 +5,7 @@ require_once _DAOL_PATH_ . "libs/phpmailer/phpmailer.php";
 /**
 * Mailing class for XpressEngine
 *
-* @author NHN (developers@xpressengine.com)
+* @author NAVER (developers@xpressengine.com)
 */
 class Mail extends PHPMailer
 {

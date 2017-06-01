@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * @class  communicationModel
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * communication module of the Model class
 	 **/

@@ -5,7 +5,7 @@
 	 * comment
 	 * comment module's high class
 	 *
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @package /modules/comment
 	 * @version 0.1
 	 */

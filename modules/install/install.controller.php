@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * @class  installController
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief install module of the Controller class
 	 **/
