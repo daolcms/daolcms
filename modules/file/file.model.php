@@ -200,18 +200,36 @@
 		 * @param string $sortIndex The column that used as sort index
 		 * @return array Returns array of object that contains file information. If no result returns null.
 		 **/
-		function getFiles($upload_target_srl, $columnList = array(), $sortIndex = 'file_srl', $ckValid = false){
+		function getFiles($upload_target_srl, $columnList = array(), $sortIndex = 'file_srl', $ckValid = false) {
+			$oModuleModel = getModel('module');
 			$oDocumentModel = getModel('document');
- 			$oCommentModel = getModel('document');
- 			$targetItem = $oDocumentModel->getDocument($upload_target_srl);
- 			if(!$targetItem->isExists())
- 			{
- 				$targetItem = $oCommentModel->getDocument($upload_target_srl);
+			$oCommentModel = getModel('comment');
+			$logged_info = Context::get('logged_info');
+
+			$oDocument = $oDocumentModel->getDocument($upload_target_srl);
+
+			// comment 권한 확인
+ 			if(!$oDocument->isExists()) {
+ 				$oComment = $oCommentModel->getComment($upload_target_srl);
+ 				if($oComment->isExists() && $oComment->isSecret() && !$oComment->isGranted()) {
+ 					return $this->stop('msg_not_permitted');
+ 				}
+				 
+ 				$oDocument = $oDocumentModel->getDocument($oComment->get('document_srl'));
  			}
- 			if($targetItem->isExists() && $targetItem->isSecret() && !$targetItem->isGranted())
- 			{
- 				return $this->stop('msg_invalid_request');
+			
+ 			// document 권한 확인
+ 			if($oDocument->isExists() && $oDocument->isSecret() && !$oDocument->isGranted()) {
+ 				return $this->stop('msg_not_permitted');
  			}
+			 
+ 			// 모듈 권한 확인
+ 			if($oDocument->isExists()) {
+				$grant = $oModuleModel->getGrant($oModuleModel->getModuleInfoByModuleSrl($oDocument->get('module_srl')), $logged_info);
+				if(!$grant->access) {
+					return $this->stop('msg_not_permitted');
+				}
+			}
 
 			$args = new stdClass();
 			$args->upload_target_srl = $upload_target_srl;
