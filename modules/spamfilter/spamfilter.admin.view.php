@@ -1,68 +1,64 @@
 <?php
 /* Copyright (C) NAVER <http://www.navercorp.com> */
 /* Copyright (C) DAOL Project <http://www.daolcms.org> */
+
 /**
- * @class  spamfilterAdminView
- * @author NAVER (developers@xpressengine.com)
+ * @class   spamfilterAdminView
+ * @author  NAVER (developers@xpressengine.com)
  * @Adaptor DAOL Project (developer@daolcms.org)
- * @brief The admin view class of the spamfilter module
+ * @brief   The admin view class of the spamfilter module
  */
-class spamfilterAdminView extends spamfilter 
-{
+class spamfilterAdminView extends spamfilter {
 	/**
 	 * @brief Initialization
 	 */
-	function init()
-	{
+	function init() {
 		// Set template path
-		$this->setTemplatePath($this->module_path.'tpl');
+		$this->setTemplatePath($this->module_path . 'tpl');
 	}
-
+	
 	/**
 	 * @brief Output the list of banned IPs
 	 */
-	function dispSpamfilterAdminSetting()
-	{
+	function dispSpamfilterAdminSetting() {
 		// Get the list of denied IP addresses and words
 		$oSpamFilterModel = getModel('spamfilter');
 		$ip_list = $oSpamFilterModel->getDeniedIPList();
 		Context::set('ip_list', $ip_list);
-
+		
 		$security = new Security();
 		$security->encodeHTML('ip_list..');
-
+		
 		// Set a template file
 		$this->setTemplateFile('denied_ip_list');
-
+		
 	}
-
+	
 	/**
 	 * @brief Output the list of banned words
 	 */
-	function dispSpamfilterAdminDeniedWordList()
-	{
+	function dispSpamfilterAdminDeniedWordList() {
 		// Get the list of denied IP addresses and words
 		$oSpamFilterModel = getModel('spamfilter');
 		$word_list = $oSpamFilterModel->getDeniedWordList();
 		Context::set('word_list', $word_list);
-
+		
 		$security = new Security();
 		$security->encodeHTML('word_list..word');
-
+		
 		// Set a template file
 		$this->setTemplateFile('denied_word_list');
 	}
-
+	
 	/**
 	 * @brief Configure auto block
 	 */
-	function dispSpamfilterAdminConfigBlock()
-	{
+	function dispSpamfilterAdminConfigBlock() {
 		// Get configurations (using module model object)
 		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('spamfilter');
-		Context::set('config',$config);
-
+		Context::set('config', $config);
+		
 		$this->setTemplateFile('config_block');
 	}
 }

@@ -1,36 +1,36 @@
 <?php
+
+/**
+ * @class  install
+ * @author NAVER (developers@xpressengine.com)
+ * @brief  install module of the high class
+ **/
+class install extends ModuleObject {
+	
 	/**
-	 * @class  install
-	 * @author NAVER (developers@xpressengine.com)
-	 * @brief install module of the high class
+	 * @brief Implement if additional tasks are necessary when installing
 	 **/
-
-	class install extends ModuleObject {
-
-		/**
-		 * @brief Implement if additional tasks are necessary when installing
-		 **/
-		function moduleInstall(){
-			return new Object();
-		}
-
-		/**
-		 * @brief a method to check if successfully installed
-		 **/
-		function checkUpdate(){
-			return false;
-		}
-
-		/**
-		 * @brief Execute update
-		 **/
-		function moduleUpdate(){
-			return new Object();
-		}
-
-		/**
-		 * @brief Re-generate the cache file
-		 **/
-		function recompileCache(){
-		}
+	function moduleInstall() {
+		return new Object();
 	}
+	
+	/**
+	 * @brief a method to check if successfully installed
+	 **/
+	function checkUpdate() {
+		return false;
+	}
+	
+	/**
+	 * @brief Execute update
+	 **/
+	function moduleUpdate() {
+		return new Object();
+	}
+	
+	/**
+	 * @brief Re-generate the cache file
+	 **/
+	function recompileCache() {
+	}
+}

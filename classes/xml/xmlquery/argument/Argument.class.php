@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Argument class
- * @author NAVER (developers@xpressengine.com)
+ * @author  NAVER (developers@xpressengine.com)
  * @package /classes/xml/xmlquery/argument
  * @version 0.1
  */
@@ -45,11 +46,11 @@ class Argument {
 	 * @var mixed
 	 */
 	var $_value; // 
-
+	
 	/**
 	 * constructor
 	 * @param string $name
-	 * @param mixed $value
+	 * @param mixed  $value
 	 * @return void
 	 */
 	function Argument($name, $value) {
@@ -57,17 +58,16 @@ class Argument {
 		$this->name = $name;
 		$this->isValid = true;
 	}
-
+	
 	function getType() {
-		if (isset($this->type))
-		{
+		if(isset($this->type)) {
 			return $this->type;
 		}
-		if (is_string($this->value))
+		if(is_string($this->value))
 			return 'column_name';
 		return 'number';
 	}
-
+	
 	function setColumnType($value) {
 		$this->type = $value;
 	}
@@ -75,48 +75,48 @@ class Argument {
 	function setColumnOperation($operation) {
 		$this->column_operation = $operation;
 	}
-
+	
 	function getName() {
 		return $this->name;
 	}
-
+	
 	function getValue() {
-		if (!isset($this->_value)) {
+		if(!isset($this->_value)) {
 			$value = $this->getEscapedValue();
 			$this->_value = $this->toString($value);
 		}
 		return $this->_value;
 	}
-
+	
 	function getColumnOperation() {
 		return $this->column_operation;
 	}
-
+	
 	function getEscapedValue() {
 		return $this->escapeValue($this->value);
 	}
-
+	
 	function getUnescapedValue() {
 		if($this->value === 'null') return null;
 		return $this->value;
 	}
-
+	
 	/**
 	 * mixed value to string
 	 * @param mixed $value
 	 * @return string
 	 */
 	function toString($value) {
-		if (is_array($value)) {
-			if (count($value) === 0)
+		if(is_array($value)) {
+			if(count($value) === 0)
 				return '';
-			if (count($value) === 1 && $value[0] === '')
+			if(count($value) === 1 && $value[0] === '')
 				return '';
 			return '(' . implode(',', $value) . ')';
 		}
 		return $value;
 	}
-
+	
 	/**
 	 * escape value
 	 * @param mixed $value
@@ -124,39 +124,39 @@ class Argument {
 	 */
 	function escapeValue($value) {
 		$column_type = $this->getType();
-		if ($column_type == 'column_name') {
+		if($column_type == 'column_name') {
 			$dbParser = DB::getParser();
 			return $dbParser->parseExpression($value);
 		}
-		if (!isset($value))
+		if(!isset($value))
 			return null;
-
-		$columnTypeList = array('date'=>1, 'varchar'=>1, 'char'=>1, 'text'=>1, 'bigtext'=>1);
-		if (isset($columnTypeList[$column_type])) {
-			if (!is_array($value))
+		
+		$columnTypeList = array('date' => 1, 'varchar' => 1, 'char' => 1, 'text' => 1, 'bigtext' => 1);
+		if(isset($columnTypeList[$column_type])) {
+			if(!is_array($value))
 				$value = $this->_escapeStringValue($value);
 			else {
-				foreach($value as $key=>$val) {
+				foreach($value as $key => $val) {
 					$value[$key] = $this->_escapeStringValue($val);
 				}
 			}
 		}
 		if($this->uses_default_value) return $value;
-		if ($column_type == 'number') {
-			if (is_array($value)) {
-				foreach ($value AS $key => $val) {
-					if (isset($val) && $val !== '') {
-						$value[$key] = (int) $val;
+		if($column_type == 'number') {
+			if(is_array($value)) {
+				foreach($value AS $key => $val) {
+					if(isset($val) && $val !== '') {
+						$value[$key] = (int)$val;
 					}
 				}
 			} else {
-				$value = (int) $value;
+				$value = (int)$value;
 			}
 		}
-
+		
 		return $value;
 	}
-
+	
 	/**
 	 * escape string value
 	 * @param string $value
@@ -165,40 +165,34 @@ class Argument {
 	function _escapeStringValue($value) {
 		// Remove non-utf8 chars.
 		$regex = '@((?:[\x00-\x7F]|[\xC0-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF]{2}){1,100})|([\xF0-\xF7][\x80-\xBF]{3})|([\x80-\xBF])|([\xC0-\xFF])@x';
-
+		
 		$value = preg_replace_callback($regex, array($this, 'utf8Replacer'), $value);
 		$db = &DB::getInstance();
 		$value = $db->addQuotes($value);
 		return '\'' . $value . '\'';
 	}
-
+	
 	function utf8Replacer($captures) {
-		if (!empty($captures[1]))
-		{
+		if(!empty($captures[1])) {
 			// Valid byte sequence. Return unmodified.
 			return $captures[1];
-		}
-		elseif(!empty($captures[2]))
-		{
+		} elseif(!empty($captures[2])) {
 			// Remove user defined area
-			if("\xF3\xB0\x80\x80" <= $captures[2])
-			{
+			if("\xF3\xB0\x80\x80" <= $captures[2]) {
 				return;
 			}
-
+			
 			return $captures[2];
-		}
-		else
-		{
+		} else {
 			return;
 		}
 	}
-
+	
 	function isValid() {
 		return $this->isValid;
 	}
 	
-	function isColumnName(){
+	function isColumnName() {
 		$type = $this->getType();
 		$value = $this->getUnescapedValue();
 		if($type == 'column_name') return true;
@@ -206,67 +200,66 @@ class Argument {
 		if($type == 'number' && !is_numeric($value) && $this->uses_default_value) return true;
 		return false;
 	}
-
+	
 	function getErrorMessage() {
 		return $this->errorMessage;
 	}
-
+	
 	function ensureDefaultValue($default_value) {
-		if (!isset($this->value) || $this->value == '')
-		{
+		if(!isset($this->value) || $this->value == '') {
 			$this->value = $default_value;
 			$this->uses_default_value = true;
 		}
 	}
-
+	
 	/**
 	 * check filter by filter type
 	 * @param string $filter_type
 	 * @return void
 	 */
 	function checkFilter($filter_type) {
-		if (isset($this->value) && $this->value != '') {
+		if(isset($this->value) && $this->value != '') {
 			global $lang;
 			$val = $this->value;
 			$key = $this->name;
-			switch ($filter_type) {
+			switch($filter_type) {
 				case 'email' :
 				case 'email_address' :
-					if (!preg_match('/^[\w-]+((?:\.|\+|\~)[\w-]+)*@[\w-]+(\.[\w-]+)+$/is', $val)) {
+					if(!preg_match('/^[\w-]+((?:\.|\+|\~)[\w-]+)*@[\w-]+(\.[\w-]+)+$/is', $val)) {
 						$this->isValid = false;
 						$this->errorMessage = new Object(-1, sprintf($lang->filter->invalid_email, $lang->{$key} ? $lang->{$key} : $key));
 					}
 					break;
 				case 'homepage' :
-					if (!preg_match('/^(http|https)+(:\/\/)+[0-9a-z_-]+\.[^ ]+$/is', $val)) {
+					if(!preg_match('/^(http|https)+(:\/\/)+[0-9a-z_-]+\.[^ ]+$/is', $val)) {
 						$this->isValid = false;
 						$this->errorMessage = new Object(-1, sprintf($lang->filter->invalid_homepage, $lang->{$key} ? $lang->{$key} : $key));
 					}
 					break;
 				case 'userid' :
 				case 'user_id' :
-					if (!preg_match('/^[a-zA-Z]+([_0-9a-zA-Z]+)*$/is', $val)) {
+					if(!preg_match('/^[a-zA-Z]+([_0-9a-zA-Z]+)*$/is', $val)) {
 						$this->isValid = false;
 						$this->errorMessage = new Object(-1, sprintf($lang->filter->invalid_userid, $lang->{$key} ? $lang->{$key} : $key));
 					}
 					break;
 				case 'number' :
 				case 'numbers' :
-					if (is_array($val))
+					if(is_array($val))
 						$val = join(',', $val);
-					if (!preg_match('/^(-?)[0-9]+(,\-?[0-9]+)*$/is', $val)) {
+					if(!preg_match('/^(-?)[0-9]+(,\-?[0-9]+)*$/is', $val)) {
 						$this->isValid = false;
 						$this->errorMessage = new Object(-1, sprintf($lang->filter->invalid_number, $lang->{$key} ? $lang->{$key} : $key));
 					}
 					break;
 				case 'alpha' :
-					if (!preg_match('/^[a-z]+$/is', $val)) {
+					if(!preg_match('/^[a-z]+$/is', $val)) {
 						$this->isValid = false;
 						$this->errorMessage = new Object(-1, sprintf($lang->filter->invalid_alpha, $lang->{$key} ? $lang->{$key} : $key));
 					}
 					break;
 				case 'alpha_number' :
-					if (!preg_match('/^[0-9a-z]+$/is', $val)) {
+					if(!preg_match('/^[0-9a-z]+$/is', $val)) {
 						$this->isValid = false;
 						$this->errorMessage = new Object(-1, sprintf($lang->filter->invalid_alpha_number, $lang->{$key} ? $lang->{$key} : $key));
 					}
@@ -274,34 +267,34 @@ class Argument {
 			}
 		}
 	}
-
+	
 	function checkMaxLength($length) {
-		if ($this->value && (strlen($this->value) > $length)) {
+		if($this->value && (strlen($this->value) > $length)) {
 			global $lang;
 			$this->isValid = false;
 			$key = $this->name;
 			$this->errorMessage = new Object(-1, sprintf($lang->filter->outofrange, $lang->{$key} ? $lang->{$key} : $key));
 		}
 	}
-
+	
 	function checkMinLength($length) {
-		if ($this->value && (strlen($this->value) < $length)) {
+		if($this->value && (strlen($this->value) < $length)) {
 			global $lang;
 			$this->isValid = false;
 			$key = $this->name;
 			$this->errorMessage = new Object(-1, sprintf($lang->filter->outofrange, $lang->{$key} ? $lang->{$key} : $key));
 		}
 	}
-
+	
 	function checkNotNull() {
-		if (!isset($this->value)) {
+		if(!isset($this->value)) {
 			global $lang;
 			$this->isValid = false;
 			$key = $this->name;
 			$this->errorMessage = new Object(-1, sprintf($lang->filter->isnull, $lang->{$key} ? $lang->{$key} : $key));
 		}
 	}
-
+	
 }
 
 ?>

@@ -1,14 +1,14 @@
 <?php
+
 /**
  * trashController
  * trash the module's controller class
  *
- * @author NAVER (developers@xpressengine.com)
+ * @author  NAVER (developers@xpressengine.com)
  * @package /modules/trash
  * @version 0.1
  */
-class trashController extends trash
-{
+class trashController extends trash {
 }
 
 /* End of file trash.controller.php */
