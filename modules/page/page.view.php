@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * @class  pageView
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief page view class of the module
 	 **/

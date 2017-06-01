@@ -3,7 +3,7 @@
 	 * commentController class
 	 * controller class of the comment module
 	 *
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @package /modules/comment
 	 * @version 0.1

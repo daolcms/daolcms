@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * @class  communicationAdminView
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * communication module of the admin view class
 	 **/
 

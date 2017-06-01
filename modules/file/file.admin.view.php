@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * Admin view of the module class file
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 **/
 	class fileAdminView extends file {

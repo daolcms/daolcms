@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * @class  module
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief high class of the module module
 	 **/

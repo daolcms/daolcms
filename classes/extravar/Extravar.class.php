@@ -2,7 +2,7 @@
 	/**
 	 * A class to handle extra variables used in posts, member and others
 	 *
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 **/
 	class ExtraVar {
@@ -67,7 +67,7 @@
 	/**
 	 * Each value of the extra vars
 	 *
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 **/
 	class ExtraItem {
 		/**

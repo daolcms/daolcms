@@ -2,7 +2,7 @@
 /**
  * Contains methods for accessing file system
  *
- * @author NHN (developers@xpressengine.com)
+ * @author NAVER (developers@xpressengine.com)
  * @Adaptor DAOL Project (developer@daolcms.org)
  **/
 class FileHandler {

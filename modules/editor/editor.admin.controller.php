@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * @class  editorAdminController
-	 * @author NHN (developers@xpressengine.com)
+	 * @author NAVER (developers@xpressengine.com)
 	 * @Adaptor DAOL Project (developer@daolcms.org)
 	 * @brief editor of the module admin controller class
 	 **/
