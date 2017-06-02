@@ -1,3 +1,6 @@
+/**!
+ * @concat Xpress_Editor.js + xe_interface.js 
+ **/
 (function($){
 
 // extends jQuery object
@@ -5827,6 +5830,7 @@ $('.input_auto>input').change(function(){
 });
 
 })(jQuery);
+
 if (!window.xe) xe = {};
 
 xe.Editors = [];
