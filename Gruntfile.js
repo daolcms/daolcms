@@ -168,8 +168,7 @@ module.exports = function(grunt) {
 				'modules/widget/tpl/js/*.js',
 			],
 			options : {
-				reporter: require('jshint-html-reporter'),
-            	reporterOutput: 'jshint-report.html',
+            	reporterOutput: '',
 				ignores : [
 					'**/jquery*.js',
 					'**/swfupload.js',
