@@ -22,5 +22,8 @@
   "main": "Gruntfile.js",
   "scripts": {
     "test": "grunt"
+  },
+  "dependencies": {
+    "jshint-html-reporter": "^0.2.5"
   }
 }
