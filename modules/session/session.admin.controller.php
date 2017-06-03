@@ -1,25 +1,25 @@
 <?php
+
+/**
+ * @class  sessionAdminController
+ * @author NAVER (developers@xpressengine.com)
+ * @brief  The admin controller class of the session module
+ **/
+class sessionAdminController extends session {
+	
 	/**
-	 * @class  sessionAdminController
-	 * @author NHN (developers@xpressengine.com)
-	 * @brief The admin controller class of the session module
+	 * @brief Initialization
 	 **/
-
-	class sessionAdminController extends session {
-
-		/**
-		 * @brief Initialization
-		 **/
-		function init() {
-		}
-
-		/**
-		 * @brief The action to clean up the Derby session
-		 **/
-		function procSessionAdminClear() {
-			$oSessionController = &getController('session');
-			$oSessionController->gc(0);
-
-			$this->add('result',Context::getLang('session_cleared'));
-		}
+	function init() {
 	}
+	
+	/**
+	 * @brief The action to clean up the Derby session
+	 **/
+	function procSessionAdminClear() {
+		$oSessionController = &getController('session');
+		$oSessionController->gc(0);
+		
+		$this->add('result', Context::getLang('session_cleared'));
+	}
+}

@@ -1,7 +1,7 @@
 <?php
 /**
  * @file  index.php
- * @author NHN (developers@xpressengine.com)
+ * @author NAVER (developers@xpressengine.com)
  * @Adaptor DAOL Project (developer@daolcms.org)
  * @brief Start page
  *

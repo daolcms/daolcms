@@ -3,12 +3,12 @@
  * trash class
  * trash the module's high class
  *
- * @author NHN (developers@xpressengine.com)
+ * @author  NAVER (developers@xpressengine.com)
  * @package /modules/trash
  * @version 0.1
  */
 
-require_once(_DAOL_PATH_.'modules/trash/model/TrashVO.php');
+require_once(_DAOL_PATH_ . 'modules/trash/model/TrashVO.php');
 
 class trash extends ModuleObject {
 	/**
@@ -18,7 +18,7 @@ class trash extends ModuleObject {
 	function moduleInstall() {
 		return new Object();
 	}
-
+	
 	/**
 	 * A method to check if successfully installed
 	 * @return bool
@@ -26,10 +26,10 @@ class trash extends ModuleObject {
 	function checkUpdate() {
 		//$oDB = &DB::getInstance();
 		//$oModuleModel = &getModel('module');
-
+		
 		return false;
 	}
-
+	
 	/**
 	 * Execute update
 	 * @return Object
@@ -37,8 +37,8 @@ class trash extends ModuleObject {
 	function moduleUpdate() {
 		//$oDB = &DB::getInstance();
 		//$oModuleModel = &getModel('module');
-
-		return new Object(0,'success_updated');
-
+		
+		return new Object(0, 'success_updated');
+		
 	}
 }

@@ -4,6 +4,7 @@ if(!defined('__XE__')) exit();
 /**
  * @file adminlogging.addon.php
  * @author NAVER (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  * @brief Automatic link add-on
  **/
 $logged_info = Context::get('logged_info');

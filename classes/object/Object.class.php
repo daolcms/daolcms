@@ -3,39 +3,38 @@
 /**
  * Every modules inherits from Object class. It includes error, message, and other variables for communicatin purpose.
  *
- * @author NHN (developers@xpressengine.com)
+ * @author NAVER (developers@xpressengine.com)
  */
-
 class Object {
-
+	
 	/**
 	 * Error code. If `0`, it is not an error.
 	 * @var int
 	 */
 	var $error = 0;
-
+	
 	/**
 	 * Error message. If `success`, it is not an error.
 	 * @var string
 	 */
-	var $message = 'success'; 
-
+	var $message = 'success';
+	
 	/**
 	 * An additional variable
 	 * @var array
 	 */
 	var $variables = array();
-
+	
 	/**
 	 * http status code.
 	 * @var int
 	 */
 	var $httpStatusCode = NULL;
-
+	
 	/**
 	 * Constructor
 	 *
-	 * @param int $error Error code
+	 * @param int    $error   Error code
 	 * @param string $message Error message
 	 * @return void
 	 */
@@ -43,7 +42,7 @@ class Object {
 		$this->setError($error);
 		$this->setMessage($message);
 	}
-
+	
 	/**
 	 * Setter to set error code
 	 *
@@ -53,7 +52,7 @@ class Object {
 	function setError($error = 0) {
 		$this->error = $error;
 	}
-
+	
 	/**
 	 * Getter to retrieve error code
 	 *
@@ -62,43 +61,41 @@ class Object {
 	function getError() {
 		return $this->error;
 	}
-
+	
 	/**
 	 * Setter to set HTTP status code
 	 *
 	 * @param int $code HTTP status code. Default value is `200` that means successful
 	 * @return void
 	 */
-	function setHttpStatusCode($code = '200')
-	{
+	function setHttpStatusCode($code = '200') {
 		$this->httpStatusCode = $code;
 	}
-
+	
 	/**
 	 * Getter to retrieve HTTP status code
 	 *
 	 * @return int Returns HTTP status code
 	 */
-	function getHttpStatusCode()
-	{
+	function getHttpStatusCode() {
 		return $this->httpStatusCode;
 	}
-
+	
 	/**
 	 * Setter to set set the error message
 	 *
 	 * @param string $message Error message
 	 * @return bool Alaways returns true.
 	 */
-	function setMessage($message = 'success', $type = NULL){
+	function setMessage($message = 'success', $type = NULL) {
 		if(Context::getLang($message))
-				$message = Context::getLang($message);
+			$message = Context::getLang($message);
 		$this->message = $message;
-
+		
 		// TODO This method always returns True. We'd better remove it
 		return TRUE;
 	}
-
+	
 	/**
 	 * Getter to retrieve an error message
 	 *
@@ -107,40 +104,36 @@ class Object {
 	function getMessage() {
 		return $this->message;
 	}
-
+	
 	/**
 	 * Setter to set a key/value pair as an additional variable
 	 *
 	 * @param string $key A variable name
-	 * @param mixed $val A value for the variable
+	 * @param mixed  $val A value for the variable
 	 * @return void
 	 */
 	function add($key, $val) {
 		$this->variables[$key] = $val;
 	}
-
+	
 	/**
 	 * Method to set multiple key/value pairs as an additional variables
 	 *
 	 * @param Object|array $object Either object or array containg key/value pairs to be added
 	 * @return void
 	 */
-	function adds($object)
-	{
-		if(is_object($object))
-		{
+	function adds($object) {
+		if(is_object($object)) {
 			$object = get_object_vars($object);
-		} 
-
-		if(is_array($object))
-		{
-			foreach($object as $key => $val)
-				{
-					$this->variables[$key] = $val;
-				}
+		}
+		
+		if(is_array($object)) {
+			foreach($object as $key => $val) {
+				$this->variables[$key] = $val;
+			}
 		}
 	}
-
+	
 	/**
 	 * Method to retrieve a corresponding value to a given key
 	 *
@@ -150,7 +143,7 @@ class Object {
 	function get($key) {
 		return $this->variables[$key];
 	}
-
+	
 	/**
 	 * Method to retrieve an object containing a key/value paris
 	 *
@@ -165,7 +158,7 @@ class Object {
 		}
 		return $output;
 	}
-
+	
 	/**
 	 * Method to retrieve an array of key/value pairs
 	 *
@@ -174,7 +167,7 @@ class Object {
 	function getVariables() {
 		return $this->variables;
 	}
-
+	
 	/**
 	 * Method to retrieve an object of key/value pairs
 	 *
@@ -182,13 +175,12 @@ class Object {
 	 */
 	function getObjectVars() {
 		$output = new stdClass();
-		foreach($this->variables as $key => $val)
-		{
+		foreach($this->variables as $key => $val) {
 			$output->{$key} = $val;
 		}
 		return $output;
 	}
-
+	
 	/**
 	 * Method to return either true or false depnding on the value in a 'error' variable
 	 *
@@ -198,17 +190,17 @@ class Object {
 		// TODO This method is misleading in that it returns true if error is 0, which should be true in boolean representation.
 		return $this->error == 0 ? TRUE : FALSE;
 	}
-
-
+	
+	
 	/**
 	 * Method to return either true or false depnding on the value in a 'error' variable
 	 *
 	 * @return bool
 	 */
 	function toBoolean() {
-	return $this->toBool();
+		return $this->toBool();
 	}
-
+	
 }
 /* End of file Object.class.php */
 /* Location: ./classes/object/Object.class.php */
