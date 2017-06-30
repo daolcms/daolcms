@@ -896,13 +896,17 @@ class fileController extends file {
 			$oDB->rollback();
 			return $output;
 		}
-		$args->cover_image = 'Y';
-		$output = executeQuery('file.updateCoverImage', $args);
-		if(!$output->toBool()) {
-			$oDB->rollback();
-			return $output;
+		if($file_info->cover_image != 'Y'){
+			$args->cover_image = 'Y';
+			$output = executeQuery('file.updateCoverImage', $args);
+			if(!$output->toBool()){
+				$oDB->rollback();
+				return $output;
+			}
 		}
 		$oDB->commit();
+		$this->add('is_cover',$args->cover_image);
+		
 		// Delete the thumbnail
 		$thumbnail_path = sprintf('files/thumbnails/%s', getNumberingPath($upload_target_srl, 3));
 		Filehandler::removeFilesInDir($thumbnail_path);
