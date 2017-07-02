@@ -387,4 +387,12 @@
 		<value xml:lang="en"><![CDATA[You cannot modify or delete document which has any comment on it.]]></value>
 		<value xml:lang="jp"><![CDATA[コメントが登録された書き込みは修正、または削除が禁止されています。]]></value>
 	</item>
+	<item name="editor">
+		<value xml:lang="ko"><![CDATA[에디터]]></value>
+		<value xml:lang="en"><![CDATA[Editor]]></value>
+	</item>
+	<item name="mobile_use_editor">
+		<value xml:lang="ko"><![CDATA[위지윅 에디터 사용]]></value>
+		<value xml:lang="ko"><![CDATA[Use WYSIWYG Editor]]></value>
+	</item>
 </lang>
