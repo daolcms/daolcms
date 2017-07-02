@@ -124,8 +124,9 @@ module.exports = function(grunt) {
 			},
 			'layout': {
 				files: {
-					'layouts/xedition/js/layout.min.js': ['layouts/xedition/js/layout.js'],
-					'layouts/xedition/js/welcome.min.js': ['layouts/xedition/js/welcome.js'],
+					'layouts/daol_official/js/banner.min.js': ['layouts/daol_official/js/banner.js'],
+					'layouts/daol_official/js/layout.min.js': ['layouts/daol_official/js/layout.js'],
+					'layouts/daol_official/js/slides.min.js': ['layouts/daol_official/js/slides.js'],
 				}
 			},
 		},
@@ -133,7 +134,7 @@ module.exports = function(grunt) {
 			'common': {
 				files: {
 					'common/css/xe.min.css': ['common/css/xe.css'],
-					'common/css/mobile.min.css': ['common/css/mobile.css']
+					'common/css/mobile.min.css': ['common/css/mobile.css'],
 				}
 			},
 			'modules': {
@@ -152,7 +153,7 @@ module.exports = function(grunt) {
 			},
 			'layout': {
 				files: {
-					'layouts/daol_official//css/layout.min.css': ['layouts/daol_official//css/layout.css']
+					'layouts/daol_official/css/layout.min.css': ['layouts/daol_official/css/layout.css'],
 				}
 			},
 		},
