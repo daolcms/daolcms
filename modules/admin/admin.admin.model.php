@@ -552,10 +552,12 @@ class adminAdminModel extends admin {
 		}
 		
 		$file_exsit = FileHandler::readFile(_DAOL_PATH_ . 'files/attach/xeicon/' . $virtual_site . $iconname);
-		if(!$file_exsit && $default === true) {
+		if(!$file_exsit && $default === true){
 			$icon_url = '/modules/admin/tpl/img/' . $default_icon_name;
-		} elseif($file_exsit) {
-			$icon_url = '/files/attach/xeicon/' . $virtual_site . $iconname;
+		}
+		elseif($file_exsit){
+			if($default_url && substr_compare($default_url, '/', -1) === 0) $default_url = substr($default_url, 0, -1);
+			$icon_url = $default_url . '/files/attach/xeicon/' . $virtual_site . $iconname;
 		}
 		
 		return $icon_url;
