@@ -48,6 +48,9 @@
 			enableToolbar: true,
 			content_field: jQuery('[name={$editor_content_key_name}]')
 		};
+		
+		CKEDITOR.dtd.$removeEmpty.ins = 0;
+		CKEDITOR.dtd.$removeEmpty.i = 0;
 
 		<!--@if($enable_component)-->
 			{@ $xe_component = array(); }
