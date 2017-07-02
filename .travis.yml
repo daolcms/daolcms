@@ -12,6 +12,9 @@ matrix:
   - php: 7
   - php: 7.1
   - php: hhvm
+  include:
+      - php: "hhvm"
+        dist: trusty
 sudo: false
 before_script:
 - travis_retry composer self-update
