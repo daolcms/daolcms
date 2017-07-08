@@ -1190,21 +1190,26 @@ class Context {
 	 *
 	 * @return void
 	 */
-	function _setUploadedArgument() {
-		if($_SERVER['REQUEST_METHOD'] != 'POST' || !$_FILES || (stripos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') === FALSE && stripos($_SERVER['HTTP_CONTENT_TYPE'], 'multipart/form-data') === FALSE)) {
+	function _setUploadedArgument(){
+		if($_SERVER['REQUEST_METHOD'] != 'POST' || !$_FILES || (stripos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') === FALSE && stripos($_SERVER['HTTP_CONTENT_TYPE'], 'multipart/form-data') === FALSE)){
 			return;
 		}
-		
-		foreach($_FILES as $key => $val) {
+		foreach($_FILES as $key => $val){
 			$tmp_name = $val['tmp_name'];
-			if(!is_array($tmp_name)) {
-				if(!$tmp_name || !is_uploaded_file($tmp_name)) continue;
-				$val['name'] = htmlspecialchars($val['name']);
-				$this->set($key, $val, true);
-				$this->is_uploaded = true;
-			} else {
-				for($i = 0; $i < count($tmp_name); $i++) {
-					if($val['size'][$i] > 0) {
+			if(!is_array($tmp_name)){
+				if(!$tmp_name || !is_uploaded_file($tmp_name)){
+					continue;
+				}
+				$val['name'] = htmlspecialchars($val['name'], ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
+				$this->set($key, $val, TRUE);
+				$this->is_uploaded = TRUE;
+			}
+			else{
+				$files = array();
+				$count_files = count($tmp_name);
+				for($i = 0; $i < $count_files; $i++){
+					if($val['size'][$i] > 0){
+						$file = array();
 						$file['name'] = $val['name'][$i];
 						$file['type'] = $val['type'][$i];
 						$file['tmp_name'] = $val['tmp_name'][$i];
@@ -1213,7 +1218,7 @@ class Context {
 						$files[] = $file;
 					}
 				}
-				$this->set($key, $files, true);
+				if($files) $this->set($key, $files, TRUE);
 			}
 		}
 	}

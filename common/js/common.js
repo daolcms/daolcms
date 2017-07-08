@@ -27,8 +27,8 @@ if(jQuery) jQuery.noConflict();
 	 * @namespace XE
 	 */
 	window.XE = {
-		loaded_popup_menus : new Array(),
-		addedDocument : new Array(),
+		loaded_popup_menus : [],
+		addedDocument : [],
 		/**
 		 * @brief 특정 name을 가진 체크박스들의 checked 속성 변경
 		 * @param [itemName='cart',][options={}]
@@ -40,6 +40,7 @@ if(jQuery) jQuery.noConflict();
 				checked : 'toggle',
 				doClick : false
 			};
+			var obj;
 
 			switch(arguments.length) {
 				case 1:
@@ -55,13 +56,13 @@ if(jQuery) jQuery.noConflict();
 					$.extend(options, arguments[1] || {});
 			}
 
-			if(options.doClick == true) options.checked = null;
+			if(options.doClick === true) options.checked = null;
 			if(typeof(options.wrap) == "string") options.wrap ='#'+options.wrap;
 
 			if(options.wrap) {
-				var obj = $(options.wrap).find('input[name="'+itemName+'"]:checkbox');
+				obj = $(options.wrap).find('input[name="'+itemName+'"]:checkbox');
 			} else {
-				var obj = $('input[name="'+itemName+'"]:checkbox');
+				obj = $('input[name="'+itemName+'"]:checkbox');
 			}
 			
 			if(options.checked == 'toggle') {
@@ -69,7 +70,11 @@ if(jQuery) jQuery.noConflict();
 					$(this).attr('checked', ($(this).attr('checked')) ? false : true);
 				});
 			} else {
-				(options.doClick == true) ? obj.click() : obj.attr('checked', options.checked);
+				if(options.doClick === true) {
+					obj.click();
+				} else {
+					obj.attr('checked', options.checked);
+				}
 			}
 		},
 
@@ -77,9 +82,9 @@ if(jQuery) jQuery.noConflict();
 		 * @brief 문서/회원 등 팝업 메뉴 출력
 		 */
 		displayPopupMenu : function(ret_obj, response_tags, params) {
-			var target_srl = params["target_srl"];
-			var menu_id = params["menu_id"];
-			var menus = ret_obj['menus'];
+			var target_srl = params.target_srl;
+			var menu_id = params.menu_id;
+			var menus = ret_obj.menus;
 			var html = "";
 
 			if(this.loaded_popup_menus[menu_id]) {
@@ -87,7 +92,7 @@ if(jQuery) jQuery.noConflict();
 
 			} else {
 				if(menus) {
-					var item = menus['item'];
+					var item = menus.item;
 					if(typeof(item.length)=='undefined' || item.length<1) item = new Array(item);
 					if(item.length) {
 						for(var i=0;i<item.length;i++) {
@@ -122,7 +127,7 @@ if(jQuery) jQuery.noConflict();
 			/* 레이어 출력 */
 			if(html) {
 				var area = $('#popup_menu_area').html('<ul>'+html+'</ul>');
-				var areaOffset = {top:params['page_y'], left:params['page_x']};
+				var areaOffset = {top:params.page_y, left:params.page_x};
 
 				if(area.outerHeight()+areaOffset.top > $(window).height()+$(window).scrollTop())
 					areaOffset.top = $(window).height() - area.outerHeight() + $(window).scrollTop();
@@ -132,11 +137,8 @@ if(jQuery) jQuery.noConflict();
 				area.css({ top:areaOffset.top, left:areaOffset.left }).show();
 			}
 		}
-	}
-
+	};
 }) (jQuery);
-
-
 
 /* jQuery(document).ready() */
 jQuery(function($) {
@@ -145,7 +147,7 @@ jQuery(function($) {
 	if($.browser.msie) {
 		$('select').each(function(i, sels) {
 			var disabled_exists = false;
-			var first_enable = new Array();
+			var first_enable = [];
 
 			for(var j=0; j < sels.options.length; j++) {
 				if(sels.options[j].disabled) {
@@ -214,7 +216,7 @@ function isSameUrl(a,b) {
 	return (a.replace(/#.*$/, '') === b.replace(/#.*$/, ''));
 }
 
-var isArray = Array.isArray || function(obj){ return Object.prototype.toString.call(obj)=='[object Array]' };
+var isArray = Array.isArray || function(obj){ return Object.prototype.toString.call(obj)=='[object Array]'; };
 
 /**
  * @brief location.href에서 특정 key의 값을 return
@@ -230,7 +232,7 @@ String.prototype.getQuery = function(key) {
 	if(typeof(q)=='undefined') q = '';
 
 	return q;
-}
+};
 
 /**
  * @brief location.href에서 특정 key의 값을 return
@@ -268,7 +270,7 @@ String.prototype.setQuery = function(key, val) {
 
 	re = /^https:\/\/([^:\/]+)(:\d+|)/i;
 	if (re.test(uri)) {
-		var toReplace = 'http://'+RegExp.$1;
+		toReplace = 'http://'+RegExp.$1;
 		if (window.http_port && http_port != 80) toReplace += ':' + http_port;
 		uri = uri.replace(re, toReplace);
 	}
@@ -285,7 +287,7 @@ String.prototype.setQuery = function(key, val) {
 
 	re = /https?:\/\/([^:\/]+)(:\d+|)/i;
 	if (bUseSSL && re.test(uri)) {
-		var toReplace = 'https://'+RegExp.$1
+		toReplace = 'https://'+RegExp.$1;
 		if (window.https_port && https_port != 443) toReplace += ':' + https_port;
 		uri = uri.replace(re, toReplace);
 	}
@@ -299,14 +301,14 @@ String.prototype.setQuery = function(key, val) {
 	uri = uri.replace(/\/(index\.php)?\?/, '/index.php?');
 
 	return uri;
-}
+};
 
 /**
  * @brief string prototype으로 trim 함수 추가
  **/
 String.prototype.trim = function() {
 	return this.replace(/(^\s*)|(\s*$)/g, "");
-}
+};
 
 })();
 
@@ -336,7 +338,7 @@ function isDef() {
  * @brief 윈도우 오픈
  * 열려진 윈도우의 관리를 통해 window.focus()등을 FF에서도 비슷하게 구현함
  **/
-var winopen_list = new Array();
+var winopen_list = [];
 function winopen(url, target, attribute) {
 	if(typeof(xeVid)!='undefined' && url.indexOf(request_uri)>-1 && !url.getQuery('vid')) url = url.setQuery('vid',xeVid);
 	try {
@@ -398,11 +400,12 @@ function move_url(url, open_window) {
  * @brief 멀티미디어 출력용 (IE에서 플래쉬/동영상 주변에 점선 생김 방지용)
  **/
 function displayMultimedia(src, width, height, options) {
+	/*jslint evil: true */
 	var html = _displayMultimedia(src, width, height, options);
 	if(html) document.writeln(html);
 }
 function _displayMultimedia(src, width, height, options) {
-	if(src.indexOf('files') == 0) src = request_uri + src;
+	if(src.indexOf('files') === 0) src = request_uri + src;
 
 	var defaults = {
 		wmode : 'transparent',
@@ -432,7 +435,7 @@ function _displayMultimedia(src, width, height, options) {
 		html = '<object classid="'+clsid+'" codebase="'+codebase+'" width="'+width+'" height="'+height+'" flashvars="'+params.flashvars+'">';
 		html += '<param name="movie" value="'+src+'" />';
 		for(var name in params) {
-			if(params[name] != 'undefined' && params[name] != '') {
+			if(params[name] != 'undefined' && params[name] !== '') {
 				html += '<param name="'+name+'" value="'+params[name]+'" />';
 			}
 		}
@@ -503,12 +506,12 @@ function doCallModuleAction(module, action, target_srl) {
 }
 
 function completeCallModuleAction(ret_obj, response_tags) {
-	if(ret_obj['message']!='success') alert(ret_obj['message']);
+	if(ret_obj.message!='success') alert(ret_obj.message);
 	location.reload();
 }
 
 function completeMessage(ret_obj) {
-	alert(ret_obj['message']);
+	alert(ret_obj.message);
 	location.reload();
 }
 
@@ -568,13 +571,13 @@ function doDocumentPreview(obj) {
 /* 게시글 저장 */
 function doDocumentSave(obj) {
 	var editor_sequence = obj.form.getAttribute('editor_sequence');
-	var prev_content = editorRelKeys[editor_sequence]['content'].value;
+	var prev_content = editorRelKeys[editor_sequence].content.value;
 	if(typeof(editor_sequence)!='undefined' && editor_sequence && typeof(editorRelKeys)!='undefined' && typeof(editorGetContent)=='function') {
 		var content = editorGetContent(editor_sequence);
-		editorRelKeys[editor_sequence]['content'].value = content;
+		editorRelKeys[editor_sequence].content.value = content;
 	}
 
-	var params={}, responses=['error','message','document_srl'], elms=obj.form.elements, data=jQuery(obj.form).serializeArray();;
+	var params={}, responses=['error','message','document_srl'], elms=obj.form.elements, data=jQuery(obj.form).serializeArray();
 	jQuery.each(data, function(i, field){
 		var val = jQuery.trim(field.value);
 		if(!val) return true;
@@ -585,13 +588,13 @@ function doDocumentSave(obj) {
 
 	exec_xml('document','procDocumentTempSave', params, completeDocumentSave, responses, params, obj.form);
 
-	editorRelKeys[editor_sequence]['content'].value = prev_content;
+	editorRelKeys[editor_sequence].content.value = prev_content;
 	return false;
 }
 
 function completeDocumentSave(ret_obj) {
-	jQuery('input[name=document_srl]').eq(0).val(ret_obj['document_srl']);
-	alert(ret_obj['message']);
+	jQuery('input[name=document_srl]').eq(0).val(ret_obj.document_srl);
+	alert(ret_obj.message);
 }
 
 /* 저장된 게시글 불러오기 */
@@ -610,7 +613,7 @@ function doDocumentSelect(document_srl, module) {
 	}
 	
 	if(module==underfined) {
-		module = 'document'
+		module = 'document';
 	}
 
 	// 게시글을 가져와서 등록하기
@@ -642,7 +645,7 @@ function viewSkinInfo(module, skin) {
 
 
 /* 관리자가 문서를 관리하기 위해서 선택시 세션에 넣음 */
-var addedDocument = new Array();
+var addedDocument = [];
 function doAddDocumentCart(obj) {
 	var srl = obj.value;
 	addedDocument[addedDocument.length] = srl;
@@ -651,10 +654,10 @@ function doAddDocumentCart(obj) {
 
 function callAddDocumentCart(document_length) {
 	if(addedDocument.length<1 || document_length != addedDocument.length) return;
-	var params = new Array();
-	params["srls"] = addedDocument.join(",");
+	var params = [];
+	params.srls = addedDocument.join(",");
 	exec_xml("document","procDocumentAddCart", params, null);
-	addedDocument = new Array();
+	addedDocument = [];
 }
 
 /* ff의 rgb(a,b,c)를 #... 로 변경 */
@@ -801,7 +804,9 @@ var Base64 = {
 	_utf8_decode : function (utftext) {
 		var string = "";
 		var i = 0;
-		var c = c1 = c2 = 0;
+		var c = 0;
+		var c1 = 0;
+		var c2 = 0;
 
 		while ( i < utftext.length ) {
 
@@ -828,7 +833,7 @@ var Base64 = {
 		return string;
 	}
 
-}
+};
 
 
 
@@ -841,11 +846,11 @@ var Base64 = {
  * ------------------------------------------- */
 
 if(typeof(resizeImageContents) == 'undefined') {
-	function resizeImageContents() {}
+	window.resizeImageContents = function() {};
 }
 
 if(typeof(activateOptionDisabled) == 'undefined') {
-	function activateOptionDisabled() {}
+	window.activateOptionDisabled = function() {};
 }
 
 objectExtend = jQuery.extend;

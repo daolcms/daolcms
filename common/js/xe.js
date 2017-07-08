@@ -1,9 +1,1858 @@
-/**
- * @file   common/js/xe.js
- * @author NHN (developers@xpressengine.com)
- * @Adaptor DAOL Project (developer@daolcms.org)
+/*! Copyright (C) DAOL Project. <http://www.daolcms.org> Copyright (C) NAVER <http://www.navercorp.com> */
+/**!
+ * @file modernizr.js + common.js + js_app.js + xml2json.js + xml_handler.js + xml_js_filter.js
  * @brief  XE Common JavaScript
  **/
+;
+
+
+
+window.Modernizr = (function( window, document, undefined ) {
+
+    var version = '2.8.3',
+
+    Modernizr = {},
+
+    enableClasses = true,
+
+    docElement = document.documentElement,
+
+    mod = 'modernizr',
+    modElem = document.createElement(mod),
+    mStyle = modElem.style,
+
+    inputElem  = document.createElement('input')  ,
+
+    smile = ':)',
+
+    toString = {}.toString,
+
+    prefixes = ' -webkit- -moz- -o- -ms- '.split(' '),
+
+
+
+    omPrefixes = 'Webkit Moz O ms',
+
+    cssomPrefixes = omPrefixes.split(' '),
+
+    domPrefixes = omPrefixes.toLowerCase().split(' '),
+
+    ns = {'svg': 'http://www.w3.org/2000/svg'},
+
+    tests = {},
+    inputs = {},
+    attrs = {},
+
+    classes = [],
+
+    slice = classes.slice,
+
+    featureName, 
+
+
+    injectElementWithStyles = function( rule, callback, nodes, testnames ) {
+
+      var style, ret, node, docOverflow,
+          div = document.createElement('div'),
+                body = document.body,
+                fakeBody = body || document.createElement('body');
+
+      if ( parseInt(nodes, 10) ) {
+                      while ( nodes-- ) {
+              node = document.createElement('div');
+              node.id = testnames ? testnames[nodes] : mod + (nodes + 1);
+              div.appendChild(node);
+          }
+      }
+
+                style = ['&#173;','<style id="s', mod, '">', rule, '</style>'].join('');
+      div.id = mod;
+          (body ? div : fakeBody).innerHTML += style;
+      fakeBody.appendChild(div);
+      if ( !body ) {
+                fakeBody.style.background = '';
+                fakeBody.style.overflow = 'hidden';
+          docOverflow = docElement.style.overflow;
+          docElement.style.overflow = 'hidden';
+          docElement.appendChild(fakeBody);
+      }
+
+      ret = callback(div, rule);
+        if ( !body ) {
+          fakeBody.parentNode.removeChild(fakeBody);
+          docElement.style.overflow = docOverflow;
+      } else {
+          div.parentNode.removeChild(div);
+      }
+
+      return !!ret;
+
+    },
+
+
+
+    isEventSupported = (function() {
+
+      var TAGNAMES = {
+        'select': 'input', 'change': 'input',
+        'submit': 'form', 'reset': 'form',
+        'error': 'img', 'load': 'img', 'abort': 'img'
+      };
+
+      function isEventSupported( eventName, element ) {
+
+        element = element || document.createElement(TAGNAMES[eventName] || 'div');
+        eventName = 'on' + eventName;
+
+            var isSupported = eventName in element;
+
+        if ( !isSupported ) {
+                if ( !element.setAttribute ) {
+            element = document.createElement('div');
+          }
+          if ( element.setAttribute && element.removeAttribute ) {
+            element.setAttribute(eventName, '');
+            isSupported = is(element[eventName], 'function');
+
+                    if ( !is(element[eventName], 'undefined') ) {
+              element[eventName] = undefined;
+            }
+            element.removeAttribute(eventName);
+          }
+        }
+
+        element = null;
+        return isSupported;
+      }
+      return isEventSupported;
+    })(),
+
+
+    _hasOwnProperty = ({}).hasOwnProperty, hasOwnProp;
+
+    if ( !is(_hasOwnProperty, 'undefined') && !is(_hasOwnProperty.call, 'undefined') ) {
+      hasOwnProp = function (object, property) {
+        return _hasOwnProperty.call(object, property);
+      };
+    }
+    else {
+      hasOwnProp = function (object, property) { 
+        return ((property in object) && is(object.constructor.prototype[property], 'undefined'));
+      };
+    }
+
+
+    if (!Function.prototype.bind) {
+      Function.prototype.bind = function bind(that) {
+
+        var target = this;
+
+        if (typeof target != "function") {
+            throw new TypeError();
+        }
+
+        var args = slice.call(arguments, 1),
+            bound = function () {
+
+            if (this instanceof bound) {
+
+              var F = function(){};
+              F.prototype = target.prototype;
+              var self = new F();
+
+              var result = target.apply(
+                  self,
+                  args.concat(slice.call(arguments))
+              );
+              if (Object(result) === result) {
+                  return result;
+              }
+              return self;
+
+            } else {
+
+              return target.apply(
+                  that,
+                  args.concat(slice.call(arguments))
+              );
+
+            }
+
+        };
+
+        return bound;
+      };
+    }
+
+    function setCss( str ) {
+        mStyle.cssText = str;
+    }
+
+    function setCssAll( str1, str2 ) {
+        return setCss(prefixes.join(str1 + ';') + ( str2 || '' ));
+    }
+
+    function is( obj, type ) {
+        return typeof obj === type;
+    }
+
+    function contains( str, substr ) {
+        return !!~('' + str).indexOf(substr);
+    }
+
+    function testProps( props, prefixed ) {
+        for ( var i in props ) {
+            var prop = props[i];
+            if ( !contains(prop, "-") && mStyle[prop] !== undefined ) {
+                return prefixed == 'pfx' ? prop : true;
+            }
+        }
+        return false;
+    }
+
+    function testDOMProps( props, obj, elem ) {
+        for ( var i in props ) {
+            var item = obj[props[i]];
+            if ( item !== undefined) {
+
+                            if (elem === false) return props[i];
+
+                            if (is(item, 'function')){
+                                return item.bind(elem || obj);
+                }
+
+                            return item;
+            }
+        }
+        return false;
+    }
+
+    function testPropsAll( prop, prefixed, elem ) {
+
+        var ucProp  = prop.charAt(0).toUpperCase() + prop.slice(1),
+            props   = (prop + ' ' + cssomPrefixes.join(ucProp + ' ') + ucProp).split(' ');
+
+            if(is(prefixed, "string") || is(prefixed, "undefined")) {
+          return testProps(props, prefixed);
+
+            } else {
+          props = (prop + ' ' + (domPrefixes).join(ucProp + ' ') + ucProp).split(' ');
+          return testDOMProps(props, prefixed, elem);
+        }
+    }    tests['flexbox'] = function() {
+      return testPropsAll('flexWrap');
+    };
+
+
+    tests['flexboxlegacy'] = function() {
+        return testPropsAll('boxDirection');
+    };
+
+
+    tests['canvas'] = function() {
+        var elem = document.createElement('canvas');
+        return !!(elem.getContext && elem.getContext('2d'));
+    };
+
+    tests['canvastext'] = function() {
+        return !!(Modernizr['canvas'] && is(document.createElement('canvas').getContext('2d').fillText, 'function'));
+    };
+
+
+
+    tests['webgl'] = function() {
+        return !!window.WebGLRenderingContext;
+    };
+
+
+    tests['touch'] = function() {
+        var bool;
+
+        if(('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
+          bool = true;
+        } else {
+          injectElementWithStyles(['@media (',prefixes.join('touch-enabled),('),mod,')','{#modernizr{top:9px;position:absolute}}'].join(''), function( node ) {
+            bool = node.offsetTop === 9;
+          });
+        }
+
+        return bool;
+    };
+
+
+
+    tests['geolocation'] = function() {
+        return 'geolocation' in navigator;
+    };
+
+
+    tests['postmessage'] = function() {
+      return !!window.postMessage;
+    };
+
+
+    tests['websqldatabase'] = function() {
+      return !!window.openDatabase;
+    };
+
+    tests['indexedDB'] = function() {
+      return !!testPropsAll("indexedDB", window);
+    };
+
+    tests['hashchange'] = function() {
+      return isEventSupported('hashchange', window) && (document.documentMode === undefined || document.documentMode > 7);
+    };
+
+    tests['history'] = function() {
+      return !!(window.history && history.pushState);
+    };
+
+    tests['draganddrop'] = function() {
+        var div = document.createElement('div');
+        return ('draggable' in div) || ('ondragstart' in div && 'ondrop' in div);
+    };
+
+    tests['websockets'] = function() {
+        return 'WebSocket' in window || 'MozWebSocket' in window;
+    };
+
+
+    tests['rgba'] = function() {
+        setCss('background-color:rgba(150,255,150,.5)');
+
+        return contains(mStyle.backgroundColor, 'rgba');
+    };
+
+    tests['hsla'] = function() {
+            setCss('background-color:hsla(120,40%,100%,.5)');
+
+        return contains(mStyle.backgroundColor, 'rgba') || contains(mStyle.backgroundColor, 'hsla');
+    };
+
+    tests['multiplebgs'] = function() {
+                setCss('background:url(https://),url(https://),red url(https://)');
+
+            return (/(url\s*\(.*?){3}/).test(mStyle.background);
+    };    tests['backgroundsize'] = function() {
+        return testPropsAll('backgroundSize');
+    };
+
+    tests['borderimage'] = function() {
+        return testPropsAll('borderImage');
+    };
+
+
+
+    tests['borderradius'] = function() {
+        return testPropsAll('borderRadius');
+    };
+
+    tests['boxshadow'] = function() {
+        return testPropsAll('boxShadow');
+    };
+
+    tests['textshadow'] = function() {
+        return document.createElement('div').style.textShadow === '';
+    };
+
+
+    tests['opacity'] = function() {
+                setCssAll('opacity:.55');
+
+                    return (/^0.55$/).test(mStyle.opacity);
+    };
+
+
+    tests['cssanimations'] = function() {
+        return testPropsAll('animationName');
+    };
+
+
+    tests['csscolumns'] = function() {
+        return testPropsAll('columnCount');
+    };
+
+
+    tests['cssgradients'] = function() {
+        var str1 = 'background-image:',
+            str2 = 'gradient(linear,left top,right bottom,from(#9f9),to(white));',
+            str3 = 'linear-gradient(left top,#9f9, white);';
+
+        setCss(
+                       (str1 + '-webkit- '.split(' ').join(str2 + str1) +
+                       prefixes.join(str3 + str1)).slice(0, -str1.length)
+        );
+
+        return contains(mStyle.backgroundImage, 'gradient');
+    };
+
+
+    tests['cssreflections'] = function() {
+        return testPropsAll('boxReflect');
+    };
+
+
+    tests['csstransforms'] = function() {
+        return !!testPropsAll('transform');
+    };
+
+
+    tests['csstransforms3d'] = function() {
+
+        var ret = !!testPropsAll('perspective');
+
+                        if ( ret && 'webkitPerspective' in docElement.style ) {
+
+                      injectElementWithStyles('@media (transform-3d),(-webkit-transform-3d){#modernizr{left:9px;position:absolute;height:3px;}}', function( node, rule ) {
+            ret = node.offsetLeft === 9 && node.offsetHeight === 3;
+          });
+        }
+        return ret;
+    };
+
+
+    tests['csstransitions'] = function() {
+        return testPropsAll('transition');
+    };
+
+
+
+    tests['fontface'] = function() {
+        var bool;
+
+        injectElementWithStyles('@font-face {font-family:"font";src:url("https://")}', function( node, rule ) {
+          var style = document.getElementById('smodernizr'),
+              sheet = style.sheet || style.styleSheet,
+              cssText = sheet ? (sheet.cssRules && sheet.cssRules[0] ? sheet.cssRules[0].cssText : sheet.cssText || '') : '';
+
+          bool = /src/i.test(cssText) && cssText.indexOf(rule.split(' ')[0]) === 0;
+        });
+
+        return bool;
+    };
+
+    tests['generatedcontent'] = function() {
+        var bool;
+
+        injectElementWithStyles(['#',mod,'{font:0/0 a}#',mod,':after{content:"',smile,'";visibility:hidden;font:3px/1 a}'].join(''), function( node ) {
+          bool = node.offsetHeight >= 3;
+        });
+
+        return bool;
+    };
+    tests['video'] = function() {
+        var elem = document.createElement('video'),
+            bool = false;
+
+            try {
+            if ( bool = !!elem.canPlayType ) {
+                bool      = new Boolean(bool);
+                bool.ogg  = elem.canPlayType('video/ogg; codecs="theora"')      .replace(/^no$/,'');
+
+                            bool.h264 = elem.canPlayType('video/mp4; codecs="avc1.42E01E"') .replace(/^no$/,'');
+
+                bool.webm = elem.canPlayType('video/webm; codecs="vp8, vorbis"').replace(/^no$/,'');
+            }
+
+        } catch(e) { }
+
+        return bool;
+    };
+
+    tests['audio'] = function() {
+        var elem = document.createElement('audio'),
+            bool = false;
+
+        try {
+            if ( bool = !!elem.canPlayType ) {
+                bool      = new Boolean(bool);
+                bool.ogg  = elem.canPlayType('audio/ogg; codecs="vorbis"').replace(/^no$/,'');
+                bool.mp3  = elem.canPlayType('audio/mpeg;')               .replace(/^no$/,'');
+
+                                                    bool.wav  = elem.canPlayType('audio/wav; codecs="1"')     .replace(/^no$/,'');
+                bool.m4a  = ( elem.canPlayType('audio/x-m4a;')            ||
+                              elem.canPlayType('audio/aac;'))             .replace(/^no$/,'');
+            }
+        } catch(e) { }
+
+        return bool;
+    };
+
+
+    tests['localstorage'] = function() {
+        try {
+            localStorage.setItem(mod, mod);
+            localStorage.removeItem(mod);
+            return true;
+        } catch(e) {
+            return false;
+        }
+    };
+
+    tests['sessionstorage'] = function() {
+        try {
+            sessionStorage.setItem(mod, mod);
+            sessionStorage.removeItem(mod);
+            return true;
+        } catch(e) {
+            return false;
+        }
+    };
+
+
+    tests['webworkers'] = function() {
+        return !!window.Worker;
+    };
+
+
+    tests['applicationcache'] = function() {
+        return !!window.applicationCache;
+    };
+
+
+    tests['svg'] = function() {
+        return !!document.createElementNS && !!document.createElementNS(ns.svg, 'svg').createSVGRect;
+    };
+
+    tests['inlinesvg'] = function() {
+      var div = document.createElement('div');
+      div.innerHTML = '<svg/>';
+      return (div.firstChild && div.firstChild.namespaceURI) == ns.svg;
+    };
+
+    tests['smil'] = function() {
+        return !!document.createElementNS && /SVGAnimate/.test(toString.call(document.createElementNS(ns.svg, 'animate')));
+    };
+
+
+    tests['svgclippaths'] = function() {
+        return !!document.createElementNS && /SVGClipPath/.test(toString.call(document.createElementNS(ns.svg, 'clipPath')));
+    };
+
+    function webforms() {
+                                            Modernizr['input'] = (function( props ) {
+            for ( var i = 0, len = props.length; i < len; i++ ) {
+                attrs[ props[i] ] = !!(props[i] in inputElem);
+            }
+            if (attrs.list){
+                                  attrs.list = !!(document.createElement('datalist') && window.HTMLDataListElement);
+            }
+            return attrs;
+        })('autocomplete autofocus list placeholder max min multiple pattern required step'.split(' '));
+                            Modernizr['inputtypes'] = (function(props) {
+
+            for ( var i = 0, bool, inputElemType, defaultView, len = props.length; i < len; i++ ) {
+
+                inputElem.setAttribute('type', inputElemType = props[i]);
+                bool = inputElem.type !== 'text';
+
+                                                    if ( bool ) {
+
+                    inputElem.value         = smile;
+                    inputElem.style.cssText = 'position:absolute;visibility:hidden;';
+
+                    if ( /^range$/.test(inputElemType) && inputElem.style.WebkitAppearance !== undefined ) {
+
+                      docElement.appendChild(inputElem);
+                      defaultView = document.defaultView;
+
+                                        bool =  defaultView.getComputedStyle &&
+                              defaultView.getComputedStyle(inputElem, null).WebkitAppearance !== 'textfield' &&
+                                                                                  (inputElem.offsetHeight !== 0);
+
+                      docElement.removeChild(inputElem);
+
+                    } else if ( /^(search|tel)$/.test(inputElemType) ){
+                                                                                    } else if ( /^(url|email)$/.test(inputElemType) ) {
+                                        bool = inputElem.checkValidity && inputElem.checkValidity() === false;
+
+                    } else {
+                                        bool = inputElem.value != smile;
+                    }
+                }
+
+                inputs[ props[i] ] = !!bool;
+            }
+            return inputs;
+        })('search tel url email datetime date month week time datetime-local number range color'.split(' '));
+        }
+    for ( var feature in tests ) {
+        if ( hasOwnProp(tests, feature) ) {
+                                    featureName  = feature.toLowerCase();
+            Modernizr[featureName] = tests[feature]();
+
+            classes.push((Modernizr[featureName] ? '' : 'no-') + featureName);
+        }
+    }
+
+    Modernizr.input || webforms();
+
+
+     Modernizr.addTest = function ( feature, test ) {
+       if ( typeof feature == 'object' ) {
+         for ( var key in feature ) {
+           if ( hasOwnProp( feature, key ) ) {
+             Modernizr.addTest( key, feature[ key ] );
+           }
+         }
+       } else {
+
+         feature = feature.toLowerCase();
+
+         if ( Modernizr[feature] !== undefined ) {
+                                              return Modernizr;
+         }
+
+         test = typeof test == 'function' ? test() : test;
+
+         if (typeof enableClasses !== "undefined" && enableClasses) {
+           docElement.className+=" modernizr-" + (test ? '' : 'no-') + feature;
+         }
+         Modernizr[feature] = test;
+
+       }
+
+       return Modernizr; 
+     };
+
+
+    setCss('');
+    modElem = inputElem = null;
+
+    ;(function(window, document) {
+                var version = '3.7.0';
+
+            var options = window.html5 || {};
+
+            var reSkip = /^<|^(?:button|map|select|textarea|object|iframe|option|optgroup)$/i;
+
+            var saveClones = /^(?:a|b|code|div|fieldset|h1|h2|h3|h4|h5|h6|i|label|li|ol|p|q|span|strong|style|table|tbody|td|th|tr|ul)$/i;
+
+            var supportsHtml5Styles;
+
+            var expando = '_html5shiv';
+
+            var expanID = 0;
+
+            var expandoData = {};
+
+            var supportsUnknownElements;
+
+        (function() {
+          try {
+            var a = document.createElement('a');
+            a.innerHTML = '<xyz></xyz>';
+                    supportsHtml5Styles = ('hidden' in a);
+
+            supportsUnknownElements = a.childNodes.length == 1 || (function() {
+                        (document.createElement)('a');
+              var frag = document.createDocumentFragment();
+              return (
+                typeof frag.cloneNode == 'undefined' ||
+                typeof frag.createDocumentFragment == 'undefined' ||
+                typeof frag.createElement == 'undefined'
+              );
+            }());
+          } catch(e) {
+                    supportsHtml5Styles = true;
+            supportsUnknownElements = true;
+          }
+
+        }());
+
+            function addStyleSheet(ownerDocument, cssText) {
+          var p = ownerDocument.createElement('p'),
+          parent = ownerDocument.getElementsByTagName('head')[0] || ownerDocument.documentElement;
+
+          p.innerHTML = 'x<style>' + cssText + '</style>';
+          return parent.insertBefore(p.lastChild, parent.firstChild);
+        }
+
+            function getElements() {
+          var elements = html5.elements;
+          return typeof elements == 'string' ? elements.split(' ') : elements;
+        }
+
+            function getExpandoData(ownerDocument) {
+          var data = expandoData[ownerDocument[expando]];
+          if (!data) {
+            data = {};
+            expanID++;
+            ownerDocument[expando] = expanID;
+            expandoData[expanID] = data;
+          }
+          return data;
+        }
+
+            function createElement(nodeName, ownerDocument, data){
+          if (!ownerDocument) {
+            ownerDocument = document;
+          }
+          if(supportsUnknownElements){
+            return ownerDocument.createElement(nodeName);
+          }
+          if (!data) {
+            data = getExpandoData(ownerDocument);
+          }
+          var node;
+
+          if (data.cache[nodeName]) {
+            node = data.cache[nodeName].cloneNode();
+          } else if (saveClones.test(nodeName)) {
+            node = (data.cache[nodeName] = data.createElem(nodeName)).cloneNode();
+          } else {
+            node = data.createElem(nodeName);
+          }
+
+                                                    return node.canHaveChildren && !reSkip.test(nodeName) && !node.tagUrn ? data.frag.appendChild(node) : node;
+        }
+
+            function createDocumentFragment(ownerDocument, data){
+          if (!ownerDocument) {
+            ownerDocument = document;
+          }
+          if(supportsUnknownElements){
+            return ownerDocument.createDocumentFragment();
+          }
+          data = data || getExpandoData(ownerDocument);
+          var clone = data.frag.cloneNode(),
+          i = 0,
+          elems = getElements(),
+          l = elems.length;
+          for(;i<l;i++){
+            clone.createElement(elems[i]);
+          }
+          return clone;
+        }
+
+            function shivMethods(ownerDocument, data) {
+          if (!data.cache) {
+            data.cache = {};
+            data.createElem = ownerDocument.createElement;
+            data.createFrag = ownerDocument.createDocumentFragment;
+            data.frag = data.createFrag();
+          }
+
+
+          ownerDocument.createElement = function(nodeName) {
+                    if (!html5.shivMethods) {
+              return data.createElem(nodeName);
+            }
+            return createElement(nodeName, ownerDocument, data);
+          };
+
+          ownerDocument.createDocumentFragment = Function('h,f', 'return function(){' +
+                                                          'var n=f.cloneNode(),c=n.createElement;' +
+                                                          'h.shivMethods&&(' +
+                                                                                                                getElements().join().replace(/[\w\-]+/g, function(nodeName) {
+            data.createElem(nodeName);
+            data.frag.createElement(nodeName);
+            return 'c("' + nodeName + '")';
+          }) +
+            ');return n}'
+                                                         )(html5, data.frag);
+        }
+
+            function shivDocument(ownerDocument) {
+          if (!ownerDocument) {
+            ownerDocument = document;
+          }
+          var data = getExpandoData(ownerDocument);
+
+          if (html5.shivCSS && !supportsHtml5Styles && !data.hasCSS) {
+            data.hasCSS = !!addStyleSheet(ownerDocument,
+                                                                                'article,aside,dialog,figcaption,figure,footer,header,hgroup,main,nav,section{display:block}' +
+                                                                                    'mark{background:#FF0;color:#000}' +
+                                                                                    'template{display:none}'
+                                         );
+          }
+          if (!supportsUnknownElements) {
+            shivMethods(ownerDocument, data);
+          }
+          return ownerDocument;
+        }
+
+            var html5 = {
+
+                'elements': options.elements || 'abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video',
+
+                'version': version,
+
+                'shivCSS': (options.shivCSS !== false),
+
+                'supportsUnknownElements': supportsUnknownElements,
+
+                'shivMethods': (options.shivMethods !== false),
+
+                'type': 'default',
+
+                'shivDocument': shivDocument,
+
+                createElement: createElement,
+
+                createDocumentFragment: createDocumentFragment
+        };
+
+            window.html5 = html5;
+
+            shivDocument(document);
+
+    }(this, document));
+
+    Modernizr._version      = version;
+
+    Modernizr._prefixes     = prefixes;
+    Modernizr._domPrefixes  = domPrefixes;
+    Modernizr._cssomPrefixes  = cssomPrefixes;
+
+
+    Modernizr.hasEvent      = isEventSupported;
+
+    Modernizr.testProp      = function(prop){
+        return testProps([prop]);
+    };
+
+    Modernizr.testAllProps  = testPropsAll;
+
+
+    Modernizr.testStyles    = injectElementWithStyles;    docElement.className = docElement.className.replace(/(^|\s)no-js(\s|$)/, '$1$2') +
+
+                                                    (enableClasses ? " modernizr-js modernizr-"+classes.join(" modernizr-") : '');
+
+    return Modernizr;
+
+})(this, this.document);
+/*yepnope1.5.4|WTFPL*/
+(function(a,b,c){function d(a){return"[object Function]"==o.call(a)}function e(a){return"string"==typeof a}function f(){}function g(a){return!a||"loaded"==a||"complete"==a||"uninitialized"==a}function h(){var a=p.shift();q=1,a?a.t?m(function(){("c"==a.t?B.injectCss:B.injectJs)(a.s,0,a.a,a.x,a.e,1)},0):(a(),h()):q=0}function i(a,c,d,e,f,i,j){function k(b){if(!o&&g(l.readyState)&&(u.r=o=1,!q&&h(),l.onload=l.onreadystatechange=null,b)){"img"!=a&&m(function(){t.removeChild(l)},50);for(var d in y[c])y[c].hasOwnProperty(d)&&y[c][d].onload()}}var j=j||B.errorTimeout,l=b.createElement(a),o=0,r=0,u={t:d,s:c,e:f,a:i,x:j};1===y[c]&&(r=1,y[c]=[]),"object"==a?l.data=c:(l.src=c,l.type=a),l.width=l.height="0",l.onerror=l.onload=l.onreadystatechange=function(){k.call(this,r)},p.splice(e,0,u),"img"!=a&&(r||2===y[c]?(t.insertBefore(l,s?null:n),m(k,j)):y[c].push(l))}function j(a,b,c,d,f){return q=0,b=b||"j",e(a)?i("c"==b?v:u,a,b,this.i++,c,d,f):(p.splice(this.i++,0,a),1==p.length&&h()),this}function k(){var a=B;return a.loader={load:j,i:0},a}var l=b.documentElement,m=a.setTimeout,n=b.getElementsByTagName("script")[0],o={}.toString,p=[],q=0,r="MozAppearance"in l.style,s=r&&!!b.createRange().compareNode,t=s?l:n.parentNode,l=a.opera&&"[object Opera]"==o.call(a.opera),l=!!b.attachEvent&&!l,u=r?"object":l?"script":"img",v=l?"script":u,w=Array.isArray||function(a){return"[object Array]"==o.call(a)},x=[],y={},z={timeout:function(a,b){return b.length&&(a.timeout=b[0]),a}},A,B;B=function(a){function b(a){var a=a.split("!"),b=x.length,c=a.pop(),d=a.length,c={url:c,origUrl:c,prefixes:a},e,f,g;for(f=0;f<d;f++)g=a[f].split("="),(e=z[g.shift()])&&(c=e(c,g));for(f=0;f<b;f++)c=x[f](c);return c}function g(a,e,f,g,h){var i=b(a),j=i.autoCallback;i.url.split(".").pop().split("?").shift(),i.bypass||(e&&(e=d(e)?e:e[a]||e[g]||e[a.split("/").pop().split("?")[0]]),i.instead?i.instead(a,e,f,g,h):(y[i.url]?i.noexec=!0:y[i.url]=1,f.load(i.url,i.forceCSS||!i.forceJS&&"css"==i.url.split(".").pop().split("?").shift()?"c":c,i.noexec,i.attrs,i.timeout),(d(e)||d(j))&&f.load(function(){k(),e&&e(i.origUrl,h,g),j&&j(i.origUrl,h,g),y[i.url]=2})))}function h(a,b){function c(a,c){if(a){if(e(a))c||(j=function(){var a=[].slice.call(arguments);k.apply(this,a),l()}),g(a,j,b,0,h);else if(Object(a)===a)for(n in m=function(){var b=0,c;for(c in a)a.hasOwnProperty(c)&&b++;return b}(),a)a.hasOwnProperty(n)&&(!c&&!--m&&(d(j)?j=function(){var a=[].slice.call(arguments);k.apply(this,a),l()}:j[n]=function(a){return function(){var b=[].slice.call(arguments);a&&a.apply(this,b),l()}}(k[n])),g(a[n],j,b,n,h))}else!c&&l()}var h=!!a.test,i=a.load||a.both,j=a.callback||f,k=j,l=a.complete||f,m,n;c(h?a.yep:a.nope,!!i),i&&c(i)}var i,j,l=this.yepnope.loader;if(e(a))g(a,0,l,0);else if(w(a))for(i=0;i<a.length;i++)j=a[i],e(j)?g(j,0,l,0):w(j)?B(j):Object(j)===j&&h(j,l);else Object(a)===a&&h(a,l)},B.addPrefix=function(a,b){z[a]=b},B.addFilter=function(a){x.push(a)},B.errorTimeout=1e4,null==b.readyState&&b.addEventListener&&(b.readyState="loading",b.addEventListener("DOMContentLoaded",A=function(){b.removeEventListener("DOMContentLoaded",A,0),b.readyState="complete"},0)),a.yepnope=k(),a.yepnope.executeStack=h,a.yepnope.injectJs=function(a,c,d,e,i,j){var k=b.createElement("script"),l,o,e=e||B.errorTimeout;k.src=a;for(o in d)k.setAttribute(o,d[o]);c=j?h:c||f,k.onreadystatechange=k.onload=function(){!l&&g(k.readyState)&&(l=1,c(),k.onload=k.onreadystatechange=null)},m(function(){l||(l=1,c(1))},e),i?k.onload():n.parentNode.insertBefore(k,n)},a.yepnope.injectCss=function(a,c,d,e,g,i){var e=b.createElement("link"),j,c=i?h:c||f;e.href=a,e.rel="stylesheet",e.type="text/css";for(j in d)e.setAttribute(j,d[j]);g||(n.parentNode.insertBefore(e,n),m(c,0))}})(this,document);
+Modernizr.load=function(){yepnope.apply(window,[].slice.call(arguments,0));};
+;
+/* jQuery 참조변수($) 제거 */
+if(jQuery) jQuery.noConflict();
+
+(function($) {
+	/* OS check */
+	var UA = navigator.userAgent.toLowerCase();
+	$.os = {
+		Linux: /linux/.test(UA),
+		Unix: /x11/.test(UA),
+		Mac: /mac/.test(UA),
+		Windows: /win/.test(UA)
+	};
+	$.os.name = ($.os.Windows) ? 'Windows' :
+		($.os.Linux) ? 'Linux' :
+		($.os.Unix) ? 'Unix' :
+		($.os.Mac) ? 'Mac' : '';
+
+	/**
+	 * @brief XE 공용 유틸리티 함수
+	 * @namespace XE
+	 */
+	window.XE = {
+		loaded_popup_menus : [],
+		addedDocument : [],
+		/**
+		 * @brief 특정 name을 가진 체크박스들의 checked 속성 변경
+		 * @param [itemName='cart',][options={}]
+		 */
+		checkboxToggleAll : function(itemName) {
+			if(!is_def(itemName)) itemName='cart';
+			var options = {
+				wrap : null,
+				checked : 'toggle',
+				doClick : false
+			};
+			var obj;
+
+			switch(arguments.length) {
+				case 1:
+					if(typeof(arguments[0]) == "string") {
+						itemName = arguments[0];
+					} else {
+						$.extend(options, arguments[0] || {});
+						itemName = 'cart';
+					}
+					break;
+				case 2:
+					itemName = arguments[0];
+					$.extend(options, arguments[1] || {});
+			}
+
+			if(options.doClick === true) options.checked = null;
+			if(typeof(options.wrap) == "string") options.wrap ='#'+options.wrap;
+
+			if(options.wrap) {
+				obj = $(options.wrap).find('input[name="'+itemName+'"]:checkbox');
+			} else {
+				obj = $('input[name="'+itemName+'"]:checkbox');
+			}
+			
+			if(options.checked == 'toggle') {
+				obj.each(function() {
+					$(this).attr('checked', ($(this).attr('checked')) ? false : true);
+				});
+			} else {
+				if(options.doClick === true) {
+					obj.click();
+				} else {
+					obj.attr('checked', options.checked);
+				}
+			}
+		},
+
+		/**
+		 * @brief 문서/회원 등 팝업 메뉴 출력
+		 */
+		displayPopupMenu : function(ret_obj, response_tags, params) {
+			var target_srl = params.target_srl;
+			var menu_id = params.menu_id;
+			var menus = ret_obj.menus;
+			var html = "";
+
+			if(this.loaded_popup_menus[menu_id]) {
+				html = this.loaded_popup_menus[menu_id];
+
+			} else {
+				if(menus) {
+					var item = menus.item;
+					if(typeof(item.length)=='undefined' || item.length<1) item = new Array(item);
+					if(item.length) {
+						for(var i=0;i<item.length;i++) {
+							var url = item[i].url;
+							var str = item[i].str;
+							var icon = item[i].icon;
+							var target = item[i].target;
+
+							var styleText = "";
+							var click_str = "";
+							/* if(icon) styleText = " style=\"background-image:url('"+icon+"')\" "; */
+							switch(target) {
+								case "popup" :
+										click_str = " onclick=\"popopen(this.href,'"+target+"'); return false;\"";
+									break;
+								case "javascript" :
+										click_str = " onclick=\""+url+"; return false; \"";
+										url="#";
+									break;
+								default :
+										click_str = " onclick=\"window.open(this.href); return false;\"";
+									break;
+							}
+
+							html += '<li '+styleText+'><a href="'+url+'"'+click_str+'>'+str+'</a></li> ';
+						}
+					}
+				}
+				this.loaded_popup_menus[menu_id] =  html;
+			}
+
+			/* 레이어 출력 */
+			if(html) {
+				var area = $('#popup_menu_area').html('<ul>'+html+'</ul>');
+				var areaOffset = {top:params.page_y, left:params.page_x};
+
+				if(area.outerHeight()+areaOffset.top > $(window).height()+$(window).scrollTop())
+					areaOffset.top = $(window).height() - area.outerHeight() + $(window).scrollTop();
+				if(area.outerWidth()+areaOffset.left > $(window).width()+$(window).scrollLeft())
+					areaOffset.left = $(window).width() - area.outerWidth() + $(window).scrollLeft();
+
+				area.css({ top:areaOffset.top, left:areaOffset.left }).show();
+			}
+		}
+	};
+}) (jQuery);
+
+/* jQuery(document).ready() */
+jQuery(function($) {
+
+	/* select - option의 disabled=disabled 속성을 IE에서도 체크하기 위한 함수 */
+	if($.browser.msie) {
+		$('select').each(function(i, sels) {
+			var disabled_exists = false;
+			var first_enable = [];
+
+			for(var j=0; j < sels.options.length; j++) {
+				if(sels.options[j].disabled) {
+					sels.options[j].style.color = '#CCCCCC';
+					disabled_exists = true;
+				}else{
+					first_enable[i] = (first_enable[i] > -1) ? first_enable[i] : j;
+				}
+			}
+
+			if(!disabled_exists) return;
+
+			sels.oldonchange = sels.onchange;
+			sels.onchange = function() {
+				if(this.options[this.selectedIndex].disabled) {
+
+					this.selectedIndex = first_enable[i];
+					/*
+					if(this.options.length<=1) this.selectedIndex = -1;
+					else if(this.selectedIndex < this.options.length - 1) this.selectedIndex++;
+					else this.selectedIndex--;
+					*/
+
+				} else {
+					if(this.oldonchange) this.oldonchange();
+				}
+			};
+
+			if(sels.selectedIndex >= 0 && sels.options[ sels.selectedIndex ].disabled) sels.onchange();
+
+		});
+	}
+
+	/* 단락에디터 fold 컴포넌트 펼치기/접기 */
+	var drEditorFold = $('.xe_content .fold_button');
+	if(drEditorFold.size()) {
+		var fold_container = $('div.fold_container', drEditorFold);
+		$('button.more', drEditorFold).click(function() {
+			$(this).hide().next('button').show().parent().next(fold_container).show();
+		});
+		$('button.less', drEditorFold).click(function() {
+			$(this).hide().prev('button').show().parent().next(fold_container).hide();
+		});
+	}
+	
+	jQuery('input[type="submit"],button[type="submit"]').click(function(ev){
+		var $el = jQuery(ev.currentTarget);
+		
+		setTimeout(function(){
+			return function(){
+				$el.attr('disabled', 'disabled');
+			};
+		}(), 0);
+		
+		setTimeout(function(){
+			return function(){
+				$el.removeAttr('disabled');
+			};
+		}(), 3000);
+	});
+});
+
+(function(){ // String extension methods
+
+function isSameUrl(a,b) {
+	return (a.replace(/#.*$/, '') === b.replace(/#.*$/, ''));
+}
+
+var isArray = Array.isArray || function(obj){ return Object.prototype.toString.call(obj)=='[object Array]'; };
+
+/**
+ * @brief location.href에서 특정 key의 값을 return
+ **/
+String.prototype.getQuery = function(key) {
+	var loc = isSameUrl(this, window.location.href) ? current_url : this;
+	var idx = loc.indexOf('?');
+	if(idx == -1) return null;
+	var query_string = loc.substr(idx+1, this.length), args = {};
+	query_string.replace(/([^=]+)=([^&]*)(&|$)/g, function() { args[arguments[1]] = arguments[2]; });
+
+	var q = args[key];
+	if(typeof(q)=='undefined') q = '';
+
+	return q;
+};
+
+/**
+ * @brief location.href에서 특정 key의 값을 return
+ **/
+String.prototype.setQuery = function(key, val) {
+	var loc = isSameUrl(this, window.location.href) ? current_url : this;
+	var idx = loc.indexOf('?');
+	var uri = loc.replace(/#$/, '');
+	var act, re, v, toReplace, query_string;
+
+	if (typeof(val)=='undefined') val = '';
+
+	if (idx != -1) {
+		var args = {}, q_list = [];
+		query_string = uri.substr(idx + 1, loc.length);
+		uri = loc.substr(0, idx);
+		query_string.replace(/([^=]+)=([^&]*)(&|$)/g, function(all,key,val) { args[key] = val; });
+
+		args[key] = val;
+
+		for (var prop in args) {
+			if (!args.hasOwnProperty(prop)) continue;
+			if (!(v = String(args[prop]).trim())) continue;
+			q_list.push(prop+'='+decodeURI(v));
+		}
+
+		query_string = q_list.join('&');
+		uri = uri + (query_string ? '?' + encodeURI(query_string) : '');
+	} else {
+		if (String(val).trim()) {
+			query_string = '?' + key + '=' + val;
+			uri = uri + encodeURI(query_string);
+		}
+	}
+
+	re = /^https:\/\/([^:\/]+)(:\d+|)/i;
+	if (re.test(uri)) {
+		toReplace = 'http://'+RegExp.$1;
+		if (window.http_port && http_port != 80) toReplace += ':' + http_port;
+		uri = uri.replace(re, toReplace);
+	}
+
+	var bUseSSL = !!window.enforce_ssl;
+	if (!bUseSSL && isArray(window.ssl_actions) && (act=uri.getQuery('act'))) {
+		for (var i=0,c=ssl_actions.length; i < c; i++) {
+			if (ssl_actions[i] === act) {
+				bUseSSL = true;
+				break;
+			}
+		}
+	}
+
+	re = /https?:\/\/([^:\/]+)(:\d+|)/i;
+	if (bUseSSL && re.test(uri)) {
+		toReplace = 'https://'+RegExp.$1;
+		if (window.https_port && https_port != 443) toReplace += ':' + https_port;
+		uri = uri.replace(re, toReplace);
+	}
+	if (!bUseSSL && re.test(uri)) {
+		toReplace = 'http://'+RegExp.$1;
+		if (window.http_port && http_port != 80) toReplace += ':' + http_port;
+		uri = uri.replace(re, toReplace);
+	}
+
+	// insert index.php if it isn't included
+	uri = uri.replace(/\/(index\.php)?\?/, '/index.php?');
+
+	return uri;
+};
+
+/**
+ * @brief string prototype으로 trim 함수 추가
+ **/
+String.prototype.trim = function() {
+	return this.replace(/(^\s*)|(\s*$)/g, "");
+};
+
+})();
+
+/**
+ * @brief xSleep(micro time)
+ **/
+function xSleep(sec) {
+	sec = sec / 1000;
+	var now = new Date();
+	var sleep = new Date();
+	while( sleep.getTime() - now.getTime() < sec) {
+		sleep = new Date();
+	}
+}
+
+/**
+ * @brief 주어진 인자가 하나라도 defined되어 있지 않으면 false return
+ **/
+function isDef() {
+	for(var i=0; i < arguments.length; ++i) {
+		if(typeof(arguments[i]) == "undefined") return false;
+	}
+	return true;
+}
+
+/**
+ * @brief 윈도우 오픈
+ * 열려진 윈도우의 관리를 통해 window.focus()등을 FF에서도 비슷하게 구현함
+ **/
+var winopen_list = [];
+function winopen(url, target, attribute) {
+	if(typeof(xeVid)!='undefined' && url.indexOf(request_uri)>-1 && !url.getQuery('vid')) url = url.setQuery('vid',xeVid);
+	try {
+		if(target != "_blank" && winopen_list[target]) {
+			winopen_list[target].close();
+			winopen_list[target] = null;
+		}
+	} catch(e) {
+	}
+
+	if(typeof(target) == 'undefined') target = '_blank';
+	if(typeof(attribute) == 'undefined') attribute = '';
+	var win = window.open(url, target, attribute);
+	win.focus();
+	if(target != "_blank") winopen_list[target] = win;
+}
+
+/**
+ * @brief 팝업으로만 띄우기
+ * common/tpl/popup_layout.html이 요청되는 XE내의 팝업일 경우에 사용
+ **/
+function popopen(url, target) {
+	if(typeof(target) == "undefined") target = "_blank";
+	if(typeof(xeVid)!='undefined' && url.indexOf(request_uri)>-1 && !url.getQuery('vid')) url = url.setQuery('vid',xeVid);
+	winopen(url, target, "width=650,height=500,scrollbars=yes,resizable=yes,toolbars=no");
+}
+
+/**
+ * @brief 메일 보내기용
+ **/
+function sendMailTo(to) {
+	location.href="mailto:"+to;
+}
+
+/**
+ * @brief url이동 (open_window 값이 N 가 아니면 새창으로 띄움)
+ **/
+function move_url(url, open_window) {
+	if(!url) return false;
+	if(typeof(open_window) == 'undefined') open_window = 'N';
+	if(open_window=='N') {
+		open_window = false;
+	} else {
+		open_window = true;
+	}
+
+	if(/^\./.test(url)) url = request_uri+url;
+
+	if(open_window) {
+		winopen(url);
+	} else {
+		location.href=url;
+	}
+
+	return false;
+}
+
+/**
+ * @brief 멀티미디어 출력용 (IE에서 플래쉬/동영상 주변에 점선 생김 방지용)
+ **/
+function displayMultimedia(src, width, height, options) {
+	/*jslint evil: true */
+	var html = _displayMultimedia(src, width, height, options);
+	if(html) document.writeln(html);
+}
+function _displayMultimedia(src, width, height, options) {
+	if(src.indexOf('files') === 0) src = request_uri + src;
+
+	var defaults = {
+		wmode : 'transparent',
+		allowScriptAccess : 'sameDomain',
+		quality : 'high',
+		flashvars : '',
+		autostart : false
+	};
+
+	var params = jQuery.extend(defaults, options || {});
+	var autostart = (params.autostart && params.autostart != 'false') ? 'true' : 'false';
+	delete(params.autostart);
+
+	var clsid = "";
+	var codebase = "";
+	var html = "";
+
+	if(/\.(gif|jpg|jpeg|bmp|png)$/i.test(src)){
+		html = '<img src="'+src+'" width="'+width+'" height="'+height+'" />';
+	} else if(/\.flv$/i.test(src) || /\.mov$/i.test(src) || /\.moov$/i.test(src) || /\.m4v$/i.test(src)) {
+		html = '<embed src="'+request_uri+'common/img/flvplayer.swf" allowfullscreen="true" allowscriptaccess="never" autostart="'+autostart+'" width="'+width+'" height="'+height+'" flashvars="&file='+src+'&width='+width+'&height='+height+'&autostart='+autostart+'" wmode="'+params.wmode+'" />';
+	} else if(/\.swf/i.test(src)) {
+		clsid = 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000';
+
+		if(typeof(enforce_ssl)!='undefined' && enforce_ssl){ codebase = "https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,28,0"; }
+		else { codebase = "http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,28,0"; }
+		html = '<object classid="'+clsid+'" codebase="'+codebase+'" width="'+width+'" height="'+height+'" flashvars="'+params.flashvars+'">';
+		html += '<param name="movie" value="'+src+'" />';
+		for(var name in params) {
+			if(params[name] != 'undefined' && params[name] !== '') {
+				html += '<param name="'+name+'" value="'+params[name]+'" />';
+			}
+		}
+		html += '' + '<embed src="'+src+'" allowscriptaccess="never" autostart="'+autostart+'" width="'+width+'" height="'+height+'" flashvars="'+params.flashvars+'" wmode="'+params.wmode+'"></embed>' + '</object>';
+	}  else {
+		if (jQuery.browser.mozilla || jQuery.browser.opera) {
+			// firefox and opera uses 0 or 1 for autostart parameter.
+			autostart = (params.autostart && params.autostart != 'false') ? '1' : '0';
+		}
+
+		html = '<embed src="'+src+'" allowscriptaccess="never" autostart="'+autostart+'" width="'+width+'" height="'+height+'"';
+		if(params.wmode == 'transparent') {
+			html += ' windowlessvideo="1"';
+		}
+		html += '></embed>';
+	}
+	return html;
+}
+
+/**
+ * @brief 에디터에서 사용되는 내용 여닫는 코드 (고정, zbxe용)
+ **/
+function zbxe_folder_open(id) {
+	jQuery("#folder_open_"+id).hide();
+	jQuery("#folder_close_"+id).show();
+	jQuery("#folder_"+id).show();
+}
+function zbxe_folder_close(id) {
+	jQuery("#folder_open_"+id).show();
+	jQuery("#folder_close_"+id).hide();
+	jQuery("#folder_"+id).hide();
+}
+
+/**
+ * @brief 팝업의 경우 내용에 맞춰 현 윈도우의 크기를 조절해줌
+ * 팝업의 내용에 맞게 크기를 늘리는 것은... 쉽게 되지는 않음.. ㅡ.ㅜ
+ * popup_layout 에서 window.onload 시 자동 요청됨.
+ **/
+function setFixedPopupSize() {
+	var $ = jQuery, $win = $(window), $pc = $('body>.popup'), w, h, dw, dh, offset;
+
+	offset = $pc.css({overflow:'scroll'}).offset();
+
+	w = $pc.width(10).height(10000).get(0).scrollWidth + offset.left*2;
+	h = $pc.height(10).width(10000).get(0).scrollHeight + offset.top*2;
+
+	if(w < 600) w = 600 + offset.left*2;
+
+	dw = $win.width();
+	dh = $win.height();
+
+	if(w != dw) window.resizeBy(w - dw, 0);
+	if(h != dh) window.resizeBy(0, h - dh);
+
+	$pc.width(w-offset.left*2).css({overflow:'',height:''});
+}
+
+/**
+ * @brief 추천/비추천,스크랩,신고기능등 특정 srl에 대한 특정 module/action을 호출하는 함수
+ **/
+function doCallModuleAction(module, action, target_srl) {
+	var params = {
+		target_srl : target_srl,
+		cur_mid    : current_mid,
+		mid        : current_mid
+	};
+	exec_xml(module, action, params, completeCallModuleAction);
+}
+
+function completeCallModuleAction(ret_obj, response_tags) {
+	if(ret_obj.message!='success') alert(ret_obj.message);
+	location.reload();
+}
+
+function completeMessage(ret_obj) {
+	alert(ret_obj.message);
+	location.reload();
+}
+
+
+
+/* 언어코드 (lang_type) 쿠키값 변경 */
+function doChangeLangType(obj) {
+	if(typeof(obj) == "string") {
+		setLangType(obj);
+	} else {
+		var val = obj.options[obj.selectedIndex].value;
+		setLangType(val);
+	}
+	location.href = location.href.setQuery('l', '');
+}
+function setLangType(lang_type) {
+	var expire = new Date();
+	expire.setTime(expire.getTime()+ (7000 * 24 * 3600000));
+	setCookie('lang_type', lang_type, expire, '/');
+}
+
+/* 미리보기 */
+function doDocumentPreview(obj) {
+	var fo_obj = obj;
+	while(fo_obj.nodeName != "FORM") {
+		fo_obj = fo_obj.parentNode;
+	}
+	if(fo_obj.nodeName != "FORM") return;
+	var editor_sequence = fo_obj.getAttribute('editor_sequence');
+
+	var content = editorGetContent(editor_sequence);
+
+	var win = window.open("", "previewDocument","toolbars=no,width=700px;height=800px,scrollbars=yes,resizable=yes");
+
+	var dummy_obj = jQuery("#previewDocument");
+
+	if(!dummy_obj.length) {
+		jQuery(
+			'<form id="previewDocument" target="previewDocument" method="post" action="'+request_uri+'">'+
+			'<input type="hidden" name="module" value="document" />'+
+			'<input type="hidden" name="act" value="dispDocumentPreview" />'+
+			'<input type="hidden" name="content" />'+
+			'</form>'
+		).appendTo(document.body);
+
+		dummy_obj = jQuery("#previewDocument")[0];
+	} else {
+		dummy_obj = dummy_obj[0];
+	}
+
+	if(dummy_obj) {
+		dummy_obj.content.value = content;
+		dummy_obj.submit();
+	}
+}
+
+/* 게시글 저장 */
+function doDocumentSave(obj) {
+	var editor_sequence = obj.form.getAttribute('editor_sequence');
+	var prev_content = editorRelKeys[editor_sequence].content.value;
+	if(typeof(editor_sequence)!='undefined' && editor_sequence && typeof(editorRelKeys)!='undefined' && typeof(editorGetContent)=='function') {
+		var content = editorGetContent(editor_sequence);
+		editorRelKeys[editor_sequence].content.value = content;
+	}
+
+	var params={}, responses=['error','message','document_srl'], elms=obj.form.elements, data=jQuery(obj.form).serializeArray();
+	jQuery.each(data, function(i, field){
+		var val = jQuery.trim(field.value);
+		if(!val) return true;
+		if(/\[\]$/.test(field.name)) field.name = field.name.replace(/\[\]$/, '');
+		if(params[field.name]) params[field.name] += '|@|'+val;
+		else params[field.name] = field.value;
+	});
+
+	exec_xml('document','procDocumentTempSave', params, completeDocumentSave, responses, params, obj.form);
+
+	editorRelKeys[editor_sequence].content.value = prev_content;
+	return false;
+}
+
+function completeDocumentSave(ret_obj) {
+	jQuery('input[name=document_srl]').eq(0).val(ret_obj.document_srl);
+	alert(ret_obj.message);
+}
+
+/* 저장된 게시글 불러오기 */
+var objForSavedDoc = null;
+function doDocumentLoad(obj) {
+	// 저장된 게시글 목록 불러오기
+	objForSavedDoc = obj.form;
+	popopen(request_uri.setQuery('module','document').setQuery('act','dispTempSavedList'));
+}
+
+/* 저장된 게시글의 선택 */
+function doDocumentSelect(document_srl, module) {
+	if(!opener || !opener.objForSavedDoc) {
+		window.close();
+		return;
+	}
+	
+	if(module==underfined) {
+		module = 'document';
+	}
+
+	// 게시글을 가져와서 등록하기
+	switch(module) {
+		case 'page' :
+			var url = opener.current_url;
+			url = url.setQuery('document_srl', document_srl);
+			
+			if(url.getQuery('act') === 'dispPageAdminMobileContentModify') {
+				url = url.setQuery('act', 'dispPageAdminMobileContentModify');
+			}
+			else {
+				url = url.setQuery('act', 'dispPageAdminContentModify');
+			}
+			opener.location.href = url;
+			break;
+		default :
+			opener.location.href = opener.current_url.setQuery('document_srl', document_srl).setQuery('act', 'dispBoardWrite');
+			break;
+	}
+	window.close();
+}
+
+
+/* 스킨 정보 */
+function viewSkinInfo(module, skin) {
+	popopen("./?module=module&act=dispModuleSkinInfo&selected_module="+module+"&skin="+skin, 'SkinInfo');
+}
+
+
+/* 관리자가 문서를 관리하기 위해서 선택시 세션에 넣음 */
+var addedDocument = [];
+function doAddDocumentCart(obj) {
+	var srl = obj.value;
+	addedDocument[addedDocument.length] = srl;
+	setTimeout(function() { callAddDocumentCart(addedDocument.length); }, 100);
+}
+
+function callAddDocumentCart(document_length) {
+	if(addedDocument.length<1 || document_length != addedDocument.length) return;
+	var params = [];
+	params.srls = addedDocument.join(",");
+	exec_xml("document","procDocumentAddCart", params, null);
+	addedDocument = [];
+}
+
+/* ff의 rgb(a,b,c)를 #... 로 변경 */
+function transRGB2Hex(value) {
+	if(!value) return value;
+	if(value.indexOf('#') > -1) return value.replace(/^#/, '');
+
+	if(value.toLowerCase().indexOf('rgb') < 0) return value;
+	value = value.replace(/^rgb\(/i, '').replace(/\)$/, '');
+	value_list = value.split(',');
+
+	var hex = '';
+	for(var i = 0; i < value_list.length; i++) {
+		var color = parseInt(value_list[i], 10).toString(16);
+		if(color.length == 1) color = '0'+color;
+		hex += color;
+	}
+	return hex;
+}
+
+/* 보안 로그인 모드로 전환 */
+function toggleSecuritySignIn() {
+	var href = location.href;
+	if(/https:\/\//i.test(href)) location.href = href.replace(/^https/i,'http');
+	else location.href = href.replace(/^http/i,'https');
+}
+
+function reloadDocument() {
+	location.reload();
+}
+
+
+/**
+*
+* Base64 encode / decode
+* http://www.webtoolkit.info/
+*
+**/
+
+var Base64 = {
+
+	// private property
+	_keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+
+	// public method for encoding
+	encode : function (input) {
+		var output = "";
+		var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+		var i = 0;
+
+		input = Base64._utf8_encode(input);
+
+		while (i < input.length) {
+
+			chr1 = input.charCodeAt(i++);
+			chr2 = input.charCodeAt(i++);
+			chr3 = input.charCodeAt(i++);
+
+			enc1 = chr1 >> 2;
+			enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+			enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+			enc4 = chr3 & 63;
+
+			if (isNaN(chr2)) {
+				enc3 = enc4 = 64;
+			} else if (isNaN(chr3)) {
+				enc4 = 64;
+			}
+
+			output = output +
+			this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) +
+			this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
+
+		}
+
+		return output;
+	},
+
+	// public method for decoding
+	decode : function (input) {
+		var output = "";
+		var chr1, chr2, chr3;
+		var enc1, enc2, enc3, enc4;
+		var i = 0;
+
+		input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+		while (i < input.length) {
+
+			enc1 = this._keyStr.indexOf(input.charAt(i++));
+			enc2 = this._keyStr.indexOf(input.charAt(i++));
+			enc3 = this._keyStr.indexOf(input.charAt(i++));
+			enc4 = this._keyStr.indexOf(input.charAt(i++));
+
+			chr1 = (enc1 << 2) | (enc2 >> 4);
+			chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+			chr3 = ((enc3 & 3) << 6) | enc4;
+
+			output = output + String.fromCharCode(chr1);
+
+			if (enc3 != 64) {
+				output = output + String.fromCharCode(chr2);
+			}
+			if (enc4 != 64) {
+				output = output + String.fromCharCode(chr3);
+			}
+
+		}
+
+		output = Base64._utf8_decode(output);
+
+		return output;
+
+	},
+
+	// private method for UTF-8 encoding
+	_utf8_encode : function (string) {
+		string = string.replace(/\r\n/g,"\n");
+		var utftext = "";
+
+		for (var n = 0; n < string.length; n++) {
+
+			var c = string.charCodeAt(n);
+
+			if (c < 128) {
+				utftext += String.fromCharCode(c);
+			}
+			else if((c > 127) && (c < 2048)) {
+				utftext += String.fromCharCode((c >> 6) | 192);
+				utftext += String.fromCharCode((c & 63) | 128);
+			}
+			else {
+				utftext += String.fromCharCode((c >> 12) | 224);
+				utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+				utftext += String.fromCharCode((c & 63) | 128);
+			}
+
+		}
+
+		return utftext;
+	},
+
+	// private method for UTF-8 decoding
+	_utf8_decode : function (utftext) {
+		var string = "";
+		var i = 0;
+		var c = 0;
+		var c1 = 0;
+		var c2 = 0;
+
+		while ( i < utftext.length ) {
+
+			c = utftext.charCodeAt(i);
+
+			if (c < 128) {
+				string += String.fromCharCode(c);
+				i++;
+			}
+			else if((c > 191) && (c < 224)) {
+				c2 = utftext.charCodeAt(i+1);
+				string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+				i += 2;
+			}
+			else {
+				c2 = utftext.charCodeAt(i+1);
+				c3 = utftext.charCodeAt(i+2);
+				string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+				i += 3;
+			}
+
+		}
+
+		return string;
+	}
+
+};
+
+
+
+
+
+
+/* ----------------------------------------------
+ * DEPRECATED
+ * 하위호환용으로 남겨 놓음
+ * ------------------------------------------- */
+
+if(typeof(resizeImageContents) == 'undefined') {
+	window.resizeImageContents = function() {};
+}
+
+if(typeof(activateOptionDisabled) == 'undefined') {
+	window.activateOptionDisabled = function() {};
+}
+
+objectExtend = jQuery.extend;
+
+/**
+ * @brief 특정 Element의 display 옵션 토글
+ **/
+function toggleDisplay(objId) {
+	jQuery('#'+objId).toggle();
+}
+
+/* 체크박스 선택 */
+function checkboxSelectAll(formObj, name, checked) {
+	var itemName = name;
+	var option = {};
+	if(typeof(formObj) != "undefined") option.wrap = formObj;
+	if(typeof(checked) != "undefined") option.checked = checked;
+
+	XE.checkboxToggleAll(itemName, option);
+}
+
+/* 체크박스를 실행 */
+function clickCheckBoxAll(formObj, name) {
+	var itemName = name;
+	var option = { doClick:true };
+	if(typeof(formObj) != "undefined") option.wrap = formObj;
+
+	XE.checkboxToggleAll(itemName, option);
+}
+
+/**
+ * @brief 에디터에서 사용하되 내용 여닫는 코드 (zb5beta beta 호환용으로 남겨 놓음)
+ **/
+function svc_folder_open(id) {
+	jQuery("#_folder_open_"+id).hide();
+	jQuery("#_folder_close_"+id).show();
+	jQuery("#_folder_"+id).show();
+}
+function svc_folder_close(id) {
+	jQuery("#_folder_open_"+id).show();
+	jQuery("#_folder_close_"+id).hide();
+	jQuery("#_folder_"+id).hide();
+}
+
+/**
+ * @brief 날짜 선택 (달력 열기)
+ **/
+function open_calendar(fo_id, day_str, callback_func) {
+	if(typeof(day_str)=="undefined") day_str = "";
+
+	var url = "./common/tpl/calendar.php?";
+	if(fo_id) url+="fo_id="+fo_id;
+	if(day_str) url+="&day_str="+day_str;
+	if(callback_func) url+="&callback_func="+callback_func;
+
+	popopen(url, 'Calendar');
+}
+
+var loaded_popup_menus = XE.loaded_popup_menus;
+function createPopupMenu() {}
+function chkPopupMenu() {}
+function displayPopupMenu(ret_obj, response_tags, params) {
+	XE.displayPopupMenu(ret_obj, response_tags, params);
+}
+
+function GetObjLeft(obj) {
+	return jQuery(obj).offset().left;
+}
+function GetObjTop(obj) {
+	return jQuery(obj).offset().top;
+}
+
+function replaceOuterHTML(obj, html) {
+	jQuery(obj).replaceWith(html);
+}
+
+function getOuterHTML(obj) {
+	return jQuery(obj).html().trim();
+}
+
+function setCookie(name, value, expire, path) {
+	var s_cookie = name + "=" + escape(value) +
+		((!expire) ? "" : ("; expires=" + expire.toGMTString())) +
+		"; path=" + ((!path) ? "/" : path);
+
+	document.cookie = s_cookie;
+}
+
+function getCookie(name) {
+	var match = document.cookie.match(new RegExp(name+'=(.*?)(?:;|$)'));
+	if(match) return unescape(match[1]);
+}
+
+function is_def(v) {
+	return (typeof(v)!='undefined');
+}
+
+function ucfirst(str) {
+	return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function get_by_id(id) {
+	return document.getElementById(id);
+}
+
+jQuery(function($){
+	$('.lang_code').each(
+		function() 
+		{
+			var objText = $(this);
+			var targetName = objText.attr("id");
+			if(typeof(targetName) == "undefined") targetName = objText.attr("name");
+			if(typeof(targetName) == "undefined") return;
+			objText.after("<a href='"+request_uri.setQuery('module','module').setQuery('act','dispModuleAdminLangcode').setQuery('target',targetName)+"' class='buttonSet buttonSetting' onclick='popopen(this.href);return false;'><span>find_langcode</span></a>"); 
+		}
+	);
+
+	// display popup menu that contains member actions and document actions
+	$(document).click(function(evt) {
+		var $area = $('#popup_menu_area');
+		if(!$area.length) $area = $('<div id="popup_menu_area" style="display:none;z-index:9999" />').appendTo(document.body);
+
+		// 이전에 호출되었을지 모르는 팝업메뉴 숨김
+		$area.hide();
+
+		var $target = $(evt.target).filter('a,div,span');
+		if(!$target.length) $target = $(evt.target).closest('a,div,span');
+		if(!$target.length) return;
+
+		// 객체의 className값을 구함
+		var cls = $target.attr('class'), match;
+		if(cls) match = cls.match(new RegExp('(?:^| )((document|comment|member)_([1-9]\\d*))(?: |$)',''));
+		if(!match) return;
+
+		var action = 'get'+ucfirst(match[2])+'Menu';
+		var params = {
+			mid        : current_mid,
+			cur_mid    : current_mid,
+			menu_id    : match[1],
+			target_srl : match[3],
+			cur_act    : current_url.getQuery('act'),
+			page_x     : evt.pageX,
+			page_y     : evt.pageY
+		};
+		var response_tags = 'error message menus'.split(' ');
+
+		// prevent default action
+		evt.preventDefault();
+		evt.stopPropagation();
+
+		if(is_def(window.xeVid)) params.vid = xeVid;
+		if(is_def(XE.loaded_popup_menus[params.menu_id])) return XE.displayPopupMenu(params, response_tags, params);
+
+		show_waiting_message = false;
+		exec_xml('member', action, params, XE.displayPopupMenu, response_tags, params);
+		show_waiting_message = true;
+	});
+
+	/**
+	 * Create popup windows automatically.
+	 * Find anchors that have the '_xe_popup' class, then add popup script to them.
+	 */
+	$('a._xe_popup').click(function(){
+		var $this = $(this), name = $this.attr('name'), href = $this.attr('href'), win;
+
+		if(!name) name = '_xe_popup_'+Math.floor(Math.random()*1000);
+
+		win = window.open(href, name, 'left=10,top=10,width=10,height=10,resizable=no,scrollbars=no,toolbars=no');
+		if(win) win.focus();
+
+		// cancel default action
+		return false;
+	});
+
+	// date picker default settings
+	if($.datepicker) {
+		$.datepicker.setDefaults({
+			dateFormat : 'yy-mm-dd'
+		});
+	}
+});
 
 (function($){
 
@@ -277,1235 +2126,582 @@ $(function(){ xe.broadcast('ONREADY'); });
 $(window).load(function(){ xe.broadcast('ONLOAD'); });
 
 })(jQuery);
-/**
- * @file common.js
- * @author NHN (developers@xpressengine.com)
- * @brief 몇가지 유용한 & 기본적으로 자주 사용되는 자바스크립트 함수들 모음
- **/
 
-/* jQuery 참조변수($) 제거 */
-if(jQuery) jQuery.noConflict();
+(function (root, factory) {
+     if (typeof define === "function" && define.amd) {
+         define([], factory);
+     } else if (typeof exports === "object") {
+         module.exports = factory();
+     } else {
+         root.X2JS = factory();
+     }
+ }(this, function () {
+	return function (config) {
+		'use strict';
 
-(function($) {
-	/* OS check */
-	var UA = navigator.userAgent.toLowerCase();
-	$.os = {
-		Linux: /linux/.test(UA),
-		Unix: /x11/.test(UA),
-		Mac: /mac/.test(UA),
-		Windows: /win/.test(UA)
-	};
-	$.os.name = ($.os.Windows) ? 'Windows' :
-		($.os.Linux) ? 'Linux' :
-		($.os.Unix) ? 'Unix' :
-		($.os.Mac) ? 'Mac' : '';
+		var VERSION = "1.2.0";
 
-	/**
-	 * @brief XE 공용 유틸리티 함수
-	 * @namespace XE
-	 */
-	window.XE = {
-		loaded_popup_menus : new Array(),
-		addedDocument : new Array(),
-		/**
-		 * @brief 특정 name을 가진 체크박스들의 checked 속성 변경
-		 * @param [itemName='cart',][options={}]
-		 */
-		checkboxToggleAll : function(itemName) {
-			if(!is_def(itemName)) itemName='cart';
-			var options = {
-				wrap : null,
-				checked : 'toggle',
-				doClick : false
-			};
+		config = config || {};
+		initConfigDefaults();
+		initRequiredPolyfills();
 
-			switch(arguments.length) {
-				case 1:
-					if(typeof(arguments[0]) == "string") {
-						itemName = arguments[0];
-					} else {
-						$.extend(options, arguments[0] || {});
-						itemName = 'cart';
-					}
+		function initConfigDefaults() {
+			if(config.escapeMode === undefined) {
+				config.escapeMode = true;
+			}
+
+			config.attributePrefix = config.attributePrefix || "_";
+			config.arrayAccessForm = config.arrayAccessForm || "none";
+			config.emptyNodeForm = config.emptyNodeForm || "text";
+
+			if(config.enableToStringFunc === undefined) {
+				config.enableToStringFunc = true;
+			}
+			config.arrayAccessFormPaths = config.arrayAccessFormPaths || [];
+			if(config.skipEmptyTextNodesForObj === undefined) {
+				config.skipEmptyTextNodesForObj = true;
+			}
+			if(config.stripWhitespaces === undefined) {
+				config.stripWhitespaces = true;
+			}
+			config.datetimeAccessFormPaths = config.datetimeAccessFormPaths || [];
+
+			if(config.useDoubleQuotes === undefined) {
+				config.useDoubleQuotes = false;
+			}
+
+			config.xmlElementsFilter = config.xmlElementsFilter || [];
+			config.jsonPropertiesFilter = config.jsonPropertiesFilter || [];
+
+			if(config.keepCData === undefined) {
+				config.keepCData = false;
+			}
+		}
+
+		var DOMNodeTypes = {
+			ELEMENT_NODE 	   : 1,
+			TEXT_NODE    	   : 3,
+			CDATA_SECTION_NODE : 4,
+			COMMENT_NODE	   : 8,
+			DOCUMENT_NODE 	   : 9
+		};
+
+		function initRequiredPolyfills() {
+		}
+
+		function getNodeLocalName( node ) {
+			var nodeLocalName = node.localName;
+			if(nodeLocalName == null) // Yeah, this is IE!!
+				nodeLocalName = node.baseName;
+			if(nodeLocalName == null || nodeLocalName=="") // =="" is IE too
+				nodeLocalName = node.nodeName;
+			return nodeLocalName;
+		}
+
+		function getNodePrefix(node) {
+			return node.prefix;
+		}
+
+		function escapeXmlChars(str) {
+			if(typeof(str) == "string")
+				return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+			else
+				return str;
+		}
+
+		function unescapeXmlChars(str) {
+			return str.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&');
+		}
+
+		function checkInStdFiltersArrayForm(stdFiltersArrayForm, obj, name, path) {
+			var idx = 0;
+			for(; idx < stdFiltersArrayForm.length; idx++) {
+				var filterPath = stdFiltersArrayForm[idx];
+				if( typeof filterPath === "string" ) {
+					if(filterPath == path)
+						break;
+				}
+				else
+				if( filterPath instanceof RegExp) {
+					if(filterPath.test(path))
+						break;
+				}
+				else
+				if( typeof filterPath === "function") {
+					if(filterPath(obj, name, path))
+						break;
+				}
+			}
+			return idx!=stdFiltersArrayForm.length;
+		}
+
+		function toArrayAccessForm(obj, childName, path) {
+			switch(config.arrayAccessForm) {
+				case "property":
+					if(!(obj[childName] instanceof Array))
+						obj[childName+"_asArray"] = [obj[childName]];
+					else
+						obj[childName+"_asArray"] = obj[childName];
 					break;
-				case 2:
-					itemName = arguments[0];
-					$.extend(options, arguments[1] || {});
+				/*case "none":
+					break;*/
 			}
 
-			if(options.doClick == true) options.checked = null;
-			if(typeof(options.wrap) == "string") options.wrap ='#'+options.wrap;
-
-			if(options.wrap) {
-				var obj = $(options.wrap).find('input[name="'+itemName+'"]:checkbox');
-			} else {
-				var obj = $('input[name="'+itemName+'"]:checkbox');
+			if(!(obj[childName] instanceof Array) && config.arrayAccessFormPaths.length > 0) {
+				if(checkInStdFiltersArrayForm(config.arrayAccessFormPaths, obj, childName, path)) {
+					obj[childName] = [obj[childName]];
+				}
 			}
-			
-			if(options.checked == 'toggle') {
-				obj.each(function() {
-					$(this).attr('checked', ($(this).attr('checked')) ? false : true);
-				});
-			} else {
-				(options.doClick == true) ? obj.click() : obj.attr('checked', options.checked);
+		}
+
+		function fromXmlDateTime(prop) {
+			// Implementation based up on http://stackoverflow.com/questions/8178598/xml-datetime-to-javascript-date-object
+			// Improved to support full spec and optional parts
+			var bits = prop.split(/[-T:+Z]/g);
+
+			var d = new Date(bits[0], bits[1]-1, bits[2]);
+			var secondBits = bits[5].split("\.");
+			d.setHours(bits[3], bits[4], secondBits[0]);
+			if(secondBits.length>1)
+				d.setMilliseconds(secondBits[1]);
+
+			// Get supplied time zone offset in minutes
+			if(bits[6] && bits[7]) {
+				var offsetMinutes = bits[6] * 60 + Number(bits[7]);
+				var sign = /\d\d-\d\d:\d\d$/.test(prop)? '-' : '+';
+
+				// Apply the sign
+				offsetMinutes = 0 + (sign == '-'? -1 * offsetMinutes : offsetMinutes);
+
+				// Apply offset and local timezone
+				d.setMinutes(d.getMinutes() - offsetMinutes - d.getTimezoneOffset())
 			}
-		},
+			else
+				if(prop.indexOf("Z", prop.length - 1) !== -1) {
+					d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds()));
+				}
 
-		/**
-		 * @brief 문서/회원 등 팝업 메뉴 출력
-		 */
-		displayPopupMenu : function(ret_obj, response_tags, params) {
-			var target_srl = params["target_srl"];
-			var menu_id = params["menu_id"];
-			var menus = ret_obj['menus'];
-			var html = "";
+			// d is now a local time equivalent to the supplied time
+			return d;
+		}
 
-			if(this.loaded_popup_menus[menu_id]) {
-				html = this.loaded_popup_menus[menu_id];
+		function checkFromXmlDateTimePaths(value, childName, fullPath) {
+			if(config.datetimeAccessFormPaths.length > 0) {
+				var path = fullPath.split("\.#")[0];
+				if(checkInStdFiltersArrayForm(config.datetimeAccessFormPaths, value, childName, path)) {
+					return fromXmlDateTime(value);
+				}
+				else
+					return value;
+			}
+			else
+				return value;
+		}
 
-			} else {
-				if(menus) {
-					var item = menus['item'];
-					if(typeof(item.length)=='undefined' || item.length<1) item = new Array(item);
-					if(item.length) {
-						for(var i=0;i<item.length;i++) {
-							var url = item[i].url;
-							var str = item[i].str;
-							var icon = item[i].icon;
-							var target = item[i].target;
+		function checkXmlElementsFilter(obj, childType, childName, childPath) {
+			if( childType == DOMNodeTypes.ELEMENT_NODE && config.xmlElementsFilter.length > 0) {
+				return checkInStdFiltersArrayForm(config.xmlElementsFilter, obj, childName, childPath);
+			}
+			else
+				return true;
+		}
 
-							var styleText = "";
-							var click_str = "";
-							/* if(icon) styleText = " style=\"background-image:url('"+icon+"')\" "; */
-							switch(target) {
-								case "popup" :
-										click_str = " onclick=\"popopen(this.href,'"+target+"'); return false;\"";
-									break;
-								case "javascript" :
-										click_str = " onclick=\""+url+"; return false; \"";
-										url="#";
-									break;
-								default :
-										click_str = " onclick=\"window.open(this.href); return false;\"";
-									break;
+		function parseDOMChildren( node, path ) {
+			if(node.nodeType == DOMNodeTypes.DOCUMENT_NODE) {
+				var result = new Object;
+				var nodeChildren = node.childNodes;
+				// Alternative for firstElementChild which is not supported in some environments
+				for(var cidx=0; cidx <nodeChildren.length; cidx++) {
+					var child = nodeChildren.item(cidx);
+					if(child.nodeType == DOMNodeTypes.ELEMENT_NODE) {
+						var childName = getNodeLocalName(child);
+						result[childName] = parseDOMChildren(child, childName);
+					}
+				}
+				return result;
+			}
+			else
+			if(node.nodeType == DOMNodeTypes.ELEMENT_NODE) {
+				var result = new Object;
+				result.__cnt=0;
+
+				var nodeChildren = node.childNodes;
+
+				// Children nodes
+				for(var cidx=0; cidx <nodeChildren.length; cidx++) {
+					var child = nodeChildren.item(cidx); // nodeChildren[cidx];
+					var childName = getNodeLocalName(child);
+
+					if(child.nodeType!= DOMNodeTypes.COMMENT_NODE) {
+						var childPath = path+"."+childName;
+						if (checkXmlElementsFilter(result,child.nodeType,childName,childPath)) {
+							result.__cnt++;
+							if(result[childName] == null) {
+								result[childName] = parseDOMChildren(child, childPath);
+								toArrayAccessForm(result, childName, childPath);
 							}
-
-							html += '<li '+styleText+'><a href="'+url+'"'+click_str+'>'+str+'</a></li> ';
+							else {
+								if(result[childName] != null) {
+									if( !(result[childName] instanceof Array)) {
+										result[childName] = [result[childName]];
+										toArrayAccessForm(result, childName, childPath);
+									}
+								}
+								(result[childName])[result[childName].length] = parseDOMChildren(child, childPath);
+							}
 						}
 					}
 				}
-				this.loaded_popup_menus[menu_id] =  html;
+
+				// Attributes
+				for(var aidx=0; aidx <node.attributes.length; aidx++) {
+					var attr = node.attributes.item(aidx); // [aidx];
+					result.__cnt++;
+					result[config.attributePrefix+attr.name]=attr.value;
+				}
+
+				// Node namespace prefix
+				var nodePrefix = getNodePrefix(node);
+				if(nodePrefix!=null && nodePrefix!="") {
+					result.__cnt++;
+					result.__prefix=nodePrefix;
+				}
+
+				if(result["#text"]!=null) {
+					result.__text = result["#text"];
+					if(result.__text instanceof Array) {
+						result.__text = result.__text.join("\n");
+					}
+					//if(config.escapeMode)
+					//	result.__text = unescapeXmlChars(result.__text);
+					if(config.stripWhitespaces)
+						result.__text = result.__text.trim();
+					delete result["#text"];
+					if(config.arrayAccessForm=="property")
+						delete result["#text_asArray"];
+					result.__text = checkFromXmlDateTimePaths(result.__text, childName, path+"."+childName);
+				}
+				if(result["#cdata-section"]!=null) {
+					result.__cdata = result["#cdata-section"];
+					delete result["#cdata-section"];
+					if(config.arrayAccessForm=="property")
+						delete result["#cdata-section_asArray"];
+				}
+
+				if( result.__cnt == 0 && config.emptyNodeForm=="text" ) {
+					result = '';
+				}
+				else
+				if( result.__cnt == 1 && result.__text!=null  ) {
+					result = result.__text;
+				}
+				else
+				if( result.__cnt == 1 && result.__cdata!=null && !config.keepCData  ) {
+					result = result.__cdata;
+				}
+				else
+				if ( result.__cnt > 1 && result.__text!=null && config.skipEmptyTextNodesForObj) {
+					if( (config.stripWhitespaces && result.__text=="") || (result.__text.trim()=="")) {
+						delete result.__text;
+					}
+				}
+				delete result.__cnt;
+
+				if( config.enableToStringFunc && (result.__text!=null || result.__cdata!=null )) {
+					result.toString = function() {
+						return (this.__text!=null? this.__text:'')+( this.__cdata!=null ? this.__cdata:'');
+					};
+				}
+
+				return result;
 			}
-
-			/* 레이어 출력 */
-			if(html) {
-				var area = $('#popup_menu_area').html('<ul>'+html+'</ul>');
-				var areaOffset = {top:params['page_y'], left:params['page_x']};
-
-				if(area.outerHeight()+areaOffset.top > $(window).height()+$(window).scrollTop())
-					areaOffset.top = $(window).height() - area.outerHeight() + $(window).scrollTop();
-				if(area.outerWidth()+areaOffset.left > $(window).width()+$(window).scrollLeft())
-					areaOffset.left = $(window).width() - area.outerWidth() + $(window).scrollLeft();
-
-				area.css({ top:areaOffset.top, left:areaOffset.left }).show();
+			else
+			if(node.nodeType == DOMNodeTypes.TEXT_NODE || node.nodeType == DOMNodeTypes.CDATA_SECTION_NODE) {
+				return node.nodeValue;
 			}
 		}
-	}
 
-}) (jQuery);
-
-
-
-/* jQuery(document).ready() */
-jQuery(function($) {
-
-	/* select - option의 disabled=disabled 속성을 IE에서도 체크하기 위한 함수 */
-	if($.browser.msie) {
-		$('select').each(function(i, sels) {
-			var disabled_exists = false;
-			var first_enable = new Array();
-
-			for(var j=0; j < sels.options.length; j++) {
-				if(sels.options[j].disabled) {
-					sels.options[j].style.color = '#CCCCCC';
-					disabled_exists = true;
-				}else{
-					first_enable[i] = (first_enable[i] > -1) ? first_enable[i] : j;
+		function startTag(jsonObj, element, attrList, closed) {
+			var resultStr = "<"+ ( (jsonObj!=null && jsonObj.__prefix!=null)? (jsonObj.__prefix+":"):"") + element;
+			if(attrList!=null) {
+				for(var aidx = 0; aidx < attrList.length; aidx++) {
+					var attrName = attrList[aidx];
+					var attrVal = jsonObj[attrName];
+					if(config.escapeMode)
+						attrVal=escapeXmlChars(attrVal);
+					resultStr+=" "+attrName.substr(config.attributePrefix.length)+"=";
+					if(config.useDoubleQuotes)
+						resultStr+='"'+attrVal+'"';
+					else
+						resultStr+="'"+attrVal+"'";
 				}
 			}
+			if(!closed)
+				resultStr+=">";
+			else
+				resultStr+="/>";
+			return resultStr;
+		}
 
-			if(!disabled_exists) return;
+		function endTag(jsonObj,elementName) {
+			return "</"+ (jsonObj.__prefix!=null? (jsonObj.__prefix+":"):"")+elementName+">";
+		}
 
-			sels.oldonchange = sels.onchange;
-			sels.onchange = function() {
-				if(this.options[this.selectedIndex].disabled) {
+		function endsWith(str, suffix) {
+			return str.indexOf(suffix, str.length - suffix.length) !== -1;
+		}
 
-					this.selectedIndex = first_enable[i];
-					/*
-					if(this.options.length<=1) this.selectedIndex = -1;
-					else if(this.selectedIndex < this.options.length - 1) this.selectedIndex++;
-					else this.selectedIndex--;
-					*/
+		function jsonXmlSpecialElem ( jsonObj, jsonObjField ) {
+			if((config.arrayAccessForm=="property" && endsWith(jsonObjField.toString(),("_asArray")))
+					|| jsonObjField.toString().indexOf(config.attributePrefix)==0
+					|| jsonObjField.toString().indexOf("__")==0
+					|| (jsonObj[jsonObjField] instanceof Function) )
+				return true;
+			else
+				return false;
+		}
 
-				} else {
-					if(this.oldonchange) this.oldonchange();
+		function jsonXmlElemCount ( jsonObj ) {
+			var elementsCnt = 0;
+			if(jsonObj instanceof Object ) {
+				for( var it in jsonObj  ) {
+					if(jsonXmlSpecialElem ( jsonObj, it) )
+						continue;
+					elementsCnt++;
 				}
-			};
-
-			if(sels.selectedIndex >= 0 && sels.options[ sels.selectedIndex ].disabled) sels.onchange();
-
-		});
-	}
-
-	/* 단락에디터 fold 컴포넌트 펼치기/접기 */
-	var drEditorFold = $('.xe_content .fold_button');
-	if(drEditorFold.size()) {
-		var fold_container = $('div.fold_container', drEditorFold);
-		$('button.more', drEditorFold).click(function() {
-			$(this).hide().next('button').show().parent().next(fold_container).show();
-		});
-		$('button.less', drEditorFold).click(function() {
-			$(this).hide().prev('button').show().parent().next(fold_container).hide();
-		});
-	}
-	
-	jQuery('input[type="submit"],button[type="submit"]').click(function(ev){
-		var $el = jQuery(ev.currentTarget);
-		
-		setTimeout(function(){
-			return function(){
-				$el.attr('disabled', 'disabled');
-			};
-		}(), 0);
-		
-		setTimeout(function(){
-			return function(){
-				$el.removeAttr('disabled');
-			};
-		}(), 3000);
-	});
-});
-
-(function(){ // String extension methods
-
-function isSameUrl(a,b) {
-	return (a.replace(/#.*$/, '') === b.replace(/#.*$/, ''));
-}
-
-var isArray = Array.isArray || function(obj){ return Object.prototype.toString.call(obj)=='[object Array]' };
-
-/**
- * @brief location.href에서 특정 key의 값을 return
- **/
-String.prototype.getQuery = function(key) {
-	var loc = isSameUrl(this, window.location.href) ? current_url : this;
-	var idx = loc.indexOf('?');
-	if(idx == -1) return null;
-	var query_string = loc.substr(idx+1, this.length), args = {};
-	query_string.replace(/([^=]+)=([^&]*)(&|$)/g, function() { args[arguments[1]] = arguments[2]; });
-
-	var q = args[key];
-	if(typeof(q)=='undefined') q = '';
-
-	return q;
-}
-
-/**
- * @brief location.href에서 특정 key의 값을 return
- **/
-String.prototype.setQuery = function(key, val) {
-	var loc = isSameUrl(this, window.location.href) ? current_url : this;
-	var idx = loc.indexOf('?');
-	var uri = loc.replace(/#$/, '');
-	var act, re, v;
-
-	if (typeof(val)=='undefined') val = '';
-
-	if (idx != -1) {
-		var query_string = uri.substr(idx+1, loc.length), args = {}, q_list = [];
-		uri = loc.substr(0, idx);
-		query_string.replace(/([^=]+)=([^&]*)(&|$)/g, function(all,key,val) { args[key] = val; });
-
-		args[key] = val;
-
-		for (var prop in args) {
-			if (!args.hasOwnProperty(prop)) continue;
-			if (!(v = String(args[prop]).trim())) continue;
-			q_list.push(prop+'='+decodeURI(v));
-		}
-
-		query_string = q_list.join('&');
-		uri = uri+(query_string?'?'+query_string:'');
-	} else {
-		if (String(val).trim()) uri = uri+'?'+key+'='+val;
-	}
-
-	re = /^https:\/\/([^:\/]+)(:\d+|)/i;
-	if (re.test(uri)) {
-		var toReplace = 'http://'+RegExp.$1;
-		if (window.http_port && http_port != 80) toReplace += ':' + http_port;
-		uri = uri.replace(re, toReplace);
-	}
-
-	var bUseSSL = !!window.enforce_ssl;
-	if (!bUseSSL && isArray(window.ssl_actions) && (act=uri.getQuery('act'))) {
-		for (var i=0,c=ssl_actions.length; i < c; i++) {
-			if (ssl_actions[i] === act) {
-				bUseSSL = true;
-				break;
 			}
+			return elementsCnt;
 		}
-	}
 
-	re = /https?:\/\/([^:\/]+)(:\d+|)/i;
-	if (bUseSSL && re.test(uri)) {
-		var toReplace = 'https://'+RegExp.$1
-		if (window.https_port && https_port != 443) toReplace += ':' + https_port;
-		uri = uri.replace(re, toReplace);
-	}
-	if (!bUseSSL && re.test(uri)) {
-		toReplace = 'http://'+RegExp.$1;
-		if (window.http_port && http_port != 80) toReplace += ':' + http_port;
-		uri = uri.replace(re, toReplace);
-	}
-
-	// insert index.php if it isn't included
-	uri = uri.replace(/\/(index\.php)?\?/, '/index.php?');
-
-	return encodeURI(uri);
-}
-
-/**
- * @brief string prototype으로 trim 함수 추가
- **/
-String.prototype.trim = function() {
-	return this.replace(/(^\s*)|(\s*$)/g, "");
-}
-
-})();
-
-/**
- * @brief xSleep(micro time)
- **/
-function xSleep(sec) {
-	sec = sec / 1000;
-	var now = new Date();
-	var sleep = new Date();
-	while( sleep.getTime() - now.getTime() < sec) {
-		sleep = new Date();
-	}
-}
-
-/**
- * @brief 주어진 인자가 하나라도 defined되어 있지 않으면 false return
- **/
-function isDef() {
-	for(var i=0; i < arguments.length; ++i) {
-		if(typeof(arguments[i]) == "undefined") return false;
-	}
-	return true;
-}
-
-/**
- * @brief 윈도우 오픈
- * 열려진 윈도우의 관리를 통해 window.focus()등을 FF에서도 비슷하게 구현함
- **/
-var winopen_list = new Array();
-function winopen(url, target, attribute) {
-	if(typeof(xeVid)!='undefined' && url.indexOf(request_uri)>-1 && !url.getQuery('vid')) url = url.setQuery('vid',xeVid);
-	try {
-		if(target != "_blank" && winopen_list[target]) {
-			winopen_list[target].close();
-			winopen_list[target] = null;
+		function checkJsonObjPropertiesFilter(jsonObj, propertyName, jsonObjPath) {
+			return config.jsonPropertiesFilter.length == 0
+				|| jsonObjPath==""
+				|| checkInStdFiltersArrayForm(config.jsonPropertiesFilter, jsonObj, propertyName, jsonObjPath);
 		}
-	} catch(e) {
-	}
 
-	if(typeof(target) == 'undefined') target = '_blank';
-	if(typeof(attribute) == 'undefined') attribute = '';
-	var win = window.open(url, target, attribute);
-	win.focus();
-	if(target != "_blank") winopen_list[target] = win;
-}
-
-/**
- * @brief 팝업으로만 띄우기
- * common/tpl/popup_layout.html이 요청되는 XE내의 팝업일 경우에 사용
- **/
-function popopen(url, target) {
-	if(typeof(target) == "undefined") target = "_blank";
-	if(typeof(xeVid)!='undefined' && url.indexOf(request_uri)>-1 && !url.getQuery('vid')) url = url.setQuery('vid',xeVid);
-	winopen(url, target, "width=650,height=500,scrollbars=yes,resizable=yes,toolbars=no");
-}
-
-/**
- * @brief 메일 보내기용
- **/
-function sendMailTo(to) {
-	location.href="mailto:"+to;
-}
-
-/**
- * @brief url이동 (open_window 값이 N 가 아니면 새창으로 띄움)
- **/
-function move_url(url, open_window) {
-	if(!url) return false;
-	if(typeof(open_window) == 'undefined') open_window = 'N';
-	if(open_window=='N') {
-		open_window = false;
-	} else {
-		open_window = true;
-	}
-
-	if(/^\./.test(url)) url = request_uri+url;
-
-	if(open_window) {
-		winopen(url);
-	} else {
-		location.href=url;
-	}
-
-	return false;
-}
-
-/**
- * @brief 멀티미디어 출력용 (IE에서 플래쉬/동영상 주변에 점선 생김 방지용)
- **/
-function displayMultimedia(src, width, height, options) {
-	var html = _displayMultimedia(src, width, height, options);
-	if(html) document.writeln(html);
-}
-function _displayMultimedia(src, width, height, options) {
-	if(src.indexOf('files') == 0) src = request_uri + src;
-
-	var defaults = {
-		wmode : 'transparent',
-		allowScriptAccess : 'sameDomain',
-		quality : 'high',
-		flashvars : '',
-		autostart : false
-	};
-
-	var params = jQuery.extend(defaults, options || {});
-	var autostart = (params.autostart && params.autostart != 'false') ? 'true' : 'false';
-	delete(params.autostart);
-
-	var clsid = "";
-	var codebase = "";
-	var html = "";
-
-	if(/\.(gif|jpg|jpeg|bmp|png)$/i.test(src)){
-		html = '<img src="'+src+'" width="'+width+'" height="'+height+'" />';
-	} else if(/\.flv$/i.test(src) || /\.mov$/i.test(src) || /\.moov$/i.test(src) || /\.m4v$/i.test(src)) {
-		html = '<embed src="'+request_uri+'common/img/flvplayer.swf" allowfullscreen="true" allowscriptaccess="never" autostart="'+autostart+'" width="'+width+'" height="'+height+'" flashvars="&file='+src+'&width='+width+'&height='+height+'&autostart='+autostart+'" wmode="'+params.wmode+'" />';
-	} else if(/\.swf/i.test(src)) {
-		clsid = 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000';
-
-		if(typeof(enforce_ssl)!='undefined' && enforce_ssl){ codebase = "https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,28,0"; }
-		else { codebase = "http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,28,0"; }
-		html = '<object classid="'+clsid+'" codebase="'+codebase+'" width="'+width+'" height="'+height+'" flashvars="'+params.flashvars+'">';
-		html += '<param name="movie" value="'+src+'" />';
-		for(var name in params) {
-			if(params[name] != 'undefined' && params[name] != '') {
-				html += '<param name="'+name+'" value="'+params[name]+'" />';
+		function parseJSONAttributes ( jsonObj ) {
+			var attrList = [];
+			if(jsonObj instanceof Object ) {
+				for( var ait in jsonObj  ) {
+					if(ait.toString().indexOf("__")== -1 && ait.toString().indexOf(config.attributePrefix)==0) {
+						attrList.push(ait);
+					}
+				}
 			}
-		}
-		html += '' + '<embed src="'+src+'" allowscriptaccess="never" autostart="'+autostart+'" width="'+width+'" height="'+height+'" flashvars="'+params.flashvars+'" wmode="'+params.wmode+'"></embed>' + '</object>';
-	}  else {
-		if (jQuery.browser.mozilla || jQuery.browser.opera) {
-			// firefox and opera uses 0 or 1 for autostart parameter.
-			autostart = (params.autostart && params.autostart != 'false') ? '1' : '0';
+			return attrList;
 		}
 
-		html = '<embed src="'+src+'" allowscriptaccess="never" autostart="'+autostart+'" width="'+width+'" height="'+height+'"';
-		if(params.wmode == 'transparent') {
-			html += ' windowlessvideo="1"';
+		function parseJSONTextAttrs ( jsonTxtObj ) {
+			var result ="";
+
+			if(jsonTxtObj.__cdata!=null) {
+				result+="<![CDATA["+jsonTxtObj.__cdata+"]]>";
+			}
+
+			if(jsonTxtObj.__text!=null) {
+				if(config.escapeMode)
+					result+=escapeXmlChars(jsonTxtObj.__text);
+				else
+					result+=jsonTxtObj.__text;
+			}
+			return result;
 		}
-		html += '></embed>';
-	}
-	return html;
-}
 
-/**
- * @brief 에디터에서 사용되는 내용 여닫는 코드 (고정, zbxe용)
- **/
-function zbxe_folder_open(id) {
-	jQuery("#folder_open_"+id).hide();
-	jQuery("#folder_close_"+id).show();
-	jQuery("#folder_"+id).show();
-}
-function zbxe_folder_close(id) {
-	jQuery("#folder_open_"+id).show();
-	jQuery("#folder_close_"+id).hide();
-	jQuery("#folder_"+id).hide();
-}
+		function parseJSONTextObject ( jsonTxtObj ) {
+			var result ="";
 
-/**
- * @brief 팝업의 경우 내용에 맞춰 현 윈도우의 크기를 조절해줌
- * 팝업의 내용에 맞게 크기를 늘리는 것은... 쉽게 되지는 않음.. ㅡ.ㅜ
- * popup_layout 에서 window.onload 시 자동 요청됨.
- **/
-function setFixedPopupSize() {
-	var $ = jQuery, $win = $(window), $pc = $('body>.popup'), w, h, dw, dh, offset;
+			if( jsonTxtObj instanceof Object ) {
+				result+=parseJSONTextAttrs ( jsonTxtObj );
+			}
+			else
+				if(jsonTxtObj!=null) {
+					if(config.escapeMode)
+						result+=escapeXmlChars(jsonTxtObj);
+					else
+						result+=jsonTxtObj;
+				}
 
-	offset = $pc.css({overflow:'scroll'}).offset();
+			return result;
+		}
 
-	w = $pc.width(10).height(10000).get(0).scrollWidth + offset.left*2;
-	h = $pc.height(10).width(10000).get(0).scrollHeight + offset.top*2;
+		function getJsonPropertyPath(jsonObjPath, jsonPropName) {
+			if (jsonObjPath==="") {
+				return jsonPropName;
+			}
+			else
+				return jsonObjPath+"."+jsonPropName;
+		}
 
-	if(w < 600) w = 600 + offset.left*2;
-
-	dw = $win.width();
-	dh = $win.height();
-
-	if(w != dw) window.resizeBy(w - dw, 0);
-	if(h != dh) window.resizeBy(0, h - dh);
-
-	$pc.width(w-offset.left*2).css({overflow:'',height:''});
-}
-
-/**
- * @brief 추천/비추천,스크랩,신고기능등 특정 srl에 대한 특정 module/action을 호출하는 함수
- **/
-function doCallModuleAction(module, action, target_srl) {
-	var params = {
-		target_srl : target_srl,
-		cur_mid    : current_mid,
-		mid        : current_mid
-	};
-	exec_xml(module, action, params, completeCallModuleAction);
-}
-
-function completeCallModuleAction(ret_obj, response_tags) {
-	if(ret_obj['message']!='success') alert(ret_obj['message']);
-	location.reload();
-}
-
-function completeMessage(ret_obj) {
-	alert(ret_obj['message']);
-	location.reload();
-}
-
-
-
-/* 언어코드 (lang_type) 쿠키값 변경 */
-function doChangeLangType(obj) {
-	if(typeof(obj) == "string") {
-		setLangType(obj);
-	} else {
-		var val = obj.options[obj.selectedIndex].value;
-		setLangType(val);
-	}
-	location.href = location.href.setQuery('l', '');
-}
-function setLangType(lang_type) {
-	var expire = new Date();
-	expire.setTime(expire.getTime()+ (7000 * 24 * 3600000));
-	setCookie('lang_type', lang_type, expire, '/');
-}
-
-/* 미리보기 */
-function doDocumentPreview(obj) {
-	var fo_obj = obj;
-	while(fo_obj.nodeName != "FORM") {
-		fo_obj = fo_obj.parentNode;
-	}
-	if(fo_obj.nodeName != "FORM") return;
-	var editor_sequence = fo_obj.getAttribute('editor_sequence');
-
-	var content = editorGetContent(editor_sequence);
-
-	var win = window.open("", "previewDocument","toolbars=no,width=700px;height=800px,scrollbars=yes,resizable=yes");
-
-	var dummy_obj = jQuery("#previewDocument");
-
-	if(!dummy_obj.length) {
-		jQuery(
-			'<form id="previewDocument" target="previewDocument" method="post" action="'+request_uri+'">'+
-			'<input type="hidden" name="module" value="document" />'+
-			'<input type="hidden" name="act" value="dispDocumentPreview" />'+
-			'<input type="hidden" name="content" />'+
-			'</form>'
-		).appendTo(document.body);
-
-		dummy_obj = jQuery("#previewDocument")[0];
-	} else {
-		dummy_obj = dummy_obj[0];
-	}
-
-	if(dummy_obj) {
-		dummy_obj.content.value = content;
-		dummy_obj.submit();
-	}
-}
-
-/* 게시글 저장 */
-function doDocumentSave(obj) {
-	var editor_sequence = obj.form.getAttribute('editor_sequence');
-	var prev_content = editorRelKeys[editor_sequence]['content'].value;
-	if(typeof(editor_sequence)!='undefined' && editor_sequence && typeof(editorRelKeys)!='undefined' && typeof(editorGetContent)=='function') {
-		var content = editorGetContent(editor_sequence);
-		editorRelKeys[editor_sequence]['content'].value = content;
-	}
-
-	var params={}, responses=['error','message','document_srl'], elms=obj.form.elements, data=jQuery(obj.form).serializeArray();;
-	jQuery.each(data, function(i, field){
-		var val = jQuery.trim(field.value);
-		if(!val) return true;
-		if(/\[\]$/.test(field.name)) field.name = field.name.replace(/\[\]$/, '');
-		if(params[field.name]) params[field.name] += '|@|'+val;
-		else params[field.name] = field.value;
-	});
-
-	exec_xml('document','procDocumentTempSave', params, completeDocumentSave, responses, params, obj.form);
-
-	editorRelKeys[editor_sequence]['content'].value = prev_content;
-	return false;
-}
-
-function completeDocumentSave(ret_obj) {
-	jQuery('input[name=document_srl]').eq(0).val(ret_obj['document_srl']);
-	alert(ret_obj['message']);
-}
-
-/* 저장된 게시글 불러오기 */
-var objForSavedDoc = null;
-function doDocumentLoad(obj) {
-	// 저장된 게시글 목록 불러오기
-	objForSavedDoc = obj.form;
-	popopen(request_uri.setQuery('module','document').setQuery('act','dispTempSavedList'));
-}
-
-/* 저장된 게시글의 선택 */
-function doDocumentSelect(document_srl, module) {
-	if(!opener || !opener.objForSavedDoc) {
-		window.close();
-		return;
-	}
-	
-	if(module==underfined) {
-		module = 'document'
-	}
-
-	// 게시글을 가져와서 등록하기
-	switch(module) {
-		case 'page' :
-			var url = opener.current_url;
-			url = url.setQuery('document_srl', document_srl);
-			
-			if(url.getQuery('act') === 'dispPageAdminMobileContentModify') {
-				url = url.setQuery('act', 'dispPageAdminMobileContentModify');
+		function parseJSONArray ( jsonArrRoot, jsonArrObj, attrList, jsonObjPath ) {
+			var result = "";
+			if(jsonArrRoot.length == 0) {
+				result+=startTag(jsonArrRoot, jsonArrObj, attrList, true);
 			}
 			else {
-				url = url.setQuery('act', 'dispPageAdminContentModify');
+				for(var arIdx = 0; arIdx < jsonArrRoot.length; arIdx++) {
+					result+=startTag(jsonArrRoot[arIdx], jsonArrObj, parseJSONAttributes(jsonArrRoot[arIdx]), false);
+					result+=parseJSONObject(jsonArrRoot[arIdx], getJsonPropertyPath(jsonObjPath,jsonArrObj));
+					result+=endTag(jsonArrRoot[arIdx],jsonArrObj);
+				}
 			}
-			opener.location.href = url;
-			break;
-		default :
-			opener.location.href = opener.current_url.setQuery('document_srl', document_srl).setQuery('act', 'dispBoardWrite');
-			break;
-	}
-	window.close();
-}
-
-/* 스킨 정보 */
-function viewSkinInfo(module, skin) {
-	popopen("./?module=module&act=dispModuleSkinInfo&selected_module="+module+"&skin="+skin, 'SkinInfo');
-}
-
-
-/* 관리자가 문서를 관리하기 위해서 선택시 세션에 넣음 */
-var addedDocument = new Array();
-function doAddDocumentCart(obj) {
-	var srl = obj.value;
-	addedDocument[addedDocument.length] = srl;
-	setTimeout(function() { callAddDocumentCart(addedDocument.length); }, 100);
-}
-
-function callAddDocumentCart(document_length) {
-	if(addedDocument.length<1 || document_length != addedDocument.length) return;
-	var params = new Array();
-	params["srls"] = addedDocument.join(",");
-	exec_xml("document","procDocumentAddCart", params, null);
-	addedDocument = new Array();
-}
-
-/* ff의 rgb(a,b,c)를 #... 로 변경 */
-function transRGB2Hex(value) {
-	if(!value) return value;
-	if(value.indexOf('#') > -1) return value.replace(/^#/, '');
-
-	if(value.toLowerCase().indexOf('rgb') < 0) return value;
-	value = value.replace(/^rgb\(/i, '').replace(/\)$/, '');
-	value_list = value.split(',');
-
-	var hex = '';
-	for(var i = 0; i < value_list.length; i++) {
-		var color = parseInt(value_list[i], 10).toString(16);
-		if(color.length == 1) color = '0'+color;
-		hex += color;
-	}
-	return hex;
-}
-
-/* 보안 로그인 모드로 전환 */
-function toggleSecuritySignIn() {
-	var href = location.href;
-	if(/https:\/\//i.test(href)) location.href = href.replace(/^https/i,'http');
-	else location.href = href.replace(/^http/i,'https');
-}
-
-function reloadDocument() {
-	location.reload();
-}
-
-
-/**
-*
-* Base64 encode / decode
-* http://www.webtoolkit.info/
-*
-**/
-
-var Base64 = {
-
-	// private property
-	_keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-
-	// public method for encoding
-	encode : function (input) {
-		var output = "";
-		var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
-		var i = 0;
-
-		input = Base64._utf8_encode(input);
-
-		while (i < input.length) {
-
-			chr1 = input.charCodeAt(i++);
-			chr2 = input.charCodeAt(i++);
-			chr3 = input.charCodeAt(i++);
-
-			enc1 = chr1 >> 2;
-			enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-			enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-			enc4 = chr3 & 63;
-
-			if (isNaN(chr2)) {
-				enc3 = enc4 = 64;
-			} else if (isNaN(chr3)) {
-				enc4 = 64;
-			}
-
-			output = output +
-			this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) +
-			this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
-
+			return result;
 		}
 
-		return output;
-	},
+		function parseJSONObject ( jsonObj, jsonObjPath ) {
+			var result = "";
 
-	// public method for decoding
-	decode : function (input) {
-		var output = "";
-		var chr1, chr2, chr3;
-		var enc1, enc2, enc3, enc4;
-		var i = 0;
+			var elementsCnt = jsonXmlElemCount ( jsonObj );
 
-		input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+			if(elementsCnt > 0) {
+				for( var it in jsonObj ) {
 
-		while (i < input.length) {
+					if(jsonXmlSpecialElem ( jsonObj, it) || (jsonObjPath!="" && !checkJsonObjPropertiesFilter(jsonObj, it, getJsonPropertyPath(jsonObjPath,it))) )
+						continue;
 
-			enc1 = this._keyStr.indexOf(input.charAt(i++));
-			enc2 = this._keyStr.indexOf(input.charAt(i++));
-			enc3 = this._keyStr.indexOf(input.charAt(i++));
-			enc4 = this._keyStr.indexOf(input.charAt(i++));
+					var subObj = jsonObj[it];
 
-			chr1 = (enc1 << 2) | (enc2 >> 4);
-			chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-			chr3 = ((enc3 & 3) << 6) | enc4;
+					var attrList = parseJSONAttributes( subObj )
 
-			output = output + String.fromCharCode(chr1);
+					if(subObj == null || subObj == undefined) {
+						result+=startTag(subObj, it, attrList, true);
+					}
+					else
+					if(subObj instanceof Object) {
 
-			if (enc3 != 64) {
-				output = output + String.fromCharCode(chr2);
+						if(subObj instanceof Array) {
+							result+=parseJSONArray( subObj, it, attrList, jsonObjPath );
+						}
+						else if(subObj instanceof Date) {
+							result+=startTag(subObj, it, attrList, false);
+							result+=subObj.toISOString();
+							result+=endTag(subObj,it);
+						}
+						else {
+							var subObjElementsCnt = jsonXmlElemCount ( subObj );
+							if(subObjElementsCnt > 0 || subObj.__text!=null || subObj.__cdata!=null) {
+								result+=startTag(subObj, it, attrList, false);
+								result+=parseJSONObject(subObj, getJsonPropertyPath(jsonObjPath,it));
+								result+=endTag(subObj,it);
+							}
+							else {
+								result+=startTag(subObj, it, attrList, true);
+							}
+						}
+					}
+					else {
+						result+=startTag(subObj, it, attrList, false);
+						result+=parseJSONTextObject(subObj);
+						result+=endTag(subObj,it);
+					}
+				}
 			}
-			if (enc4 != 64) {
-				output = output + String.fromCharCode(chr3);
-			}
+			result+=parseJSONTextObject(jsonObj);
 
+			return result;
 		}
 
-		output = Base64._utf8_decode(output);
-
-		return output;
-
-	},
-
-	// private method for UTF-8 encoding
-	_utf8_encode : function (string) {
-		string = string.replace(/\r\n/g,"\n");
-		var utftext = "";
-
-		for (var n = 0; n < string.length; n++) {
-
-			var c = string.charCodeAt(n);
-
-			if (c < 128) {
-				utftext += String.fromCharCode(c);
+		this.parseXmlString = function(xmlDocStr) {
+			var isIEParser = window.ActiveXObject || "ActiveXObject" in window;
+			if (xmlDocStr === undefined) {
+				return null;
 			}
-			else if((c > 127) && (c < 2048)) {
-				utftext += String.fromCharCode((c >> 6) | 192);
-				utftext += String.fromCharCode((c & 63) | 128);
+			var xmlDoc;
+			if (window.DOMParser) {
+				var parser=new window.DOMParser();
+				var parsererrorNS = null;
+				// IE9+ now is here
+				if(!isIEParser) {
+					try {
+						parsererrorNS = parser.parseFromString("INVALID", "text/xml").getElementsByTagName("parsererror")[0].namespaceURI;
+					}
+					catch(err) {
+						parsererrorNS = null;
+					}
+				}
+				try {
+					xmlDoc = parser.parseFromString( xmlDocStr, "text/xml" );
+					if( parsererrorNS!= null && xmlDoc.getElementsByTagNameNS(parsererrorNS, "parsererror").length > 0) {
+						//throw new Error('Error parsing XML: '+xmlDocStr);
+						xmlDoc = null;
+					}
+				}
+				catch(err) {
+					xmlDoc = null;
+				}
 			}
 			else {
-				utftext += String.fromCharCode((c >> 12) | 224);
-				utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-				utftext += String.fromCharCode((c & 63) | 128);
+				// IE :(
+				if(xmlDocStr.indexOf("<?")==0) {
+					xmlDocStr = xmlDocStr.substr( xmlDocStr.indexOf("?>") + 2 );
+				}
+				xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+				xmlDoc.async="false";
+				xmlDoc.loadXML(xmlDocStr);
 			}
-
-		}
-
-		return utftext;
-	},
-
-	// private method for UTF-8 decoding
-	_utf8_decode : function (utftext) {
-		var string = "";
-		var i = 0;
-		var c = c1 = c2 = 0;
-
-		while ( i < utftext.length ) {
-
-			c = utftext.charCodeAt(i);
-
-			if (c < 128) {
-				string += String.fromCharCode(c);
-				i++;
-			}
-			else if((c > 191) && (c < 224)) {
-				c2 = utftext.charCodeAt(i+1);
-				string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-				i += 2;
-			}
-			else {
-				c2 = utftext.charCodeAt(i+1);
-				c3 = utftext.charCodeAt(i+2);
-				string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-				i += 3;
-			}
-
-		}
-
-		return string;
-	}
-
-}
-
-
-
-
-
-
-/* ----------------------------------------------
- * DEPRECATED
- * 하위호환용으로 남겨 놓음
- * ------------------------------------------- */
-
-if(typeof(resizeImageContents) == 'undefined') {
-	function resizeImageContents() {}
-}
-
-if(typeof(activateOptionDisabled) == 'undefined') {
-	function activateOptionDisabled() {}
-}
-
-objectExtend = jQuery.extend;
-
-/**
- * @brief 특정 Element의 display 옵션 토글
- **/
-function toggleDisplay(objId) {
-	jQuery('#'+objId).toggle();
-}
-
-/* 체크박스 선택 */
-function checkboxSelectAll(formObj, name, checked) {
-	var itemName = name;
-	var option = {};
-	if(typeof(formObj) != "undefined") option.wrap = formObj;
-	if(typeof(checked) != "undefined") option.checked = checked;
-
-	XE.checkboxToggleAll(itemName, option);
-}
-
-/* 체크박스를 실행 */
-function clickCheckBoxAll(formObj, name) {
-	var itemName = name;
-	var option = { doClick:true };
-	if(typeof(formObj) != "undefined") option.wrap = formObj;
-
-	XE.checkboxToggleAll(itemName, option);
-}
-
-/**
- * @brief 에디터에서 사용하되 내용 여닫는 코드 (zb5beta beta 호환용으로 남겨 놓음)
- **/
-function svc_folder_open(id) {
-	jQuery("#_folder_open_"+id).hide();
-	jQuery("#_folder_close_"+id).show();
-	jQuery("#_folder_"+id).show();
-}
-function svc_folder_close(id) {
-	jQuery("#_folder_open_"+id).show();
-	jQuery("#_folder_close_"+id).hide();
-	jQuery("#_folder_"+id).hide();
-}
-
-/**
- * @brief 날짜 선택 (달력 열기)
- **/
-function open_calendar(fo_id, day_str, callback_func) {
-	if(typeof(day_str)=="undefined") day_str = "";
-
-	var url = "./common/tpl/calendar.php?";
-	if(fo_id) url+="fo_id="+fo_id;
-	if(day_str) url+="&day_str="+day_str;
-	if(callback_func) url+="&callback_func="+callback_func;
-
-	popopen(url, 'Calendar');
-}
-
-var loaded_popup_menus = XE.loaded_popup_menus;
-function createPopupMenu() {}
-function chkPopupMenu() {}
-function displayPopupMenu(ret_obj, response_tags, params) {
-	XE.displayPopupMenu(ret_obj, response_tags, params);
-}
-
-function GetObjLeft(obj) {
-	return jQuery(obj).offset().left;
-}
-function GetObjTop(obj) {
-	return jQuery(obj).offset().top;
-}
-
-function replaceOuterHTML(obj, html) {
-	jQuery(obj).replaceWith(html);
-}
-
-function getOuterHTML(obj) {
-	return jQuery(obj).html().trim();
-}
-
-function setCookie(name, value, expire, path) {
-	var s_cookie = name + "=" + escape(value) +
-		((!expire) ? "" : ("; expires=" + expire.toGMTString())) +
-		"; path=" + ((!path) ? "/" : path);
-
-	document.cookie = s_cookie;
-}
-
-function getCookie(name) {
-	var match = document.cookie.match(new RegExp(name+'=(.*?)(?:;|$)'));
-	if(match) return unescape(match[1]);
-}
-
-function is_def(v) {
-	return (typeof(v)!='undefined');
-}
-
-function ucfirst(str) {
-	return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function get_by_id(id) {
-	return document.getElementById(id);
-}
-
-jQuery(function($){
-	$('.lang_code').each(
-		function() 
-		{
-			var objText = $(this);
-			var targetName = objText.attr("id");
-			if(typeof(targetName) == "undefined") targetName = objText.attr("name");
-			if(typeof(targetName) == "undefined") return;
-			objText.after("<a href='"+request_uri.setQuery('module','module').setQuery('act','dispModuleAdminLangcode').setQuery('target',targetName)+"' class='buttonSet buttonSetting' onclick='popopen(this.href);return false;'><span>find_langcode</span></a>"); 
-		}
-	);
-
-	// display popup menu that contains member actions and document actions
-	$(document).click(function(evt) {
-		var $area = $('#popup_menu_area');
-		if(!$area.length) $area = $('<div id="popup_menu_area" style="display:none;z-index:9999" />').appendTo(document.body);
-
-		// 이전에 호출되었을지 모르는 팝업메뉴 숨김
-		$area.hide();
-
-		var $target = $(evt.target).filter('a,div,span');
-		if(!$target.length) $target = $(evt.target).closest('a,div,span');
-		if(!$target.length) return;
-
-		// 객체의 className값을 구함
-		var cls = $target.attr('class'), match;
-		if(cls) match = cls.match(new RegExp('(?:^| )((document|comment|member)_([1-9]\\d*))(?: |$)',''));
-		if(!match) return;
-
-		var action = 'get'+ucfirst(match[2])+'Menu';
-		var params = {
-			mid        : current_mid,
-			cur_mid    : current_mid,
-			menu_id    : match[1],
-			target_srl : match[3],
-			cur_act    : current_url.getQuery('act'),
-			page_x     : evt.pageX,
-			page_y     : evt.pageY
+			return xmlDoc;
 		};
-		var response_tags = 'error message menus'.split(' ');
 
-		// prevent default action
-		evt.preventDefault();
-		evt.stopPropagation();
+		this.asArray = function(prop) {
+			if (prop === undefined || prop == null)
+				return [];
+			else
+			if(prop instanceof Array)
+				return prop;
+			else
+				return [prop];
+		};
 
-		if(is_def(window.xeVid)) params.vid = xeVid;
-		if(is_def(XE.loaded_popup_menus[params.menu_id])) return XE.displayPopupMenu(params, response_tags, params);
+		this.toXmlDateTime = function(dt) {
+			if(dt instanceof Date)
+				return dt.toISOString();
+			else
+			if(typeof(dt) === 'number' )
+				return new Date(dt).toISOString();
+			else
+				return null;
+		};
 
-		show_waiting_message = false;
-		exec_xml('member', action, params, XE.displayPopupMenu, response_tags, params);
-		show_waiting_message = true;
-	});
+		this.asDateTime = function(prop) {
+			if(typeof(prop) == "string") {
+				return fromXmlDateTime(prop);
+			}
+			else
+				return prop;
+		};
 
-	/**
-	 * Create popup windows automatically.
-	 * Find anchors that have the '_xe_popup' class, then add popup script to them.
-	 */
-	$('a._xe_popup').click(function(){
-		var $this = $(this), name = $this.attr('name'), href = $this.attr('href'), win;
+		this.xml2json = function (xmlDoc) {
+			return parseDOMChildren ( xmlDoc );
+		};
 
-		if(!name) name = '_xe_popup_'+Math.floor(Math.random()*1000);
+		this.xml_str2json = function (xmlDocStr) {
+			var xmlDoc = this.parseXmlString(xmlDocStr);
+			if(xmlDoc!=null)
+				return this.xml2json(xmlDoc);
+			else
+				return null;
+		};
 
-		win = window.open(href, name, 'left=10,top=10,width=10,height=10,resizable=no,scrollbars=no,toolbars=no');
-		if(win) win.focus();
+		this.json2xml_str = function (jsonObj) {
+			return parseJSONObject ( jsonObj, "" );
+		};
 
-		// cancel default action
-		return false;
-	});
+		this.json2xml = function (jsonObj) {
+			var xmlDocStr = this.json2xml_str (jsonObj);
+			return this.parseXmlString(xmlDocStr);
+		};
 
-	// date picker default settings
-	if($.datepicker) {
-		$.datepicker.setDefaults({
-			dateFormat : 'yy-mm-dd'
-		});
+		this.getVersion = function () {
+			return VERSION;
+		};
 	}
-});
-
-/**
- * @file   common/js/xml_handler.js
- * @brief  XE에서 ajax기능을 이용함에 있어 module, act를 잘 사용하기 위한 자바스크립트
- **/
+}))
 
 // xml handler을 이용하는 user function
 var show_waiting_message = true;
 
-/**
- * This work is licensed under Creative Commons GNU LGPL License.
- * License: http://creativecommons.org/licenses/LGPL/2.1/
- * Version: 0.9
- * Author:  Stefan Goessner/2006
- * Web:     http://goessner.net/
- **/
-function xml2json(xml, tab, ignoreAttrib) {
-	var X = {
-		toObj: function(xml) {
-			var o = {};
-			if (xml.nodeType==1) { // element node ..
-				if (ignoreAttrib && xml.attributes.length) { // element with attributes  ..
-					for (var i=0; i<xml.attributes.length; i++) {
-						o["@"+xml.attributes[i].nodeName] = (xml.attributes[i].nodeValue||"").toString();
-					}
-				}
-
-				if (xml.firstChild) { // element has child nodes ..
-					var textChild=0, cdataChild=0, hasElementChild=false;
-					for (var n=xml.firstChild; n; n=n.nextSibling) {
-						if (n.nodeType==1) {
-							hasElementChild = true;
-						} else if (n.nodeType==3 && n.nodeValue.match(/[^ \f\n\r\t\v]/)) {
-							textChild++; // non-whitespace text
-						}else if (n.nodeType==4) {
-							cdataChild++; // cdata section node
-						}
-					}
-					if (hasElementChild) {
-						if (textChild < 2 && cdataChild < 2) { // structured element with evtl. a single text or/and cdata node ..
-							X.removeWhite(xml);
-							for (var n1=xml.firstChild; n1; n1=n1.nextSibling) {
-								if (n1.nodeType == 3) { // text node
-									o = X.unescape(X.escape(n1.nodeValue));
-								} else if (n1.nodeType == 4) { // cdata node
-									// o["#cdata"] = X.escape(n.nodeValue);
-									o = X.escape(n1.nodeValue);
-								} else if (o[n1.nodeName]) { // multiple occurence of element ..
-									if (o[n1.nodeName] instanceof Array) {
-										o[n1.nodeName][o[n1.nodeName].length] = X.toObj(n1);
-									} else {
-										o[n1.nodeName] = [o[n1.nodeName], X.toObj(n1)];
-									}
-								} else { // first occurence of element..
-									o[n1.nodeName] = X.toObj(n1);
-								}
-							}
-						}
-						else { // mixed content
-							if (!xml.attributes.length) {
-								o = X.unescape(X.escape(X.innerXml(xml)));
-							} else {
-								o["#text"] = X.unescape(X.escape(X.innerXml(xml)));
-							}
-						}
-					} else if (textChild) { // pure text
-						if (!xml.attributes.length) {
-							o = X.unescape(X.escape(X.innerXml(xml)));
-						} else {
-							o["#text"] = X.unescape(X.escape(X.innerXml(xml)));
-						}
-					} else if (cdataChild) { // cdata
-						if (cdataChild > 1) {
-							o = X.escape(X.innerXml(xml));
-						} else {
-							for (var n2=xml.firstChild; n2; n2=n2.nextSibling) {
-								// o["#cdata"] = X.escape(n2.nodeValue);
-								o = X.escape(n2.nodeValue);
-							}
-						}
-					}
-				}
-
-				if (!xml.attributes.length && !xml.firstChild) {
-					o = null;
-				}
-			} else if (xml.nodeType==9) { // document.node
-				o = X.toObj(xml.documentElement);
-			} else {
-				alert("unhandled node type: " + xml.nodeType);
-			}
-
-			return o;
-		},
-		toJson: function(o, name, ind) {
-			var json = name ? ("\""+name+"\"") : "";
-			if (o instanceof Array) {
-				for (var i=0,n=o.length; i<n; i++) {
-					o[i] = X.toJson(o[i], "", ind+"\t");
-				}
-				json += (name?":[":"[") + (o.length > 1 ? ("\n"+ind+"\t"+o.join(",\n"+ind+"\t")+"\n"+ind) : o.join("")) + "]";
-			} else if (o === null) {
-				json += (name&&":") + "null";
-			} else if (typeof(o) == "object") {
-				var arr = [];
-				for (var m in o) {
-					arr[arr.length] = X.toJson(o[m], m, ind+"\t");
-				}
-				json += (name?":{":"{") + (arr.length > 1 ? ("\n"+ind+"\t"+arr.join(",\n"+ind+"\t")+"\n"+ind) : arr.join("")) + "}";
-			} else if (typeof(o) == "string") {
-				json += (name&&":") + "\"" + o.toString() + "\"";
-			} else {
-				json += (name&&":") + o.toString();
-			}
-			return json;
-		},
-		innerXml: function(node) {
-			var s = "";
-
-			if ("innerHTML" in node) {
-				s = node.innerHTML;
-			} else {
-				var asXml = function(n) {
-					var s = "";
-					if (n.nodeType == 1) {
-						s += "<" + n.nodeName;
-						for (var i=0; i<n.attributes.length;i++) {
-							s += " " + n.attributes[i].nodeName + "=\"" + (n.attributes[i].nodeValue||"").toString() + "\"";
-						}
-						if (n.firstChild) {
-							s += ">";
-							for (var c=n.firstChild; c; c=c.nextSibling) {
-								s += asXml(c);
-							}
-							s += "</"+n.nodeName+">";
-						} else {
-							s += "/>";
-						}
-					} else if (n.nodeType == 3) {
-						s += n.nodeValue;
-					} else if (n.nodeType == 4) {
-						s += "<![CDATA[" + n.nodeValue + "]]>";
-					}
-
-					return s;
-				};
-
-				for (var c=node.firstChild; c; c=c.nextSibling) {
-					s += asXml(c);
-				}
-			}
-			return s;
-		},
-		escape: function(txt) {
-			return txt.replace(/[\\]/g, "\\\\")
-				.replace(/[\"]/g, '\\"')
-				.replace(/[\n]/g, '\\n')
-				.replace(/[\r]/g, '\\r');
-		},
-		unescape: function(txt) {
-			if (!navigator.userAgent.match(/Trident\/7.0/)) {
-				return txt.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-			} else {
-				return txt;
-			}
-		},
-		removeWhite: function(e) {
-			e.normalize();
-			for (var n3 = e.firstChild; n3; ) {
-				if (n3.nodeType == 3) { // text node
-					if (!n3.nodeValue.match(/[^ \f\n\r\t\v]/)) { // pure whitespace text node
-						var nxt = n3.nextSibling;
-						e.removeChild(n3);
-						n3 = nxt;
-					} else {
-						n3 = n3.nextSibling;
-					}
-				} else if (n3.nodeType == 1) { // element node
-					X.removeWhite(n3);
-					n3 = n3.nextSibling;
-				} else { // any other node
-					n3 = n3.nextSibling;
-				}
-			}
-			return e;
-		}
-	};
-
-	// document node
-	if (xml.nodeType == 9) xml = xml.documentElement;
-
-	var json_obj = X.toObj(X.removeWhite(xml)), json_str;
-
-	if (typeof(JSON)=='object' && jQuery.isFunction(JSON.stringify) && false) {
-		var obj = {}; obj[xml.nodeName] = json_obj;
-		json_str = JSON.stringify(obj);
-
-		return json_str;
-	} else {
-		json_str = X.toJson(json_obj, xml.nodeName, "");
-
-		return "{" + (tab ? json_str.replace(/\t/g, tab) : json_str.replace(/\t|\n/g, "")) + "}";
-	}
-}
-
 (function($){
+	var x2js = new X2JS();
+
 	/**
 	* @brief exec_xml
 	* @author NAVER (developers@xpressengine.com)
@@ -1548,25 +2744,25 @@ function xml2json(xml, tab, ignoreAttrib) {
 		if(_u1.protocol != _u2.protocol || _u1.port != _u2.port) return send_by_form(xml_path, params);
 
 		var xml = [],
-			xmlHelper = function(params) {
-				var stack = [];
+		xmlHelper = function(params) {
+			var stack = [];
 
-				if ($.isArray(params)) {
-					$.each(params, function(key, val) {
-						stack.push('<value type="array">' + xmlHelper(val) + '</value>');
-					});
-				}
-				else if ($.isPlainObject(params)) {
-					$.each(params, function(key, val) {
-						stack.push('<' + key + '>' + xmlHelper(val) + '</' + key + '>');
-					});
-				}
-				else if (!$.isFunction(params)) {
-					stack.push(String(params).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
-				}
+			if ($.isArray(params)) {
+				$.each(params, function(key, val) {
+					stack.push('<value type="array">' + xmlHelper(val) + '</value>');
+				});
+			}
+			else if ($.isPlainObject(params)) {
+				$.each(params, function(key, val) {
+					stack.push('<' + key + '>' + xmlHelper(val) + '</' + key + '>');
+				});
+			}
+			else if (!$.isFunction(params)) {
+				stack.push(String(params).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+			}
 
-				return stack.join('\n');
-			};
+			return stack.join('\n');
+		};
 
 		xml.push('<?xml version="1.0" encoding="utf-8" ?>');
 		xml.push('<methodCall>');
@@ -1580,7 +2776,11 @@ function xml2json(xml, tab, ignoreAttrib) {
 
 		// 전송 성공시
 		function onsuccess(data, textStatus, xhr) {
-			var resp_xml = $(data).find('response')[0], resp_obj, txt='', ret=[], tags={}, json_str='';
+			var resp_xml = $(data).find('response')[0];
+ 			var resp_obj;
+ 			var txt = '';
+ 			var ret = {};
+ 			var tags = {};
 
 			waiting_obj.css('display', 'none').trigger('cancel_confirm');
 
@@ -1589,9 +2789,7 @@ function xml2json(xml, tab, ignoreAttrib) {
 				return null;
 			}
 
-			json_str = xml2json(resp_xml, false, false);
-			resp_obj = jQuery.parseJSON(json_str);
-			resp_obj = resp_obj.response;
+			resp_obj = x2js.xml2json(data).response;
 
 			if (typeof(resp_obj)=='undefined') {
 				ret.error = -1;
@@ -1605,10 +2803,14 @@ function xml2json(xml, tab, ignoreAttrib) {
 				return ret;
 			}
 
-			$.each(response_tags, function(key, val){ tags[val] = true; });
+			$.each(response_tags, function(key, val){
+ 				tags[val] = true;
+ 			});
 			tags.redirect_url = true;
 			tags.act = true;
-			$.each(resp_obj, function(key, val){ if(tags[key]) ret[key] = val; });
+			$.each(resp_obj, function(key, val){ 
+ 				if(tags[key]) ret[key] = val;
+ 			});
 
 			if(ret.error != '0') {
 				if ($.isFunction($.exec_xml.onerror)) {
@@ -1864,14 +3066,6 @@ function xml2json(xml, tab, ignoreAttrib) {
 
 })(jQuery);
 
-/**
- * @file   common/js/xml_js_filter.js
- * @author NHN (developers@xpressengine.com)
- * @brief  xml filter (validator) plugin
- * 
- * A rule is a method validate one field.
- * A filter is made up of one or more rules.
- **/
 (function($){
 
 var messages  = [];

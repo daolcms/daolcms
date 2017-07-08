@@ -96,6 +96,13 @@
 			<p class="desc">{$lang->about_skin}</p>
 		</li>
 		<li>
+			<p class="q"><label for="mobile_use_editor">{$lang->editor}</label></p>
+			<p class="a">
+				<input type="checkbox" name="mobile_use_editor" id="mobile_use_editor" value="Y" checked="checked"|cond="$module_info->mobile_use_editor == 'Y'" /> <label for="mobile_use_editor">{$lang->mobile_use_editor}</label>
+			</p>
+			<p class="desc">{$lang->mobile_use_editor}</p>
+		</li>
+		<li>
 			<p class="q">{$lang->list_count}</p>
 			<p class="a"><input type="text" name="mobile_list_count" id="mobile_list_count" value="{$module_info->mobile_list_count?$module_info->mobile_list_count:20}" /></p>
 			<p class="desc">{$lang->about_list_count}</p>

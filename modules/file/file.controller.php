@@ -47,6 +47,13 @@ class fileController extends file {
 		
 		$output = $this->insertFile($file_info, $module_srl, $upload_target_srl);
 		Context::setResponseMethod('JSON');
+		$this->add('file_srl',$output->get('file_srl'));
+		$this->add('file_size',$output->get('file_size'));
+		$this->add('direct_download',$output->get('direct_download'));
+		$this->add('source_filename',$output->get('source_filename'));
+		$this->add('download_url',$output->get('uploaded_filename'));
+		$this->add('upload_target_srl',$output->get('upload_target_srl'));
+		if($output->error != '0') $this->stop($output->message);
 	}
 	
 	
@@ -889,13 +896,17 @@ class fileController extends file {
 			$oDB->rollback();
 			return $output;
 		}
-		$args->cover_image = 'Y';
-		$output = executeQuery('file.updateCoverImage', $args);
-		if(!$output->toBool()) {
-			$oDB->rollback();
-			return $output;
+		if($file_info->cover_image != 'Y'){
+			$args->cover_image = 'Y';
+			$output = executeQuery('file.updateCoverImage', $args);
+			if(!$output->toBool()){
+				$oDB->rollback();
+				return $output;
+			}
 		}
 		$oDB->commit();
+		$this->add('is_cover',$args->cover_image);
+		
 		// Delete the thumbnail
 		$thumbnail_path = sprintf('files/thumbnails/%s', getNumberingPath($upload_target_srl, 3));
 		Filehandler::removeFilesInDir($thumbnail_path);
