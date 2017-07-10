@@ -95,8 +95,12 @@ var Validator = xe.createApp('Validator', {
 	API_VALIDATE : function(sender, params) {
 		var result = true, form = params[0], elems = form.elements, filter, filter_to_add, ruleset, callback;
 		var fields, names, name, el, val, mod, len, lenb, max, min, maxb, minb, rules, e_el, e_val, i, c, r, if_, fn;
-		if(elems['ruleset']) filter = form.elements['ruleset'].value;
-		else if(elems['_filter']) filter = form.elements['_filter'].value;
+		if(elems.ruleset){
+			filter = form.elements.ruleset.value;
+		} else if(elems._filter) {
+			filter = form.elements._filter.value;
+		}
+	
 		if(!filter) return true;
 
 		if($.isFunction(callbacks[filter])) callback = callbacks[filter];
@@ -104,7 +108,7 @@ var Validator = xe.createApp('Validator', {
 
 		function regex_quote(str){
 			return str.replace(/([\.\+\-\[\]\{\}\(\)\\])/g, '\\$1');
-		};
+		}
 
 		// get form names
 		fields = [];
@@ -114,7 +118,7 @@ var Validator = xe.createApp('Validator', {
 
 			if(!name || !elems[name]) continue;
 			if(!elems[name].length || elems[name][0] === el) fields.push(name);
-		};
+		}
 		fields = fields.join('\n');
 
 		// get field names matching patterns
@@ -136,7 +140,7 @@ var Validator = xe.createApp('Validator', {
 
 			filter[name] = null;
 			delete filter[name];
-		};
+		}
 
 		filter = $.extend(filter, filter_to_add);
 
@@ -368,10 +372,10 @@ function get_bytes(str) {
  * @brief ajax로 서버에 요청후 결과를 처리할 callback_function을 지정하지 않았을 시 호출되는 기본 함수
  **/
 function filterAlertMessage(ret_obj) {
-	var error = ret_obj["error"];
-	var message = ret_obj["message"];
-	var act = ret_obj["act"];
-	var redirect_url = ret_obj["redirect_url"];
+	var error = ret_obj.error;
+	var message = ret_obj.message;
+	var act = ret_obj.act;
+	var redirect_url = ret_obj.redirect_url;
 	var url = location.href;
 
 	if(typeof(message)!="undefined"&&message&&message!="success") alert(message);
@@ -398,8 +402,8 @@ function legacy_filter(filter_name, form, module, act, callback, responses, conf
 
 	if (!v) return false;
 
-	if (!form.elements['_filter']) $(form).prepend('<input type="hidden" name="_filter" />');
-	form.elements['_filter'].value = filter_name;
+	if (!form.elements._filter) $(form).prepend('<input type="hidden" name="_filter" />');
+	form.elements._filter.value = filter_name;
 
 	args[0] = filter_name;
 	args[1] = function(f) {
