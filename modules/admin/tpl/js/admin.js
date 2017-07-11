@@ -11,7 +11,7 @@ jQuery(function($){
 			.css({top:'15px',left:'5px'})
 			.next()
 				.focus(function(){
-					var $label = $(this).prev().stop().animate({opacity:0, left:'25px'},'fast',function(){ $label.css('visibility','hidden') });
+					var $label = $(this).prev().stop().animate({opacity:0, left:'25px'},'fast',function(){ $label.css('visibility','hidden'); });
 				})
 				.blur(function(){
 					var $this = $(this), $label;
@@ -63,12 +63,12 @@ jQuery(function($){
 		.parent()
 			.mouseleave(function(){ $(this).find('>.action').fadeOut(100); })
 			.mouseenter(function(){ $(this).find('>.action').fadeIn(100); })
-			.focusin(function(){ $(this).mouseenter() })
+			.focusin(function(){ $(this).mouseenter(); })
 			.focusout(function(){
 				var $this = $(this), timer;
 
 				clearTimeout($this.data('timer'));
-				timer = setTimeout(function(){ if(!$this.find(':focus').length) $this.mouseleave() }, 10);
+				timer = setTimeout(function(){ if(!$this.find(':focus').length) $this.mouseleave(); }, 10);
 
 				$this.data('timer', timer);
 			});
@@ -121,19 +121,19 @@ jQuery(function($){
 						.find('>.ellipsis')
 							.css({position:'absolute',zIndex:1})
 							.hover(
-								function(){ $(this).next('.cover').mouseover() },
-								function(){ $(this).next('.cover').mouseout() }
+								function(){ $(this).next('.cover').mouseover();},
+								function(){ $(this).next('.cover').mouseout(); }
 							)
 						.end()
 						.find('>.cover')
 							.css({zIndex:2,opacity:0})
 							.hover(
-								function(){ $(this).css('opacity',1).prev('span').css('visibility','hidden') },
-								function(){ $(this).css('opacity',0).prev('span').css('visibility','visible') }
+								function(){ $(this).css('opacity',1).prev('span').css('visibility','hidden'); },
+								function(){ $(this).css('opacity',0).prev('span').css('visibility','visible'); }
 							)
 						.end();
 				}
-			})
+			});
 	};
 	$('.masked').xeMask();
 });
@@ -153,8 +153,8 @@ jQuery(function($){
 			.find('>.nav-gnb')
 			.mouseover(function(){
 				$(this)
-					.parent('.gnb').addClass('active').end()
-					.find('>li>ul').css('height','auto').end()
+					.parent('.gnb').addClass('active').end();
+					.find('>li>ul').css('height','auto').end();
 			})
 			.mouseleave(function(){
 				$(this)
@@ -204,7 +204,7 @@ $.fn.xeModalWindow = function(){
 			$modal = $( $this.attr('href') );
 			if(!$modal.parent('body').length) {
 				$btnClose = $('<button type="button" class="modalClose" title="Close this layer">X</button>');
-				$btnClose.click(function(){ $modal.data('anchor').trigger('close.mw') });
+				$btnClose.click(function(){ $modal.data('anchor').trigger('close.mw'); });
 
 				$modal
 					.prepend('<span class="bg"></span>')
@@ -250,7 +250,7 @@ $.fn.xeModalWindow = function(){
 			$('html,body').addClass('modalContainer');
 
 			// after event trigger
-			function after(){ $this.trigger('after-open.mw') };
+			function after(){ $this.trigger('after-open.mw'); }
 
 			$(document).bind('keydown.mw', function(event){
 				if(event.which == ESC) {
@@ -287,7 +287,7 @@ $.fn.xeModalWindow = function(){
 			$('html,body').removeClass('modalContainer');
 
 			// after event trigger
-			function after(){ $this.trigger('after-close.mw') };
+			function after(){ $this.trigger('after-close.mw'); }
 
 			$modal.fadeOut(duration, after);
 			$this.focus();
@@ -314,7 +314,7 @@ $.fn.xeContentToggler = function(){
 			$layer.hide()
 				.not('.xe-toggling-content')
 				.addClass('xe-toggling-content')
-				.mousedown(function(event){ dont_close_this_time = true })
+				.mousedown(function(event){ dont_close_this_time = true; })
 				.focusout(function(event){
 					setTimeout(function(){
 						if(!dont_close_this_time && !$layer.find(':focus').length && $layer.data('state') == 'showing') $anchor.trigger('close.tc');
@@ -379,7 +379,7 @@ $.fn.xeContentToggler = function(){
 				);
 
 			// triggering after
-			function trigger_after(){ $this.trigger('after-open.tc') }
+			function trigger_after(){ $this.trigger('after-open.tc'); }
 
 			switch(effect) {
 				case 'slide':
@@ -422,7 +422,7 @@ $.fn.xeContentToggler = function(){
 			$this.trigger('before-close.tc');
 
 			// triggering after
-			function trigger_after(){ $this.trigger('after-close.tc') };
+			function trigger_after(){ $this.trigger('after-close.tc'); }
 
 			// close this layer
 			switch(effect) {
@@ -478,7 +478,7 @@ $.fn.xeModuleFinder = function(){
 						$li = $('<li />').appendTo($ul);
 						$('<button type="button" />').text(list[i].domain).data('site_srl', list[i].site_srl).appendTo($li);
 					}
-				};
+				}
 
 				$.exec_json('admin.getSiteAllList', {domain:val}, on_complete);
 			})
@@ -509,7 +509,7 @@ $.fn.xeModuleFinder = function(){
 							})
 							.trigger('show');
 					}
-				};
+				}
 
 				$finder.find('a.tgAnchor.findsite').trigger('close.tc');
 
@@ -634,7 +634,7 @@ _xeModuleSearch = function(){
 					setSiteList($siteListSearchInput.val());
 
 					$siteListSearchInput.focus();
-				};
+				}
 
 				$siteList.empty();
 				$moduleInstanceList.empty();
@@ -671,7 +671,7 @@ _xeModuleSearch = function(){
 
 					$siteList.find('li').removeClass('on');
 					$this.parent('li').addClass('on');
-				};
+				}
 
 				//$finder.find('a.tgAnchor.findsite').trigger('close.tc');
 				$moduleTypeList.empty();
@@ -792,7 +792,7 @@ $.fn.xeSortableTable = function(){
 				.addClass('draggable')
 				.css({
 					position: 'absolute',
-					opacity : .6,
+					opacity : 0.6,
 					width   : width,
 					height  : height,
 					left    : offset.left,
@@ -804,7 +804,7 @@ $.fn.xeSortableTable = function(){
 			$holder
 				.css({
 					position:'absolute',
-					opacity : .6,
+					opacity : 0.6,
 					width   : width,
 					height  : '10px',
 					left    : offset.left,
@@ -815,7 +815,7 @@ $.fn.xeSortableTable = function(){
 				})
 				.appendTo($table);
 
-			$tr.css('opacity', .6);
+			$tr.css('opacity', 0.6);
 
 			$(document)
 				.unbind('mousedown.st mouseup.st')
@@ -861,7 +861,7 @@ $.fn.xeSortableTable = function(){
 
 					$table.trigger('after-drag.st');
 				});
-		})
+		});
 
 	return this;
 };
@@ -924,10 +924,10 @@ $('.multiLangEdit')
 				$.exec_json(
 					'module.getLangListByLangcodeForAutoComplete',
 					{search_keyword:val},
-					(function(i){ return function(data){ on_complete(data,i) } })(r_idx++)
+					(function(i){ return function(data){ on_complete(data,i); }; })(r_idx++)
 				);
 				show_waiting_message = true;
-			};
+			}
 
 			function on_complete(data, idx){
 				var results = data.results, $btn, i, c;
@@ -942,7 +942,7 @@ $('.multiLangEdit')
 					$('<li />').append($btn).appendTo($ul);
 				}
 				$suggest.trigger('show');
-			};
+			}
 
 			r_timer = setTimeout(request, 100);
 		},
@@ -1088,7 +1088,7 @@ $('.multiLangEdit')
 
 				$layer.find('.langList>li>a:first').click();
 
-			};
+			}
 
 			show_waiting_message = false;
 			$.exec_json(api, params, on_complete);
@@ -1110,7 +1110,7 @@ $('.multiLangEdit')
 
 			return false;
 		},
-		mousedown : function(){ keep_showing = true },
+		mousedown : function(){ keep_showing = true; },
 		focus : function(){
 			$(this).mouseover();
 		},
@@ -1204,7 +1204,7 @@ function initLayer($layer) {
 		var text = [];
 		$input.each(function(){ text.push(this.value); });
 		return text.join('\n');
-	};
+	}
 
 	function setTitleText() {
 		if(!$layer.data('multilang-current-name')) {
@@ -1214,7 +1214,7 @@ function initLayer($layer) {
 				.find('strong').text(mode==MODE_SAVE?cmd_add:cmd_edit).end()
 				.find('a').text(mode==MODE_SAVE?cmd_edit:cmd_add).show().end();
 		}
-	};
+	}
 
 	// process the submit button
 	$submit = $layer.find('input[type=submit]')
@@ -1225,16 +1225,16 @@ function initLayer($layer) {
 				$layer.hide().closest('.multiLangEdit').find('.vLang')
 					.eq(0).val('$user_lang->'+name).end()
 					.eq(1).val($layer.find('.langInput li.'+xe.current_lang).find('>input:text,>textarea').val()).end();
-			};
+			}
 
 			function save_lang() {
 				var params = {};
 				if(name && mode == MODE_UPDATE) params.lang_name = name;
 
-				$input.each(function(k,v){ var $this = $(this); params[$this.parent('li').attr('class')] = $this.val() });
+				$input.each(function(k,v){ var $this = $(this); params[$this.parent('li').attr('class')] = $this.val(); });
 
 				$.exec_json('module.procModuleAdminInsertLang', params, on_complete);
-			};
+			}
 
 			function on_complete(data) {
 				if(!data || data.error || !data.name) return;
@@ -1250,7 +1250,7 @@ function initLayer($layer) {
 		});
 	status_texts = $submit.val().split('|');
 	$submit.val(status_texts[USE]);
-};
+}
 
 function extractList(list) {
 	var i, c, obj={}, item;
@@ -1264,7 +1264,7 @@ function extractList(list) {
 	}
 
 	return obj;
-};
+}
 
 function count(obj) {
 	var size = 0;
@@ -1272,7 +1272,7 @@ function count(obj) {
 		if(obj.hasOwnProperty(x)) size++;
 	}
 	return size;
-};
+}
 
 });
 
@@ -1357,27 +1357,27 @@ function hideWaitingFogLayer() {
 
 // install module
 function doInstallModule(module) {
-	var params = new Array();
-	params['module_name'] = module;
+	var params = [];
+	params.module_name = module;
 	exec_xml('install','procInstallAdminInstall',params, completeInstallModule);
 	showWaitingFogLayer();
 }
 
 // upgrade module
 function doUpdateModule(module) {
-	var params = new Array();
-	params['module_name'] = module;
+	var params = [];
+	params.module_name = module;
 	exec_xml('install','procInstallAdminUpdate',params, completeInstallModule);
 	showWaitingFogLayer();
 }
 
 function completeInstallModule(ret_obj) {
-	alert(ret_obj['message']);
+	alert(ret_obj.message);
 	location.reload();
 }
 
 jQuery(function($){
-	$('body').ajaxComplete(function(){ hideWaitingFogLayer() });
+	$('body').ajaxComplete(function(){ hideWaitingFogLayer(); });
 // Details toggle in admin table
 	var viewBtn = $('.x .dsTg span.side>button.text');
 	var tdTitle = $('.x .dsTg td.title');
