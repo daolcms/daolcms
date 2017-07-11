@@ -121,7 +121,7 @@ jQuery(function($){
 						.find('>.ellipsis')
 							.css({position:'absolute',zIndex:1})
 							.hover(
-								function(){ $(this).next('.cover').mouseover();},
+								function(){ $(this).next('.cover').mouseover(); },
 								function(){ $(this).next('.cover').mouseout(); }
 							)
 						.end()
@@ -158,8 +158,8 @@ jQuery(function($){
 			})
 			.mouseleave(function(){
 				$(this)
-					.parent('.gnb').removeClass('active').end()
-					.find('>li>ul').css('height','0').end()
+					.parent('.gnb').removeClass('active').end();
+					.find('>li>ul').css('height','0').end();
 			})
 			.focusout(function(){
 				var $this = $(this);
@@ -1241,7 +1241,7 @@ function initLayer($layer) {
 
 				name = data.name;
 				use_lang();
-			};
+			}
 
 			(get_value() == value) ? use_lang() : save_lang();
 
@@ -1382,7 +1382,7 @@ jQuery(function($){
 	var viewBtn = $('.x .dsTg span.side>button.text');
 	var tdTitle = $('.x .dsTg td.title');
 	tdTitle.each(function(){
-		var $t = $(this)
+		var $t = $(this);
 		if($t.find('p.update').length==0){
 			$t.addClass('tg').find('>*:not(:first-child)').hide();
 		} else {
