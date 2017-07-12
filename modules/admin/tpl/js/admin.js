@@ -153,12 +153,12 @@ jQuery(function($){
 			.find('>.nav-gnb')
 			.mouseover(function(){
 				$(this)
-					.parent('.gnb').addClass('active').end();
+					.parent('.gnb').addClass('active').end()
 					.find('>li>ul').css('height','auto').end();
 			})
 			.mouseleave(function(){
 				$(this)
-					.parent('.gnb').removeClass('active').end();
+					.parent('.gnb').removeClass('active').end()
 					.find('>li>ul').css('height','0').end();
 			})
 			.focusout(function(){
