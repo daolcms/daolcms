@@ -32,14 +32,14 @@ function getFTPList(pwd)
 		}
 	}
 
-	var params= new Array();
+	var params= [];
 	//ftp_pasv not used
-	params['ftp_user'] = jQuery("#ftp_user").val();
-	params['ftp_password'] =jQuery("#ftp_password").val();
-	params['ftp_host'] = jQuery("#ftp_host").val();
-	params['ftp_port'] = jQuery("#ftp_port").val();
-	params['ftp_root_path'] = jQuery("#ftp_root_path").val();
-	params['sftp'] = jQuery("input[name=sftp]:checked").val();
+	params.ftp_user = jQuery("#ftp_user").val();
+	params.ftp_password =jQuery("#ftp_password").val();
+	params.ftp_host = jQuery("#ftp_host").val();
+	params.ftp_port = jQuery("#ftp_port").val();
+	params.ftp_root_path = jQuery("#ftp_root_path").val();
+	params.sftp = jQuery("input[name=sftp]:checked").val();
 
 	exec_xml('admin', 'getAdminFTPList', params, completeGetFtpInfo, ['list', 'error', 'message'], params, form);
 }
@@ -52,18 +52,18 @@ function removeFTPInfo()
 
 function completeGetFtpInfo(ret_obj)
 {
-	if(ret_obj['error'] != 0)
+	if(ret_obj.error != 0)
 	{
-		alert(ret_obj['error']);
-		alert(ret_obj['message']);
+		alert(ret_obj.error);
+		alert(ret_obj.message);
 		return;
 	}
 	var e = jQuery("#ftpSuggestion").empty();
 
 	var list = "";
-	if(!jQuery.isArray(ret_obj['list']['item']))
+	if(!jQuery.isArray(ret_obj.list.item))
 	{
-		ret_obj['list']['item'] = [ret_obj['list']['item']];
+		ret_obj.list.item = [ret_obj.list.item];
 	}
 
 	pwd = jQuery("#ftp_form").get(0).ftp_root_path.value;
@@ -77,9 +77,9 @@ function completeGetFtpInfo(ret_obj)
 		list = list + "<li><button type='button' onclick=\"getFTPList('"+target+"')\">../</button></li>";
 	}
 
-	for(var i=0;i<ret_obj['list']['item'].length;i++)
+	for(var i=0;i<ret_obj.list.item.length;i++)
 	{
-		var v = ret_obj['list']['item'][i];
+		var v = ret_obj.list.item[i];
 		if(v == "../")
 		{
 			continue;
@@ -99,15 +99,15 @@ function completeGetFtpInfo(ret_obj)
 
 var icon = null;
 function deleteIcon(iconname){
-	var params = new Array();
-	params['iconname'] = iconname;
+	var params = [];
+	params.iconname = iconname;
 	exec_xml('admin', 'procAdminRemoveIcons', params, iconDeleteMessage, ['error', 'message'], params);
 	icon = iconname;
 }
 function iconDeleteMessage(ret_obj){
-	alert(ret_obj['message']);
+	alert(ret_obj.message);
 
-	if (ret_obj['error'] == '0')
+	if (ret_obj.error == '0')
 	{
 		if (icon == 'favicon.ico'){
 			jQuery('.faviconPreview img').attr('src', 'modules/admin/tpl/img/faviconSample.png');
@@ -118,18 +118,18 @@ function iconDeleteMessage(ret_obj){
 }
 function doRecompileCacheFile() {
 	if (!confirm(xe.lang.confirm_run)) return;
-	var params = new Array();
+	var params = [];
 	exec_xml("admin","procAdminRecompileCacheFile", params, completeCacheMessage);
 	showWaitingFogLayer();
 }
 function completeCacheMessage(ret_obj) {
-	alert(ret_obj['message']);
+	alert(ret_obj.message);
 }
 
 function doResetAdminMenu() {
 	if (!confirm(xe.lang.confirm_reset_admin_menu)) return;
 	var params = new Array();
-	params['menu_srl'] = admin_menu_srl;
+	params.menu_srl = admin_menu_srl;
 	exec_xml("admin","procAdminMenuReset", params, completeResetAdminMenu);
 	showWaitingFogLayer();
 }
