@@ -9,7 +9,7 @@ jQuery(function($){
 		editForm.find('input[name=parent_srl]').val(parentSrl);
 		if(!menuList)
 		{
-			var params = new Array();
+			var params = [];
 			var response_tags = new Array('menuList');
 			exec_xml("menu","procMenuAdminAllActList", params, completeGetActList, response_tags);
 		}
@@ -63,7 +63,7 @@ $('form.siteMap')
 		} else {
 			$pkey.val('0');
 		}
-	})
+	});
 
 var 
 	dragging = false,
@@ -111,7 +111,7 @@ $('div.adminMenu')
 				.addClass('draggable')
 				.css({
 					position: 'absolute',
-					opacity : .6,
+					opacity : 0.6,
 					width   : width,
 					height  : height,
 					left    : offset.left,
@@ -124,7 +124,7 @@ $('div.adminMenu')
 			$holder
 				.css({
 					position:'absolute',
-					opacity : .6,
+					opacity : 0.6,
 					width   : width,
 					height  : '10px',
 					left    : offset.left,
@@ -133,7 +133,7 @@ $('div.adminMenu')
 				})
 				.appendTo($ul.eq(0));
 
-			$this.css('opacity', .6);
+			$this.css('opacity', 0.6);
 
 			$(document)
 				.unbind('mousemove.st mouseup.st')
@@ -189,8 +189,8 @@ $('div.adminMenu')
 						$dropzone[dropzone.state]($this.hide());
 					}
 
-					$this.slideDown(100, function(){ $this.removeClass('active') });
-					$li.slideUp(100, function(){ var $par = $li.parent(); $li.remove(); if(!$par.children('li').length) $par.remove()  });
+					$this.slideDown(100, function(){ $this.removeClass('active'); });
+					$li.slideUp(100, function(){ var $par = $li.parent(); $li.remove(); if(!$par.children('li').length) $par.remove(); });
 
 					// trigger 'dropped.st' event
 					$this.trigger('dropped.st');
@@ -212,7 +212,7 @@ $('div.adminMenu')
 		.filter('.parent')
 			.find('>button.moveTo').css({'visibility':'hidden','margin-left':'-12px'}).end()
 		.end()
-	.end()
+	.end();
 
 $('<div id="dropzone-marker" />')
 	.css({display:'none',position:'absolute',backgroundColor:'#000',opacity:0.7})
