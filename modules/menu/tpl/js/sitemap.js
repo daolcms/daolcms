@@ -243,7 +243,7 @@ $('form.siteMap')
 		if(ret_obj.module_list[module] != undefined)
 		{
 			var midList = ret_obj.module_list[module].list;
-			var midListByCategory = new Object();
+			var midListByCategory = {};
 			for(var x in midList)
 			{
 				if(!midList.hasOwnProperty(x)){
