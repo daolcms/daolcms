@@ -244,7 +244,8 @@ $('form.siteMap')
 		{
 			var midList = ret_obj.module_list[module].list;
 			var midListByCategory = {};
-			for(var x in midList)
+			var x;
+			for(x in midList)
 			{
 				if(!midList.hasOwnProperty(x)){
 					continue;
