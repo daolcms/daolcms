@@ -261,7 +261,7 @@ $('form.siteMap')
 			for(x in midListByCategory)
 			{
 				var midGroup = midListByCategory[x];
-				htmlBuffer += '<optgroup label="'+x+'">'
+				htmlBuffer += '<optgroup label="'+x+'">';
 				for(var y in midGroup)
 				{
 					var midObject = midGroup[y];
