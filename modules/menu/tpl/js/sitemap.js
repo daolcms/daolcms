@@ -245,12 +245,14 @@ $('form.siteMap')
 			var midList = ret_obj.module_list[module].list;
 			var midListByCategory = {};
 			var x;
+			var midObject;
+			
 			for(x in midList)
 			{
 				if(!midList.hasOwnProperty(x)){
 					continue;
 				}
-				var midObject = midList[x];
+				midObject = midList[x];
 
 				if(!midListByCategory[midObject.module_category_srl])
 				{
@@ -265,7 +267,7 @@ $('form.siteMap')
 				htmlBuffer += '<optgroup label="'+x+'">';
 				for(var y in midGroup)
 				{
-					var midObject = midGroup[y];
+					midObject = midGroup[y];
 					htmlBuffer += '<option value="'+midObject.mid+'"';
 					if(menuUrl == midObject.mid) htmlBuffer += ' selected ';
 					htmlBuffer += '>'+midObject.mid+'('+midObject.browser_title+')</option>';
