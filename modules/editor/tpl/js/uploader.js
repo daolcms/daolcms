@@ -35,7 +35,7 @@ function init(cfg, exe) {
 	}, cfg);
 
 	uploadSettingObj[seq] = cfg;
-	$(function(){ start(cfg) });
+	$(function(){ start(cfg); });
 
 }
 
@@ -92,7 +92,7 @@ function start(cfg) {
 	if(typeof(enforce_ssl)!=="undefined" && enforce_ssl)
 	{
 		settings.upload_url = request_uri+'index.php';
-	};
+	}
 
 	// preview
 	$('#'+cfg.fileListAreaID).click(previewFiles);
@@ -140,7 +140,7 @@ function start(cfg) {
 	if(cfg.insertedFiles || editorRelKeys[seq].primary.value) reloadFileList(cfg);
 }
 
-function _true(){ return true };
+function _true(){ return true; }
 
 defaultHandlers = {
 	onFileQueued : _true,
@@ -242,8 +242,8 @@ defaultHandlers = {
 	},
 	onUploadComplete : function(file) {
 		try {
-			var fileListAreaID = this.settings["fileListAreaID"];
-			var uploadTargetSrl = this.settings["uploadTargetSrl"];
+			var fileListAreaID = this.settings.fileListAreaID;
+			var uploadTargetSrl = this.settings.uploadTargetSrl;
 			reloadFileList(this.settings);
 		} catch(e) {
 			this.debug(ex);
@@ -315,7 +315,7 @@ function reloadFileList(cfg) {
 
 		// 문서 강제 자동저장 1번만 사용 ( 첨부파일 target_srl로 자동 저장문서를 저장하기 위한 용도일 뿐 )
 		if(!uploadAutosaveChecker) autosave();
-	};
+	}
 
 	exec_xml(
 		'file',         // module
@@ -324,7 +324,7 @@ function reloadFileList(cfg) {
 		on_complete,    // callback
 		'error,message,files,upload_status,upload_target_srl,editor_sequence,left_size'.split(',') // response_tags
 	);
-};
+}
 
 window.editorUploadInit = init;
 window.reloadFileList   = reloadFileList;
@@ -370,13 +370,13 @@ function previewFiles(event, file_srl) {
 
 function removeUploadedFile(editorSequence) {
 	var settings = uploaderSettings[editorSequence];
-	var fileListAreaID = settings["fileListAreaID"];
+	var fileListAreaID = settings.fileListAreaID;
 	var fileListObj = get_by_id(fileListAreaID);
 	if(!fileListObj) return;
 
 	if(fileListObj.selectedIndex<0) return;
 
-	var file_srls = new Array();
+	var file_srls = [];
 	for(var i=0;i<fileListObj.options.length;i++) {
 		if(!fileListObj.options[i].selected) continue;
 		var file_srl = fileListObj.options[i].value;
@@ -397,13 +397,13 @@ function removeUploadedFile(editorSequence) {
 function insertUploadedFile(editorSequence) {
 
 	var settings = uploaderSettings[editorSequence];
-	var fileListAreaID = settings["fileListAreaID"];
+	var fileListAreaID = settings.fileListAreaID;
 	var fileListObj = get_by_id(fileListAreaID);
 	if(!fileListObj) return;
 
 	if(editorMode[editorSequence]=='preview') return;
 
-	var text = new Array();
+	var text = [];
 	for(var i=0;i<fileListObj.options.length;i++) {
 		if(!fileListObj.options[i].selected) continue;
 		var file_srl = fileListObj.options[i].value;
