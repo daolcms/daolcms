@@ -218,6 +218,8 @@ function editorSearchComponent(evt) {
 
 	editorPrevNode = null;
 	var obj = e.target;
+	var tobj = obj;
+	var editor_sequence;
 
 	// 위젯인지 일단 체크
 	if(obj.getAttribute("widget")) {
@@ -285,6 +287,7 @@ function editorSearchComponent(evt) {
 
 // 에디터 내의 선택된 부분의 html코드를 변경
 function editorReplaceHTML(iframe_obj, html) {
+	var range;
 	// 이미지 경로 재지정 (rewrite mod)
 	var srcPathRegx = /src=("|\'){1}(\.\/)?(files\/attach|files\/cache|files\/faceOff|files\/member_extra_info|modules|common|widgets|widgetstyle|layouts|addons)\/([^"\']+)\.(jpg|jpeg|png|gif)("|\'){1}/g;
 	html = html.replace(srcPathRegx, 'src="'+request_uri+'$3/$4.$5"');
