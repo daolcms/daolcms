@@ -251,14 +251,14 @@ $('form.siteMap')
 				}
 				var midObject = midList[x];
 
-				if(!midListByCategory[midObject.module_category_srl])
+				if(!midListByCategory.midObject.module_category_srl)
 				{
-					midListByCategory[midObject.module_category_srl] = [];
+					midListByCategory.midObject.module_category_srl = [];
 				}
-				midListByCategory[midObject.module_category_srl].push(midObject);
+				midListByCategory.midObject.module_category_srl.push(midObject);
 			}
 
-			for(x in midListByCategory)
+			for(var x in midListByCategory)
 			{
 				var midGroup = midListByCategory[x];
 				htmlBuffer += '<optgroup label="'+x+'">'
