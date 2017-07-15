@@ -400,6 +400,8 @@ function insertUploadedFile(editorSequence) {
 	var fileListAreaID = settings.fileListAreaID;
 	var fileListObj = get_by_id(fileListAreaID);
 	if(!fileListObj) return;
+	
+	var obj;
 
 	if(editorMode[editorSequence]=='preview') return;
 
@@ -417,10 +419,10 @@ function insertUploadedFile(editorSequence) {
 			// 이미지 파일의 경우 image_link 컴포넌트 열결
 			if(/\.(jpg|jpeg|png|gif)$/i.test(file.download_url)) {
 				if(loaded_images[file_srl]) {
-					var obj = loaded_images[file_srl];
+					obj = loaded_images[file_srl];
 				}
 				else {
-					var obj = new Image();
+					obj = new Image();
 					obj.src = file.download_url;
 				}
 				temp_code = '';
