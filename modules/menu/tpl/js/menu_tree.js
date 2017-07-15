@@ -95,8 +95,8 @@ function Tree(url){
 			{
 				//alert('Loaded');
 			},
-			animate:true
-			,docToFolderConvert:true
+			animate:true,
+			docToFolderConvert:true
 		});
 
 
@@ -123,8 +123,8 @@ function modifyNode(node_srl,e){
 	jQuery('#menu_zone_info').html('');
 	jQuery("#tree_"+node_srl+" > span").click();
 	var params ={
-			"parent_srl":0
-			,"menu_item_srl":node_srl
+			"parent_srl":0,
+			"menu_item_srl":node_srl
 			};
 
 	jQuery.exec_json('menu.getMenuAdminTplInfo', params, function(data){
@@ -138,8 +138,8 @@ function addNode(node_srl,e){
 	jQuery("#tree_"+node_srl+" > span").click();
 
 	var params ={
-			"menu_item_srl":0
-			,"parent_srl":node_srl
+			"menu_item_srl":0,
+			"parent_srl":node_srl
 			};
 
 	jQuery.exec_json('menu.getMenuAdminTplInfo', params, function(data){
@@ -153,8 +153,8 @@ function deleteNode(node_srl){
 	if(confirm(lang_confirm_delete)){
 		jQuery('#menu_zone_info').html('');
 		var params ={
-				"menu_item_srl":node_srl
-				,"menu_srl":jQuery("form input[name=menu_srl]").val()
+				"menu_item_srl":node_srl,
+				"menu_srl":jQuery("form input[name=menu_srl]").val()
 				};
 		jQuery.exec_json('menu.procMenuAdminDeleteItem', params, function(data){
 			Tree(xml_url);
