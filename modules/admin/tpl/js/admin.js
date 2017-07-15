@@ -1072,7 +1072,7 @@ $('.multiLangEdit')
 
 					var lang_text = this[xe.current_lang];
 					if(!lang_text) {
-						for(lang_code in this) {
+						for(var lang_code in this) {
 							lang_text = this[lang_code];
 							break;
 						}
