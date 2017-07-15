@@ -224,7 +224,7 @@ function editorSearchComponent(evt) {
 	// 위젯인지 일단 체크
 	if(obj.getAttribute("widget")) {
 		// editor_sequence을 찾음
-		var tobj = obj;
+		tobj = obj;
 		while(tobj && tobj.nodeName != "BODY") {
 			tobj = xParent(tobj);
 		}
@@ -232,7 +232,7 @@ function editorSearchComponent(evt) {
 			editorPrevNode = null;
 			return;
 		}
-		var editor_sequence = tobj.getAttribute("editor_sequence");
+		editor_sequence = tobj.getAttribute("editor_sequence");
 		var widget = obj.getAttribute("widget");
 		editorPrevNode = obj;
 
@@ -305,7 +305,7 @@ function editorReplaceHTML(iframe_obj, html) {
 	if (jQuery.isFunction(iframe_obj.replaceHTML)) {
 		iframe_obj.replaceHTML(html);
 	} else if(xIE4Up) {
-		var range = iframe_obj.contentWindow.document.selection.createRange();
+		range = iframe_obj.contentWindow.document.selection.createRange();
 		if(range.pasteHTML) {
 			range.pasteHTML(html);
 		} else if(editorPrevNode) {
