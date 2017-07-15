@@ -205,7 +205,7 @@ var Validator = xe.createApp('Validator', {
 					return this.cast('ALERT', [form, name, 'invalid_'+r]) && false;
 				}
 			}
-		};
+		}
 
 		if($.isFunction(callback)) return callback(form);
 
@@ -317,7 +317,7 @@ var Validator = xe.createApp('Validator', {
 	}
 });
 
-var oValidator = new Validator;
+var oValidator = new Validator();
 
 // register validator
 xe.registerApp(oValidator);
@@ -338,7 +338,7 @@ var EditorStub = xe.createPlugin('editor_stub', {
 		}
 	}
 });
-oValidator.registerPlugin(new EditorStub);
+oValidator.registerPlugin(new EditorStub());
 
 // functions
 function get_value($elem) {
