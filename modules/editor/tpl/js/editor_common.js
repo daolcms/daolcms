@@ -1,14 +1,14 @@
 /**
  * 에디터에서 사용하기 위한 변수
  **/
-var editorMode = new Array(); ///<< 에디터의 html편집 모드 flag 세팅 변수 (html or null)
-var editorAutoSaveObj = {fo_obj:null, editor_sequence:0, title:'', content:'', locked:false} ///< 자동저장을 위한 정보를 가진 object
-var editorRelKeys = new Array(); ///< 에디터와 각 모듈과의 연동을 위한 key 값을 보관하는 변수
-var editorDragObj = {isDrag:false, y:0, obj:null, id:'', det:0, source_height:0}
+var editorMode = []; ///<< 에디터의 html편집 모드 flag 세팅 변수 (html or null)
+var editorAutoSaveObj = {fo_obj:null, editor_sequence:0, title:'', content:'', locked:false}; ///< 자동저장을 위한 정보를 가진 object
+var editorRelKeys = []; ///< 에디터와 각 모듈과의 연동을 위한 key 값을 보관하는 변수
+var editorDragObj = {isDrag:false, y:0, obj:null, id:'', det:0, source_height:0};
 
 function editorGetContent(editor_sequence) {
 	// 입력된 내용을 받아옴
-	var content = editorRelKeys[editor_sequence]["func"](editor_sequence);
+	var content = editorRelKeys[editor_sequence].func(editor_sequence);
 
 	// 첨부파일 링크시 url을 변경
 	var reg_pattern = new RegExp( request_uri.replace(/\//g,'\\/')+"(files|common|modules|layouts|widgets)", 'ig' );
@@ -33,12 +33,12 @@ function editorFocus(editor_sequence) {
 // 자동 저장 활성화 시키는 함수 (50초마다 자동저장)
 function editorEnableAutoSave(fo_obj, editor_sequence, callback) {
 	var title   = fo_obj.title.value;
-	var content = editorRelKeys[editor_sequence]['content'].value;
+	var content = editorRelKeys[editor_sequence].content.value;
 
 	editorAutoSaveObj = {"fo_obj":fo_obj, "editor_sequence":editor_sequence, "title":title, "content":content, locked:false};
 
 	clearTimeout(editorEnableAutoSave.timer);
-	editorEnableAutoSave.timer = setTimeout(function(){_editorAutoSave(false, callback)}, 50000);
+	editorEnableAutoSave.timer = setTimeout(function(){_editorAutoSave(false, callback);}, 50000);
 }
 editorEnableAutoSave.timer = null;
 
@@ -50,7 +50,7 @@ function _editorAutoSave(exe, callback) {
 	// 50초마다 동기화를 시킴 강제 실행은 제외
 	if(!exe) {
 		clearTimeout(editorEnableAutoSave.timer);
-		editorEnableAutoSave.timer = setTimeout(function(){ _editorAutoSave(exe, callback) }, 50000);
+		editorEnableAutoSave.timer = setTimeout(function(){ _editorAutoSave(exe, callback); }, 50000);
 	}
 
 	// 현재 자동저장중이면 중지
@@ -75,7 +75,7 @@ function _editorAutoSave(exe, callback) {
 			title   : title,
 			content : content,
 			mid     : current_mid,
-			document_srl : editorRelKeys[editor_sequence]['primary'].value
+			document_srl : editorRelKeys[editor_sequence].primary.value
 		};
 
 		editorAutoSaveObj.title   = title;
@@ -106,8 +106,8 @@ function _editorAutoSave(exe, callback) {
 
 // 자동저장된 모든 메세지를 삭제하는 루틴
 function editorRemoveSavedDoc() {
-	var param = new Array();
-	param['mid'] = current_mid;
+	var param = [];
+	param.mid = current_mid;
 	exec_xml("editor","procEditorRemoveSavedDoc", param);
 }
 
@@ -117,8 +117,8 @@ function editorRemoveSavedDoc() {
 
 // editor_sequence값에 해당하는 iframe의 object를 return
 function editorGetIFrame(editor_sequence) {
-	if(editorRelKeys != undefined && editorRelKeys[editor_sequence] != undefined && editorRelKeys[editor_sequence]['editor'] != undefined)
-		return editorRelKeys[editor_sequence]['editor'].getFrame(editor_sequence);
+	if(editorRelKeys != undefined && editorRelKeys[editor_sequence] != undefined && editorRelKeys[editor_sequence].editor != undefined)
+		return editorRelKeys[editor_sequence].editor.getFrame(editor_sequence);
 	return document.getElementById( 'editor_iframe_'+ editor_sequence );
 }
 function editorGetTextarea(editor_sequence) {
@@ -297,7 +297,7 @@ function editorReplaceHTML(iframe_obj, html) {
 	var editor_sequence = iframe_obj.editor_sequence || iframe_obj.contentWindow.document.body.getAttribute("editor_sequence");
 
 	// iframe 에디터에 포커스를 둠
-	try { iframe_obj.contentWindow.focus(); }catch(e){};
+	try { iframe_obj.contentWindow.focus(); }catch(e){}
 	
 	if (jQuery.isFunction(iframe_obj.replaceHTML)) {
 		iframe_obj.replaceHTML(html);
