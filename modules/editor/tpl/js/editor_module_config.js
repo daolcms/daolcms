@@ -26,9 +26,9 @@ function resultGetEditorSkinColorList(ret_obj,response_tags, params) {
 			selectbox.attr('name','sel_comment_editor_colorset');			
 		}	
 
-		if(ret_obj['error'] == 0 && ret_obj.colorset){	
-			var it = new Array();
-			var items = ret_obj['colorset']['item'];	
+		if(ret_obj.error == 0 && ret_obj.colorset){	
+			var it = [];
+			var items = ret_obj.colorset.item;	
 			if(typeof(items[0]) == 'undefined'){
 				it[0] = items;
 			}else{
