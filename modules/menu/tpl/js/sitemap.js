@@ -243,7 +243,7 @@ $('form.siteMap')
 		if(ret_obj.module_list[module] != undefined)
 		{
 			var midList = ret_obj.module_list[module].list;
-			var midListByCategory = new Object{};
+			var midListByCategory = new Object;
 			for(var x in midList)
 			{
 				if(!midList.hasOwnProperty(x)){
@@ -258,7 +258,7 @@ $('form.siteMap')
 				midListByCategory[midObject.module_category_srl].push(midObject);
 			}
 
-			for(x in midListByCategory)
+			for(var x in midListByCategory)
 			{
 				var midGroup = midListByCategory[x];
 				htmlBuffer += '<optgroup label="'+x+'">'
