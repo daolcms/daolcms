@@ -184,7 +184,7 @@ function editorStart(editor_sequence, primary_key, content_key, editor_height, f
 
 	// 좋지는 않으나;; 스타일 변형을 막기 위해 start 할때 html이면 바꿔주자
 	if (xGetCookie('editor_mode') == 'html'){
-		var iframe_obj = editorGetIFrame(editor_sequence);
+		iframe_obj = editorGetIFrame(editor_sequence);
 		if(xGetElementById('fileUploader_'+editor_sequence)) xGetElementById('fileUploader_'+editor_sequence).style.display='block';
 		textarea_obj = editorGetTextArea(editor_sequence);
 		textarea_obj.value = content;
@@ -231,16 +231,13 @@ function editorKeyPress(evt) {
 		var iframe_obj = editorGetIFrame(editor_sequence);
 		if(!iframe_obj) return;
 
+		obj = contentDocument.selection.createRange();
 		var contentDocument = iframe_obj.contentWindow.document;
-
-		var obj = contentDocument.selection.createRange();
-
 		var pTag = obj.parentElement().tagName.toLowerCase();
 
 		switch(pTag) {
 			case 'li' :
 					return;
-				break;
 			default :
 					obj.pasteHTML("<br />");
 				break;
@@ -254,8 +251,7 @@ function editorKeyPress(evt) {
 	// ctrl-S, alt-S 클릭시 submit하기
 	if( e.keyCode == 115 && (e.altKey || e.ctrlKey) ) {
 		// iframe 에디터를 찾음
-		var iframe_obj = editorGetIFrame(editor_sequence);
-		if(!iframe_obj) return;
+		if(!editorGetIFrame(editor_sequence)) return;
 
 		// 대상 form을 찾음
 		var fo_obj = editorGetForm(editor_sequence);
@@ -278,8 +274,7 @@ function editorKeyPress(evt) {
 	// ctrl-b, i, u, s 키에 대한 처리 (파이어폭스에서도 에디터 상태에서 단축키 쓰도록)
 	if (e.ctrlKey) {
 		// iframe 에디터를 찾음
-		var iframe_obj = editorGetIFrame(editor_sequence);
-		if(!iframe_obj) return;
+		if(!editorGetIFrame(editor_sequence)) return;
 
 		// html 에디터 모드일 경우 이벤트 취소 시킴
 		if(editorMode[editor_sequence]) {
@@ -312,13 +307,14 @@ function editorKeyPress(evt) {
 			case 13 :
 					if(xIE4Up) {
 						if(e.target.parentElement.document.designMode!="On") return;
-						var obj = e.target.parentElement.document.selection.createRange();
+						obj = e.target.parentElement.document.selection.createRange();
 						obj.pasteHTML('<P>');
 						obj.select();
 						evt.cancelBubble = true;
 						evt.returnValue = false;
 						return;
 					}
+				break;
 			// bold
 			case 98 :
 					editorDo('Bold',null,e.target);
