@@ -269,7 +269,7 @@ function editorSearchComponent(evt) {
 	}
 
 	// editor_sequence을 찾음
-	var tobj = obj;
+	tobj = obj;
 	while(tobj && tobj.nodeName != "BODY") {
 		tobj = xParent(tobj);
 	}
@@ -277,7 +277,7 @@ function editorSearchComponent(evt) {
 		editorPrevNode = null;
 		return;
 	}
-	var editor_sequence = tobj.getAttribute("editor_sequence");
+	editor_sequence = tobj.getAttribute("editor_sequence");
 
 	// 해당 컴포넌트를 찾아서 실행
 	openComponent(editor_component, editor_sequence);
@@ -311,12 +311,12 @@ function editorReplaceHTML(iframe_obj, html) {
 	} else {
 		try {
 			if(iframe_obj.contentWindow.getSelection().focusNode.tagName == "HTML") {
-				var range = iframe_obj.contentDocument.createRange();
+				range = iframe_obj.contentDocument.createRange();
 				range.setStart(iframe_obj.contentDocument.body,0);
 				range.setEnd(iframe_obj.contentDocument.body,0);
 				range.insertNode(range.createContextualFragment(html));
 			} else {
-				var range = iframe_obj.contentWindow.getSelection().getRangeAt(0);
+				range = iframe_obj.contentWindow.getSelection().getRangeAt(0);
 				range.deleteContents();
 				range.insertNode(range.createContextualFragment(html));
 			}
@@ -328,18 +328,20 @@ function editorReplaceHTML(iframe_obj, html) {
 
 // 에디터 내의 선택된 부분의 html 코드를 return
 function editorGetSelectedHtml(editor_sequence) {
+	var range, html, dummy;
 	var iframe_obj = editorGetIFrame(editor_sequence);
+	
 	if (jQuery.isFunction(iframe_obj.getSelectedHTML)) {
 		return iframe_obj.getSelectedHTML();
 	} else if(xIE4Up) {
-		var range = iframe_obj.contentWindow.document.selection.createRange();
-		var html = range.htmlText;
+		range = iframe_obj.contentWindow.document.selection.createRange();
+		html = range.htmlText;
 		return html;
 	} else {
-		var range = iframe_obj.contentWindow.getSelection().getRangeAt(0);
-		var dummy = xCreateElement('div');
+		range = iframe_obj.contentWindow.getSelection().getRangeAt(0);
+		dummy = xCreateElement('div');
 		dummy.appendChild(range.cloneContents());
-		var html = xInnerHtml(dummy);
+		html = xInnerHtml(dummy);
 		return html;
 	}
 }
