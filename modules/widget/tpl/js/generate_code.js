@@ -169,7 +169,7 @@ function doFillWidgetVars() {
 	}
 
 	var style = selected_node.getAttribute("style");
-	if(typeof(style)=="object") style = style["cssText"];
+	if(typeof(style)=="object") style = style.cssText;
 	fo_obj.style.value = style;
 
 	fo_obj.widget_padding_left.value = selected_node.getAttribute("widget_padding_left");
@@ -221,6 +221,7 @@ jQuery(document).ready(function($){
 			.remove();
 		var htmlCode = "";
 		if(src instanceof Object ) {
+			/*jshint -W004*/
 			for(var i=0;i<src.length;i++){
 				if(src[i].id) {
 					htmlCode += '<img src="'+src[i].id+'" alt="" style="border: 1px solid #ccc; padding: 5px; max-height: 200px; max-width: 200px;"><button class="filebox_del text" type="button">'+xe.lang.cmd_delete+'</button>';
@@ -277,6 +278,7 @@ jQuery(document).ready(function($){
 			$iframe.attr('src', '#');
 			$iframe.attr('name', 'iframeTarget');
 			$iframe.load(function(){
+				/*jshint -W061*/
 				var data = eval('(' + $(window.iframeTarget.document.getElementsByTagName("body")[0]).html() + ')');
 
 				if (data.error){
@@ -305,7 +307,7 @@ jQuery(document).ready(function($){
 		}
 
 		var datas = $(this).serializeArray();
-		var params = new Object();
+		var params = {};
 		for(var i in datas){
 			var data = datas[i];
 
@@ -321,16 +323,16 @@ jQuery(document).ready(function($){
 
 	$('#fo_widget').bind('submit', function(){
 		function on_complete(data){
-			if (data['error'] != '0'){
-				alert(data['message']);
+			if (data.error != '0'){
+				alert(data.message);
 				return;
 			}
 
-			completeGenerateCodeInPage(data['widget_code']);
+			completeGenerateCodeInPage(data.widget_code);
 		}
 
 		var datas = $(this).serializeArray();
-		var params = new Object();
+		var params = {};
 		for(var i in datas){
 			var data = datas[i];
 
