@@ -1219,6 +1219,7 @@ function initLayer($layer) {
 	// process the submit button
 	$submit = $layer.find('input[type=submit]')
 		.click(function(){
+			/*jshint expr: true*/
 			var name = $layer.data('multilang-current-name');
 
 			function use_lang() {
@@ -1243,7 +1244,6 @@ function initLayer($layer) {
 				use_lang();
 			}
 
-			/*jshint expr: true*/
 			(get_value() == value) ? use_lang() : save_lang();
 
 
