@@ -465,6 +465,7 @@ function doCheckWidget(e) {
 	doHideWidgetSizeSetup();
 	// 위젯 설정
 	if(obj.className == 'widgetSetup') {
+		/*jshint funcscope:true*/
 		var p_obj = obj.parentNode.parentNode;
 		var widget = p_obj.getAttribute("widget");
 		if(!widget) return;
