@@ -16,7 +16,7 @@ xe.MultiOrderManager = xe.createApp("MultiOrderManager", {
 				.filter('.multiorder_add').bind('click', function(){ self.cast('MULTIORDER_ADD'); return false; }).end()
 				.filter('.multiorder_del').bind('click', function(){ self.cast('MULTIORDER_DEL'); return false; }).end()
 				.filter('.multiorder_up').bind('click', function(){ self.cast('MULTIORDER_UP'); return false; }).end()
-				.filter('.multiorder_down').bind('click', function(){ self.cast('MULTIORDER_DOWN'); return false; }).end()
+				.filter('.multiorder_down').bind('click', function(){ self.cast('MULTIORDER_DOWN'); return false; }).end();
 
 		this.cast('MULTIORDER_SYNC');
 	},
