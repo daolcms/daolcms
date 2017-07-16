@@ -46,6 +46,7 @@ function doDisplaySkinColorset(sel, colorset) {
 
 /* 서버에서 받아온 컬러셋을 표시 */
 function completeGetSkinColorset(ret_obj, response_tags, params, fo_obj) {
+	/*jshint -W004*/
 	var sel = jQuery("#fo_widget")[0].widget_colorset;
 	var length = sel.options.length;
 	var selected_colorset = params["colorset"];
@@ -114,6 +115,7 @@ function doFillWidgetVars() {
 	});
 
 	for(var j=0;j<obj_list.length;j++) {
+		/*jshint -W004*/
 		var node = obj_list[j];
 		if(node.name.indexOf('_')==0) continue;
 		if(node.name == 'widgetstyle') continue;
@@ -457,6 +459,7 @@ function initMultiOrder(id){
 			}
 		}
 	}else{
+		/*jshint -W004*/
 		var arr_init_value = init_value.split(',');
 		for(i=0;i<arr_init_value.length;i++){
 			if(arr_init_value[i].length>0){
