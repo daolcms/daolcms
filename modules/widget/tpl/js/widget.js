@@ -455,10 +455,17 @@ function doCheckWidget(e) {
 	var obj = evt.target;
 
 	selectedWidget = null;
-	
+
+	var pObj = obj.parentNode;
+	while(pObj) {
+		if(pObj.id == "pageSizeLayer") return;
+		pObj = pObj.parentNode;
+	}
+
 	doHideWidgetSizeSetup();
 	// 위젯 설정
 	if(obj.className == 'widgetSetup') {
+		/*jshint -W004*/
 		var p_obj = obj.parentNode.parentNode;
 		var widget = p_obj.getAttribute("widget");
 		if(!widget) return;
