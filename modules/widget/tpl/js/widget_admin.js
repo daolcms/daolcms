@@ -6,7 +6,7 @@
 
 /* 생성된 코드를 textarea에 출력 */
 function completeGenerateCode(ret_obj) {
-	var widget_code = ret_obj["widget_code"];
+	var widget_code = ret_obj.widget_code;
 		widget_code = widget_code.replace(/&/g, "&amp;");
 		widget_code = widget_code.replace(/\'/g, "&apos;");
 	var zone = get_by_id("widget_code");
@@ -15,7 +15,7 @@ function completeGenerateCode(ret_obj) {
 
 /* 생성된 코드를 페이지 zone에 출력 */
 function completeGenerateCodeInPage(ret_obj,response_tags,params,fo_obj) {
-	var widget_code = ret_obj["widget_code"];
+	var widget_code = ret_obj.widget_code;
 	if(!opener || !widget_code) {
 		window.close();
 		return;
@@ -34,10 +34,10 @@ function doDisplaySkinColorset(sel, colorset) {
 		return;
 	}
 
-	var params = new Array();
-	params["selected_widget"] = get_by_id("fo_widget").selected_widget.value;
-	params["skin"] = skin;
-	params["colorset"] = colorset;
+	var params = [];
+	params.selected_widget = get_by_id("fo_widget").selected_widget.value;
+	params.skin = skin;
+	params.colorset = colorset;
 
 	var response_tags = new Array("error","message","colorset_list");
 
@@ -49,12 +49,12 @@ function completeGetSkinColorset(ret_obj, response_tags, params, fo_obj) {
 	/*jshint -W004*/
 	var sel = jQuery("#fo_widget")[0].widget_colorset;
 	var length = sel.options.length;
-	var selected_colorset = params["colorset"];
+	var selected_colorset = params.colorset;
 	for(var i=0;i<length;i++) sel.remove(0);
 
-	if(!ret_obj["colorset_list"]) return;
+	if(!ret_obj.colorset_list) return;
 
-	var colorset_list = ret_obj["colorset_list"].split("\n");
+	var colorset_list = ret_obj.colorset_list.split("\n");
 	var selected_index = 0;
 	for(var i=0;i<colorset_list.length;i++) {
 		var tmp = colorset_list[i].split("|@|");
@@ -109,7 +109,7 @@ function doFillWidgetVars() {
 	}
 
 	// 위젯의 속성 설정
-	var obj_list = new Array();
+	var obj_list = [];
 	jQuery('input,select,textarea','#fo_widget').each( function() {
 			obj_list.push(this);
 	});
@@ -169,7 +169,7 @@ function doFillWidgetVars() {
 	}
 
 	var style = selected_node.getAttribute("style");
-	if(typeof(style)=="object") style = style["cssText"];
+	if(typeof(style)=="object") style = style.cssText;
 	fo_obj.style.value = style;
 
 	fo_obj.widget_padding_left.value = selected_node.getAttribute("widget_padding_left");
@@ -280,21 +280,21 @@ function getModuleSrlList(id) {
 	if(!obj[0] || !obj.val()) return;
 
 	var params = [];
-	params["module_srls"] = obj.val();
-	params["id"] = id;
+	params.module_srls = obj.val();
+	params.id = id;
 
 	var response_tags = ["error","message","module_list","id"];
 	exec_xml("module", "getModuleAdminModuleList", params, completeGetModuleSrlList, response_tags, params);
 }
 
 function completeGetModuleSrlList(ret_obj, response_tags) {
-	var id = ret_obj['id'];
+	var id = ret_obj.id;
 	var sel_obj = jQuery('#_'+id);
 	if(!sel_obj[0]) return;
 
-	var module_list = ret_obj['module_list'];
+	var module_list = ret_obj.module_list;
 	if(!module_list) return;
-	var item = module_list['item'];
+	var item = module_list.item;
 	if(typeof(item.length)=='undefined' || item.length<1) item = [item];
 
 	for(var i=0;i<item.length;i++) {
@@ -310,30 +310,30 @@ function getModuleSrl(id) {
 	var obj = get_by_id(id);
 	if(!obj.value) return;
 	var value = obj.value;
-	var params = new Array();
-	params["module_srls"] = obj.value;
-	params["id"] = id;
+	var params = [];
+	params.module_srls = obj.value;
+	params.id = id;
 
 	var response_tags = new Array("error","message","module_list","id");
 	exec_xml("module", "getModuleAdminModuleList", params, completeGetModuleSrl, response_tags, params);
 }
 
 function completeGetModuleSrl(ret_obj, response_tags) {
-	var id = ret_obj['id'];
+	var id = ret_obj.id;
 	var obj = get_by_id('_'+id);
 	var sObj = get_by_id(id);
 	if(!sObj || !obj) return;
 
-	var module_list = ret_obj['module_list'];
+	var module_list = ret_obj.module_list;
 	if(!module_list) return;
-	var item = module_list['item'];
+	var item = module_list.item;
 	if(typeof(item.length)=='undefined' || item.length<1) item = new Array(item);
 
 	sObj.value = item[0].module_srl;
 	obj.value = item[0].browser_title+' ('+item[0].mid+')';
 }
 
-var windowLoadEventLoader = new Array();
+var windowLoadEventLoader = [];
 function doAddWindowLoadEventLoader(func) {
 	windowLoadEventLoader.push(func);
 }
