@@ -160,6 +160,7 @@ var Validator = xe.createApp('Validator', {
 			if(!el || el.disabled) continue;
 
 			if(f['if']) {
+				/*jslint evil: true */
 				if(!$.isArray(f['if'])) f['if'] = [f['if']];
 				for(i=0;i<f['if'].length;i++) {
 					if_ = f['if'][i];
