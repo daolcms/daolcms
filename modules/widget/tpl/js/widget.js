@@ -390,7 +390,7 @@ function doAddWidgetCode(widget_code) {
 	// widget_code의 javascript 부분 수정
 	var tmp = widget_code.toLowerCase();
 	while(tmp.indexOf("<script")>-1) {
-
+		/*jshint -W004, -W061*/
 		var pos = tmp.indexOf("<script");
 
 		tmp = tmp.substr(pos);
@@ -474,6 +474,7 @@ function doCheckWidget(e) {
 
 	// 위젯 스타일
 	} else if(obj.className == 'widgetStyle') {
+		/*jshint -W004*/
 		var p_obj = obj.parentNode.parentNode;
 		var widget = p_obj.getAttribute("widget");
 		var widgetstyle = p_obj.getAttribute("widgetstyle");
@@ -484,7 +485,8 @@ function doCheckWidget(e) {
 
 	// 위젯 복사
 	} else if(obj.className == 'widgetCopy' && obj.parentNode.parentNode.className == 'widgetOutput') {
-		p_obj = obj.parentNode.parentNode;
+		/*jshint -W004*/
+		var p_obj = obj.parentNode.parentNode;
 		restoreWidgetButtons();
 
 		if(p_obj.getAttribute('widget')=='widgetContent' && p_obj.getAttribute('document_srl') ) {
@@ -614,6 +616,7 @@ function _getInt(val) {
 // 위젯 크기 조절 레이어를 보여줌
 var selectedSizeWidget = null;
 function doShowWidgetSizeSetup(px, py, obj) {
+	/*jshint -W004*/
 	var layer = jQuery('#pageSizeLayer');
 	var form  = layer.find('>form:first');
 	var obj   = jQuery(obj);
@@ -836,7 +839,8 @@ function doApplyWidgetSize(fo_obj) {
 		selectedSizeWidget = null;
 
 		var widget = selectedWidget.getAttribute("widget");
-		var params = new Array();
+		var params = [];
+		/*jshint -W004*/
 		for(var i=0;i<selectedWidget.attributes.length;i++) {
 			if(!selectedWidget.attributes[i].nodeName || !selectedWidget.attributes[i].nodeValue) continue;
 			var name = selectedWidget.attributes[i].nodeName.toLowerCase();
@@ -1045,9 +1049,8 @@ function widgetDrag(tobj, dx, dy) {
 
 	// 위젯 리사이즈 (좌측)
 	} else if(tobj.className == 'widgetResizeLeft' || tobj.className == 'widgetBoxResizeLeft') {
-
+		/*jshint -W004*/
 		if(nx < zoneLeft) nx = zoneLeft;
-
 		if(cssFloat == 'left') nx = sx;
 
 		var new_width = pWidth + (sx - nx);
