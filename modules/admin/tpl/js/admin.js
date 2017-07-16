@@ -1243,6 +1243,7 @@ function initLayer($layer) {
 				use_lang();
 			}
 
+			/*jshint expr: true*/
 			(get_value() == value) ? use_lang() : save_lang();
 
 
