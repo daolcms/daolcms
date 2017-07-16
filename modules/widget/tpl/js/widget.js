@@ -12,7 +12,7 @@ function getStyle(obj) {
 	{
 		style = obj.style;
 	}
-	if(typeof(style)=="object") style = style["cssText"];
+	if(typeof(style)=="object") style = style.cssText;
 	style = style.replace(/\burl\s*\(\s*"(.*?)"\s*\)/i, "url('$1')");
 	return style;
 }
@@ -353,7 +353,7 @@ window.document.write = window.document.writeln = function(str){
 	while ( nodes.length ) {
 		pos.parentNode.appendChild( nodes[0] );
 	}
-}
+};
 
 // 위젯 추가
 function doAddWidgetCode(widget_code) {
@@ -491,8 +491,8 @@ function doCheckWidget(e) {
 
 		if(p_obj.getAttribute('widget')=='widgetContent' && p_obj.getAttribute('document_srl') ) {
 			var response_tags = new Array('error','message','document_srl');
-			var params = new Array();
-			params['document_srl'] =p_obj.getAttribute('document_srl');
+			var params = [];
+			params.document_srl =p_obj.getAttribute('document_srl');
 			exec_xml('widget','procWidgetCopyDocument', params, completeCopyWidgetContent, response_tags, params, p_obj);
 			return;
 		} else {
@@ -513,7 +513,7 @@ function doCheckWidget(e) {
 				dummy.setAttribute(name, value);
 			}
 
-			if(xIE4Up) dummy.style["cssText"] = p_obj.style["cssText"];
+			if(xIE4Up) dummy.style.cssText = p_obj.style.cssText;
 			p_obj.parentNode.insertBefore(dummy, p_obj);
 		}
 		return;
@@ -554,7 +554,7 @@ function doCheckWidget(e) {
 
 // content widget 복사
 function completeCopyWidgetContent(ret_obj, response_tags, params, p_obj) {
-	var document_srl = ret_obj['document_srl'];
+	var document_srl = ret_obj.document_srl;
 	var dummy = xCreateElement("DIV");
 	xInnerHtml(dummy,xInnerHtml(p_obj));
 
@@ -574,7 +574,7 @@ function completeCopyWidgetContent(ret_obj, response_tags, params, p_obj) {
 	}
 	p_obj.setAttribute('document_srl', document_srl);
 
-	if(xIE4Up) dummy.style["cssText"] = p_obj.getAttribute("style")["cssText"];
+	if(xIE4Up) dummy.style.cssText = p_obj.getAttribute("style").cssText;
 	p_obj.parentNode.insertBefore(dummy, p_obj);
 }
 
@@ -609,7 +609,7 @@ function doCheckWidgetDrag(e) {
 
 function _getInt(val) {
 	if(!val || val == "null") return 0;
-	if(parseInt(val,10)==NaN) return 0;
+	if(isNaN(parseInt(val, 10))) return 0;
 	return parseInt(val,10);
 }
 
@@ -677,7 +677,7 @@ function doShowWidgetSizeSetup(px, py, obj) {
 	}
 
 	layer.css('top', py+'px').show();
-	var _zonePageObj   = jQuery(zonePageObj)
+	var _zonePageObj   = jQuery(zonePageObj);
 	var zoneOffsetLeft = _zonePageObj.offset().left;
 	var zoneWidth      = _zonePageObj.width();
 	if (px + layer.width() > zoneOffsetLeft + zoneWidth) px = zoneOffsetLeft + zoneWidth - layer.width() - 5;
@@ -694,7 +694,7 @@ function doShowWidgetSizeSetup(px, py, obj) {
 		}
 	});
 
-	try { form[0].elements[0].focus() } catch(e) {};
+	try { form[0].elements[0].focus() } catch(e) {}
 }
 
 function doHideWidgetSizeSetup() {
@@ -849,16 +849,16 @@ function doApplyWidgetSize(fo_obj) {
 			if(!value || value == "Array") continue;
 			params[name] = value;
 		}
-		params["style"] = getStyle(selectedWidget);
-		params["selected_widget"] = widget;
-		params["module_srl"] = get_by_id("pageFo").module_srl.value;
+		params.style = getStyle(selectedWidget);
+		params.selected_widget = widget;
+		params.module_srl = get_by_id("pageFo").module_srl.value;
 
-		exec_xml('widget','procWidgetGenerateCodeInPage',params,function(ret_obj) { doAddWidgetCode(ret_obj["widget_code"]);  },new Array('error','message','widget_code','tpl','css_header'));
+		exec_xml('widget','procWidgetGenerateCodeInPage',params,function(ret_obj) { doAddWidgetCode(ret_obj.widget_code);  },new Array('error','message','widget_code','tpl','css_header'));
 	}
 	doHideWidgetSizeSetup();
 }
 
-var hideElements = new Array();
+var hideElements = [];
 function restoreWidgetButtons() {
 	var widgetButton = get_by_id('widgetButton');
 	var boxWidgetButton = get_by_id('widgetBoxButton');
@@ -873,7 +873,7 @@ function restoreWidgetButtons() {
 		var obj = hideElements[0];
 		obj.style.paddingTop = 0;
 	}
-	hideElements = new Array();
+	hideElements = [];
 }
 
 function showWidgetButton(name, obj) {
@@ -937,8 +937,8 @@ function widgetSetup(evt) {
 
 /* 위젯 드래그 */
 // 드래그 중이라는 상황을 간직할 변수
-var widgetDragManager = {obj:null, isDrag:false}
-var widgetTmpObject = new Array();
+var widgetDragManager = {obj:null, isDrag:false};
+var widgetTmpObject = [];
 var widgetDisappear = 0;
 
 function widgetCreateTmpObject(obj) {
