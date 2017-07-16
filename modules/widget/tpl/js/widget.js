@@ -313,6 +313,7 @@ function doAddWidget(fo) {
 
 // widgetBorder에 height를 widgetOutput와 맞춰줌
 function doFitBorderSize() {
+	/*jshint -W004*/
 	var obj_list = jQuery('.widgetBorer', zonePageObj).get();
 	for(var i=0;i<obj_list.length;i++) {
 		var obj = obj_list[i];
@@ -373,7 +374,7 @@ function doAddWidgetCode(widget_code) {
 		if(!cssfile) break;
 		tmp = tmp.substr(eos);
 
-		var cssfile = request_uri+cssfile;
+		cssfile = request_uri+cssfile;
 		if(typeof(document.createStyleSheet)=='undefined') {
 			var css ='<link rel="stylesheet" href="'+cssfile+'" type="text/css" charset="UTF-8" />';
 			var dummy  = xCreateElement("DIV");
@@ -388,7 +389,7 @@ function doAddWidgetCode(widget_code) {
 	checkDocumentWrite = true; ///< document.write(ln)등의 함수값을 바로 사용하기 위한 check flag
 
 	// widget_code의 javascript 부분 수정
-	var tmp = widget_code.toLowerCase();
+	tmp = widget_code.toLowerCase();
 	while(tmp.indexOf("<script")>-1) {
 		/*jshint -W004, -W061*/
 		var pos = tmp.indexOf("<script");
@@ -694,7 +695,7 @@ function doShowWidgetSizeSetup(px, py, obj) {
 		}
 	});
 
-	try { form[0].elements[0].focus() } catch(e) {}
+	try { form[0].elements[0].focus(); } catch(e) {}
 }
 
 function doHideWidgetSizeSetup() {
