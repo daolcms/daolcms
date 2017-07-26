@@ -1,7 +1,7 @@
 @charset "utf-8";
 /*! Copyright (C) NAVER <http://www.navercorp.com> */
 /*! Copyright (C) DAOL Project <http://www.daolcms.org> */
-/*csslint unqualified-attributes: false, display-property-grouping: false*/
+/*csslint unqualified-attributes: false, display-property-grouping: false, universal-selector: true*/
 
 /* Element Reset */
 body,table,input,textarea,select,button {
