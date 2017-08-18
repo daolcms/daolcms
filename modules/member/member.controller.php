@@ -120,12 +120,36 @@ class memberController extends member {
 		$document_srl = (int)Context::get('document_srl');
 		if(!$document_srl) $document_srl = (int)Context::get('target_srl');
 		if(!$document_srl) return new Object(-1, 'msg_invalid_request');
+
 		// Get document
 		$oDocumentModel = &getModel('document');
 		$oDocument = $oDocumentModel->getDocument($document_srl);
+
 		if($oDocument->isSecret() && !$oDocument->isGranted()) {
 			return new Object(-1, 'msg_is_secret');
 		}
+
+		// 모듈 권한 확인
+		$module_info = $oModuleModel->getModuleInfoByModuleSrl($oDocument->get('module_srl'));
+		$grant = $oModuleModel->getGrant($module_info, $logged_info);
+		if(!$grant->access) {
+			return new Object(-1, 'msg_not_permitted');
+		}
+
+		// 게시판 모듈에서 글 목록 보기 권한이 없으면 스크랩 제한
+		if($module_info->module === 'board' && isset($grant->list) && !$grant->list) {
+			return new Object(-1, 'msg_not_permitted');
+		}
+
+		// 게시판 모듈에서 상담 기능 사용 시 권한이 없는 게시물(타인의 게시물) 스크랩 제한
+		if($module_info->module === 'board' &&
+			$module_info->consultation === 'Y' &&
+			isset($grant->consultation_read) &&
+			!$grant->consultation_read && !$oDocument->isGranted()
+		) {
+			return new Object(-1, 'msg_not_permitted');
+		}
+
 		// Variables
 		$args->document_srl = $document_srl;
 		$args->member_srl = $logged_info->member_srl;
