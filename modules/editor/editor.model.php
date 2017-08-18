@@ -597,6 +597,8 @@ class editorModel extends editor {
 			$output = executeQuery('editor.getComponent', $args);
 		}
 		$component = $output->data;
+
+		if(!$output->data) return false;
 		
 		$component_name = $component->component_name;
 		
