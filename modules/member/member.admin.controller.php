@@ -379,8 +379,8 @@ class memberAdminController extends member {
 					$fields[] = '<field name="password"><if test="$act == \'procMemberInsert\'" attr="required" value="true" /><if test="$act == \'procMemberInsert\'" attr="length" value="4:60" /></field>';
 					$fields[] = '<field name="password2"><if test="$act == \'procMemberInsert\'" attr="required" value="true" /><if test="$act == \'procMemberInsert\'" attr="equalto" value="password" /></field>';
 				} else if($formInfo->name == 'find_account_question') {
-					$fields[] = '<field name="find_account_question" required="true" />';
-					$fields[] = '<field name="find_account_answer" required="true" length=":250" />';
+					$fields[] = '<field name="find_account_question"><if test="$modify_find_account_answer" attr="required" value="true" /></field>';
+					$fields[] = '<field name="find_account_answer" length=":250"><if test="$modify_find_account_answer" attr="required" value="true" /></field>';
 				} else if($formInfo->name == 'email_address') {
 					$fields[] = sprintf('<field name="%s" required="true" rule="email"/>', $formInfo->name);
 				} else if($formInfo->name == 'user_id') {
