@@ -133,6 +133,16 @@ class installController extends install {
 	function procInstall() {
 		// Check if it is already installed
 		if(Context::isInstalled()) return new Object(-1, 'msg_already_installed');
+		
+		Context::loadLang('modules/member/lang');
+		$oMemberModel = getModel('Member');
+		$vars = Context::getRequestVars();
+		if(!$oMemberModel->checkPasswordStrength($vars->password, 'high')){
+			Context::loadLang('modules/member/lang');
+			$message = Context::getLang('about_password_strength');
+			return new Object(-1, $message['high']);
+		}
+		
 		// Assign a temporary administrator when installing
 		$logged_info = new stdClass();
 		$logged_info->is_admin = 'Y';
