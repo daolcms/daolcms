@@ -9,42 +9,42 @@ class HTMLDisplayHandler {
 	function toDoc(&$oModule) {
 		$oTemplate = &TemplateHandler::getInstance();
 		
-		// compile module tpl
-		// deprecated themes skin 
+		// SECISSUE https://github.com/xpressengine/xe-core/issues/1583
+		$oSecurity = new Security();
+		$oSecurity->encodeHTML('is_keyword', 'search_keyword', 'search_target', 'order_target', 'order_type');
 		
 		$template_path = $oModule->getTemplatePath();
 		
-		if(!is_dir($template_path)) {
-			if($oModule->module_info->module == $oModule->module)
+		if(!is_dir($template_path)){
+			if($oModule->module_info->module == $oModule->module){
 				$skin = $oModule->origin_module_info->skin;
-			else
+			}
+			else{
 				$skin = $oModule->module_config->skin;
+			}
 			
-			if(Context::get('module') != 'admin' && strpos(Context::get('act'), 'Admin') === false) {
-				if($skin && is_string($skin)) {
+			if(Context::get('module') != 'admin' && strpos(Context::get('act'), 'Admin') === false){
+				if($skin && is_string($skin)){
 					$theme_skin = explode('|@|', $skin);
 					$template_path = $oModule->getTemplatePath();
-					if(count($theme_skin) == 2) {
+					if(count($theme_skin) == 2){
 						$theme_path = sprintf('./themes/%s', $theme_skin[0]);
-						if(substr($theme_path, 0, strlen($theme_path)) != $theme_path) {
+						if(substr($theme_path, 0, strlen($theme_path)) != $theme_path){
 							$template_path = sprintf('%s/modules/%s/', $theme_path, $theme_skin[1]);
 						}
 					}
-				} else {
+				}
+				else{
 					$template_path = $oModule->getTemplatePath();
 				}
-			} else {
+			}
+			else{
 				$template_path = $oModule->getTemplatePath();
 			}
 		}
 		
 		$tpl_file = $oModule->getTemplateFile();
-		
 		$output = $oTemplate->compile($template_path, $tpl_file);
-		
-		// SECISSUE https://github.com/xpressengine/xe-core/issues/1583
-		$oSecurity = new Security();
-		$oSecurity->encodeHTML('is_keyword', 'search_keyword', 'search_target', 'order_target', 'order_type');
 		
 		// add .x div for adminitration pages
 		if(Context::getResponseMethod() == 'HTML') {
