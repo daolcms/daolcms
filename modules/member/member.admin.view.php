@@ -197,9 +197,10 @@ class memberAdminView extends member {
 	 *
 	 * @return void
 	 **/
-	function dispMemberAdminInfo() {
-		$oMemberModel = &getModel('member');
-		$oModuleModel = &getModel('module');
+	function dispMemberAdminInfo(){
+		$oMemberModel = getModel('member');
+		$oModuleModel = getModel('module');
+
 		$member_config = $oModuleModel->getModuleConfig('member');
 		Context::set('member_config', $member_config);
 		$extendForm = $oMemberModel->getCombineJoinForm($this->memberInfo);
@@ -207,14 +208,14 @@ class memberAdminView extends member {
 		$memberInfo = get_object_vars(Context::get('member_info'));
 		if(!is_array($memberInfo['group_list'])) $memberInfo['group_list'] = array();
 		Context::set('memberInfo', $memberInfo);
-		
+
 		$disableColumns = array('password', 'find_account_question', 'find_account_answer');
 		Context::set('disableColumns', $disableColumns);
-		
+
 		$security = new Security();
 		$security->encodeHTML('member_config..');
 		$security->encodeHTML('extend_form_list...');
-		
+
 		$this->setTemplateFile('member_info');
 	}
 	
@@ -277,9 +278,14 @@ class memberAdminView extends member {
 		$security = new Security($extend_form_list);
 		$security->encodeHTML('..column_title', '..description', '..default_value.');
 		
-		if($memberInfo)
+		if($memberInfo){
 			$memberInfo = get_object_vars($memberInfo);
-		$member_config = $oMemberModel->getMemberConfig();
+		}
+
+		$member_config = $this->memberConfig;
+		if(!$this->memberConfig){
+			$member_config = $this->memberConfig = $oMemberModel->getMemberConfig();
+		}
 
 		unset($member_config->signupForm->find_account_question);
 		unset($member_config->signupForm->find_account_answer);
@@ -297,7 +303,8 @@ class memberAdminView extends member {
 			}
 
 			if($formInfo->name == $member_config->identifier || $formInfo->name == 'password') continue;
-			unset($formTag);
+
+			$formTag = new stdClass();
 			$inputTag = '';
 			$formTag->title = ($formInfo->isDefaultForm) ? $lang->{$formInfo->name} : $formInfo->title;
 			if($isAdmin){
@@ -323,7 +330,7 @@ class memberAdminView extends member {
 						$target = $memberInfo['image_mark'];
 						$functionName = 'doDeleteImageMark';
 					}
-					if($target->src) {
+					if($target->src){
 						$inputTag = sprintf('<p class="a"><input type="hidden" name="__%s_exist" value="true" /><span id="%s"><img src="%s" alt="%s" /> <button type="button" class="text" onclick="%s(%d);return false;">%s</button></span></p>'
 							, $formInfo->name
 							, $formInfo->name . 'tag'
@@ -332,7 +339,8 @@ class memberAdminView extends member {
 							, $functionName
 							, $memberInfo['member_srl']
 							, $lang->cmd_delete);
-					} else {
+					}
+					else{
 						$inputTag = sprintf('<input type="hidden" name="__%s_exist" value="false" />', $formInfo->name);
 					}
 					$inputTag .= sprintf('<p class="a"><input type="file" name="%s" id="%s" value="" /></p><p><span class="desc">%s : %dpx, %s : %dpx</span></p>'
@@ -351,6 +359,7 @@ class memberAdminView extends member {
 						, $lang->cmd_delete);
 				}
 				elseif($formInfo->name == 'find_account_question') {
+					$disabled = (!!$memberInfo['member_srl']) ? 'disabled="disabled"' : '';
 					$formTag->type = 'select';
 					$inputTag = '<select name="find_account_question" id="find_account_question" style="width:290px; display:block;" %s>%s</select>';
 					$optionTag = array();
