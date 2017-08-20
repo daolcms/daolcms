@@ -215,6 +215,10 @@ class memberAdminView extends member {
 		$security = new Security();
 		$security->encodeHTML('member_config..');
 		$security->encodeHTML('extend_form_list...');
+		
+		$oMemberView = getView('member');
+
+		$oMemberView->_getDisplayedMemberInfo($this->memberInfo, $extendForm, $member_config);
 
 		$this->setTemplateFile('member_info');
 	}
