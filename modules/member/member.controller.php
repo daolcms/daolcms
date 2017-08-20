@@ -948,29 +948,30 @@ class memberController extends member {
 	 *
 	 * @return void|Object (void : success, Object : fail)
 	 **/
-	function procMemberFindAccountByQuestion() {
-		$oMemberModel = &getModel('member');
+	function procMemberFindAccountByQuestion(){
+		$oMemberModel = getModel('member');
 		$oPassword =  new Password();
 		$config = $oMemberModel->getMemberConfig();
-		
+
 		$email_address = Context::get('email_address');
 		$user_id = Context::get('user_id');
 		$find_account_question = trim(Context::get('find_account_question'));
 		$find_account_answer = trim(Context::get('find_account_answer'));
-		
+
 		if(($config->identifier == 'user_id' && !$user_id) || !$email_address || !$find_account_question || !$find_account_answer) return new Object(-1, 'msg_invalid_request');
-		
-		$oModuleModel = &getModel('module');
+
+		$oModuleModel = getModel('module');
 		// Check if a member having the same email address exists
 		$member_srl = $oMemberModel->getMemberSrlByEmailAddress($email_address);
 		if(!$member_srl) return new Object(-1, 'msg_email_not_exists');
+
 		// Get information of the member
 		$columnList = array('member_srl', 'find_account_question', 'find_account_answer');
 		$member_info = $oMemberModel->getMemberInfoByMemberSrl($member_srl, 0, $columnList);
-		
+
 		// Display a message if no answer is entered
 		if(!$member_info->find_account_question || !$member_info->find_account_answer) return new Object(-1, 'msg_question_not_exists');
-		
+
 		// 답변 확인
 		$hashed = $oPassword->checkAlgorithm($member_info->find_account_answer);
 		$authed = true;
@@ -993,26 +994,25 @@ class memberController extends member {
 		if($authed && !$hashed){
 			$this->updateFindAccountAnswer($member_srl, $find_account_answer);
 		}
-		
+
 		if($config->identifier == 'email_address'){
 			$user_id = $email_address;
 		}
-		
+
 		// Update to a temporary password and set change_password_date to 1
-		$oPassword = new Password();
 		$temp_password = $oPassword->createTemporaryPassword(8);
-		
+
 		$args = new stdClass();
 		$args->member_srl = $member_srl;
 		$args->password = $temp_password;
 		$args->change_password_date = '1';
 		$output = $this->updateMemberPassword($args);
 		if(!$output->toBool()) return $output;
-		
+
 		$_SESSION['xe_temp_password_' . $user_id] = $temp_password;
-		
-		$this->add('user_id', $user_id);
-		
+
+		$this->add('user_id',$user_id);
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', '');
 		$this->setRedirectUrl($returnUrl . '&user_id=' . $user_id);
 	}
@@ -2057,20 +2057,25 @@ class memberController extends member {
 	/**
 	 * Modify member password
 	 **/
-	function updateMemberPassword($args) {
-		if($args->password) {
+	function updateMemberPassword($args){
+		if($args->password){
+			// check password strength
+			$oMemberModel = getModel('member');
+			$config = $oMemberModel->getMemberConfig();
+			
 			$args->password = $oMemberModel->hashPassword($args->password);
-		} else if($args->hashed_password) {
+		}
+		else if($args->hashed_password){
 			$args->password = $args->hashed_password;
 		}
-		
+
 		$output = executeQuery('member.updateMemberPassword', $args);
-		if($output->toBool()) {
+		if($output->toBool()){
 			$result = executeQuery('member.updateChangePasswordDate', $args);
 		}
-		
+
 		$this->_clearMemberCache($args->member_srl);
-		
+
 		return $output;
 	}
 	
@@ -2220,7 +2225,8 @@ class memberController extends member {
 		}
 		unset($_SESSION['rechecked_password_step']);
 		
-		$auth_args = new stdClass;
+		$oPassword = new Password();
+		$auth_args = new stdClass();
 		$auth_args->user_id = $newEmail;
 		$auth_args->member_srl = $member_info->member_srl;
 		$auth_args->auth_key = $oPassword->createSecureSalt(40);
