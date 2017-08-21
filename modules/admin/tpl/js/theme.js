@@ -63,7 +63,7 @@ $('#theme,#skin')
 					$(this).next('input:radio').prop('checked', true).change();
 				})
 			.end()
-			.find('> .i > label').attr('title', function(){ return $(this).text() }).end()
+			.find('> .i > label').attr('title', function(){ return $(this).text(); }).end()
 			.find('input:radio')
 				.bind('redraw', function(){
 					var $this = $(this), $big = $this.closest('.a').prev('.a'), val = $this.val();
@@ -81,7 +81,7 @@ $('#theme,#skin')
 							.find('label')
 								.wrapInner('<strong>')
 								.find('>strong')
-									.text(function(){ return $(this).attr('title') })
+									.text(function(){ return $(this).attr('title'); })
 									.unwrap()
 								.end()
 							.end()
@@ -122,7 +122,7 @@ $('#theme,#skin')
 
 						$radios.filter(':checked').trigger('redraw');
 					})
-				.end()
+				.end();
 
 $('#theme')
 	.bind('select-theme', function(){

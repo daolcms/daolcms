@@ -4,10 +4,6 @@
 	<table width="100%" border="1" cellspacing="0">
 		<caption>
 			Total: {number_format($total_count)}, Page {number_format($page)}/{number_format($total_page)}
-			<span class="side">
-				<a href="{getUrl('','module','module','act','dispModuleSelectList','id','target_module','type','single')}" onclick="popopen(this.href,'ModuleSelect');return false;">{$lang->cmd_find_module}</a>
-				<a href="{getUrl('selected_module_srl','')}" cond="$selected_module_srl">{$lang->cmd_cancel}</a>
-			</span>
 		</caption>
 		<thead>
 			<tr>

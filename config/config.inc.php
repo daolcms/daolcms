@@ -19,7 +19,7 @@ if(!defined('__XE__')) exit();
 /**
  * Display the version info of DAOL CMS.
  */
-define('__DAOL_VERSION__', '1.0.3.2');
+define('__DAOL_VERSION__', '1.0.3.3');
 
 /**
  * Display the version info of Based XE.
@@ -215,6 +215,20 @@ if(!defined('__ERROR_LOG__')) {
 	 * 1: Enabled
 	 */
 	define('__ERROR_LOG__', 0);
+}
+
+if(!defined('__DISABLE_DEFAULT_CSS__')) {
+	/**
+	 * XE의 기본 CSS 스타일을 로드하지 않도록 합니다.
+	 *
+	 * CSS 적용이 해제됨에 따라 버튼, 팝업 메뉴 및 일부 중요 메시지 등이 표시되지 않을 수 있습니다.
+	 * common/css/xe.css
+	 * common/css/mobile.css
+	 *
+	 * 0: CSS 적용 (기존과 동일)
+	 * 1: 사용하지 않음
+	 */
+	define('__DISABLE_DEFAULT_CSS__', 0);
 }
 
 // Require specific files when using Firebug console output

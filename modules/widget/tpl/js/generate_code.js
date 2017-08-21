@@ -8,14 +8,15 @@ function doDisplaySkinColorset(colorset)
 
 		function completeGetSkinColorset(ret_obj)
 		{
+			/*jshint -W004*/
 			var sel = jQuery("select[name=colorset]").get(0);
 			var length = sel.options.length;
 			var selected_colorset = colorset;
 			for(var i=0;i<length;i++) sel.remove(0);
 
-			if(!ret_obj["colorset_list"]) return;
+			if(!ret_obj.colorset_list) return;
 
-			var colorset_list = ret_obj["colorset_list"].split("\n");
+			var colorset_list = ret_obj.colorset_list.split("\n");
 			var selected_index = 0;
 			for(var i=0;i<colorset_list.length;i++) {
 				var tmp = colorset_list[i].split("|@|");
@@ -29,10 +30,10 @@ function doDisplaySkinColorset(colorset)
 			doShowSkinColorset();
 		}
 
-	var params = new Array();
-	params["selected_widget"] = jQuery('input[name=selected_widget]').val();
-	params["skin"] = skin;
-	params["colorset"] = colorset;
+	var params = [];
+	params.selected_widget = jQuery('input[name=selected_widget]').val();
+	params.skin = skin;
+	params.colorset = colorset;
 
 	var response_tags = new Array("error","message","colorset_list");
 
@@ -91,7 +92,7 @@ function doFillWidgetVars() {
 	//  IE7에서 발생하는 jQuery 용 attribute를 걸러내기 위해 추가
 	var attrFilters = ['style', 'sizset', 'draggable', 'class'];
 
-	for (i=0; i< attrs.length ; i++){
+	for (var i=0; i< attrs.length ; i++){
 		var name = attrs[i].name;
 		var value = jQuery(selected_node).attr(name);
 		if(value=='Array') continue;
@@ -103,13 +104,15 @@ function doFillWidgetVars() {
 	}
 
 	// 위젯의 속성 설정
-	var obj_list = new Array();
+	var obj_list = [];
 	jQuery('input,select,textarea','#fo_widget').each( function() {
 			obj_list.push(this);
 	});
 
 	for(var j=0;j<obj_list.length;j++) {
+		/*jshint -W004*/
 		var node = obj_list[j];
+		
 		if(node.name.indexOf('_')==0) continue;
 		if(node.name == 'widgetstyle') continue;
 		if(node.type == 'button') continue;
@@ -166,7 +169,7 @@ function doFillWidgetVars() {
 	}
 
 	var style = selected_node.getAttribute("style");
-	if(typeof(style)=="object") style = style["cssText"];
+	if(typeof(style)=="object") style = style.cssText;
 	fo_obj.style.value = style;
 
 	fo_obj.widget_padding_left.value = selected_node.getAttribute("widget_padding_left");
@@ -194,7 +197,7 @@ function doFillWidgetVars() {
 			var src = $this.siblings('input').eq(0).val().split(',');
 			
 			if (src) $this.trigger('filebox.selected', [src]);
-		})
+		});
 }
 
 var $current_filebox;
@@ -218,6 +221,7 @@ jQuery(document).ready(function($){
 			.remove();
 		var htmlCode = "";
 		if(src instanceof Object ) {
+			/*jshint -W004*/
 			for(var i=0;i<src.length;i++){
 				if(src[i].id) {
 					htmlCode += '<img src="'+src[i].id+'" alt="" style="border: 1px solid #ccc; padding: 5px; max-height: 200px; max-width: 200px;"><button class="filebox_del text" type="button">'+xe.lang.cmd_delete+'</button>';
@@ -274,6 +278,7 @@ jQuery(document).ready(function($){
 			$iframe.attr('src', '#');
 			$iframe.attr('name', 'iframeTarget');
 			$iframe.load(function(){
+				/*jshint -W061*/
 				var data = eval('(' + $(window.iframeTarget.document.getElementsByTagName("body")[0]).html() + ')');
 
 				if (data.error){
@@ -302,7 +307,7 @@ jQuery(document).ready(function($){
 		}
 
 		var datas = $(this).serializeArray();
-		var params = new Object();
+		var params = {};
 		for(var i in datas){
 			var data = datas[i];
 
@@ -318,16 +323,16 @@ jQuery(document).ready(function($){
 
 	$('#fo_widget').bind('submit', function(){
 		function on_complete(data){
-			if (data['error'] != '0'){
-				alert(data['message']);
+			if (data.error != '0'){
+				alert(data.message);
 				return;
 			}
 
-			completeGenerateCodeInPage(data['widget_code']);
+			completeGenerateCodeInPage(data.widget_code);
 		}
 
 		var datas = $(this).serializeArray();
-		var params = new Object();
+		var params = {};
 		for(var i in datas){
 			var data = datas[i];
 

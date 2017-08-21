@@ -9,42 +9,42 @@ class HTMLDisplayHandler {
 	function toDoc(&$oModule) {
 		$oTemplate = &TemplateHandler::getInstance();
 		
-		// compile module tpl
-		// deprecated themes skin 
+		// SECISSUE https://github.com/xpressengine/xe-core/issues/1583
+		$oSecurity = new Security();
+		$oSecurity->encodeHTML('is_keyword', 'search_keyword', 'search_target', 'order_target', 'order_type');
 		
 		$template_path = $oModule->getTemplatePath();
 		
-		if(!is_dir($template_path)) {
-			if($oModule->module_info->module == $oModule->module)
+		if(!is_dir($template_path)){
+			if($oModule->module_info->module == $oModule->module){
 				$skin = $oModule->origin_module_info->skin;
-			else
+			}
+			else{
 				$skin = $oModule->module_config->skin;
+			}
 			
-			if(Context::get('module') != 'admin' && strpos(Context::get('act'), 'Admin') === false) {
-				if($skin && is_string($skin)) {
+			if(Context::get('module') != 'admin' && strpos(Context::get('act'), 'Admin') === false){
+				if($skin && is_string($skin)){
 					$theme_skin = explode('|@|', $skin);
 					$template_path = $oModule->getTemplatePath();
-					if(count($theme_skin) == 2) {
+					if(count($theme_skin) == 2){
 						$theme_path = sprintf('./themes/%s', $theme_skin[0]);
-						if(substr($theme_path, 0, strlen($theme_path)) != $theme_path) {
+						if(substr($theme_path, 0, strlen($theme_path)) != $theme_path){
 							$template_path = sprintf('%s/modules/%s/', $theme_path, $theme_skin[1]);
 						}
 					}
-				} else {
+				}
+				else{
 					$template_path = $oModule->getTemplatePath();
 				}
-			} else {
+			}
+			else{
 				$template_path = $oModule->getTemplatePath();
 			}
 		}
 		
 		$tpl_file = $oModule->getTemplateFile();
-		
 		$output = $oTemplate->compile($template_path, $tpl_file);
-		
-		// SECISSUE https://github.com/xpressengine/xe-core/issues/1583
-		$oSecurity = new Security();
-		$oSecurity->encodeHTML('is_keyword', 'search_keyword', 'search_target', 'order_target', 'order_type');
 		
 		// add .x div for adminitration pages
 		if(Context::getResponseMethod() == 'HTML') {
@@ -292,7 +292,7 @@ class HTMLDisplayHandler {
 		Context::set('cdn_info', $cdn_info);
 		
 		// add common JS/CSS files
-		if(__DEBUG__) {
+		if(__DEBUG__){
 			$oContext->loadFile(array('./common/js/jquery.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/modernizr.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/x.js', 'head', '', -100000), true);
@@ -301,45 +301,81 @@ class HTMLDisplayHandler {
 			$oContext->loadFile(array('./common/js/xml2json.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/xml_handler.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/xml_js_filter.js', 'head', '', -100000), true);
-			$oContext->loadFile(array('./common/css/xe.css', 'all', '', -100000), true);
-		} elseif($cdn_info->cdn_use == 'Y' && $cdn_info->cdn_type == 'jsdelivr') {
+			if(!__DISABLE_DEFAULT_CSS__){
+				$oContext->loadFile(array('./common/css/xe.css', 'all', '', -100000), true);
+			}
+			else{
+				$oContext->unloadFile(array('./common/css/xe.css', 'all', '', -100000), true);
+			}
+		}
+		elseif($cdn_info->cdn_use == 'Y' && $cdn_info->cdn_type == 'jsdelivr'){
 			$oContext->loadFile(array('//cdn.jsdelivr.net/jquery/1.11.0/jquery.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('//cdn.jsdelivr.net/jquery.migrate/1.2.1/jquery-migrate.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/x.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/xe.min.js', 'head', '', -100000), true);
-			$oContext->loadFile(array('./common/css/xe.min.css', 'all', '', -100000), true);
-		} elseif($cdn_info->cdn_use == 'Y' && $cdn_info->cdn_type == 'microsoft') {
+			if(!__DISABLE_DEFAULT_CSS__){
+				$oContext->loadFile(array('./common/css/xe.css', 'all', '', -100000), true);
+			}
+			else{
+				$oContext->unloadFile(array('./common/css/xe.css', 'all', '', -100000), true);
+			}
+		}
+		elseif($cdn_info->cdn_use == 'Y' && $cdn_info->cdn_type == 'microsoft'){
 			$oContext->loadFile(array('//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.0.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('//ajax.aspnetcdn.com/ajax/jquery.migrate/jquery-migrate-1.2.1.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/x.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/xe.min.js', 'head', '', -100000), true);
-			$oContext->loadFile(array('./common/css/xe.min.css', 'all', '', -100000), true);
-		} elseif($cdn_info->cdn_use == 'Y' && $cdn_info->cdn_type == 'cdnjs') {
+			if(!__DISABLE_DEFAULT_CSS__){
+				$oContext->loadFile(array('./common/css/xe.css', 'all', '', -100000), true);
+			}
+			else{
+				$oContext->unloadFile(array('./common/css/xe.css', 'all', '', -100000), true);
+			}
+		}
+		elseif($cdn_info->cdn_use == 'Y' && $cdn_info->cdn_type == 'cdnjs'){
 			$oContext->loadFile(array('//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.2.1/jquery-migrate.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/x.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/xe.min.js', 'head', '', -100000), true);
-			$oContext->loadFile(array('./common/css/xe.min.css', 'all', '', -100000), true);
-		} elseif($cdn_info->cdn_use == 'Y' && $cdn_info->cdn_type == 'jquery') {
+			if(!__DISABLE_DEFAULT_CSS__){
+				$oContext->loadFile(array('./common/css/xe.css', 'all', '', -100000), true);
+			}
+			else{
+				$oContext->unloadFile(array('./common/css/xe.css', 'all', '', -100000), true);
+			}
+		}
+		elseif($cdn_info->cdn_use == 'Y' && $cdn_info->cdn_type == 'jquery'){
 			$oContext->loadFile(array('//code.jquery.com/jquery-1.11.0.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('//code.jquery.com/jquery-migrate-1.2.1.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/x.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/xe.min.js', 'head', '', -100000), true);
-			$oContext->loadFile(array('./common/css/xe.min.css', 'all', '', -100000), true);
-		} else {
+			if(!__DISABLE_DEFAULT_CSS__){
+				$oContext->loadFile(array('./common/css/xe.css', 'all', '', -100000), true);
+			}
+			else{
+				$oContext->unloadFile(array('./common/css/xe.css', 'all', '', -100000), true);
+			}
+		}
+		else{
 			$oContext->loadFile(array('./common/js/jquery.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/x.min.js', 'head', '', -100000), true);
 			$oContext->loadFile(array('./common/js/xe.min.js', 'head', '', -100000), true);
-			$oContext->loadFile(array('./common/css/xe.min.css', 'all', '', -100000), true);
+			if(!__DISABLE_DEFAULT_CSS__){
+				$oContext->loadFile(array('./common/css/xe.css', 'all', '', -100000), true);
+			}
+			else{
+				$oContext->unloadFile(array('./common/css/xe.css', 'all', '', -100000), true);
+			}
 		}
 		
 		// for admin page, add admin css
-		if(Context::get('module') == 'admin' || strpos(Context::get('act'), 'Admin') > 0) {
-			if(__DEBUG__) {
+		if(Context::get('module') == 'admin' || strpos(Context::get('act'), 'Admin') > 0){
+			if(__DEBUG__){
 				$oContext->loadFile(array('./modules/admin/tpl/css/admin.css', 'all', '', 100000), true);
 				$oContext->loadFile(array("./modules/admin/tpl/css/admin_{$lang_type}.css", 'all', '', 100000), true);
 				$oContext->loadFile('./modules/admin/tpl/js/admin.js', true);
-			} else {
+			}
+			else {
 				$oContext->loadFile(array('./modules/admin/tpl/css/admin.min.css', 'all', '', 100000), true);
 				$oContext->loadFile(array("./modules/admin/tpl/css/admin_{$lang_type}.css", 'all', '', 10000), true);
 				$oContext->loadFile('./modules/admin/tpl/js/admin.min.js', true);

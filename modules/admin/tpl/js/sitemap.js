@@ -47,7 +47,7 @@ $('form.siteMap')
 				.addClass('draggable')
 				.css({
 					position: 'absolute',
-					opacity : .6,
+					opacity : 0.6,
 					width   : width,
 					height  : height,
 					left    : offset.left,
@@ -60,7 +60,7 @@ $('form.siteMap')
 			$holder
 				.css({
 					position:'absolute',
-					opacity : .6,
+					opacity : 0.6,
 					width   : width,
 					height  : '5px',
 					left    : offset.left,
@@ -69,7 +69,7 @@ $('form.siteMap')
 				})
 				.appendTo($ul.eq(0));
 
-			$this.css('opacity', .6);
+			$this.css('opacity', 0.6);
 
 			$(document)
 				.unbind('mousemove.st mouseup.st')
@@ -121,8 +121,8 @@ $('form.siteMap')
 						$dropzone[dropzone.state]($this.hide());
 					}
 
-					$this.slideDown(100, function(){ $this.removeClass('active') });
-					$li.slideUp(100, function(){ var $par = $li.parent(); $li.remove(); if(!$par.children('li').length) $par.remove()  });
+					$this.slideDown(100, function(){ $this.removeClass('active'); });
+					$li.slideUp(100, function(){ var $par = $li.parent(); $li.remove(); if(!$par.children('li').length) $par.remove(); });
 
 					// trigger 'dropped.st' event
 					$this.trigger('dropped.st');
@@ -168,7 +168,7 @@ $('form.siteMap')
 						.text($this.val());
 			})
 		.end()
-	.end()
+	.end();
 
 function getOffset(elem, offsetParent) {
 	var top = 0, left = 0;

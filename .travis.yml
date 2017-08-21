@@ -21,4 +21,4 @@ before_script:
 - npm install
 script:
 - grunt lint --force
-- grunt minify --force
+- grunt minify

@@ -12,7 +12,7 @@ function getStyle(obj) {
 	{
 		style = obj.style;
 	}
-	if(typeof(style)=="object") style = style["cssText"];
+	if(typeof(style)=="object") style = style.cssText;
 	style = style.replace(/\burl\s*\(\s*"(.*?)"\s*\)/i, "url('$1')");
 	return style;
 }
@@ -313,6 +313,7 @@ function doAddWidget(fo) {
 
 // widgetBorder에 height를 widgetOutput와 맞춰줌
 function doFitBorderSize() {
+	/*jshint -W004*/
 	var obj_list = jQuery('.widgetBorer', zonePageObj).get();
 	for(var i=0;i<obj_list.length;i++) {
 		var obj = obj_list[i];
@@ -353,7 +354,7 @@ window.document.write = window.document.writeln = function(str){
 	while ( nodes.length ) {
 		pos.parentNode.appendChild( nodes[0] );
 	}
-}
+};
 
 // 위젯 추가
 function doAddWidgetCode(widget_code) {
@@ -373,7 +374,7 @@ function doAddWidgetCode(widget_code) {
 		if(!cssfile) break;
 		tmp = tmp.substr(eos);
 
-		var cssfile = request_uri+cssfile;
+		cssfile = request_uri+cssfile;
 		if(typeof(document.createStyleSheet)=='undefined') {
 			var css ='<link rel="stylesheet" href="'+cssfile+'" type="text/css" charset="UTF-8" />';
 			var dummy  = xCreateElement("DIV");
@@ -388,9 +389,9 @@ function doAddWidgetCode(widget_code) {
 	checkDocumentWrite = true; ///< document.write(ln)등의 함수값을 바로 사용하기 위한 check flag
 
 	// widget_code의 javascript 부분 수정
-	var tmp = widget_code.toLowerCase();
+	tmp = widget_code.toLowerCase();
 	while(tmp.indexOf("<script")>-1) {
-
+		/*jshint -W004, -W061*/
 		var pos = tmp.indexOf("<script");
 
 		tmp = tmp.substr(pos);
@@ -464,6 +465,7 @@ function doCheckWidget(e) {
 	doHideWidgetSizeSetup();
 	// 위젯 설정
 	if(obj.className == 'widgetSetup') {
+		/*jshint funcscope:true*/
 		var p_obj = obj.parentNode.parentNode;
 		var widget = p_obj.getAttribute("widget");
 		if(!widget) return;
@@ -474,6 +476,7 @@ function doCheckWidget(e) {
 
 	// 위젯 스타일
 	} else if(obj.className == 'widgetStyle') {
+		/*jshint -W004*/
 		var p_obj = obj.parentNode.parentNode;
 		var widget = p_obj.getAttribute("widget");
 		var widgetstyle = p_obj.getAttribute("widgetstyle");
@@ -484,13 +487,14 @@ function doCheckWidget(e) {
 
 	// 위젯 복사
 	} else if(obj.className == 'widgetCopy' && obj.parentNode.parentNode.className == 'widgetOutput') {
-		p_obj = obj.parentNode.parentNode;
+		/*jshint -W004*/
+		var p_obj = obj.parentNode.parentNode;
 		restoreWidgetButtons();
 
 		if(p_obj.getAttribute('widget')=='widgetContent' && p_obj.getAttribute('document_srl') ) {
 			var response_tags = new Array('error','message','document_srl');
-			var params = new Array();
-			params['document_srl'] =p_obj.getAttribute('document_srl');
+			var params = [];
+			params.document_srl =p_obj.getAttribute('document_srl');
 			exec_xml('widget','procWidgetCopyDocument', params, completeCopyWidgetContent, response_tags, params, p_obj);
 			return;
 		} else {
@@ -511,7 +515,7 @@ function doCheckWidget(e) {
 				dummy.setAttribute(name, value);
 			}
 
-			if(xIE4Up) dummy.style["cssText"] = p_obj.style["cssText"];
+			if(xIE4Up) dummy.style.cssText = p_obj.style.cssText;
 			p_obj.parentNode.insertBefore(dummy, p_obj);
 		}
 		return;
@@ -552,7 +556,7 @@ function doCheckWidget(e) {
 
 // content widget 복사
 function completeCopyWidgetContent(ret_obj, response_tags, params, p_obj) {
-	var document_srl = ret_obj['document_srl'];
+	var document_srl = ret_obj.document_srl;
 	var dummy = xCreateElement("DIV");
 	xInnerHtml(dummy,xInnerHtml(p_obj));
 
@@ -572,7 +576,7 @@ function completeCopyWidgetContent(ret_obj, response_tags, params, p_obj) {
 	}
 	p_obj.setAttribute('document_srl', document_srl);
 
-	if(xIE4Up) dummy.style["cssText"] = p_obj.getAttribute("style")["cssText"];
+	if(xIE4Up) dummy.style.cssText = p_obj.getAttribute("style").cssText;
 	p_obj.parentNode.insertBefore(dummy, p_obj);
 }
 
@@ -607,13 +611,14 @@ function doCheckWidgetDrag(e) {
 
 function _getInt(val) {
 	if(!val || val == "null") return 0;
-	if(parseInt(val,10)==NaN) return 0;
+	if(isNaN(parseInt(val, 10))) return 0;
 	return parseInt(val,10);
 }
 
 // 위젯 크기 조절 레이어를 보여줌
 var selectedSizeWidget = null;
 function doShowWidgetSizeSetup(px, py, obj) {
+	/*jshint -W004*/
 	var layer = jQuery('#pageSizeLayer');
 	var form  = layer.find('>form:first');
 	var obj   = jQuery(obj);
@@ -674,7 +679,7 @@ function doShowWidgetSizeSetup(px, py, obj) {
 	}
 
 	layer.css('top', py+'px').show();
-	var _zonePageObj   = jQuery(zonePageObj)
+	var _zonePageObj   = jQuery(zonePageObj);
 	var zoneOffsetLeft = _zonePageObj.offset().left;
 	var zoneWidth      = _zonePageObj.width();
 	if (px + layer.width() > zoneOffsetLeft + zoneWidth) px = zoneOffsetLeft + zoneWidth - layer.width() - 5;
@@ -691,7 +696,7 @@ function doShowWidgetSizeSetup(px, py, obj) {
 		}
 	});
 
-	try { form[0].elements[0].focus() } catch(e) {};
+	try { form[0].elements[0].focus(); } catch(e) {}
 }
 
 function doHideWidgetSizeSetup() {
@@ -836,7 +841,8 @@ function doApplyWidgetSize(fo_obj) {
 		selectedSizeWidget = null;
 
 		var widget = selectedWidget.getAttribute("widget");
-		var params = new Array();
+		var params = [];
+		/*jshint -W004*/
 		for(var i=0;i<selectedWidget.attributes.length;i++) {
 			if(!selectedWidget.attributes[i].nodeName || !selectedWidget.attributes[i].nodeValue) continue;
 			var name = selectedWidget.attributes[i].nodeName.toLowerCase();
@@ -845,16 +851,16 @@ function doApplyWidgetSize(fo_obj) {
 			if(!value || value == "Array") continue;
 			params[name] = value;
 		}
-		params["style"] = getStyle(selectedWidget);
-		params["selected_widget"] = widget;
-		params["module_srl"] = get_by_id("pageFo").module_srl.value;
+		params.style = getStyle(selectedWidget);
+		params.selected_widget = widget;
+		params.module_srl = get_by_id("pageFo").module_srl.value;
 
-		exec_xml('widget','procWidgetGenerateCodeInPage',params,function(ret_obj) { doAddWidgetCode(ret_obj["widget_code"]);  },new Array('error','message','widget_code','tpl','css_header'));
+		exec_xml('widget','procWidgetGenerateCodeInPage',params,function(ret_obj) { doAddWidgetCode(ret_obj.widget_code);  },new Array('error','message','widget_code','tpl','css_header'));
 	}
 	doHideWidgetSizeSetup();
 }
 
-var hideElements = new Array();
+var hideElements = [];
 function restoreWidgetButtons() {
 	var widgetButton = get_by_id('widgetButton');
 	var boxWidgetButton = get_by_id('widgetBoxButton');
@@ -869,7 +875,7 @@ function restoreWidgetButtons() {
 		var obj = hideElements[0];
 		obj.style.paddingTop = 0;
 	}
-	hideElements = new Array();
+	hideElements = [];
 }
 
 function showWidgetButton(name, obj) {
@@ -933,8 +939,8 @@ function widgetSetup(evt) {
 
 /* 위젯 드래그 */
 // 드래그 중이라는 상황을 간직할 변수
-var widgetDragManager = {obj:null, isDrag:false}
-var widgetTmpObject = new Array();
+var widgetDragManager = {obj:null, isDrag:false};
+var widgetTmpObject = [];
 var widgetDisappear = 0;
 
 function widgetCreateTmpObject(obj) {
@@ -1045,9 +1051,8 @@ function widgetDrag(tobj, dx, dy) {
 
 	// 위젯 리사이즈 (좌측)
 	} else if(tobj.className == 'widgetResizeLeft' || tobj.className == 'widgetBoxResizeLeft') {
-
+		/*jshint -W004*/
 		if(nx < zoneLeft) nx = zoneLeft;
-
 		if(cssFloat == 'left') nx = sx;
 
 		var new_width = pWidth + (sx - nx);

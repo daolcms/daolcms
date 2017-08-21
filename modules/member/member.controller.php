@@ -120,12 +120,36 @@ class memberController extends member {
 		$document_srl = (int)Context::get('document_srl');
 		if(!$document_srl) $document_srl = (int)Context::get('target_srl');
 		if(!$document_srl) return new Object(-1, 'msg_invalid_request');
+
 		// Get document
 		$oDocumentModel = &getModel('document');
 		$oDocument = $oDocumentModel->getDocument($document_srl);
+
 		if($oDocument->isSecret() && !$oDocument->isGranted()) {
 			return new Object(-1, 'msg_is_secret');
 		}
+
+		// 모듈 권한 확인
+		$module_info = $oModuleModel->getModuleInfoByModuleSrl($oDocument->get('module_srl'));
+		$grant = $oModuleModel->getGrant($module_info, $logged_info);
+		if(!$grant->access) {
+			return new Object(-1, 'msg_not_permitted');
+		}
+
+		// 게시판 모듈에서 글 목록 보기 권한이 없으면 스크랩 제한
+		if($module_info->module === 'board' && isset($grant->list) && !$grant->list) {
+			return new Object(-1, 'msg_not_permitted');
+		}
+
+		// 게시판 모듈에서 상담 기능 사용 시 권한이 없는 게시물(타인의 게시물) 스크랩 제한
+		if($module_info->module === 'board' &&
+			$module_info->consultation === 'Y' &&
+			isset($grant->consultation_read) &&
+			!$grant->consultation_read && !$oDocument->isGranted()
+		) {
+			return new Object(-1, 'msg_not_permitted');
+		}
+
 		// Variables
 		$args->document_srl = $document_srl;
 		$args->member_srl = $logged_info->member_srl;
@@ -435,11 +459,16 @@ class memberController extends member {
 		}
 		foreach($getVars as $val) {
 			$args->{$val} = Context::get($val);
+			if($val == 'find_account_answer' && !Context::get($val)){
+				unset($args->{$val});
+			}
 		}
+	
 		// Login Information
 		$logged_info = Context::get('logged_info');
 		$args->member_srl = $logged_info->member_srl;
 		$args->birthday = strtr($args->birthday, array('-' => '', '/' => '', '.' => '', ' ' => ''));
+
 		// Remove some unnecessary variables from all the vars
 		$all_args = Context::getRequestVars();
 		unset($all_args->module);
@@ -919,49 +948,71 @@ class memberController extends member {
 	 *
 	 * @return void|Object (void : success, Object : fail)
 	 **/
-	function procMemberFindAccountByQuestion() {
-		$oMemberModel = &getModel('member');
+	function procMemberFindAccountByQuestion(){
+		$oMemberModel = getModel('member');
+		$oPassword =  new Password();
 		$config = $oMemberModel->getMemberConfig();
-		
+
 		$email_address = Context::get('email_address');
 		$user_id = Context::get('user_id');
 		$find_account_question = trim(Context::get('find_account_question'));
 		$find_account_answer = trim(Context::get('find_account_answer'));
-		
+
 		if(($config->identifier == 'user_id' && !$user_id) || !$email_address || !$find_account_question || !$find_account_answer) return new Object(-1, 'msg_invalid_request');
-		
-		$oModuleModel = &getModel('module');
+
+		$oModuleModel = getModel('module');
 		// Check if a member having the same email address exists
 		$member_srl = $oMemberModel->getMemberSrlByEmailAddress($email_address);
 		if(!$member_srl) return new Object(-1, 'msg_email_not_exists');
+
 		// Get information of the member
 		$columnList = array('member_srl', 'find_account_question', 'find_account_answer');
 		$member_info = $oMemberModel->getMemberInfoByMemberSrl($member_srl, 0, $columnList);
-		
+
 		// Display a message if no answer is entered
 		if(!$member_info->find_account_question || !$member_info->find_account_answer) return new Object(-1, 'msg_question_not_exists');
-		
-		if(trim($member_info->find_account_question) != $find_account_question || trim($member_info->find_account_answer) != $find_account_answer) return new Object(-1, 'msg_answer_not_matches');
-		
-		if($config->identifier == 'email_address') {
+
+		// 답변 확인
+		$hashed = $oPassword->checkAlgorithm($member_info->find_account_answer);
+		$authed = true;
+		$member_info->find_account_question = trim($member_info->find_account_question);
+		if($member_info->find_account_question != $find_account_question){
+			$authed = false;
+		}
+		else if($hashed && !$oPassword->checkPassword($find_account_answer, $member_info->find_account_answer)){
+			$authed = false;
+		}
+		else if(!$hashed && $find_account_answer != $member_info->find_account_answer){
+			$authed = false;
+		}
+
+		if(!$authed){
+			return new Object(-1, 'msg_answer_not_matches');
+		}
+
+		// answer가 동일하고 hash 되지 않았으면 hash 값으로 저장
+		if($authed && !$hashed){
+			$this->updateFindAccountAnswer($member_srl, $find_account_answer);
+		}
+
+		if($config->identifier == 'email_address'){
 			$user_id = $email_address;
 		}
-		
+
 		// Update to a temporary password and set change_password_date to 1
-		$oPassword = new Password();
 		$temp_password = $oPassword->createTemporaryPassword(8);
-		
+
 		$args = new stdClass();
 		$args->member_srl = $member_srl;
 		$args->password = $temp_password;
 		$args->change_password_date = '1';
 		$output = $this->updateMemberPassword($args);
 		if(!$output->toBool()) return $output;
-		
+
 		$_SESSION['xe_temp_password_' . $user_id] = $temp_password;
-		
-		$this->add('user_id', $user_id);
-		
+
+		$this->add('user_id',$user_id);
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', '');
 		$this->setRedirectUrl($returnUrl . '&user_id=' . $user_id);
 	}
@@ -1722,8 +1773,16 @@ class memberController extends member {
 		
 		if($args->password && !$password_is_hashed) {
 			$args->password = $oMemberModel->hashPassword($args->password);
-		} elseif(!$args->password) {
+		} 
+		elseif(!$args->password){
 			unset($args->password);
+		}
+		
+		if($args->find_account_answer && !$password_is_hashed){
+			$args->find_account_answer = $oMemberModel->hashPassword($args->find_account_answer);
+		}
+		elseif(!$args->find_account_answer){
+			unset($args->find_account_answer);
 		}
 		
 		// Check if ID is prohibited
@@ -1918,6 +1977,22 @@ class memberController extends member {
 		
 		if($args->password) $args->password = $oMemberModel->hashPassword($args->password);
 		else $args->password = $orgMemberInfo->password;
+		
+		if($args->find_account_answer){
+			$args->find_account_answer = $oMemberModel->hashPassword($args->find_account_answer);
+		}
+		else{
+			$oPassword =  new Password();
+			$hashed = $oPassword->checkAlgorithm($orgMemberInfo->find_account_answer);
+
+			if($hashed){
+				$args->find_account_answer = $orgMemberInfo->find_account_answer;
+			}
+			else {
+				$args->find_account_answer = $oPassword->createHash($orgMemberInfo->find_account_answer);
+			}
+		}
+		
 		if(!$args->user_name) $args->user_name = $orgMemberInfo->user_name;
 		if(!$args->user_id) $args->user_id = $orgMemberInfo->user_id;
 		if(!$args->nick_name) $args->nick_name = $orgMemberInfo->nick_name;
@@ -1982,21 +2057,35 @@ class memberController extends member {
 	/**
 	 * Modify member password
 	 **/
-	function updateMemberPassword($args) {
-		if($args->password) {
+	function updateMemberPassword($args){
+		if($args->password){
+			// check password strength
+			$oMemberModel = getModel('member');
+			$config = $oMemberModel->getMemberConfig();
+			
 			$args->password = $oMemberModel->hashPassword($args->password);
-		} else if($args->hashed_password) {
+		}
+		else if($args->hashed_password){
 			$args->password = $args->hashed_password;
 		}
-		
+
 		$output = executeQuery('member.updateMemberPassword', $args);
-		if($output->toBool()) {
+		if($output->toBool()){
 			$result = executeQuery('member.updateChangePasswordDate', $args);
 		}
-		
+
 		$this->_clearMemberCache($args->member_srl);
-		
+
 		return $output;
+	}
+	
+	function updateFindAccountAnswer($member_srl, $answer){
+		$oPassword =  new Password();
+
+		$args = new stdClass();
+		$args->member_srl = $member_srl;
+		$args->find_account_answer = $oPassword->createHash($answer);
+		$output = executeQuery('member.updateFindAccountAnswer', $args);
 	}
 	
 	/**
@@ -2136,7 +2225,8 @@ class memberController extends member {
 		}
 		unset($_SESSION['rechecked_password_step']);
 		
-		$auth_args = new stdClass;
+		$oPassword = new Password();
+		$auth_args = new stdClass();
 		$auth_args->user_id = $newEmail;
 		$auth_args->member_srl = $member_info->member_srl;
 		$auth_args->auth_key = $oPassword->createSecureSalt(40);

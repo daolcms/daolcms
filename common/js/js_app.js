@@ -119,7 +119,7 @@ _xe_base = {
 		// cast to child plugins
 		this._cast(sender, msg, params);
 	}
-}
+};
 
 _app_base = {
 	_plugins  : [],
@@ -255,7 +255,7 @@ function getTypeBase() {
 			if (!/^API_([A-Z0-9_]+)$/.test(key)) return true;
 
 			var api = RegExp.$1;
-			var fn  = function(sender, params){ return self[key](sender, params) };
+			var fn  = function(sender, params){ return self[key](sender, params); };
 
 			if (self._messages) self._messages[api] = [fn];
 			else self._binded_fn[api] = fn;

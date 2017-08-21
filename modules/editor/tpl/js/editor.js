@@ -65,7 +65,7 @@ function editorGetSelectedNode(editor_sequence) {
 /**
  * editor 시작 (editor_sequence로 iframe객체를 얻어서 쓰기 모드로 전환)
  **/
-var _editorFontColor = new Array();
+var _editorFontColor = [];
 function editorStart(editor_sequence, primary_key, content_key, editor_height, font_color) {
 
 	if(typeof(font_color)=='undefined') font_color = '#000';
@@ -84,10 +84,10 @@ function editorStart(editor_sequence, primary_key, content_key, editor_height, f
 	fo_obj.setAttribute('editor_sequence', editor_sequence);
 
 	// 모듈 연관 키 값을 세팅
-	editorRelKeys[editor_sequence] = new Array();
-	editorRelKeys[editor_sequence]["primary"] = fo_obj[primary_key];
-	editorRelKeys[editor_sequence]["content"] = fo_obj[content_key];
-	editorRelKeys[editor_sequence]["func"] = editorGetContent_xe;
+	editorRelKeys[editor_sequence] = [];
+	editorRelKeys[editor_sequence].primary = fo_obj[primary_key];
+	editorRelKeys[editor_sequence].content = fo_obj[content_key];
+	editorRelKeys[editor_sequence].func = editorGetContent_xe;
 
 	// saved document(자동저장 문서)에 대한 확인
 	if(typeof(fo_obj._saved_doc_title)!="undefined" ) { ///<< _saved_doc_title field가 없으면 자동저장 하지 않음
@@ -99,12 +99,12 @@ function editorStart(editor_sequence, primary_key, content_key, editor_height, f
 			// 자동저장된 문서 활용여부를 물은 후 사용하지 않는다면 자동저장된 문서 삭제
 			if(confirm(fo_obj._saved_doc_message.value)) {
 				if(typeof(fo_obj.title)!='undefined') fo_obj.title.value = saved_title;
-				editorRelKeys[editor_sequence]['content'].value = saved_content;
+				editorRelKeys[editor_sequence].content.value = saved_content;
 
-				var param = new Array();
-				param['editor_sequence'] = editor_sequence;
-				param['primary_key'] = primary_key;
-				param['mid'] = current_mid;
+				var param = [];
+				param.editor_sequence = editor_sequence;
+				param.primary_key = primary_key;
+				param.mid = current_mid;
 				var response_tags = new Array("error","message","editor_sequence","key","title","content","document_srl");
 				exec_xml('editor',"procEditorLoadSavedDocument", param, getAutoSavedSrl, response_tags);
 			} else {
@@ -114,7 +114,7 @@ function editorStart(editor_sequence, primary_key, content_key, editor_height, f
 	}
 
 	// 대상 form의 content element에서 데이터를 구함
-	var content = editorRelKeys[editor_sequence]['content'].value;
+	var content = editorRelKeys[editor_sequence].content.value;
 
 	// IE가 아니고 내용이 없으면 <br /> 추가 (FF등에서 iframe 선택시 focus를 주기 위한 꽁수)
 	if(!content && !xIE4Up) content = "<br />";
@@ -184,7 +184,7 @@ function editorStart(editor_sequence, primary_key, content_key, editor_height, f
 
 	// 좋지는 않으나;; 스타일 변형을 막기 위해 start 할때 html이면 바꿔주자
 	if (xGetCookie('editor_mode') == 'html'){
-		var iframe_obj = editorGetIFrame(editor_sequence);
+		iframe_obj = editorGetIFrame(editor_sequence);
 		if(xGetElementById('fileUploader_'+editor_sequence)) xGetElementById('fileUploader_'+editor_sequence).style.display='block';
 		textarea_obj = editorGetTextArea(editor_sequence);
 		textarea_obj.value = content;
@@ -231,16 +231,13 @@ function editorKeyPress(evt) {
 		var iframe_obj = editorGetIFrame(editor_sequence);
 		if(!iframe_obj) return;
 
+		obj = contentDocument.selection.createRange();
 		var contentDocument = iframe_obj.contentWindow.document;
-
-		var obj = contentDocument.selection.createRange();
-
 		var pTag = obj.parentElement().tagName.toLowerCase();
 
 		switch(pTag) {
 			case 'li' :
 					return;
-				break;
 			default :
 					obj.pasteHTML("<br />");
 				break;
@@ -254,15 +251,14 @@ function editorKeyPress(evt) {
 	// ctrl-S, alt-S 클릭시 submit하기
 	if( e.keyCode == 115 && (e.altKey || e.ctrlKey) ) {
 		// iframe 에디터를 찾음
-		var iframe_obj = editorGetIFrame(editor_sequence);
-		if(!iframe_obj) return;
+		if(!editorGetIFrame(editor_sequence)) return;
 
 		// 대상 form을 찾음
 		var fo_obj = editorGetForm(editor_sequence);
 		if(!fo_obj) return;
 
 		// 데이터 동기화
-		editorRelKeys[editor_sequence]['content'].value = editorGetContent(editor_sequence);
+		editorRelKeys[editor_sequence].content.value = editorGetContent(editor_sequence);
 
 		// form문 전송
 		if(fo_obj.onsubmit) fo_obj.onsubmit();
@@ -278,8 +274,7 @@ function editorKeyPress(evt) {
 	// ctrl-b, i, u, s 키에 대한 처리 (파이어폭스에서도 에디터 상태에서 단축키 쓰도록)
 	if (e.ctrlKey) {
 		// iframe 에디터를 찾음
-		var iframe_obj = editorGetIFrame(editor_sequence);
-		if(!iframe_obj) return;
+		if(!editorGetIFrame(editor_sequence)) return;
 
 		// html 에디터 모드일 경우 이벤트 취소 시킴
 		if(editorMode[editor_sequence]) {
@@ -312,13 +307,14 @@ function editorKeyPress(evt) {
 			case 13 :
 					if(xIE4Up) {
 						if(e.target.parentElement.document.designMode!="On") return;
-						var obj = e.target.parentElement.document.selection.createRange();
+						obj = e.target.parentElement.document.selection.createRange();
 						obj.pasteHTML('<P>');
 						obj.select();
 						evt.cancelBubble = true;
 						evt.returnValue = false;
 						return;
 					}
+				break;
 			// bold
 			case 98 :
 					editorDo('Bold',null,e.target);
@@ -450,7 +446,7 @@ function editorChangeMode(mode, editor_sequence) {
 //        xAddEventListener(xGetElementById('editor_preview_'+editor_sequence), 'load', function(){setPreviewHeight(editor_sequence)});
 	} else {
 		html = contentDocument.body.innerHTML;
-		textarea_obj.value = html
+		textarea_obj.value = html;
 		html = html.replace(/<br>/ig,"<br />\n");
 		html = html.replace(/<br \/>\n\n/ig,"<br />\n");
 	}
@@ -557,10 +553,10 @@ function setPreviewHeight(editor_sequence){
 }
 
 function getAutoSavedSrl(ret_obj, response_tags, c) {
-	var editor_sequence = ret_obj['editor_sequence'];
-	var primary_key = ret_obj['key'];
+	var editor_sequence = ret_obj.editor_sequence;
+	var primary_key = ret_obj.key;
 	var fo_obj = editorGetForm(editor_sequence);
 
-	fo_obj[primary_key].value = ret_obj['document_srl'];
+	fo_obj[primary_key].value = ret_obj.document_srl;
 	if(uploadSettingObj[editor_sequence]) editorUploadInit(uploadSettingObj[editor_sequence], true);
 }

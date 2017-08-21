@@ -44,9 +44,9 @@ $('form.siteMap')
 
 		menuItemSrl = itemKey;
 
-		var params = new Array();
+		var params = [];
 		var response_tags = new Array('menu_item');
-		params['menu_item_srl'] = menuItemSrl;
+		params.menu_item_srl = menuItemSrl;
 
 		exec_xml("menu","getMenuAdminItemInfo", params, completeGetActList, response_tags);
 	});
@@ -110,13 +110,13 @@ $('form.siteMap')
 		if(menuItem.group_srls == null ||menuItem.group_srls.item=='-1') htmlBuffer +='style="display:none"';
 		htmlBuffer +='>';
 
-		for(x in menuItem.groupList.item)
+		for(var x in menuItem.groupList.item)
 		{
 			var groupObj = menuItem.groupList.item[x];
 
 			htmlBuffer += '<input type="checkbox" name="group_srls[]" id="group_srls_'+groupObj.group_srl+'" value="'+groupObj.group_srl+'"';
 			if(groupObj.isChecked) htmlBuffer += ' checked="checked" ';
-			htmlBuffer += '/> <label for="group_srls_'+groupObj.group_srl+'">'+groupObj.title+'</label>'
+			htmlBuffer += '/> <label for="group_srls_'+groupObj.group_srl+'">'+groupObj.title+'</label>';
 		}
 		htmlBuffer +='</div>';
 		$('#groupList').html(htmlBuffer);
@@ -151,10 +151,10 @@ $('form.siteMap')
 	function resetEditForm()
 	{
 		kindModuleLayer.hide();
-		createModuleLayer.hide()
-		selectModuleLayer.hide()
-		insertUrlLayer.hide()
-		selectLayoutLayer.hide()
+		createModuleLayer.hide();
+		selectModuleLayer.hide();
+		insertUrlLayer.hide();
+		selectLayoutLayer.hide();
 
 		editForm.find('input[name=menu_item_srl]').val('');
 		editForm.find('input[name=parent_srl]').val(0);
@@ -216,24 +216,24 @@ $('form.siteMap')
 		else
 		{
 			kindModuleLayer.hide();
-			createModuleLayer.hide()
-			selectModuleLayer.hide()
-			insertUrlLayer.show()
-			selectLayoutLayer.hide()
+			createModuleLayer.hide();
+			selectModuleLayer.hide();
+			insertUrlLayer.show();
+			selectLayoutLayer.hide();
 		}
 	}
 
 	$('#kModule').change(getModuleList).change();
 	function getModuleList()
 	{
-		var params = new Array();
+		var params = [];
 		var response_tags = ['error', 'message', 'module_list'];
 
 		exec_xml('module','procModuleAdminGetList',params, completeGetModuleList, response_tags);
 	}
 
-	var layoutList = new Array();
-	var moduleList = new Array();
+	var layoutList = [];
+	var moduleList = [];
 	function completeGetModuleList(ret_obj)
 	{
 		var module = $('#kModule').val();
@@ -243,17 +243,20 @@ $('form.siteMap')
 		if(ret_obj.module_list[module] != undefined)
 		{
 			var midList = ret_obj.module_list[module].list;
-			var midListByCategory = new Object();
+			var midListByCategory = {};
+			var x;
+			var midObject;
+			
 			for(x in midList)
 			{
 				if(!midList.hasOwnProperty(x)){
 					continue;
 				}
-				var midObject = midList[x];
+				midObject = midList[x];
 
 				if(!midListByCategory[midObject.module_category_srl])
 				{
-					midListByCategory[midObject.module_category_srl] = new Array();
+					midListByCategory[midObject.module_category_srl] = [];
 				}
 				midListByCategory[midObject.module_category_srl].push(midObject);
 			}
@@ -261,10 +264,10 @@ $('form.siteMap')
 			for(x in midListByCategory)
 			{
 				var midGroup = midListByCategory[x];
-				htmlBuffer += '<optgroup label="'+x+'">'
-				for(y in midGroup)
+				htmlBuffer += '<optgroup label="'+x+'">';
+				for(var y in midGroup)
 				{
-					var midObject = midGroup[y];
+					midObject = midGroup[y];
 					htmlBuffer += '<option value="'+midObject.mid+'"';
 					if(menuUrl == midObject.mid) htmlBuffer += ' selected ';
 					htmlBuffer += '>'+midObject.mid+'('+midObject.browser_title+')</option>';
@@ -272,7 +275,7 @@ $('form.siteMap')
 					layoutList[midObject.mid] = midObject.layout_srl;
 					moduleList[midObject.mid] = midObject.module_srl;
 				}
-				htmlBuffer += '</optgroup>'
+				htmlBuffer += '</optgroup>';
 			}
 		}
 		else htmlBuffer = '';

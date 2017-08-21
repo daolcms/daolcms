@@ -368,28 +368,35 @@ class memberAdminController extends member {
 		
 		$fields = array();
 		
-		if($agreement) {
+		if($agreement){
 			$fields[] = '<field name="accept_agreement"><if test="$act == \'procMemberInsert\'" attr="required" value="true" /></field>';
 		}
-		foreach($signupForm as $formInfo) {
-			if($formInfo->required || $formInfo->mustRequired) {
-				if($formInfo->type == 'tel' || $formInfo->type == 'kr_zip') {
+		foreach($signupForm as $formInfo){
+			if($formInfo->required || $formInfo->mustRequired){
+				if($formInfo->type == 'tel' || $formInfo->type == 'kr_zip'){
 					$fields[] = sprintf('<field name="%s[]" required="true" />', $formInfo->name);
-				} else if($formInfo->name == 'password') {
+				}
+				else if($formInfo->name == 'password'){
 					$fields[] = '<field name="password"><if test="$act == \'procMemberInsert\'" attr="required" value="true" /><if test="$act == \'procMemberInsert\'" attr="length" value="4:60" /></field>';
 					$fields[] = '<field name="password2"><if test="$act == \'procMemberInsert\'" attr="required" value="true" /><if test="$act == \'procMemberInsert\'" attr="equalto" value="password" /></field>';
-				} else if($formInfo->name == 'find_account_question') {
-					$fields[] = '<field name="find_account_question" required="true" />';
-					$fields[] = '<field name="find_account_answer" required="true" length=":250" />';
-				} else if($formInfo->name == 'email_address') {
+				}
+				else if($formInfo->name == 'find_account_question'){
+					$fields[] = '<field name="find_account_question"><if test="$modify_find_account_answer" attr="required" value="true" /></field>';
+					$fields[] = '<field name="find_account_answer" length=":250"><if test="$modify_find_account_answer" attr="required" value="true" /></field>';
+				}
+				else if($formInfo->name == 'email_address'){
 					$fields[] = sprintf('<field name="%s" required="true" rule="email"/>', $formInfo->name);
-				} else if($formInfo->name == 'user_id') {
+				}
+				else if($formInfo->name == 'user_id'){
 					$fields[] = sprintf('<field name="%s" required="true" rule="userid" length="3:20" />', $formInfo->name);
-				} else if(strpos($formInfo->name, 'image') !== false) {
+				}
+				else if(strpos($formInfo->name, 'image') !== false){
 					$fields[] = sprintf('<field name="%s"><if test="$act != \'procMemberAdminInsert\' &amp;&amp; $__%s_exist != \'true\'" attr="required" value="true" /></field>', $formInfo->name, $formInfo->name);
-				} else if($formInfo->name == 'signature') {
+				}
+				else if($formInfo->name == 'signature'){
 					$fields[] = '<field name="signature"><if test="$member_srl" attr="required" value="true" /></field>';
-				} else {
+				} 
+				else{
 					$fields[] = sprintf('<field name="%s" required="true" />', $formInfo->name);
 				}
 			}
