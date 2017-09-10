@@ -1139,39 +1139,50 @@ class Context {
 	 * @param string $do_stripslashes Whether to strip slashes
 	 * @return mixed filtered value. Type are string or array
 	 */
-	function _filterRequestVar($key, $val, $do_stripslashes = 1) {
-		$isArray = TRUE;
-		if(!is_array($val)) {
-			$isArray = FALSE;
+	function _filterRequestVar($key, $val, $do_stripslashes = 1){
+		if(!($isArray = is_array($val))){
 			$val = array($val);
 		}
-		
+
 		$result = array();
-		foreach($val as $k => $v) {
+		foreach($val as $k => $v){
 			$k = htmlentities($k);
-			if($key === 'page' || $key === 'cpage' || substr($key, -3) === 'srl') {
-				$result[$k] = !preg_match('/^[0-9,]+$/', $v) ? (int)$v : $v;
-			} elseif($key === 'mid' || $key === 'search_keyword') {
-				$result[$k] = htmlspecialchars($v);
-			} elseif($key === 'vid') {
-				$result[$k] = urlencode($v);
-			} elseif($key === 'xe_validator_id') {
+			if($key === 'page' || $key === 'cpage' || substr_compare($key, 'srl', -3) === 0){
+				$result[$k] = !preg_match('/^[0-9,]+$/', $v) ? (int) $v : $v;
+			}
+			elseif($key === 'mid' || $key === 'search_keyword'){
 				$result[$k] = htmlspecialchars($v, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
-			} elseif(stripos($key, 'XE_VALIDATOR', 0) === 0) {
+			}
+			elseif($key === 'vid'){
+				$result[$k] = urlencode($v);
+			}
+			elseif($key === 'xe_validator_id'){
+				$result[$k] = htmlspecialchars($v, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
+			}
+			elseif(stripos($key, 'XE_VALIDATOR', 0) === 0){
 				unset($result[$k]);
-			} else {
+			}
+			else{
 				$result[$k] = $v;
-				
-				if($do_stripslashes && version_compare(PHP_VERSION, '5.4.0', '<') && get_magic_quotes_gpc()) {
-					$result[$k] = stripslashes($result[$k]);
+
+				if($do_stripslashes && version_compare(PHP_VERSION, '5.4.0', '<') && get_magic_quotes_gpc()){
+					if(is_array($result[$k])){
+						array_walk_recursive($result[$k], function(&$val) { $val = stripslashes($val); });
+					}
+					else{
+						$result[$k] = stripslashes($result[$k]);
+					}
 				}
-				
-				if(!is_array($result[$k])) {
+
+				if(is_array($result[$k])){
+					array_walk_recursive($result[$k], function(&$val) { $val = trim($val); });
+				}
+				else{
 					$result[$k] = trim($result[$k]);
 				}
 			}
 		}
-		
+
 		return $isArray ? $result : $result[0];
 	}
 	
