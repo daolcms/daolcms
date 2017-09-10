@@ -127,7 +127,7 @@ $banner_img_4 = $layout_info->banner_image_4 ? $layout_info->banner_image_4 : ".
 	<div id="loginWindow" class="loginWindow">
 	<!-- class="loginWindow" | class="loginWindow open" -->
 		<span class="modalWindow"></span>
-		<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+		<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'layouts/daol_official/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
 			<p>{$XE_VALIDATOR_MESSAGE}</p>
 		</div>
 		<div id="loginLayer" class="loginLayer loginTypeA">
@@ -136,6 +136,7 @@ $banner_img_4 = $layout_info->banner_image_4 ? $layout_info->banner_image_4 : ".
 			<form action="" method="post" class="typeA" id="commonLogin" ruleset="@login" >
 				<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
 				<input type="hidden" name="act" value="procMemberLogin" />
+				<input type="hidden" name="xe_validator_id" value="layouts/daol_official/1" />
 				<fieldset>
 					<legend>XE Login</legend>
 					<dl>	
