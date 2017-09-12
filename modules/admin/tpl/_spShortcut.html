@@ -2,7 +2,8 @@
 	<h2>{$lang->favorite}</h2>
 	<ul class="nav nav-list">
 		<li loop="$favorite_list => $favorite">
-			<a href="{getUrl('', 'module', 'admin', 'act', $favorite->admin_index_act)}">{$favorite->title}</a>
+			<a cond="$favorite->title" href="{getUrl('', 'module', 'admin', 'act', $favorite->admin_index_act)}">{$favorite->title}</a>
+            <a cond="!$favorite->title">{$lang->msg_not_founded}</a>
 			<form class="action" action="./">
 				<input type="hidden" name="module" value="admin" />
 				<input type="hidden" name="act" value="procAdminToggleFavorite" />
