@@ -862,65 +862,73 @@ class memberController extends member {
 	 *
 	 * @return Object
 	 **/
-	function procMemberFindAccount() {
+	function procMemberFindAccount(){
 		$email_address = Context::get('email_address');
 		if(!$email_address) return new Object(-1, 'msg_invalid_request');
-		
+
 		$oMemberModel = getModel('member');
 		$oModuleModel = getModel('module');
+
 		// Check if a member having the same email address exists
 		$member_srl = $oMemberModel->getMemberSrlByEmailAddress($email_address);
 		if(!$member_srl) return new Object(-1, 'msg_email_not_exists');
+
 		// Get information of the member
 		$columnList = array('denied', 'member_srl', 'user_id', 'user_name', 'email_address', 'nick_name');
 		$member_info = $oMemberModel->getMemberInfoByMemberSrl($member_srl, 0, $columnList);
+
 		// Check if possible to find member's ID and password
-		if($member_info->denied == 'Y') {
+		if($member_info->denied == 'Y'){
+			$chk_args = new stdClass;
 			$chk_args->member_srl = $member_info->member_srl;
 			$output = executeQuery('member.chkAuthMail', $chk_args);
 			if($output->toBool() && $output->data->count != '0') return new Object(-1, 'msg_user_not_confirmed');
 		}
+
 		// Insert data into the authentication DB
 		$oPassword = new Password();
+		$args = new stdClass();
 		$args->user_id = $member_info->user_id;
 		$args->member_srl = $member_info->member_srl;
 		$args->new_password = $oPassword->createTemporaryPassword(8);
 		$args->auth_key = $oPassword->createSecureSalt(40);
 		$args->is_register = 'N';
-		
+
 		$output = executeQuery('member.insertAuthMail', $args);
 		if(!$output->toBool()) return $output;
 		// Get content of the email to send a member
 		Context::set('auth_args', $args);
-		
+
 		$member_config = $oModuleModel->getModuleConfig('member');
+		$memberInfo = array();
 		global $lang;
-		if(is_array($member_config->signupForm)) {
-			$exceptForm = array('password', 'find_account_question');
-			foreach($member_config->signupForm as $form) {
-				if(!in_array($form->name, $exceptForm) && $form->isDefaultForm && ($form->required || $form->mustRequired)) {
+		if(is_array($member_config->signupForm)){
+			$exceptForm=array('password', 'find_account_question');
+			foreach($member_config->signupForm as $form){
+				if(!in_array($form->name, $exceptForm) && $form->isDefaultForm && ($form->required || $form->mustRequired)){
 					$memberInfo[$lang->{$form->name}] = $member_info->{$form->name};
 				}
 			}
-		} else {
+		}
+		else{
 			$memberInfo[$lang->user_id] = $args->user_id;
 			$memberInfo[$lang->user_name] = $args->user_name;
 			$memberInfo[$lang->nick_name] = $args->nick_name;
 			$memberInfo[$lang->email_address] = $args->email_address;
 		}
 		Context::set('memberInfo', $memberInfo);
-		
+
 		if(!$member_config->skin) $member_config->skin = "default";
 		if(!$member_config->colorset) $member_config->colorset = "white";
-		
+
 		Context::set('member_config', $member_config);
-		
+
 		$tpl_path = sprintf('%sskins/%s', $this->module_path, $member_config->skin);
 		if(!is_dir($tpl_path)) $tpl_path = sprintf('%sskins/%s', $this->module_path, 'default');
-		
-		$find_url = getFullUrl('', 'module', 'member', 'act', 'procMemberAuthAccount', 'member_srl', $member_info->member_srl, 'auth_key', $args->auth_key);
+
+		$find_url = getFullUrl ('', 'module', 'member', 'act', 'procMemberAuthAccount', 'member_srl', $member_info->member_srl, 'auth_key', $args->auth_key);
 		Context::set('find_url', $find_url);
-		
+
 		$oTemplate = &TemplateHandler::getInstance();
 		$content = $oTemplate->compile($tpl_path, 'find_member_account_mail');
 		// Get information of the Webmaster
@@ -930,19 +938,18 @@ class memberController extends member {
 		$oMail = new Mail();
 		$oMail->setTitle(Context::getLang('msg_find_account_title'));
 		$oMail->setContent($content);
-		$oMail->setSender($member_config->webmaster_name ? $member_config->webmaster_name : 'webmaster', $member_config->webmaster_email);
-		$oMail->setReceiptor($member_info->nick_name, $member_info->email_address);
+		$oMail->setSender($member_config->webmaster_name?$member_config->webmaster_name:'webmaster', $member_config->webmaster_email);
+		$oMail->setReceiptor($member_info->user_name, $member_info->email_address);
 		$oMail->send();
 		// Return message
 		$msg = sprintf(Context::getLang('msg_auth_mail_sent'), $member_info->email_address);
-		if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))) {
-			$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', '');
-			$this->setRedirectUrl($returnUrl . '&user_id=' . $user_id);
+		if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))){
+			$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', 'dispMemberFindAccount');
+			$this->setRedirectUrl($returnUrl);
 		}
 		return new Object(0, $msg);
 	}
-	
-	
+
 	/**
 	 * Generate a temp password by answering to the pre-determined question
 	 *
@@ -1080,127 +1087,128 @@ class memberController extends member {
 	 *
 	 * @return void|Object (void : success, Object : fail)
 	 **/
-	function procMemberResendAuthMail() {
+	function procMemberResendAuthMail(){
 		// Get an email_address
 		$email_address = Context::get('email_address');
-		if(!$email_address) return $this->stop('msg_invalid_request');
+		if(!$email_address) return new Object(-1, 'msg_invalid_request');
 		// Log test by using email_address
-		$oMemberModel = &getModel('member');
-		
+		$oMemberModel = getModel('member');
+
+		$args = new stdClass;
 		$args->email_address = $email_address;
 		$memberSrl = $oMemberModel->getMemberSrlByEmailAddress($email_address);
-		if(!$memberSrl) return $this->stop('msg_not_exists_member');
-		
+		if(!$memberSrl) return new Object(-1, 'msg_not_exists_member');
+
 		$columnList = array('member_srl', 'user_id', 'user_name', 'nick_name', 'email_address');
 		$member_info = $oMemberModel->getMemberInfoByMemberSrl($memberSrl, 0, $columnList);
-		
+
 		$oModuleModel = getModel('module');
 		$member_config = $oModuleModel->getModuleConfig('member');
 		if(!$member_config->skin) $member_config->skin = "default";
 		if(!$member_config->colorset) $member_config->colorset = "white";
-		
+
 		// Check if a authentication mail has been sent previously
 		$chk_args = new stdClass;
 		$chk_args->member_srl = $member_info->member_srl;
 		$output = executeQuery('member.chkAuthMail', $chk_args);
 		if($output->toBool() && $output->data->count == '0') return new Object(-1, 'msg_invalid_request');
-		
-		$chk_args = new stdClass;
+
+		$auth_args = new stdClass;
 		$auth_args->member_srl = $member_info->member_srl;
 		$output = executeQueryArray('member.getAuthMailInfo', $auth_args);
-		if(!$output->data || !$output->data[0]->auth_key) return new Object(-1, 'msg_invalid_request');
-		
+		if(!$output->data || !$output->data[0]->auth_key)  return new Object(-1, 'msg_invalid_request');
+		$auth_info = $output->data[0];
+
 		// Update the regdate of authmail entry
 		$renewal_args = new stdClass;
 		$renewal_args->member_srl = $member_info->member_srl;
 		$renewal_args->auth_key = $auth_info->auth_key;
 		$output = executeQuery('member.updateAuthMail', $renewal_args);
-		
-		$auth_info = $output->data[0];
-		
+
 		$memberInfo = array();
 		global $lang;
-		if(is_array($member_config->signupForm)) {
-			$exceptForm = array('password', 'find_account_question');
-			foreach($member_config->signupForm as $form) {
-				if(!in_array($form->name, $exceptForm) && $form->isDefaultForm && ($form->required || $form->mustRequired)) {
+		if(is_array($member_config->signupForm)){
+			$exceptForm=array('password', 'find_account_question');
+			foreach($member_config->signupForm as $form){
+				if(!in_array($form->name, $exceptForm) && $form->isDefaultForm && ($form->required || $form->mustRequired)){
 					$memberInfo[$lang->{$form->name}] = $member_info->{$form->name};
 				}
 			}
-		} else {
+		}
+		else{
 			$memberInfo[$lang->user_id] = $member_info->user_id;
 			$memberInfo[$lang->user_name] = $member_info->user_name;
 			$memberInfo[$lang->nick_name] = $member_info->nick_name;
 			$memberInfo[$lang->email_address] = $member_info->email_address;
 		}
-		
-		
+
 		// Get content of the email to send a member
 		Context::set('memberInfo', $memberInfo);
-		
 		Context::set('member_config', $member_config);
-		
+
 		$tpl_path = sprintf('%sskins/%s', $this->module_path, $member_config->skin);
 		if(!is_dir($tpl_path)) $tpl_path = sprintf('%sskins/%s', $this->module_path, 'default');
-		
-		$auth_url = getFullUrl('', 'module', 'member', 'act', 'procMemberAuthAccount', 'member_srl', $member_info->member_srl, 'auth_key', $auth_info->auth_key);
+
+		$auth_url = getFullUrl('','module','member','act','procMemberAuthAccount','member_srl',$member_info->member_srl, 'auth_key',$auth_info->auth_key);
 		Context::set('auth_url', $auth_url);
-		
-		
+
 		$oTemplate = &TemplateHandler::getInstance();
 		$content = $oTemplate->compile($tpl_path, 'confirm_member_account_mail');
 		// Send a mail
 		$oMail = new Mail();
 		$oMail->setTitle(Context::getLang('msg_confirm_account_title'));
 		$oMail->setContent($content);
-		$oMail->setSender($member_config->webmaster_name ? $member_config->webmaster_name : 'webmaster', $member_config->webmaster_email);
-		$oMail->setReceiptor($args->email_address, $args->email_address);
+		$oMail->setSender($member_config->webmaster_name?$member_config->webmaster_name:'webmaster', $member_config->webmaster_email);
+		$oMail->setReceiptor($args->user_name, $args->email_address);
 		$oMail->send();
-		
+
 		$msg = sprintf(Context::getLang('msg_confirm_mail_sent'), $args->email_address);
 		$this->setMessage($msg);
-		
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', '');
 		$this->setRedirectUrl($returnUrl);
 	}
-	
-	function procMemberResetAuthMail() {
+
+	function procMemberResetAuthMail(){
 		$memberInfo = $_SESSION['auth_member_info'];
 		unset($_SESSION['auth_member_info']);
-		
-		if(!$memberInfo) {
+
+		if(!$memberInfo){
 			return $this->stop('msg_invalid_request');
 		}
-		
+
 		$newEmail = Context::get('email_address');
-		
-		if(!$newEmail) {
+
+		if(!$newEmail){
 			return $this->stop('msg_invalid_request');
 		}
-		
-		$oMemberModel = &getModel('member');
+
+		$oMemberModel = getModel('member');
 		$member_srl = $oMemberModel->getMemberSrlByEmailAddress($newEmail);
-		if($member_srl) {
-			return new Object(-1, 'msg_exists_email_address');
+		if($member_srl){
+			return new Object(-1,'msg_exists_email_address');
 		}
-		
+
 		// remove all key by member_srl
+		$args = new stdClass;
 		$args->member_srl = $memberInfo->member_srl;
 		$output = executeQuery('member.deleteAuthMail', $args);
-		
-		if(!$output->toBool()) {
+
+		if(!$output->toBool()){
 			return $output;
 		}
-		
+
 		// update member info
 		$args->email_address = $newEmail;
 		list($args->email_id, $args->email_host) = explode('@', $newEmail);
-		
+
 		$output = executeQuery('member.updateMemberEmailAddress', $args);
-		if(!$output->toBool()) {
+		if(!$output->toBool()){
 			return $this->stop($output->getMessage());
 		}
-		
+
+		$this->_clearMemberCache($args->member_srl);
+
 		// generate new auth key
 		$oPassword = new Password();
 		$auth_args = new stdClass();
@@ -1209,21 +1217,20 @@ class memberController extends member {
 		$auth_args->new_password = $memberInfo->password;
 		$auth_args->auth_key = $oPassword->createSecureSalt(40);
 		$auth_args->is_register = 'Y';
-		
+
 		$output = executeQuery('member.insertAuthMail', $auth_args);
 		if(!$output->toBool()) return $output;
-		
+
 		$memberInfo->email_address = $newEmail;
-		
+
 		// resend auth mail.
 		$this->_sendAuthMail($auth_args, $memberInfo);
-		
+
 		$msg = sprintf(Context::getLang('msg_confirm_mail_sent'), $memberInfo->email_address);
 		$this->setMessage($msg);
-		
+
 		$returnUrl = getUrl('');
 		$this->setRedirectUrl($returnUrl);
-		
 	}
 	
 	function _sendAuthMail($auth_args, $member_info) {
