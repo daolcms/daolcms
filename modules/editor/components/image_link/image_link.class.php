@@ -93,7 +93,7 @@ class image_link extends EditorHandler {
 		$code = sprintf("<img %s style=\"%s\" />", implode(' ', $attr_output), $style);
 		
 		if($link_url) {
-			if($open_window == 'Y') $code = sprintf('<a href="%s" onclick="window.open(this.href);return false;">%s</a>', $link_url, $code);
+			if($open_window == 'Y') $code = sprintf('<a href="%s" target="_blank" rel="noopener">%s</a>', $link_url, $code);
 			else $code = sprintf('<a href="%s" >%s</a>', $link_url, $code);
 		}
 		return $code;

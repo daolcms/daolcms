@@ -297,6 +297,7 @@ class HTMLDisplayHandler {
 			$oContext->loadFile(array('./common/js/modernizr.js', 'head', '', -1000000), true);
 			$oContext->loadFile(array('./common/js/x.js', 'head', '', -1000000), true);
 			$oContext->loadFile(array('./common/js/URI.js', 'head', '', -1000000), true);
+			$oContext->loadFile(array('./common/js/blankshield.min.js', 'head', '', -1000000), true);
 			$oContext->loadFile(array('./common/js/common.js', 'head', '', -1000000), true);
 			$oContext->loadFile(array('./common/js/js_app.js', 'head', '', -1000000), true);
 			$oContext->loadFile(array('./common/js/xml2json.js', 'head', '', -1000000), true);
