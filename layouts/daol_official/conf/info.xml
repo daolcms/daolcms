@@ -4,13 +4,9 @@
 	<title xml:lang="en">DAOL Official Layout</title>
 	<description xml:lang="ko">다올 CMS 공식 레이아웃</description>
 	<description xml:lang="en">DAOL CMS Official Layout</description>
-	<version>1.1</version>
-	<date>2014-05-04</date>
+	<version>1.2</version>
+	<date>2017-09-12</date>
 
-	<author email_address="support@xdt.kr" link="http://xdt.kr">
-		<name xml:lang="ko">범진혁</name>
-		<name xml:lang="en">Beom Jinhyeok</name>
-	</author>
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org">
 		<name xml:lang="ko">DAOL</name>
 		<name xml:lang="en">DAOL</name>

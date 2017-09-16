@@ -185,10 +185,12 @@ class editorModel extends editor {
 		}
 		if(!$option->allow_fileupload) $allow_fileupload = false;
 		else $allow_fileupload = true;
+
 		// content_style setting
 		if(!$option->content_style) $option->content_style = 'ckeditor_light';
 		Context::set('content_style', $option->content_style);
-		Context::set('content_style_path', $this->module_path . 'styles/' . $option->content_style);
+		Context::set('content_style_path', getScriptPath() . ltrim($this->module_path, './') . 'styles/' . $option->content_style);
+
 		// Default font setting
 		Context::set('content_font', $option->content_font);
 		Context::set('content_font_size', $option->content_font_size);
@@ -197,18 +199,23 @@ class editorModel extends editor {
 		if(!$option->enable_autosave) $enable_autosave = false;
 		elseif(Context::get($option->primary_key_name)) $enable_autosave = false;
 		else $enable_autosave = true;
+
 		// Option setting to allow the default editor component
 		if(!$option->enable_default_component) $enable_default_component = false;
 		else $enable_default_component = true;
+
 		// Option setting to allow other extended components
 		if(!$option->enable_component) $enable_component = false;
 		else $enable_component = true;
+
 		// Setting for html-mode
 		if($option->disable_html) $html_mode = false;
 		else $html_mode = true;
+
 		// Set Height
 		if(!$option->height) $editor_height = 400;
 		else $editor_height = $option->height;
+		
 		// Skin Setting
 		$skin = $option->skin;
 		if(!$skin) $skin = 'ckeditor';

@@ -444,7 +444,7 @@ class content extends WidgetHandler {
 				$content_item->setTitle($item->title);
 				$content_item->setNickName(max($item->author, $item->{'dc:creator'}));
 				//$content_item->setCategory($item->category);
-				$item->description = preg_replace('!<a href=!is', '<a onclick="window.open(this.href);return false" href=', $item->description);
+				$item->description = preg_replace('!<a href=!is', '<a target="_blank" rel="noopener" href=', $item->description);
 				$content_item->setContent($this->_getSummary($item->description, $args->content_cut_size));
 				$content_item->setThumbnail($this->_getRssThumbnail($item->description));
 				$content_item->setLink($item->link);
@@ -479,7 +479,7 @@ class content extends WidgetHandler {
 				$content_item->setTitle($item->title);
 				$content_item->setNickName(max($item->author, $item->{'dc:creator'}));
 				//$content_item->setCategory($item->category);
-				$item->description = preg_replace('!<a href=!is', '<a onclick="window.open(this.href);return false" href=', $item->description);
+				$item->description = preg_replace('!<a href=!is', '<a target="_blank" rel="noopener" href=', $item->description);
 				$content_item->setContent($this->_getSummary($item->description, $args->content_cut_size));
 				$content_item->setThumbnail($this->_getRssThumbnail($item->description));
 				$content_item->setLink($item->link);
@@ -536,7 +536,7 @@ class content extends WidgetHandler {
 				$content_item->setNickName(max($item->author, $item->{'dc:creator'}));
 				$content_item->setAuthorSite($value->author->uri->body);
 				//$content_item->setCategory($item->category);
-				$item->description = preg_replace('!<a href=!is', '<a onclick="window.open(this.href);return false" href=', $item->content);
+				$item->description = preg_replace('!<a href=!is', '<a target="_blank" rel="noopener" href=', $item->content);
 				if($item->description) {
 					if(!preg_match("/html/i", $value->content->attrs->type)) $item->description = htmlspecialchars($item->description);
 				}

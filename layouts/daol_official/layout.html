@@ -1,8 +1,8 @@
 <!--%import("css/layout.min.css")--> 
 <!--%import("js/layout.min.js")-->
 <!--@if($layout_info->banner_style=="y")-->
-<!--%import("js/slides.min.js")-->
-<!--%import("js/banner.min.js")-->
+	<!--%import("js/slides.min.js")-->
+	<!--%import("js/banner.min.js")-->
 <!--@end-->
 {@
 $banner_img_1 = $layout_info->banner_image_1 ? $layout_info->banner_image_1 : "./layouts/daol_official/img/slider_default.png";
@@ -124,21 +124,27 @@ $banner_img_4 = $layout_info->banner_image_4 ? $layout_info->banner_image_4 : ".
 	<!--%import("./filter/login.xml")-->
 	<!--@if($member_config->enable_openid=='Y')--><!--%import("./filter/openid_login.xml")--><!--@end-->
 	<!-- loginWindow -->
+	<!--@if($XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'layouts/daol_official/1')-->
+		<style type="text/css">
+			#loginWindow { display:block; }
+		</style>
+	<!--@end-->
 	<div id="loginWindow" class="loginWindow">
 	<!-- class="loginWindow" | class="loginWindow open" -->
 		<span class="modalWindow"></span>
-		<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
-			<p>{$XE_VALIDATOR_MESSAGE}</p>
-		</div>
 		<div id="loginLayer" class="loginLayer loginTypeA">
 		<!-- class="loginLayer loginTypeA" | class="loginLayer loginTypeB" -->
 			<button type="button" class="close" onclick="document.getElementById('loginWindow').style.display='none'" accesskey="X"><span>Close Login Layer</span></button>
 			<form action="" method="post" class="typeA" id="commonLogin" ruleset="@login" >
 				<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
 				<input type="hidden" name="act" value="procMemberLogin" />
+				<input type="hidden" name="xe_validator_id" value="layouts/daol_official/1" />
 				<fieldset>
-					<legend>XE Login</legend>
-					<dl>	
+					<legend>Login</legend>
+					<dl>
+						<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'layouts/daol_official/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+							<p>{$XE_VALIDATOR_MESSAGE}</p>
+						</div>
 						<dt><label for="uid" cond="$member_config->identifier != 'email_address'">{$lang->user_id}</label><label for="uid" cond="$member_config->identifier == 'email_address'">{$lang->email_address}</label></dt>
 						<dd><input name="user_id" type="text" class="inputuid" id="uid" /></dd>
 						<dt><label for="upw">{$lang->password}</label></dt>

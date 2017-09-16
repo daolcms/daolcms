@@ -1139,39 +1139,50 @@ class Context {
 	 * @param string $do_stripslashes Whether to strip slashes
 	 * @return mixed filtered value. Type are string or array
 	 */
-	function _filterRequestVar($key, $val, $do_stripslashes = 1) {
-		$isArray = TRUE;
-		if(!is_array($val)) {
-			$isArray = FALSE;
+	function _filterRequestVar($key, $val, $do_stripslashes = 1){
+		if(!($isArray = is_array($val))){
 			$val = array($val);
 		}
-		
+
 		$result = array();
-		foreach($val as $k => $v) {
+		foreach($val as $k => $v){
 			$k = htmlentities($k);
-			if($key === 'page' || $key === 'cpage' || substr($key, -3) === 'srl') {
-				$result[$k] = !preg_match('/^[0-9,]+$/', $v) ? (int)$v : $v;
-			} elseif($key === 'mid' || $key === 'search_keyword') {
-				$result[$k] = htmlspecialchars($v);
-			} elseif($key === 'vid') {
-				$result[$k] = urlencode($v);
-			} elseif($key === 'xe_validator_id') {
+			if($key === 'page' || $key === 'cpage' || substr_compare($key, 'srl', -3) === 0){
+				$result[$k] = !preg_match('/^[0-9,]+$/', $v) ? (int) $v : $v;
+			}
+			elseif($key === 'mid' || $key === 'search_keyword'){
 				$result[$k] = htmlspecialchars($v, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
-			} elseif(stripos($key, 'XE_VALIDATOR', 0) === 0) {
+			}
+			elseif($key === 'vid'){
+				$result[$k] = urlencode($v);
+			}
+			elseif($key === 'xe_validator_id'){
+				$result[$k] = htmlspecialchars($v, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
+			}
+			elseif(stripos($key, 'XE_VALIDATOR', 0) === 0){
 				unset($result[$k]);
-			} else {
+			}
+			else{
 				$result[$k] = $v;
-				
-				if($do_stripslashes && version_compare(PHP_VERSION, '5.4.0', '<') && get_magic_quotes_gpc()) {
-					$result[$k] = stripslashes($result[$k]);
+
+				if($do_stripslashes && version_compare(PHP_VERSION, '5.4.0', '<') && get_magic_quotes_gpc()){
+					if(is_array($result[$k])){
+						array_walk_recursive($result[$k], function(&$val) { $val = stripslashes($val); });
+					}
+					else{
+						$result[$k] = stripslashes($result[$k]);
+					}
 				}
-				
-				if(!is_array($result[$k])) {
+
+				if(is_array($result[$k])){
+					array_walk_recursive($result[$k], function(&$val) { $val = trim($val); });
+				}
+				else{
 					$result[$k] = trim($result[$k]);
 				}
 			}
 		}
-		
+
 		return $isArray ? $result : $result[0];
 	}
 	
@@ -1300,9 +1311,20 @@ class Context {
 		if(!$self->get_vars || $args_list[0] == '') {
 			// rearrange args_list
 			if(is_array($args_list) && $args_list[0] == '') array_shift($args_list);
-		} else {
+		} elseif($_SERVER['REQUEST_METHOD'] == 'GET') {
 			// Otherwise, make GET variables into array
 			$get_vars = get_object_vars($self->get_vars);
+		} else {
+			if(!!$self->get_vars->module) $get_vars['module'] = $self->get_vars->module;
+			if(!!$self->get_vars->mid) $get_vars['mid'] = $self->get_vars->mid;
+			if(!!$self->get_vars->act) $get_vars['act'] = $self->get_vars->act;
+			if(!!$self->get_vars->page) $get_vars['page'] = $self->get_vars->page;
+			if(!!$self->get_vars->search_target) $get_vars['search_target'] = $self->get_vars->search_target;
+			if(!!$self->get_vars->search_keyword) $get_vars['search_keyword'] = $self->get_vars->search_keyword;
+			if($get_vars['act'] == 'IS')
+			{
+				if(!!$self->get_vars->is_keyword) $get_vars['is_keyword'] = $self->get_vars->is_keyword;
+			}
 		}
 		
 		// arrange args_list
