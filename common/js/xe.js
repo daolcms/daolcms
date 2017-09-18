@@ -1,6 +1,7 @@
-/*! Copyright (C) DAOL Project. <http://www.daolcms.org> Copyright (C) NAVER <http://www.navercorp.com> */
+/*! Copyright (C) NAVER <http://www.navercorp.com> */
+/*! Copyright (C) DAOL Project. <http://www.daolcms.org> */
 /**!
- * @file modernizr.js + common.js + js_app.js + xml2json.js + xml_handler.js + xml_js_filter.js
+ * @file modernizr.js + URI.js + common.js + js_app.js + xml2json.js + xml_handler.js + xml_js_filter.js
  * @brief  XE Common JavaScript
  **/
 ;
