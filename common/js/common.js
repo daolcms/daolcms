@@ -36,12 +36,12 @@ if(typeof window.XE == "undefined") {
 			 */
 			checkboxToggleAll : function(itemName) {
 				if(!is_def(itemName)) itemName='cart';
+				var obj;
 				var options = {
 					wrap : null,
 					checked : 'toggle',
 					doClick : false
 				};
-				var obj;
 
 				switch(arguments.length) {
 					case 1:
@@ -135,7 +135,7 @@ if(typeof window.XE == "undefined") {
 					if(area.outerWidth()+areaOffset.left > $(window).width()+$(window).scrollLeft())
 						areaOffset.left = $(window).width() - area.outerWidth() + $(window).scrollLeft();
 
-					area.css({ top:areaOffset.top, left:areaOffset.left }).show();
+					area.css({ top:areaOffset.top, left:areaOffset.left }).show().focus();
 				}
 			},
 
@@ -148,7 +148,7 @@ if(typeof window.XE == "undefined") {
 				}
 	
 				base_url = base_url.hostname() + base_url.port() + base_url.directory();
-				target_url = target_url.hostname() + target_url.port() + base_url.directory();
+				target_url = target_url.hostname() + target_url.port() + target_url.directory();
 	
 				return target_url.indexOf(base_url) === 0;
 			}
@@ -889,11 +889,6 @@ if(typeof window.XE == "undefined") {
 		}
 
 	};
-
-
-
-
-
 
 	/* ----------------------------------------------
 	* DEPRECATED
