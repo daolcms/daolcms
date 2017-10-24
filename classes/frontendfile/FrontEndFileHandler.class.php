@@ -273,13 +273,15 @@ class FrontEndFileHandler extends Handler {
 	 * @param string $type Type of javascript. head, body
 	 * @return array Returns javascript file list. Array contains file, targetie.
 	 */
-	function getJsFileList($type = 'head') {
+	function getJsFileList($type = 'head'){
 		$ignore = array('modernizr.js', 'common.js', 'js_app.js', 'xml2json.js', 'xml_handler.js', 'xml_js_filter.js');
+		$pathCommonJs = getScriptPath() . 'common/js';
 		
-		if($type == 'head') {
+		if($type == 'head'){
 			$map = &$this->jsHeadMap;
 			$mapIndex = &$this->jsHeadMapIndex;
-		} else {
+		}
+		else{
 			$map = &$this->jsBodyMap;
 			$mapIndex = &$this->jsBodyMapIndex;
 		}
@@ -289,16 +291,16 @@ class FrontEndFileHandler extends Handler {
 		$result = array();
 		foreach($map as $indexedMap) {
 			foreach($indexedMap as $file) {
-				if((!__DEBUG__ && __XE_VERSION_STABLE__) && $file->filePath === '/common/js') {
+				if((!__DEBUG__ && __XE_VERSION_STABLE__) && $file->filePath === $pathCommonJs){
 					if(in_array($file->fileName, $ignore)) {
 						continue;
 					}
 				}
 				$query = '';
-				if(!$file->external && is_readable($file->cdnPath . '/' . $file->fileName)) {
+				if(!$file->external && is_readable($file->cdnPath . '/' . $file->fileName)){
 					$query = date('YmdHis', filemtime($file->cdnPath . '/' . $file->fileName));
 				}
-				if($file->query) {
+				if($file->query){
 					if($query) $query .= '&';
 					$query .= $file->query;
 				}

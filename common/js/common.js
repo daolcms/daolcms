@@ -9,7 +9,7 @@
 if(jQuery) jQuery.noConflict();
 if(typeof window.XE == "undefined") {
 	/*jshint -W082 */
-	(function($) {
+	(function($, global) {
 		/* OS check */
 		var UA = navigator.userAgent.toLowerCase();
 		$.os = {
@@ -27,9 +27,13 @@ if(typeof window.XE == "undefined") {
 		 * @brief XE 공용 유틸리티 함수
 		 * @namespace XE
 		 */
-		window.XE = {
+		global.XE = {
 			loaded_popup_menus : [],
 			addedDocument : [],
+			URI: global.URI,
+			URITemplate : global.URITemplate,
+			IPv6: global.IPv6,
+			SecondLevelDomains: global.SecondLevelDomains,
 			/**
 			 * @brief 특정 name을 가진 체크박스들의 checked 속성 변경
 			 * @param [itemName='cart',][options={}]
@@ -140,233 +144,210 @@ if(typeof window.XE == "undefined") {
 			},
 
 			isSameHost: function(url) {
-				var base_url = window.XE.URI(window.request_uri).normalizePort().normalizePathname();
-				var target_url = window.XE.URI(url).normalizePort().normalizePathname();
+				var base_url = global.XE.URI(global.request_uri).normalizePathname();
+				var target_url = global.XE.URI(url).normalizePathname();
+				var port = [Number(global.http_port) || 80, Number(global.https_port) || 443]; 
 	
 				if(!target_url.hostname()) {
-					target_url = target_url.absoluteTo(window.request_uri);
+					target_url = target_url.absoluteTo(global.request_uri);
 				}
 	
-				base_url = base_url.hostname() + base_url.port() + base_url.directory();
-				target_url = target_url.hostname() + target_url.port() + target_url.directory();
+				var target_port = target_url.port();
+				if(!target_port) {
+					target_port = (target_url.protocol() == 'http') ? 80 : 443;
+				}
+				
+				if(jQuery.inArray(Number(target_port), port) === -1) {
+					return false;
+				}
+				
+				base_url = base_url.hostname() + base_url.directory();
+				target_url = target_url.hostname() + target_url.directory();
 	
 				return target_url.indexOf(base_url) === 0;
 			}
 		};
 
-		$.extend(window.XE, URI.noConflict(true));
-	}) (jQuery);
+	}) (jQuery, window || global);
 
 	/* jQuery(document).ready() */
-	jQuery(function($) {
-		$('a[target]').each(function() {
-			var $this = $(this);
-			var href = $this.attr('href');
-			var target = $this.attr('target');
+	(function($, global){
+		$(function() {
+			$('a[target]').each(function() {
+				var $this = $(this);
+				var href = $this.attr('href');
+				var target = $this.attr('target');
+				
+				if(!target || !href) return;
 
-			if(target === '_top' || target === '_self' || target === '_parent') {
-				$this.data('noopener', false);
-				return;
-			}
-	
-			if(!window.XE.isSameHost(href)) {
-				var rel = $this.attr('rel');
-				$this.data('noopener', true);
-
-				if(typeof rel == 'string') {
-					$this.attr('rel', rel + ' noopener');
-				} else {
-					$this.attr('rel', 'noopener');
+				if(target === '_top' || target === '_self' || target === '_parent') {
+					$this.data('noopener', false);
+					return;
 				}
-			}
-		});
-	
-		$('body').on('click', 'a[target]', function(e) {
-			var $this = $(this);
-			var href = $this.attr('href');
-	
-			if($this.data('noopener') !== false && !window.XE.isSameHost(href)) {
-				var rel = $this.attr('rel');
+		
+				if(!global.XE.isSameHost(href)) {
+					var rel = $this.attr('rel');
+					$this.data('noopener', true);
 
-				if(typeof rel == 'string') {
-					$this.attr('rel', rel + ' noopener');
-				} else {
-					$this.attr('rel', 'noopener');
-				}
-
-				blankshield.open(href);
-				e.preventDefault();
-			}
-		});
-
-		/* select - option의 disabled=disabled 속성을 IE에서도 체크하기 위한 함수 */
-		if($.browser.msie) {
-			$('select').each(function(i, sels) {
-				var disabled_exists = false;
-				var first_enable = [];
-
-				for(var j=0; j < sels.options.length; j++) {
-					if(sels.options[j].disabled) {
-						sels.options[j].style.color = '#CCCCCC';
-						disabled_exists = true;
-					}else{
-						first_enable[i] = (first_enable[i] > -1) ? first_enable[i] : j;
-					}
-				}
-
-				if(!disabled_exists) return;
-
-				sels.oldonchange = sels.onchange;
-				sels.onchange = function() {
-					if(this.options[this.selectedIndex].disabled) {
-
-						this.selectedIndex = first_enable[i];
-						/*
-						if(this.options.length<=1) this.selectedIndex = -1;
-						else if(this.selectedIndex < this.options.length - 1) this.selectedIndex++;
-						else this.selectedIndex--;
-						*/
-
+					if(typeof rel == 'string') {
+						$this.attr('rel', rel + ' noopener');
 					} else {
-						if(this.oldonchange) this.oldonchange();
+						$this.attr('rel', 'noopener');
 					}
-				};
-
-				if(sels.selectedIndex >= 0 && sels.options[ sels.selectedIndex ].disabled) sels.onchange();
-
+				}
 			});
-		}
+		
+			$('body').on('click', 'a[target]', function(e) {
+				var $this = $(this);
+				var href = $this.attr('href');
+				
+				if(!href) return;
+		
+				if($this.data('noopener') !== false && !window.XE.isSameHost(href)) {
+					var rel = $this.attr('rel');
 
-		/* 단락에디터 fold 컴포넌트 펼치기/접기 */
-		var drEditorFold = $('.xe_content .fold_button');
-		if(drEditorFold.size()) {
-			var fold_container = $('div.fold_container', drEditorFold);
-			$('button.more', drEditorFold).click(function() {
-				$(this).hide().next('button').show().parent().next(fold_container).show();
+					if(typeof rel == 'string') {
+						$this.attr('rel', rel + ' noopener');
+					} else {
+						$this.attr('rel', 'noopener');
+					}
+
+					blankshield.open(href);
+					e.preventDefault();
+				}
 			});
-			$('button.less', drEditorFold).click(function() {
-				$(this).hide().prev('button').show().parent().next(fold_container).hide();
+
+			/* select - option의 disabled=disabled 속성을 IE에서도 체크하기 위한 함수 */
+			if($.browser.msie) {
+				$('select').each(function(i, sels) {
+					var disabled_exists = false;
+					var first_enable = [];
+
+					for(var j=0; j < sels.options.length; j++) {
+						if(sels.options[j].disabled) {
+							sels.options[j].style.color = '#CCCCCC';
+							disabled_exists = true;
+						}else{
+							first_enable[i] = (first_enable[i] > -1) ? first_enable[i] : j;
+						}
+					}
+
+					if(!disabled_exists) return;
+
+					sels.oldonchange = sels.onchange;
+					sels.onchange = function() {
+						if(this.options[this.selectedIndex].disabled) {
+
+							this.selectedIndex = first_enable[i];
+							/*
+							if(this.options.length<=1) this.selectedIndex = -1;
+							else if(this.selectedIndex < this.options.length - 1) this.selectedIndex++;
+							else this.selectedIndex--;
+							*/
+
+						} else {
+							if(this.oldonchange) this.oldonchange();
+						}
+					};
+
+					if(sels.selectedIndex >= 0 && sels.options[ sels.selectedIndex ].disabled) sels.onchange();
+
+				});
+			}
+
+			/* 단락에디터 fold 컴포넌트 펼치기/접기 */
+			var drEditorFold = $('.xe_content .fold_button');
+			if(drEditorFold.size()) {
+				var fold_container = $('div.fold_container', drEditorFold);
+				$('button.more', drEditorFold).click(function() {
+					$(this).hide().next('button').show().parent().next(fold_container).show();
+				});
+				$('button.less', drEditorFold).click(function() {
+					$(this).hide().prev('button').show().parent().next(fold_container).hide();
+				});
+			}
+			
+			jQuery('input[type="submit"],button[type="submit"]').click(function(ev){
+				var $el = jQuery(ev.currentTarget);
+				
+				setTimeout(function(){
+					return function(){
+						$el.attr('disabled', 'disabled');
+					};
+				}(), 0);
+				
+				setTimeout(function(){
+					return function(){
+						$el.removeAttr('disabled');
+					};
+				}(), 3000);
 			});
+		});
+	})(jQuery, window || global);
+
+	(function(global){ // String extension methods
+		/**
+		 * @brief location.href에서 특정 key의 값을 return
+		 **/
+		String.prototype.getQuery = function(key) {
+			var url = global.XE.URI(this);
+			var queries = url.search(true);
+			
+			if(typeof queries[key] == 'undefined') {
+				return '';
+			}
+
+			return queries[key];
+		};
+
+		/**
+		 * @brief location.href에서 특정 key의 값을 return
+		 **/
+		String.prototype.setQuery = function(key, val) {
+			var uri = global.XE.URI(this);
+
+			if(typeof key != 'undefined') {
+				if(typeof val == "undefined" || val === '' || val === null) {
+					uri.removeSearch(key);
+				} else {
+					uri.setSearch(key, String(val));
+				}
+			}
+			
+			return normailzeUri(uri).toString();
+		};
+
+		/**
+		 * @brief string prototype으로 trim 함수 추가
+		 **/
+		if(!String.prototype.trim) {
+			String.prototype.trim = function() {
+				return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+			};
 		}
 		
-		jQuery('input[type="submit"],button[type="submit"]').click(function(ev){
-			var $el = jQuery(ev.currentTarget);
+		function normailzeUri(uri) {
+			var query = uri.search(true);
+			var filename = uri.filename() || 'index.php';
+			var protocol = (global.enforce_ssl === true) ? 'https' : 'http';
+			var port = 80;
 			
-			setTimeout(function(){
-				return function(){
-					$el.attr('disabled', 'disabled');
-				};
-			}(), 0);
+			if(global.XE.isSameHost(uri.toString())) {
+				if(jQuery.isEmptyObject(query)) filename = '';
+			}
 			
-			setTimeout(function(){
-				return function(){
-					$el.removeAttr('disabled');
-				};
-			}(), 3000);
-		});
-	});
-
-	(function(){ // String extension methods
-
-	function isSameUrl(a,b) {
-		return (a.replace(/#.*$/, '') === b.replace(/#.*$/, ''));
-	}
-
-	var isArray = Array.isArray || function(obj){ return Object.prototype.toString.call(obj)=='[object Array]'; };
-
-	/**
-	 * @brief location.href에서 특정 key의 값을 return
-	 **/
-	String.prototype.getQuery = function(key) {
-		var loc = isSameUrl(this, window.location.href) ? current_url : this;
-		var idx = loc.indexOf('?');
-		if(idx == -1) return null;
-		var query_string = loc.substr(idx+1, this.length), args = {};
-		query_string.replace(/([^=]+)=([^&]*)(&|$)/g, function() { args[arguments[1]] = arguments[2]; });
-
-		var q = args[key];
-		if(typeof(q)=='undefined') q = '';
-
-		return q;
-	};
-
-	/**
-	 * @brief location.href에서 특정 key의 값을 return
-	 **/
-	String.prototype.setQuery = function(key, val) {
-		var loc = isSameUrl(this, window.location.href) ? current_url : this;
-		var idx = loc.indexOf('?');
-		var uri = loc.replace(/#$/, '');
-		var act, re, v, toReplace, query_string;
-
-		if (typeof(val)=='undefined') val = '';
-
-		if (idx != -1) {
-			var args = {}, q_list = [];
-			query_string = uri.substr(idx + 1, loc.length);
-			uri = loc.substr(0, idx);
-			query_string.replace(/([^=]+)=([^&]*)(&|$)/g, function(all,key,val) { args[key] = val; });
-
-			args[key] = val;
-
-			for (var prop in args) {
-				if (!args.hasOwnProperty(prop)) continue;
-				if (!(v = String(args[prop]).trim())) continue;
-				q_list.push(prop+'='+decodeURI(v));
+			if(protocol !== 'https' && query.act && jQuery.inArray(query.act, global.ssl_actions) !== -1) {
+				protocol = 'https';
 			}
-
-			query_string = q_list.join('&');
-			uri = uri + (query_string ? '?' + encodeURI(query_string) : '');
-		} else {
-			if (String(val).trim()) {
-				query_string = '?' + key + '=' + val;
-				uri = uri + encodeURI(query_string);
-			}
+			
+			port = (protocol === 'http') ? global.http_port : global.https_port;
+			
+			return uri.protocol(protocol)
+			.port(port || null)
+			.filename(filename)
+			.normalizePort();
 		}
-
-		re = /^https:\/\/([^:\/]+)(:\d+|)/i;
-		if (re.test(uri)) {
-			toReplace = 'http://'+RegExp.$1;
-			if (window.http_port && http_port != 80) toReplace += ':' + http_port;
-			uri = uri.replace(re, toReplace);
-		}
-
-		var bUseSSL = !!window.enforce_ssl;
-		if (!bUseSSL && isArray(window.ssl_actions) && (act=uri.getQuery('act'))) {
-			for (var i=0,c=ssl_actions.length; i < c; i++) {
-				if (ssl_actions[i] === act) {
-					bUseSSL = true;
-					break;
-				}
-			}
-		}
-
-		re = /https?:\/\/([^:\/]+)(:\d+|)/i;
-		if (bUseSSL && re.test(uri)) {
-			toReplace = 'https://'+RegExp.$1;
-			if (window.https_port && https_port != 443) toReplace += ':' + https_port;
-			uri = uri.replace(re, toReplace);
-		}
-		if (!bUseSSL && re.test(uri)) {
-			toReplace = 'http://'+RegExp.$1;
-			if (window.http_port && http_port != 80) toReplace += ':' + http_port;
-			uri = uri.replace(re, toReplace);
-		}
-
-		// insert index.php if it isn't included
-		uri = uri.replace(/\/(index\.php)?\?/, '/index.php?');
-
-		return uri;
-	};
-
-	/**
-	 * @brief string prototype으로 trim 함수 추가
-	 **/
-	String.prototype.trim = function() {
-		return this.replace(/(^\s*)|(\s*$)/g, "");
-	};
-
-	})();
+	})(window || global);
 
 	/**
 	 * @brief xSleep(micro time)
