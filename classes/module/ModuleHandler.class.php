@@ -1037,7 +1037,7 @@ class ModuleHandler extends Handler {
 			'511' => 'Network Authentication Required',
 		);
 		$statusMessage = $statusMessageList[$code];
-		if(!$statusMessage) $statusMessage = 'OK';
+		if(!$statusMessage) $statusMessage = 'HTTP ' . $code;
 		
 		Context::set('http_status_code', $code);
 		Context::set('http_status_message', $statusMessage);
