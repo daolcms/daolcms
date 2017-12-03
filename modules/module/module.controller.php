@@ -773,37 +773,31 @@ class moduleController extends module {
 		}
 	}
 	
-	function _replaceLangCode($matches) {
-		static $lang = null;
-		
-		
-		if(is_null($lang)) {
+	function _replaceLangCode($matches){
+		static $lang = false;
+
+		$oCacheHandler = CacheHandler::getInstance('object', null, true);
+		if($lang === false && $oCacheHandler->isSupport()){
 			$site_module_info = Context::get('site_module_info');
-			if(!$site_module_info) {
-				$oModuleModel = &getModel('module');
+			if(!$site_module_info){
+				$oModuleModel = getModel('module');
 				$site_module_info = $oModuleModel->getDefaultMid();
 				Context::set('site_module_info', $site_module_info);
 			}
-			$cache_file = sprintf('%sfiles/cache/lang_defined/%d.%s.php', _DAOL_PATH_, $site_module_info->site_srl, Context::getLangType());
-			if(!file_exists($cache_file)) {
-				$oModuleAdminController = &getAdminController('module');
-				$oModuleAdminController->makeCacheDefinedLangCode($site_module_info->site_srl);
-			}
-			
-			if(file_exists($cache_file)) {
-				$moduleAdminControllerMtime = filemtime(_DAOL_PATH_ . 'modules/module/module.admin.controller.php');
-				$cacheFileMtime = filemtime($cache_file);
-				if($cacheFileMtime < $moduleAdminControllerMtime) {
-					$oModuleAdminController = &getAdminController('module');
-					$oModuleAdminController->makeCacheDefinedLangCode($site_module_info->site_srl);
-				}
-				
-				require_once($cache_file);
+
+			$object_key = 'user_defined_langs:' . $site_module_info->site_srl . ':' . Context::getLangType();
+			$cache_key = $oCacheHandler->getGroupKey('site_and_module', $object_key);
+			$lang = $oCacheHandler->get($cache_key);
+
+			if($lang === false){
+				$oModuleAdminController = getAdminController('module');
+				$lang = $oModuleAdminController->makeCacheDefinedLangCode($site_module_info->site_srl);
 			}
 		}
+
 		if(!Context::get($matches[1]) && $lang[$matches[1]]) return $lang[$matches[1]];
-		
-		return str_replace('$user_lang->', '', $matches[0]);
+
+		return str_replace('$user_lang->','',$matches[0]);
 	}
 	
 	

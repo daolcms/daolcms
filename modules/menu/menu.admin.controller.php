@@ -769,18 +769,15 @@ class menuAdminController extends menu {
 			// List variables
 			$names = $oMenuAdminModel->getMenuItemNames($node->name, $site_srl);
 			foreach($names as $key => $val) {
-				if(preg_match('/\{\$lang->menu_gnb(?:_sub)?\[\'([a-zA-Z_]+)\'\]\}/', $val) === 1) {
-					$name_arr_str .= sprintf('"%s"=>"%s",', $key, $val);
-				} else {
-					$name_arr_str .= sprintf('"%s"=>\'%s\',', $key, str_replace(array('\\', '\''), array('\\\\', '\\\''), removeHackTag($val)));
-				}
+				$name_arr_str .= sprintf('"%s"=>%s,',$key, var_export($val, true));
 			}
 			$name_str = sprintf('$_names = array(%s); print $_names[$lang_type];', $name_arr_str);
 			
 			$url = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $node->url);
 			if(preg_match('/^([0-9a-zA-Z\_\-]+)$/', $node->url)) {
 				$href = "getSiteUrl('$domain', '','mid','$node->url')";
-			} else $href = sprintf('"%s"', $url);
+			}
+			else $href = var_export($url, true);
 			$open_window = $node->open_window;
 			$expand = $node->expand;
 			
@@ -809,20 +806,20 @@ class menuAdminController extends menu {
 			if($group_srls) $group_check_code = sprintf('($is_admin==true||(is_array($group_srls)&&count(array_intersect($group_srls, array(%s))))||($is_logged&&%s))', $group_srls, $group_srls == -1 ? 1 : 0);
 			else $group_check_code = "true";
 			$attribute = sprintf(
-				'node_srl="%s" parent_srl="%s" text="<?php if(%s) { %s }?>" url="<?php print(%s?"%s":"")?>" href="<?php print(%s?%s:"")?>" open_window="%s" expand="%s" normal_btn="%s" hover_btn="%s" active_btn="%s" link="<?php if(%s) {?>%s<?php }?>"',
+				'node_srl="%d" parent_srl="%d" text="<?php if(%s) { %s }?>" url="<?php print(%s?%s:"")?>" href="<?php print(%s?%s:"")?>" open_window=%s expand=%s normal_btn=%s hover_btn=%s active_btn=%s link="<?php if(%s) {?>%s<?php }?>"',
 				$menu_item_srl,
 				$node->parent_srl,
 				$group_check_code,
 				$name_str,
 				$group_check_code,
-				$url,
+				var_export($url, true),
 				$group_check_code,
 				$href,
-				$open_window,
-				$expand,
-				$normal_btn,
-				$hover_btn,
-				$active_btn,
+				var_export($open_window, true),
+				var_export($expand, true),
+				var_export($normal_btn, true),
+				var_export($hover_btn, true),
+				var_export($active_btn, true),
 				$group_check_code,
 				$link
 			);
@@ -870,9 +867,10 @@ class menuAdminController extends menu {
 			// List variables
 			$href = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $node->href);
 			$url = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $node->url);
-			if(preg_match('/^([0-9a-zA-Z\_\-]+)$/i', $node->url)) {
+			if(preg_match('/^([0-9a-zA-Z\_\-]+)$/i', $node->url)){
 				$href = "getSiteUrl('$domain', '','mid','$node->url')";
-			} else $href = sprintf('"%s"', $url);
+			}
+			else $href = var_export($url, true);
 			$open_window = $node->open_window;
 			$normal_btn = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $node->normal_btn);
 			$hover_btn = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $node->hover_btn);
@@ -913,7 +911,7 @@ class menuAdminController extends menu {
 			}
 			// Create properties (check if it belongs to the menu node by url_list. It looks a trick but fast and powerful)
 			$attribute = sprintf(
-				'"node_srl"=>"%s","parent_srl"=>"%s","text"=>(%s?$_menu_names[%d][$lang_type]:""),"href"=>(%s?%s:""),"url"=>(%s?"%s":""),"open_window"=>"%s","normal_btn"=>"%s","hover_btn"=>"%s","active_btn"=>"%s","selected"=>(array(%s)&&in_array(Context::get("mid"),array(%s))?1:0),"expand"=>"%s", "list"=>array(%s),  "link"=>(%s? ( array(%s)&&in_array(Context::get("mid"),array(%s)) ?%s:%s):""),',
+				'"node_srl" => %d, "parent_srl" => %d, "text" => (%s ? $_menu_names[%d][$lang_type] : ""), "href" => (%s ? %s : ""), "url" => (%s ? %s : ""), "open_window" => %s, "normal_btn" => %s, "hover_btn" => %s, "active_btn" => %s, "selected" => (array(%s) && in_array(Context::get("mid"), array(%s)) ? 1 : 0), "expand" => %s, "list" => array(%s), "link" => (%s ? (array(%s) && in_array(Context::get("mid"), array(%s)) ? %s : %s) : ""),',
 				$node->menu_item_srl,
 				$node->parent_srl,
 				$group_check_code,
@@ -921,14 +919,14 @@ class menuAdminController extends menu {
 				$group_check_code,
 				$href,
 				$group_check_code,
-				$url,
-				$open_window,
-				$normal_btn,
-				$hover_btn,
-				$active_btn,
+				var_export($url, true),
+				var_export($open_window, true),
+				var_export($normal_btn, true),
+				var_export($hover_btn, true),
+				var_export($active_btn, true),
 				$selected,
 				$selected,
-				$expand,
+				var_export($expand, true),
 				$child_buff,
 				$group_check_code,
 				$selected,

@@ -20,12 +20,12 @@ class Context {
 	var $allow_rewrite = false;
 	/**
 	 * Request method
-	 * @var string GET|POST|XMLRPC
+	 * @var string GET|POST|XMLRPC|JSON
 	 */
 	var $request_method = 'GET';
 	/**
 	 * Response method.If it's not set, it follows request method.
-	 * @var string HTML|XMLRPC
+	 * @var string HTML|XMLRPC|JSON|JS_CALLBACK
 	 */
 	var $response_method = '';
 	/**
@@ -347,15 +347,22 @@ class Context {
 	 *
 	 * @return void
 	 */
-	function loadDBInfo() {
-		$self = self::getInstance();
+	function loadDBInfo(){
+		is_a($this, 'Context') ? $self = $this : $self = self::getInstance();
 		
-		if(!$self->isInstalled()) return;
+		if(!$self->isInstalled()){
+			return;
+		}
 		
-		include($self::getConfigFile());
+		$config_file = $self->getConfigFile();
+		if(is_readable($config_file)){
+			ob_start(); // trash BOM
+			include($config_file);
+			ob_end_clean();
+		}
 		
 		// If master_db information does not exist, the config file needs to be updated
-		if(!isset($db_info->master_db)) {
+		if(!isset($db_info->master_db)){
 			$db_info->master_db = array();
 			$db_info->master_db["db_type"] = $db_info->db_type;
 			unset($db_info->db_type);
@@ -379,11 +386,11 @@ class Context {
 			
 			$self->setDBInfo($db_info);
 			
-			$oInstallController = &getController('install');
+			$oInstallController = getController('install');
 			$oInstallController->makeConfigFile();
 		}
 		
-		if(!$db_info->use_prepared_statements) {
+		if(!$db_info->use_prepared_statements){
 			$db_info->use_prepared_statements = 'Y';
 		}
 		

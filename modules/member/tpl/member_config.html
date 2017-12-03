@@ -209,7 +209,7 @@
 					<th scope="col">{$lang->cmd_edit}</th>
 				</thead>
 				<tbody class="uDrag">
-				{@$fixed_public_list = array('nick_name', 'find_account_question', 'password')}
+					{@ $fixed_public_list = array('nick_name', 'find_account_question', 'password', 'email_address')}
 					<!--@foreach($config->signupForm as $item)-->
 					<!--@if($item->isIdentifier)-->
 					<tr class="sticky">
@@ -225,7 +225,7 @@
 							<input type="radio" id="{$item->name}_re" name="{$item->name}" value="requierd" checked="checked" disabled="disabled" /> <label for="{$item->name}_re">{$lang->cmd_required}</label>
 							<input type="radio" id="{$item->name}_op" name="{$item->name}" value="option" disabled="disabled" /> <label for="{$item->name}_op">{$lang->cmd_optional}</label>
 						</td>
-						<td><input type="checkbox" name="is_{$item->name}_public" value="Y" checked="checked"|cond="$item->isPublic == 'Y'"/></td>
+						<td><input type="checkbox" name="is_{$item->name}_public" value="Y" checked="checked"|cond="$item->isPublic == 'Y'" disabled="disabled"|cond="in_array($item->name, $fixed_public_list) || !$item->isUse" /></td>
 						<td class="text">&nbsp;</td>
 						<td>&nbsp;</td>
 					</tr>

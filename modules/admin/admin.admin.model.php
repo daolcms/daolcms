@@ -397,30 +397,33 @@ class adminAdminModel extends admin {
 	 * Return admin menu language
 	 * @return array
 	 */
-	function getAdminMenuLang() {
-		$currentLang = Context::getLangType();
-		$cacheFile = sprintf('./files/cache/menu/admin_lang/adminMenu.%s.lang.php', $currentLang);
+	function getAdminMenuLang(){
+		static $lang = false;
 		
-		// Update if no cache file exists or it is older than xml file
-		if(!is_readable($cacheFile)) {
-			$oModuleModel = &getModel('module');
-			$installed_module_list = $oModuleModel->getModulesXmlInfo();
+		$oCacheHandler = CacheHandler::getInstance('object', null, true);
+		if($lang === false && $oCacheHandler->isSupport()){
+			$cache_key = 'admin_menu_langs:' . Context::getLangType();
+			$lang = $oCacheHandler->get($cache_key);
 			
-			$this->gnbLangBuffer = '<?php ';
-			foreach($installed_module_list AS $key => $value) {
-				$moduleActionInfo = $oModuleModel->getModuleActionXml($value->module);
-				if(is_object($moduleActionInfo->menu)) {
-					foreach($moduleActionInfo->menu AS $key2 => $value2) {
-						$lang->menu_gnb_sub[$key2] = $value2->title;
-						$this->gnbLangBuffer .= sprintf('$lang->menu_gnb_sub[\'%s\'] = \'%s\';', $key2, $value2->title);
+			if($lang === false){
+				$lang = array();
+				$oModuleModel = getModel('module');
+				$installed_module_list = $oModuleModel->getModulesXmlInfo();
+				
+				foreach($installed_module_list as $key => $value){
+					$moduleActionInfo = $oModuleModel->getModuleActionXml($value->module);
+					if(is_object($moduleActionInfo->menu)){
+						foreach($moduleActionInfo->menu as $key2 => $value2){
+							$lang[$key2] = $value2->title;
+						}
 					}
 				}
+				
+				$oCacheHandler->put($cache_key, $lang);
 			}
-			$this->gnbLangBuffer .= ' ?>';
-			FileHandler::writeFile($cacheFile, $this->gnbLangBuffer);
-		} else include $cacheFile;
+		}
 		
-		return $lang->menu_gnb_sub;
+		return $lang;
 	}
 	
 	/**
