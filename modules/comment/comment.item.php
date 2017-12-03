@@ -287,7 +287,7 @@ class commentItem extends Object {
 	}
 	
 	function getPermanentUrl() {
-		return getFullUrl('', 'document_srl', $this->get('document_srl')) . '#comment_' . $this->get('comment_srl');
+		return getFullUrl('', 'mid', $this->getCommentMid(), 'document_srl', $this->get('document_srl')) . '#comment_' . $this->get('comment_srl');
 	}
 	
 	
@@ -493,5 +493,15 @@ class commentItem extends Object {
 	
 	function isCarted() {
 		return $_SESSION['comment_management'][$this->comment_srl];
+	}
+
+	/**
+	 * Returns the comment's mid in order to construct SEO friendly URLs
+	 * @return string
+	 */
+	function getCommentMid(){
+		$model = getModel('module');
+		$module = $model->getModuleInfoByModuleSrl($this->get('module_srl'));
+		return $module->mid;
 	}
 }
