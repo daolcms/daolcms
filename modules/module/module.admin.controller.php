@@ -680,7 +680,7 @@ class moduleAdminController extends module {
 	/**
 	 * @brief Save the file of user-defined language code
 	 **/
-	function makeCacheDefinedLangCode($site_srl = 0) {
+	function makeCacheDefinedLangCode($site_srl = 0){
 		// Get the language file of the current site
 		if(!$site_srl) {
 			$site_module_info = Context::get('site_module_info');
@@ -690,13 +690,10 @@ class moduleAdminController extends module {
 		}
 		$output = executeQueryArray('module.getLang', $args);
 		if(!$output->toBool() || !$output->data) return;
-		// Set the cache directory
-		$cache_path = _DAOL_PATH_ . 'files/cache/lang_defined/';
-		if(!is_dir($cache_path)) FileHandler::makeDir($cache_path);
 		
 		$langMap = array();
-		foreach($output->data as $key => $val) {
-			$langMap[$val->lang_code][$val->name] = $val->value;
+		foreach($output->data as $lang){
+			$langMap[$lang->lang_code][$lang->name] = $lang->value;
 		}
 		
 		$lang_supported = Context::get('lang_supported');
@@ -707,33 +704,33 @@ class moduleAdminController extends module {
 			$langMap[$defaultLang] = array();
 		}
 		
-		foreach($lang_supported as $langCode => $langName) {
-			if(!is_array($langMap[$langCode])) {
+		$oCacheHandler = CacheHandler::getInstance('object', null, true);
+		
+		foreach($lang_supported as $langCode => $langName){
+			if(!is_array($langMap[$langCode])){
 				$langMap[$langCode] = array();
 			}
 			
 			$langMap[$langCode] += $langMap[$defaultLang];
-			foreach($lang_supported as $targetLangCode => $targetLangName) {
-				if($langCode == $targetLangCode || $langCode == $defaultLang) {
+			foreach($lang_supported as $targetLangCode => $targetLangName){
+				if($langCode == $targetLangCode || $langCode == $defaultLang){
 					continue;
 				}
 				
-				if(!is_array($langMap[$targetLangCode])) {
+				if(!is_array($langMap[$targetLangCode])){
 					$langMap[$targetLangCode] = array();
 				}
 				
 				$langMap[$langCode] += $langMap[$targetLangCode];
 			}
 			
-			$buff = array("<?php if(!defined('__XE__')) exit();");
-			foreach($langMap[$langCode] as $code => $value)
-			{
-				$buff[] = sprintf('$lang[\'%s\'] = \'%s\';', $code, addcslashes(stripcslashes($value), "'"));
-			}
-			if (!@file_put_contents(sprintf('%s/%d.%s.php', $cache_path, $args->site_srl, $langCode), join(PHP_EOL, $buff), LOCK_EX))
-			{
-				return;
+			if($oCacheHandler->isSupport()){
+				$object_key = 'user_defined_langs:' . $args->site_srl . ':' . $langCode;
+				$cache_key = $oCacheHandler->getGroupKey('site_and_module', $object_key);
+				$oCacheHandler->put($cache_key, $langMap[$langCode]);
 			}
 		}
+		
+		return $langMap[Context::getLangType()];
 	}
 }

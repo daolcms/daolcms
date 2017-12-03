@@ -16,7 +16,7 @@ class adminAdminController extends admin {
 	 */
 	function init() {
 		// forbit access if the user is not an administrator
-		$oMemberModel = &getModel('member');
+		$oMemberModel = getModel('member');
 		$logged_info = $oMemberModel->getLoggedInfo();
 		if($logged_info->is_admin != 'Y') return $this->stop("msg_is_not_administrator");
 	}
@@ -29,7 +29,13 @@ class adminAdminController extends admin {
 		$menuSrl = Context::get('menu_srl');
 		if(!$menuSrl) return $this->stop('msg_invalid_request');
 
-		$oMenuAdminController = &getAdminController('menu');
+		$oMenuAdminController = getAdminController('menu');
+		$oCacheHandler = CacheHandler::getInstance('object', null, true);
+		if($oCacheHandler->isSupport()){
+			$cache_key = 'admin_menu_langs:' . Context::getLangType();
+			$oCacheHandler->delete($cache_key);
+		}
+		
 		$output = $oMenuAdminController->deleteMenu($menuSrl);
 		if(!$output->toBool()) return $output;
 
