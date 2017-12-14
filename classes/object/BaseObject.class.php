@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Every modules inherits from Object class. It includes error, message, and other variables for communicatin purpose.
+ * Every modules inherits from BaseObject class. It includes error, message, and other variables for communicatin purpose.
  *
  * @author NAVER (developers@xpressengine.com)
  */
-class Object {
+class BaseObject {
 	
 	/**
 	 * Error code. If `0`, it is not an error.
@@ -38,7 +38,7 @@ class Object {
 	 * @param string $message Error message
 	 * @return void
 	 */
-	function Object($error = 0, $message = 'success') {
+	function __construct($error = 0, $message = 'success') {
 		$this->setError($error);
 		$this->setMessage($message);
 	}
