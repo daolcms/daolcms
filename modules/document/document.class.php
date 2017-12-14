@@ -24,7 +24,7 @@ class document extends ModuleObject {
 	
 	/**
 	 * Implement if additional tasks are necessary when installing
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function moduleInstall() {
 		// Register action forward (to use in administrator mode)
@@ -50,7 +50,7 @@ class document extends ModuleObject {
 			FileHandler::makeDir('./files/cache/tmp');
 		}
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -130,7 +130,7 @@ class document extends ModuleObject {
 	
 	/**
 	 * Execute update
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function moduleUpdate() {
 		$oDB = &DB::getInstance();
@@ -303,7 +303,7 @@ class document extends ModuleObject {
 			$oModuleController->insertTrigger('module.procModuleAdminCopyModule', 'document', 'controller', 'triggerCopyModule', 'after');
 		}
 		
-		return new Object(0, 'success_updated');
+		return new BaseObject(0, 'success_updated');
 	}
 	
 	/**

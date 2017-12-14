@@ -11,10 +11,10 @@
 class importer extends ModuleObject {
 	/**
 	 * Implement if additional tasks are necessary when installing
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function moduleInstall() {
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -27,10 +27,10 @@ class importer extends ModuleObject {
 	
 	/**
 	 * Execute update
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function moduleUpdate() {
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**

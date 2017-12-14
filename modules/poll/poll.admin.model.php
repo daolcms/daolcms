@@ -53,7 +53,7 @@ class pollAdminModel extends poll {
 			$this->add('comment_srl', $oComment->get('comment_srl'));
 		} elseif($oDocument->isExists()) {
 			$this->add('document_srl', $oDocument->get('document_srl'));
-		} else return new Object(-1, 'msg_not_founded');
+		} else return new BaseObject(-1, 'msg_not_founded');
 	}
 	
 }

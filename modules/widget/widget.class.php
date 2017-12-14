@@ -18,7 +18,7 @@ class widget extends ModuleObject {
 		$oModuleController = &getController('module');
 		$oModuleController->insertTrigger('display', 'widget', 'controller', 'triggerWidgetCompile', 'before');
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -43,7 +43,7 @@ class widget extends ModuleObject {
 			$oModuleController->insertTrigger('display', 'widget', 'controller', 'triggerWidgetCompile', 'before');
 		}
 		
-		return new Object(0, 'success_updated');
+		return new BaseObject(0, 'success_updated');
 	}
 	
 	/**

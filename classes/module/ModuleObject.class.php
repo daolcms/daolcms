@@ -6,7 +6,7 @@
  * @Adaptor DAOL Project (developer@daolcms.org)
  * base class of ModuleHandler
  **/
-class ModuleObject extends Object {
+class ModuleObject extends BaseObject {
 	
 	var $mid = NULL; ///< string to represent run-time instance of Module (XE Module)
 	var $module = NULL; ///< Class name of Xe Module that is identified by mid

@@ -164,7 +164,7 @@ class fileModel extends file {
 	 *
 	 * @param int   $file_srl   The sequence of file to get information
 	 * @param array $columnList The list of columns to get from DB
-	 * @return Object|object|array If error returns an instance of Object. If result set is one returns a object that
+	 * @return BaseObject|object|array If error returns an instance of Object. If result set is one returns a object that
 	 *                             contins file information. If result set is more than one returns array of object.
 	 **/
 	function getFile($file_srl, $columnList = array()) {

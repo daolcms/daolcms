@@ -119,7 +119,7 @@ class Object {
 	/**
 	 * Method to set multiple key/value pairs as an additional variables
 	 *
-	 * @param Object|array $object Either object or array containg key/value pairs to be added
+	 * @param BaseObject|array $object Either object or array containg key/value pairs to be added
 	 * @return void
 	 */
 	function adds($object) {
@@ -147,7 +147,7 @@ class Object {
 	/**
 	 * Method to retrieve an object containing a key/value paris
 	 *
-	 * @return Object Returns an object containing key/value pairs
+	 * @return BaseObject Returns an object containing key/value pairs
 	 */
 	function gets() {
 		$num_args = func_num_args();
@@ -171,7 +171,7 @@ class Object {
 	/**
 	 * Method to retrieve an object of key/value pairs
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function getObjectVars() {
 		$output = new stdClass();
@@ -202,5 +202,5 @@ class Object {
 	}
 	
 }
-/* End of file Object.class.php */
-/* Location: ./classes/object/Object.class.php */
+/* End of file BaseObject.class.php */
+/* Location: ./classes/object/BaseObject.class.php */

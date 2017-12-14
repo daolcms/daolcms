@@ -20,7 +20,7 @@ class rssAdminView extends rss {
 	/**
 	 * In case an administrator page has been initialized
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function dispRssAdminIndex() {
 		$oModuleModel = getModel('module');

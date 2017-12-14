@@ -17,7 +17,7 @@ class autoinstallView extends autoinstall {
 	/**
 	 * Test
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function dispAutoinstallTest() {
 		$file = "modules.test.tar";

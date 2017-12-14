@@ -230,7 +230,7 @@ class autoinstallAdminView extends autoinstall {
 	/**
 	 * Display installed packages
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function dispAutoinstallAdminInstalledPackages() {
 		$page = Context::get('page');
@@ -276,7 +276,7 @@ class autoinstallAdminView extends autoinstall {
 	/**
 	 * Display install package
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function dispAutoinstallAdminInstall() {
 		$package_srl = Context::get('package_srl');
@@ -311,7 +311,7 @@ class autoinstallAdminView extends autoinstall {
 	/**
 	 * Display package list
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function dispAutoinstallAdminIndex() {
 		$oModuleModel = &getModel('module');
@@ -404,7 +404,7 @@ class autoinstallAdminView extends autoinstall {
 	/**
 	 * Display uninstall package
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function dispAutoinstallAdminUninstall() {
 		$package_srl = Context::get('package_srl');

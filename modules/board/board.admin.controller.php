@@ -149,7 +149,7 @@ class boardAdminController extends board {
 		$oModuleModel = getModel('module');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
 		if($module_info->mid != $mid) {
-			return new Object(-1, 'msg_invalid_request');
+			return new BaseObject(-1, 'msg_invalid_request');
 		}
 		
 		$module_info->hide_category = Context::get('hide_category') == 'Y' ? 'Y' : 'N';
@@ -174,7 +174,7 @@ class boardAdminController extends board {
 	function procBoardAdminInsertListConfig() {
 		$module_srl = Context::get('module_srl');
 		$list = explode(',', Context::get('list'));
-		if(!count($list)) return new Object(-1, 'msg_invalid_request');
+		if(!count($list)) return new BaseObject(-1, 'msg_invalid_request');
 		
 		$list_arr = array();
 		foreach($list as $val) {

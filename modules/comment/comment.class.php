@@ -12,7 +12,7 @@ require_once(_DAOL_PATH_ . 'modules/comment/comment.item.php');
 class comment extends ModuleObject {
 	/**
 	 * Implemented if additional tasks are required when installing
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function moduleInstall() {
 		$oDB = &DB::getInstance();
@@ -39,7 +39,7 @@ class comment extends ModuleObject {
 			FileHandler::makeDir('./files/cache/tmp');
 		}
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -80,7 +80,7 @@ class comment extends ModuleObject {
 	
 	/**
 	 * Execute update
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function moduleUpdate() {
 		$oDB = &DB::getInstance();
@@ -139,7 +139,7 @@ class comment extends ModuleObject {
 			$oModuleController->insertTrigger('module.procModuleAdminCopyModule', 'comment', 'controller', 'triggerCopyModule', 'after');
 		}
 		
-		return new Object(0, 'success_updated');
+		return new BaseObject(0, 'success_updated');
 	}
 	
 	/**

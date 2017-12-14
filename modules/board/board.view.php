@@ -293,7 +293,7 @@ class boardView extends board {
 		 **/
 		Context::addJsFilter($this->module_path . 'tpl/filter', 'insert_comment.xml');
 		
-		//return new Object();
+		//return new BaseObject();
 	}
 	
 	/**
@@ -603,7 +603,7 @@ class boardView extends board {
 		$oDocument->add('module_srl', $this->module_srl);
 		
 		if($oDocument->isExists() && $this->module_info->protect_content == "Y" && $oDocument->get('comment_count') > 0 && $this->grant->manager == false) {
-			return new Object(-1, 'msg_protect_content');
+			return new BaseObject(-1, 'msg_protect_content');
 		}
 		
 		// if the document is not granted, then back to the password input form
@@ -766,7 +766,7 @@ class boardView extends board {
 		
 		// if the parent comment is not existed
 		if(!$parent_srl) {
-			return new Object(-1, 'msg_invalid_request');
+			return new BaseObject(-1, 'msg_invalid_request');
 		}
 		
 		// get the comment
@@ -821,7 +821,7 @@ class boardView extends board {
 		
 		// if the comment is not existed
 		if(!$comment_srl) {
-			return new Object(-1, 'msg_invalid_request');
+			return new BaseObject(-1, 'msg_invalid_request');
 		}
 		
 		// get comment information

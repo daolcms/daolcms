@@ -453,7 +453,7 @@ class DBMysql extends DB {
 	
 	/**
 	 * Handles insertAct
-	 * @param Object  $queryObject
+	 * @param BaseObject  $queryObject
 	 * @param boolean $with_values
 	 * @return resource
 	 */
@@ -466,7 +466,7 @@ class DBMysql extends DB {
 	
 	/**
 	 * Handles updateAct
-	 * @param Object  $queryObject
+	 * @param BaseObject  $queryObject
 	 * @param boolean $with_values
 	 * @return resource
 	 */
@@ -479,7 +479,7 @@ class DBMysql extends DB {
 	
 	/**
 	 * Handles deleteAct
-	 * @param Object  $queryObject
+	 * @param BaseObject  $queryObject
 	 * @param boolean $with_values
 	 * @return resource
 	 */
@@ -494,10 +494,10 @@ class DBMysql extends DB {
 	 * Handle selectAct
 	 * In order to get a list of pages easily when selecting \n
 	 * it supports a method as navigation
-	 * @param Object   $queryObject
+	 * @param BaseObject   $queryObject
 	 * @param resource $connection
 	 * @param boolean  $with_values
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _executeSelectAct($queryObject, $connection = null, $with_values = true) {
 		$limit = $queryObject->getLimit();
@@ -515,7 +515,7 @@ class DBMysql extends DB {
 				return $this->queryError($queryObject);
 			
 			$data = $this->_fetch($result);
-			$buff = new Object ();
+			$buff = new BaseObject ();
 			$buff->data = $data;
 			
 			if($queryObject->usesClickCount()) {
@@ -568,13 +568,13 @@ class DBMysql extends DB {
 	
 	/**
 	 * If have a error, return error object
-	 * @param Object $queryObject
-	 * @return Object
+	 * @param BaseObject $queryObject
+	 * @return BaseObject
 	 */
 	function queryError($queryObject) {
 		$limit = $queryObject->getLimit();
 		if($limit && $limit->isPageHandler()) {
-			$buff = new Object ();
+			$buff = new BaseObject ();
 			$buff->total_count = 0;
 			$buff->total_page = 0;
 			$buff->page = 1;
@@ -591,11 +591,11 @@ class DBMysql extends DB {
 	
 	/**
 	 * If select query execute, return page info
-	 * @param Object   $queryObject
+	 * @param BaseObject   $queryObject
 	 * @param resource $result
 	 * @param resource $connection
 	 * @param boolean  $with_values
-	 * @return Object Object with page info containing
+	 * @return BaseObject Object with page info containing
 	 */
 	function queryPageLimit($queryObject, $result, $connection, $with_values = true) {
 		$limit = $queryObject->getLimit();
@@ -640,7 +640,7 @@ class DBMysql extends DB {
 		// check the page variables
 		if($page > $total_page) {
 			// If requested page is bigger than total number of pages, return empty list
-			$buff = new Object ();
+			$buff = new BaseObject ();
 			$buff->total_count = $total_count;
 			$buff->total_page = $total_page;
 			$buff->page = $page;
@@ -660,7 +660,7 @@ class DBMysql extends DB {
 		$virtual_no = $total_count - ($page - 1) * $list_count;
 		$data = $this->_fetch($result, $virtual_no);
 		
-		$buff = new Object ();
+		$buff = new BaseObject ();
 		$buff->total_count = $total_count;
 		$buff->total_page = $total_page;
 		$buff->page = $page;
@@ -679,11 +679,11 @@ class DBMysql extends DB {
 	 */
 	function getSelectPageSql($query, $with_values = true, $start_count = 0, $list_count = 0) {
 		$select = $query->getSelectString($with_values);
-		if($select == '') return new Object(-1, "Invalid query");
+		if($select == '') return new BaseObject(-1, "Invalid query");
 		$select = 'SELECT ' . $select;
 		
 		$from = $query->getFromString($with_values);
-		if($from == '') return new Object(-1, "Invalid query");
+		if($from == '') return new BaseObject(-1, "Invalid query");
 		$from = ' FROM ' . $from;
 		
 		$where = $query->getWhereString($with_values);

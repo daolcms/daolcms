@@ -101,7 +101,7 @@ class rssAdminController extends rss {
 		$feed_description = trim($config_vars->feed_description);
 		$feed_copyright = trim($config_vars->feed_copyright);
 		
-		if(!$module_srl || !$open_rss) return new Object(-1, 'msg_invalid_request');
+		if(!$module_srl || !$open_rss) return new BaseObject(-1, 'msg_invalid_request');
 		
 		if(!in_array($open_rss, array('Y', 'H', 'N'))) $open_rss = 'N';
 		// Save configurations
@@ -122,7 +122,7 @@ class rssAdminController extends rss {
 	/**
 	 * All Feeds with or without change
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function procRssAdminToggleActivate() {
 		$oRssModel = getModel('rss');
@@ -146,13 +146,13 @@ class rssAdminController extends rss {
 	/**
 	 * A funciton to configure all Feeds of the RSS module
 	 *
-	 * @param Object $config RSS all feeds config list
-	 * @return Object
+	 * @param BaseObject $config RSS all feeds config list
+	 * @return BaseObject
 	 **/
 	function setFeedConfig($config) {
 		$oModuleController = getController('module');
 		$oModuleController->insertModuleConfig('rss', $config);
-		return new Object();
+		return new BaseObject();
 	}
 	
 	
@@ -164,7 +164,7 @@ class rssAdminController extends rss {
 	 * @param string  $open_total_feed  N : use open total feed, T_N : not use open total feed
 	 * @param string  $feed_description Default value is 'N'
 	 * @param string  $feed_copyright   Default value is 'N'
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function setRssModuleConfig($module_srl, $open_rss, $open_total_feed = 'N', $feed_description = 'N', $feed_copyright = 'N') {
 		$oModuleController = getController('module');
@@ -178,6 +178,6 @@ class rssAdminController extends rss {
 			$config->feed_copyright = $feed_copyright;
 		}
 		$oModuleController->insertModulePartConfig('rss', $module_srl, $config);
-		return new Object();
+		return new BaseObject();
 	}
 }

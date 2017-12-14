@@ -5,7 +5,7 @@
  * @package /classes/db/queryparts
  * @version 0.1
  */
-class Query extends Object {
+class Query extends BaseObject {
 	/**
 	 * Query id, defined in query xml file
 	 * @var string

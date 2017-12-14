@@ -9,7 +9,7 @@ class counter extends ModuleObject {
 	
 	/**
 	 * Implement if additional tasks are necessary when installing
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function moduleInstall() {
 		$oCounterController = &getController('counter');
@@ -18,7 +18,7 @@ class counter extends ModuleObject {
 		// add a row for today's status
 		//$oCounterController->insertTodayStatus();
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -38,7 +38,7 @@ class counter extends ModuleObject {
 	/**
 	 * Module update
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function moduleUpdate() {
 		// Add site_srl to the counter
@@ -46,13 +46,13 @@ class counter extends ModuleObject {
 		if(!$oDB->isColumnExists('counter_log', 'site_srl')) $oDB->addColumn('counter_log', 'site_srl', 'number', 11, 0, true);
 		if(!$oDB->isIndexExists('counter_log', 'idx_site_counter_log')) $oDB->addIndex('counter_log', 'idx_site_counter_log', array('site_srl', 'ipaddress'), false);
 		
-		return new Object(0, 'success_updated');
+		return new BaseObject(0, 'success_updated');
 	}
 	
 	/**
 	 * re-generate the cache file
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function recompileCache() {
 	}

@@ -487,7 +487,7 @@ class DBSqlite3_pdo extends DB {
 	
 	function queryError($queryObject) {
 		if($queryObject->getLimit() && $queryObject->getLimit()->isPageHandler()) {
-			$buff = new Object ();
+			$buff = new BaseObject ();
 			$buff->total_count = 0;
 			$buff->total_page = 0;
 			$buff->page = 1;
@@ -532,7 +532,7 @@ class DBSqlite3_pdo extends DB {
 			if($page > $total_page) {
 				// If requested page is bigger than total number of pages, return empty list
 				
-				$buff = new Object ();
+				$buff = new BaseObject ();
 				$buff->total_count = $total_count;
 				$buff->total_page = $total_page;
 				$buff->page = $page;
@@ -567,7 +567,7 @@ class DBSqlite3_pdo extends DB {
 			$this->stmt = null;
 			$this->actFinish();
 			
-			$buff = new Object ();
+			$buff = new BaseObject ();
 			$buff->total_count = $total_count;
 			$buff->total_page = $total_page;
 			$buff->page = $page;
@@ -575,7 +575,7 @@ class DBSqlite3_pdo extends DB {
 			$buff->page_navigation = new PageHandler($total_count, $total_page, $page, $page_count);
 		} else {
 			//$data = $this->_fetch($result);
-			$buff = new Object ();
+			$buff = new BaseObject ();
 			$buff->data = $data;
 		}
 		return $buff;
@@ -585,12 +585,12 @@ class DBSqlite3_pdo extends DB {
 		
 		$select = $query->getSelectString($with_values);
 		if($select == '')
-			return new Object(-1, "Invalid query");
+			return new BaseObject(-1, "Invalid query");
 		$select = 'SELECT ' . $select;
 		
 		$from = $query->getFromString($with_values);
 		if($from == '')
-			return new Object(-1, "Invalid query");
+			return new BaseObject(-1, "Invalid query");
 		$from = ' FROM ' . $from;
 		
 		$where = $query->getWhereString($with_values);
@@ -619,10 +619,10 @@ class DBSqlite3_pdo extends DB {
 	
 	function getUpdateSql($query, $with_values = true, $with_priority = false) {
 		$columnsList = $query->getUpdateString($with_values);
-		if($columnsList == '') return new Object(-1, "Invalid query");
+		if($columnsList == '') return new BaseObject(-1, "Invalid query");
 		
 		$tableName = $query->getFirstTableName();
-		if($tableName == '') return new Object(-1, "Invalid query");
+		if($tableName == '') return new BaseObject(-1, "Invalid query");
 		
 		$where = $query->getWhereString($with_values);
 		if($where != '') $where = ' WHERE ' . $where;

@@ -41,7 +41,7 @@ class moduleView extends module {
 	 * @brief Select a module
 	 **/
 	function dispModuleSelectList() {
-		if(!Context::get('is_logged')) return new Object(-1, 'msg_not_permitted');
+		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_permitted');
 		
 		$oModuleModel = &getModel('module');
 		// Extract the number of virtual sites
@@ -113,14 +113,14 @@ class moduleView extends module {
 	// See the file box
 	function dispModuleFileBox() {
 		$logged_info = Context::get('logged_info');
-		if($logged_info->is_admin != 'Y' && !$logged_info->is_site_admin) return new Object(-1, 'msg_not_permitted');
+		if($logged_info->is_admin != 'Y' && !$logged_info->is_site_admin) return new BaseObject(-1, 'msg_not_permitted');
 		
 		$input_name = Context::get('input');
 		if(!preg_match('/^[a-z0-9_]+$/i', $input_name)) {
-			return new Object(-1, 'msg_invalid_request');
+			return new BaseObject(-1, 'msg_invalid_request');
 		}
 		
-		if(!$input_name) return new Object(-1, 'msg_not_permitted');
+		if(!$input_name) return new BaseObject(-1, 'msg_not_permitted');
 		
 		
 		$addscript = sprintf('<script type="text/javascript">//<![CDATA[
@@ -143,7 +143,7 @@ class moduleView extends module {
 	// Screen to add a file box
 	function dispModuleFileBoxAdd() {
 		$logged_info = Context::get('logged_info');
-		if($logged_info->is_admin != 'Y' && !$logged_info->is_site_admin) return new Object(-1, 'msg_not_permitted');
+		if($logged_info->is_admin != 'Y' && !$logged_info->is_site_admin) return new BaseObject(-1, 'msg_not_permitted');
 		
 		$filter = Context::get('filter');
 		if($filter) Context::set('arrfilter', explode(',', $filter));

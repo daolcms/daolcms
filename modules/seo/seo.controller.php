@@ -215,7 +215,7 @@ class seoController extends seo {
 	
 	function triggerAfterFileDeleteFile($data) {
 		$document_srl = $data->upload_target_srl;
-		if(!$document_srl) return new Object();
+		if(!$document_srl) return new BaseObject();
 		
 		$this->deleteCacheDocumentImages($document_srl);
 	}

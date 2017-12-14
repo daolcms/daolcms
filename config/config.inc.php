@@ -248,7 +248,7 @@ if(!defined('__XE_LOADED_CLASS__')) {
 	// include the class files
 	//TODO When _autoload() can be used for PHP5 based applications, it will be removed.
 	if(__DEBUG__) define('__ClassLoadStartTime__', getMicroTime());
-	require(_DAOL_PATH_ . 'classes/object/Object.class.php');
+	require(_DAOL_PATH_ . 'classes/object/BaseObject.class.php');
 	require(_DAOL_PATH_ . 'classes/extravar/Extravar.class.php');
 	require(_DAOL_PATH_ . 'classes/handler/Handler.class.php');
 	require(_DAOL_PATH_ . 'classes/xml/XmlParser.class.php');

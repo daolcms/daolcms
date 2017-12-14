@@ -86,7 +86,7 @@ class adminAdminController extends admin {
 		}
 
 		if(count($truncated) && in_array(false, $truncated)) {
-			return new Object(-1, 'msg_self_restart_cache_engine');
+			return new BaseObject(-1, 'msg_self_restart_cache_engine');
 		}
 
 		// remove cache dir
@@ -228,7 +228,7 @@ class adminAdminController extends admin {
 
 	/**
 	 * Cleanning favorite
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function cleanFavorite() {
 		$oModel = getAdminModel('admin');
@@ -239,7 +239,7 @@ class adminAdminController extends admin {
 
 		$favoriteList = $output->get('favoriteList');
 		if(!$favoriteList) {
-			return new Object();
+			return new BaseObject();
 		}
 
 		$deleteTargets = array();
@@ -254,7 +254,7 @@ class adminAdminController extends admin {
 		}
 
 		if(!count($deleteTargets)) {
-			return new Object();
+			return new BaseObject();
 		}
 
 		$args->admin_favorite_srls = $deleteTargets;
@@ -263,7 +263,7 @@ class adminAdminController extends admin {
 			return $output;
 		}
 
-		return new Object();
+		return new BaseObject();
 	}
 
 	/**
@@ -371,7 +371,7 @@ class adminAdminController extends admin {
 		if($file_exist) {
 			FileHandler::removeFile(_DAOL_PATH_ . 'files/attach/xeicon/' . $iconname);
 		} else {
-			return new Object(-1, 'fail_to_delete');
+			return new BaseObject(-1, 'fail_to_delete');
 		}
 		$this->setMessage('success_deleted');
 	}

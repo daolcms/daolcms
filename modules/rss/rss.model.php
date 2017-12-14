@@ -33,7 +33,7 @@ class rssModel extends rss {
 	 * Return the RSS configurations of the specific modules
 	 *
 	 * @param integer $module_srl Module_srl
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function getRssModuleConfig($module_srl) {
 		// Get the configurations of the rss module

@@ -658,7 +658,7 @@ class commentModel extends comment {
 	 */
 	function getCommentVotedMemberList() {
 		$comment_srl = Context::get('comment_srl');
-		if(!$comment_srl) return new Object(-1, 'msg_invalid_request');
+		if(!$comment_srl) return new BaseObject(-1, 'msg_invalid_request');
 		
 		$point = Context::get('point');
 		if($point != -1) $point = 1;
@@ -666,16 +666,16 @@ class commentModel extends comment {
 		$oCommentModel = &getModel('comment');
 		$oComment = $oCommentModel->getComment($comment_srl, false, false);
 		$module_srl = $oComment->get('module_srl');
-		if(!$module_srl) return new Object(-1, 'msg_invalid_request');
+		if(!$module_srl) return new BaseObject(-1, 'msg_invalid_request');
 		
 		$oModuleModel = &getModel('module');
 		$comment_config = $oModuleModel->getModulePartConfig('comment', $module_srl);
 		$args = new stdClass();
 		if($point == -1) {
-			if($comment_config->use_vote_down != 'S') return new Object(-1, 'msg_invalid_request');
+			if($comment_config->use_vote_down != 'S') return new BaseObject(-1, 'msg_invalid_request');
 			$args->below_point = 0;
 		} else {
-			if($comment_config->use_vote_up != 'S') return new Object(-1, 'msg_invalid_request');
+			if($comment_config->use_vote_up != 'S') return new BaseObject(-1, 'msg_invalid_request');
 			$args->more_point = 0;
 		}
 		

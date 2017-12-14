@@ -36,10 +36,10 @@ class editorAdminController extends editor {
 		}
 		
 		$output = $this->editorListOrder($component_names, $site_module_info->site_srl);
-		if(!$output->toBool()) return new Object();
+		if(!$output->toBool()) return new BaseObject();
 		
 		$output = $this->editorCheckUse($componentList, $site_module_info->site_srl);
-		if(!$output->toBool()) return new Object();
+		if(!$output->toBool()) return new BaseObject();
 		
 		$oEditorController = &getController('editor');
 		$oEditorController->removeCache($site_module_info->site_srl);
@@ -62,7 +62,7 @@ class editorAdminController extends editor {
 				$output = executeQuery('editor.updateSiteComponent', $args);
 			}
 		}
-		if(!$output->toBool()) return new Object();
+		if(!$output->toBool()) return new BaseObject();
 		
 		unset($componentList);
 		return $output;
@@ -86,7 +86,7 @@ class editorAdminController extends editor {
 				}
 				
 				
-				if(!$output->toBool()) return new Object();
+				if(!$output->toBool()) return new BaseObject();
 				$list_order_num++;
 			}
 		}
@@ -162,7 +162,7 @@ class editorAdminController extends editor {
 		// Check if the component exists
 		if(!$site_srl) $output = executeQuery('editor.isComponentInserted', $args);
 		else $output = executeQuery('editor.isSiteComponentInserted', $args);
-		if($output->data->count) return new Object(-1, 'msg_component_is_not_founded');
+		if($output->data->count) return new BaseObject(-1, 'msg_component_is_not_founded');
 		// Inert a component
 		$args->list_order = getNextSequence();
 		if(!$site_srl) $output = executeQuery('editor.insertComponent', $args);

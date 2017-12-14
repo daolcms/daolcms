@@ -215,14 +215,14 @@ class XmlQueryParser extends XmlParser {
 		// minlength check
 		if(count($minlength_list)) {
 			foreach($minlength_list as $key => $val) {
-				$pre_buff .= 'if($args->' . $key . '&&strlen($args->' . $key . ')<' . $val . ') return new Object(-1, sprintf($lang->filter->outofrange, $lang->' . $key . '?$lang->' . $key . ':\'' . $key . '\'));' . "\n";
+				$pre_buff .= 'if($args->' . $key . '&&strlen($args->' . $key . ')<' . $val . ') return new BaseObject(-1, sprintf($lang->filter->outofrange, $lang->' . $key . '?$lang->' . $key . ':\'' . $key . '\'));' . "\n";
 			}
 		}
 		
 		// maxlength check
 		if(count($maxlength_list)) {
 			foreach($maxlength_list as $key => $val) {
-				$pre_buff .= 'if($args->' . $key . '&&strlen($args->' . $key . ')>' . $val . ') return new Object(-1, sprintf($lang->filter->outofrange, $lang->' . $key . '?$lang->' . $key . ':\'' . $key . '\'));' . "\n";
+				$pre_buff .= 'if($args->' . $key . '&&strlen($args->' . $key . ')>' . $val . ') return new BaseObject(-1, sprintf($lang->filter->outofrange, $lang->' . $key . '?$lang->' . $key . ':\'' . $key . '\'));' . "\n";
 			}
 		}
 		
@@ -243,7 +243,7 @@ class XmlQueryParser extends XmlParser {
 		// not null check
 		if(count($this->notnull_list)) {
 			foreach($this->notnull_list as $key => $val) {
-				$pre_buff .= 'if(!isset($args->' . $val . ')) return new Object(-1, sprintf($lang->filter->isnull, $lang->' . $val . '?$lang->' . $val . ':\'' . $val . '\'));' . "\n";
+				$pre_buff .= 'if(!isset($args->' . $val . ')) return new BaseObject(-1, sprintf($lang->filter->isnull, $lang->' . $val . '?$lang->' . $val . ':\'' . $val . '\'));' . "\n";
 			}
 		}
 		

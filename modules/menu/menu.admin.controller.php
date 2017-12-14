@@ -88,7 +88,7 @@ class menuAdminController extends menu {
 		$menu_info = $oMenuAdminModel->getMenu($menu_srl);
 		
 		if($menu_info->title == '__XE_ADMIN__')
-			return new Object(-1, 'msg_adminmenu_cannot_delete');
+			return new BaseObject(-1, 'msg_adminmenu_cannot_delete');
 		
 		$this->deleteMenu($menu_srl);
 		
@@ -101,7 +101,7 @@ class menuAdminController extends menu {
 	/**
 	 * Delete menu
 	 * Delete menu_item and xml cache files
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function deleteMenu($menu_srl) {
 		// Delete cache files
@@ -124,7 +124,7 @@ class menuAdminController extends menu {
 		$output = executeQuery("menu.deleteMenu", $args);
 		if(!$output->toBool()) return $output;
 		
-		return new Object(0, 'success_deleted');
+		return new BaseObject(0, 'success_deleted');
 	}
 	
 	/**
@@ -215,7 +215,7 @@ class menuAdminController extends menu {
 				$cmArgs->module_srl = $source_args->module_srl;
 				$output = $oModuleController->updateModule($cmArgs);
 			}
-			if(!$output->toBool()) return new Object(-1, $output->message);
+			if(!$output->toBool()) return new BaseObject(-1, $output->message);
 		}
 		
 		// Check if already exists
@@ -299,7 +299,7 @@ class menuAdminController extends menu {
 		// Display an error that the category cannot be deleted if it has a child node
 		$output = executeQuery('menu.getChildMenuCount', $args);
 		if(!$output->toBool()) return $output;
-		if($output->data->count > 0) return new Object(-1, 'msg_cannot_delete_for_child');
+		if($output->data->count > 0) return new BaseObject(-1, 'msg_cannot_delete_for_child');
 		// Remove from the DB
 		$output = executeQuery("menu.deleteMenuItem", $args);
 		if(!$output->toBool()) return $output;
@@ -330,7 +330,7 @@ class menuAdminController extends menu {
 		$source_srl = Context::get('source_srl');
 		$target_srl = Context::get('target_srl');
 		
-		if(!$menu_srl || !$mode || !$target_srl) return new Object(-1, 'msg_invalid_request');
+		if(!$menu_srl || !$mode || !$target_srl) return new BaseObject(-1, 'msg_invalid_request');
 		$this->moveMenuItem($menu_srl, $parent_srl, $source_srl, $target_srl, $mode);
 	}
 	
@@ -443,7 +443,7 @@ class menuAdminController extends menu {
 		$oMenuAdminModel = &getAdminModel('menu');
 		
 		$target_item = $oMenuAdminModel->getMenuItemInfo($target_srl);
-		if($target_item->menu_item_srl != $target_srl) return new Object(-1, 'msg_invalid_request');
+		if($target_item->menu_item_srl != $target_srl) return new BaseObject(-1, 'msg_invalid_request');
 		// Move the menu location(change the order menu appears)
 		if($mode == 'move') {
 			$args->parent_srl = $parent_srl;
@@ -451,7 +451,7 @@ class menuAdminController extends menu {
 			
 			if($source_srl) {
 				$source_item = $oMenuAdminModel->getMenuItemInfo($source_srl);
-				if($source_item->menu_item_srl != $source_srl) return new Object(-1, 'msg_invalid_request');
+				if($source_item->menu_item_srl != $source_srl) return new BaseObject(-1, 'msg_invalid_request');
 				$args->listorder = $source_item->listorder - 1;
 			} else {
 				$output = executeQuery('menu.getMaxListorder', $args);

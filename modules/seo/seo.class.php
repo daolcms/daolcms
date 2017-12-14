@@ -124,7 +124,7 @@ NASCRIPT;
 	}
 	
 	function moduleInstall() {
-		return new Object();
+		return new BaseObject();
 	}
 	
 	function checkUpdate() {
@@ -155,7 +155,7 @@ NASCRIPT;
 			}
 		}
 		
-		return new Object(0, 'success_updated');
+		return new BaseObject(0, 'success_updated');
 	}
 	
 	function moduleUninstall() {
@@ -165,7 +165,7 @@ NASCRIPT;
 			$oModuleController->deleteTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4]);
 		}
 		
-		return new Object();
+		return new BaseObject();
 	}
 }
 /* !End of file */

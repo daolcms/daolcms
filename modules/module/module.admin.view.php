@@ -147,7 +147,7 @@ class moduleAdminView extends module {
 		$module_srls = Context::get('module_srls');
 		
 		$modules = explode(',', $module_srls);
-		if(!count($modules)) if(!$module_srls) return new Object(-1, 'msg_invalid_request');
+		if(!count($modules)) if(!$module_srls) return new BaseObject(-1, 'msg_invalid_request');
 		
 		$oModuleModel = &getModel('module');
 		$columnList = array('module_srl', 'module');
@@ -182,7 +182,7 @@ class moduleAdminView extends module {
 		$module_srls = Context::get('module_srls');
 		
 		$modules = explode(',', $module_srls);
-		if(!count($modules)) if(!$module_srls) return new Object(-1, 'msg_invalid_request');
+		if(!count($modules)) if(!$module_srls) return new BaseObject(-1, 'msg_invalid_request');
 		// pre-define variables because you can get contents from other module (call by reference)
 		$content = '';
 		// Call a trigger for additional settings
@@ -204,7 +204,7 @@ class moduleAdminView extends module {
 		$module_srls = Context::get('module_srls');
 		
 		$modules = explode(',', $module_srls);
-		if(!count($modules)) if(!$module_srls) return new Object(-1, 'msg_invalid_request');
+		if(!count($modules)) if(!$module_srls) return new BaseObject(-1, 'msg_invalid_request');
 		
 		$oModuleModel = &getModel('module');
 		$columnList = array('module_srl', 'module', 'site_srl');

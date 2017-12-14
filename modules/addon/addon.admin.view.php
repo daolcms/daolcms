@@ -18,7 +18,7 @@ class addonAdminView extends addon {
 	/**
 	 * Add Management main page (showing the list)
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function dispAddonAdminIndex() {
 		$oAdminModel = &getAdminModel('admin');
@@ -43,7 +43,7 @@ class addonAdminView extends addon {
 	/**
 	 * Display setup page
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function dispAddonAdminSetup() {
 		$site_module_info = Context::get('site_module_info');
@@ -91,7 +91,7 @@ class addonAdminView extends addon {
 	/**
 	 * Display information
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function dispAddonAdminInfo() {
 		$site_module_info = Context::get('site_module_info');

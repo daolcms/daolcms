@@ -18,7 +18,7 @@ class fileAdminController extends file {
 	 * Delete the attachment of a particular module
 	 *
 	 * @param int $module_srl Sequence of module to delete files
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function deleteModuleFiles($module_srl) {
 		// Get a full list of attachments
@@ -54,7 +54,7 @@ class fileAdminController extends file {
 	/**
 	 * Delete selected files from the administrator page
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function procFileAdminDeleteChecked() {
 		// An error appears if no document is selected
@@ -83,7 +83,7 @@ class fileAdminController extends file {
 	/**
 	 * Add file information
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function procFileAdminInsertConfig() {
 		// Get configurations (using module model object)
@@ -135,7 +135,7 @@ class fileAdminController extends file {
 		$iniMinSzie = min($iniPostMaxSize, $iniUploadMaxSize);
 		
 		if($userFileAllowSize > $iniMinSzie || $userAttachAllowSize > $iniMinSzie)
-			return new Object(-1, 'input size over than config in php.ini');
+			return new BaseObject(-1, 'input size over than config in php.ini');
 		
 		$oModuleController = &getController('module');
 		for($i = 0; $i < count($module_srl); $i++) {
@@ -154,7 +154,7 @@ class fileAdminController extends file {
 	/**
 	 * Add to SESSION file srl
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function procFileAdminAddCart() {
 		$file_srl = (int)Context::get('file_srl');

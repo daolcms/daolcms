@@ -936,15 +936,15 @@ class ModuleHandler extends Handler {
 	 * @param string $trigger_name    trigger's name to call
 	 * @param string $called_position called position
 	 * @param object $obj             an object as a parameter to trigger
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function triggerCall($trigger_name, $called_position, &$obj) {
 		// skip if not installed
-		if(!Context::isInstalled()) return new Object();
+		if(!Context::isInstalled()) return new BaseObject();
 		
 		$oModuleModel = &getModel('module');
 		$triggers = $oModuleModel->getTriggers($trigger_name, $called_position);
-		if(!$triggers || !count($triggers)) return new Object();
+		if(!$triggers || !count($triggers)) return new BaseObject();
 		
 		foreach($triggers as $item) {
 			$module = $item->module;
@@ -960,7 +960,7 @@ class ModuleHandler extends Handler {
 			unset($oModule);
 		}
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
