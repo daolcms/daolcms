@@ -27,8 +27,7 @@ class DisplayHandler extends Handler {
 		// Check if the gzip encoding supported
 		if(
 			(defined('__OB_GZHANDLER_ENABLE__') && __OB_GZHANDLER_ENABLE__ == 1) &&
-			strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false &&
-			function_exists('ob_gzhandler') &&
+			strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== FALSE &&
 			extension_loaded('zlib') &&
 			$oModule->gzhandler_enable
 		) $this->gz_enabled = true;
@@ -57,20 +56,23 @@ class DisplayHandler extends Handler {
 		$addon_file = $oAddonController->getCacheFilePath(Mobile::isFromMobilePhone() ? "mobile" : "pc");
 		@include($addon_file);
 		
-		if(method_exists($handler, "prepareToPrint")) {
+		if(method_exists($handler, "prepareToPrint")){
 			$handler->prepareToPrint($output);
 		}
 		// header output
 		
 		$httpStatusCode = $oModule->getHttpStatusCode();
-		if($httpStatusCode && $httpStatusCode != 200) {
+		if($httpStatusCode && $httpStatusCode != 200){
 			$this->_printHttpStatusCode($httpStatusCode);
-		} else {
-			if(Context::getResponseMethod() == 'JSON') {
+		}
+		else{
+			if(Context::getResponseMethod() == 'JSON'){
 				$this->_printJSONHeader();
-			} else if(Context::getResponseMethod() != 'HTML') {
+			}
+			else if(Context::getResponseMethod() != 'HTML'){
 				$this->_printXMLHeader();
-			} else {
+			}
+			else{
 				$this->_printHTMLHeader();
 			}
 		}
@@ -81,17 +83,17 @@ class DisplayHandler extends Handler {
 		
 		// disable gzip if output already exists
 		ob_flush();
-		if(headers_sent()) {
+		if(headers_sent()){
 			$this->gz_enabled = FALSE;
 		}
 		
-		// results directly output
-		if($this->gz_enabled) {
-			header("Content-Encoding: gzip");
-			print ob_gzhandler($output, 5);
-		} else {
-			print $output;
+		// enable gzip using zlib extension
+		if($this->gz_enabled){
+			ini_set('zlib.output_compression', true);
 		}
+		// results directly output
+		print $output;
+		
 		// call a trigger after display
 		ModuleHandler::triggerCall('display', 'after', $content);
 	}
