@@ -369,10 +369,10 @@ class ModuleObject extends BaseObject {
 			if(!$output->toBool()) return FALSE;
 		}
 		// execute api methos of the module if view action is and result is XMLRPC or JSON
-		if($this->module_info->module_type == 'view') {
-			if(Context::getResponseMethod() == 'XMLRPC' || Context::getResponseMethod() == 'JSON') {
+		if($this->module_info->module_type == 'view' || $this->module_info->module_type == 'mobile'){
+			if(Context::getResponseMethod() == 'XMLRPC' || Context::getResponseMethod() == 'JSON'){
 				$oAPI = getAPI($this->module_info->module, 'api');
-				if(method_exists($oAPI, $this->act)) {
+				if(method_exists($oAPI, $this->act)){
 					$oAPI->{$this->act}($this);
 				}
 			}
