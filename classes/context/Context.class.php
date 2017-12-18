@@ -1464,7 +1464,7 @@ class Context {
 	 * Return after removing an argument on the requested URL
 	 *
 	 * @param string $ssl_mode SSL mode
-	 * @param string $domain   Domain
+	 * @param string $domain Domain
 	 * @retrun string converted URL
 	 */
 	function getRequestUri($ssl_mode = FOLLOW_REQUEST_SSL, $domain = null) {
@@ -1524,9 +1524,9 @@ class Context {
 	/**
 	 * Set a context value with a key
 	 *
-	 * @param string $key             Key
-	 * @param string $val             Value
-	 * @param mixed  $set_to_get_vars If not false, Set to get vars.
+	 * @param string $key Key
+	 * @param mixed $val Value
+	 * @param mixed $set_to_get_vars If not false, Set to get vars.
 	 * @return void
 	 */
 	function set($key, $val, $set_to_get_vars = 0) {

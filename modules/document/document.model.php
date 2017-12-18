@@ -10,6 +10,8 @@
  * @version 0.1
  */
 class documentModel extends document {
+	private $documentConfig = NULL;
+	
 	/**
 	 * Initialization
 	 * @return void
@@ -805,14 +807,34 @@ class documentModel extends document {
 	 * @return object
 	 */
 	function getDocumentConfig() {
-		if(!$GLOBALS['__document_config__']) {
-			$oModuleModel = &getModel('module');
+		if($this->documentConfig === NULL){
+			$oModuleModel = getModel('module');
 			$config = $oModuleModel->getModuleConfig('document');
-			if(!$config) $config = new stdClass();
-			if(!$config->thumbnail_type) $config->thumbnail_type = 'crop';
-			$GLOBALS['__document_config__'] = $config;
+			
+			if (!$config){
+				$config = new stdClass();
+			}
+			$this->documentConfig = $config;
+			
 		}
-		return $GLOBALS['__document_config__'];
+		return $this->documentConfig;
+	}
+	
+	/**
+	 * get to the document extra image path.
+	 * @return string
+	 */
+	function getDocumentExtraImagePath(){
+		$documentConfig = getModel('document')->getDocumentConfig();
+		if(Mobile::isFromMobilePhone()){
+			$iconSkin = $documentConfig->micons;
+		}
+		else{
+			$iconSkin = $documentConfig->icons;
+		}
+		$path = sprintf('%s%s',getUrl(), "modules/document/tpl/icons/$iconSkin/");
+		
+		return $path;
 	}
 	
 	/**

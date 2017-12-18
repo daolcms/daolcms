@@ -271,22 +271,28 @@ class installAdminController extends install {
 		//$this->setMessage('success_updated');
 	}
 	
-	/* 썸내일 보여주기 방식 변경.*/
-	function setModulesConfig($config) {
-		$args = new stdClass();
-		if(!$config->thumbnail_type || $config->thumbnail_type != 'ratio') $args->thumbnail_type = 'crop';
-		else $args->thumbnail_type = 'ratio';
-		
-		$oModuleController = &getController('module');
-		$oModuleController->insertModuleConfig('document', $args);
-		
-		unset($args);
-		
+	/**
+	 * Change the way the thumbnails are show.
+	 * @param $config
+	 * @return void
+	 */
+	function setModulesConfig($config){
+		$documentConfig = getModel('document')->getDocumentConfig();
+
+		if(!$config->thumbnail_type || $config->thumbnail_type != 'ratio'){
+			$documentConfig->thumbnail_type = 'crop';
+		}
+		else{
+			$documentConfig->thumbnail_type = 'ratio';
+		}
+
+		$oModuleController = getController('module');
+		$oModuleController->insertModuleConfig('document',$documentConfig);
+
+		$args = new stdClass;
 		$args->htmlFooter = $config->htmlFooter;
 		$args->siteTitle = $config->siteTitle;
-		$oModuleController->insertModuleConfig('module', $args);
-		
-		return $output;
+		$oModuleController->updateModuleConfig('module',$args);
 	}
 	
 	function saveIcon($icon, $iconname) {
