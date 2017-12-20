@@ -235,7 +235,6 @@ class krzipModel extends krzip {
 		$api_name = strval(self::$api_list[$template_config->api_handler]);
 		$oTemplate = TemplateHandler::getInstance();
 		$output = $oTemplate->compile($this->module_path . 'tpl', 'template.' . $api_name);
-debugPrint($output);
 		return $output;
 	}
 }
