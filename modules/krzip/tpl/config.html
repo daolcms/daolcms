@@ -1,7 +1,7 @@
 <!--// HEADER -->
 <load target="./js/admin.js" />
 
-<h3 class="xeAdmin">{$lang->krzip}</h3>
+<h1 class="h1">{$lang->krzip}</h1>
 
 <div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/krzip/tpl/config/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
 	<p>{$XE_VALIDATOR_MESSAGE}</p>
@@ -14,9 +14,9 @@
 	<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
 	<input type="hidden" name="xe_validator_id" value="modules/krzip/tpl/config/1" />
 	<table cellspacing="0" class="rowTable">
-		<h2>{$lang->subtitle_primary}</h1>
+		<h2>{$lang->subtitle_primary}</h2>
 		<tr>
-			<th scope="row"><div>{$lang->cmd_krzip_api_type}</div></th>
+			<th scope="row">{$lang->cmd_krzip_api_type}</th>
 			<td>
 				<select name="api_handler" id="api_handler">
 					<option value="0">{$lang->cmd_krzip_daumapi}</option>
@@ -26,10 +26,27 @@
 			<td>
 		</tr>
 		<tr>
-			<th scope="row"><div>{$lang->cmd_krzip_regkey}</div></th>
+			<th scope="row">{$lang->cmd_krzip_postcode_format}</th>
+			<td>
+				<label for="postcode_format_6"><input type="radio" name="postcode_format" id="postcode_format_6" value="6" checked="checked"|cond="$module_config->postcode_format != 5" /> {$lang->cmd_krzip_postcode_format_6}</label>
+				<label for="postcode_format_5"><input type="radio" name="postcode_format" id="postcode_format_5" value="5" checked="checked"|cond="$module_config->postcode_format == 5" /> {$lang->cmd_krzip_postcode_format_5}</label>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">{$lang->cmd_krzip_regkey}</th>
 			<td>
 				<input type="text" name="epostapi_regkey" id="epostapi_regkey" value="{htmlspecialchars($module_config->epostapi_regkey, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE)}" disabled="disabled"|cond="$module_config->api_handler != 1" />
 				<p>{$lang->about_krzip_epostapi_regkey}</p>
+			<td>
+		</tr>
+		<tr>
+			<th scope="row">{$lang->cmd_krzip_show_box}</th>
+			<td>
+				<select name="show_box" id="show_box">
+					<option value="all">{$lang->cmd_krzip_show_box_1}</option>
+					<option value="only_road" selected="selected"|cond="$module_config->show_box == 'only_road'">{$lang->cmd_krzip_show_box_2}</option>
+				</select>
+				<p>{$lang->about_krzip_show_box}</p>
 			<td>
 		</tr>
 	</table>

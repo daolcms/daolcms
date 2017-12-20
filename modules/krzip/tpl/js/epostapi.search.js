@@ -20,11 +20,20 @@
 				function (response) {
 					var address_list = response.address_list;
 					$this.data("address_list", address_list);
+					var $html = $('ul');
 					for(var i = 0; i < address_list.length; i++) {
 						var val = address_list[i];
-						var $li = $("<li>").data("index", i).html(val.join(" "));
-						ui.addressList.html("").append($li);
+						var $li = $("<li>").data("index", i);
+						var text = [];
+						text.push('<strong>(' + val[0] + ')</strong>');
+						text.push('<strong>' + val[1] + '(' + val[4] + ')</strong>');
+						text.push('<br>' + val[2]);
+						text.push('<br>' + val[3]);
+						$li.html(text.join(' '));
+
+						$html.append($li);
 					}
+					ui.addressList.append($html.children());
 				},
 				function (response) {
 					$this.data("address_list", "");

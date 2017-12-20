@@ -12,8 +12,26 @@
 	<item name="cmd_krzip_epostapi">
 		<value xml:lang="ko"><![CDATA[우체국 우편번호]]></value>
 	</item>
+	<item name="cmd_krzip_postcode_format">
+		<value xml:lang="ko"><![CDATA[우편번호 입력 형식]]></value>
+	</item>
+	<item name="cmd_krzip_postcode_format_6">
+		<value xml:lang="ko"><![CDATA[기존 우편번호 (6자리)]]></value>
+	</item>
+	<item name="cmd_krzip_postcode_format_5">
+		<value xml:lang="ko"><![CDATA[새 우편번호 (5자리)]]></value>
+	</item>
 	<item name="cmd_krzip_regkey">
 		<value xml:lang="ko"><![CDATA[등록키]]></value>
+	</item>
+	<item name="cmd_krzip_show_box">
+		<value xml:lang="ko"><![CDATA[보여질 주소 박스]]></value>
+	</item>
+	<item name="cmd_krzip_show_box_1">
+		<value xml:lang="ko"><![CDATA[도로명 주소 + 지번 주소]]></value>
+	</item>
+	<item name="cmd_krzip_show_box_2">
+		<value xml:lang="ko"><![CDATA[도로명 주소만]]></value>
 	</item>
 	<item name="cmd_krzip_postcode">
 		<value xml:lang="ko"><![CDATA[우편번호]]></value>
@@ -32,6 +50,9 @@
 	</item>
 	<item name="about_krzip_epostapi_regkey">
 		<value xml:lang="ko"><![CDATA[우체국 우편번호 API를 이용하기 위해 인터넷 우체국에서 발급 받은 등록키를 입력합니다.]]></value>
+	</item>
+	<item name="about_krzip_show_box">
+		<value xml:lang="ko"><![CDATA[사용자 화면에서 보여질 우편번호 박스를 선택합니다.]]></value>
 	</item>
 	<item name="msg_krzip_road_address_expectation">
 		<value xml:lang="ko"><![CDATA[예상 도로명 주소: %s]]></value>

@@ -16,6 +16,9 @@
 	padding: 0;
 	border: 1px solid #CCC;
 }
+.krZip .krzip-input-expand {
+	min-width: 60%;
+}
 .krZip .krzip-guide {
 	display: none;
 	height: 24px;
