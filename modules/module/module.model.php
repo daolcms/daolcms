@@ -687,22 +687,32 @@ class moduleModel extends module {
 	/**
 	 * @brief Get a list of skins for the module
 	 * Return file analysis of skin and skin.xml
-	 **/
-	function getSkins($path, $dir = 'skins') {
+	 */
+	function getSkins($path, $dir = 'skins'){
+		if(substr($path, -1) == '/'){
+			$path = substr($path, 0, -1);
+		}
+
 		$skin_path = sprintf("%s/%s/", $path, $dir);
 		$list = FileHandler::readDir($skin_path);
 		if(!count($list)) return;
-		
+
 		natcasesort($list);
-		
-		foreach($list as $skin_name) {
+
+		foreach($list as $skin_name){
+			if(!is_dir($skin_path . $skin_name)){
+				continue;
+			}
 			unset($skin_info);
 			$skin_info = $this->loadSkinInfo($path, $skin_name, $dir);
-			if(!$skin_info) $skin_info->title = $skin_name;
-			
+			if(!$skin_info){
+				$skin_info = new stdClass();
+				$skin_info->title = $skin_name;
+			}
+
 			$skin_list[$skin_name] = $skin_info;
 		}
-		
+
 		return $skin_list;
 	}
 	
