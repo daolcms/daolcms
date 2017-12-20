@@ -866,8 +866,9 @@ class documentItem extends BaseObject {
 	 * @param int $time_check
 	 * @return string
 	 */
-	function printExtraImages($time_check = 43200) {
+	function printExtraImages($time_check = 43200){
 		if(!$this->document_srl) return;
+
 		$oDocumentModel = getModel('document');
 		$documentConfig = $oDocumentModel->getDocumentConfig();
 		if(Mobile::isFromMobilePhone()){
@@ -877,15 +878,15 @@ class documentItem extends BaseObject {
 			$iconSkin = $documentConfig->icons;
 		}
 		$path = sprintf('%s%s',getUrl(), "modules/document/tpl/icons/$iconSkin/");
-		
+
 		$buffs = $this->getExtraImages($time_check);
 		if(!count($buffs)) return;
-		
-		$buff = null;
-		foreach($buffs as $key => $val) {
-			$buff .= sprintf('<img src="%s%s.gif" alt="%s" title="%s" style="margin-right:2px;" />', $path, $val, $val, $val);
+
+		$buff = array();
+		foreach($buffs as $key => $val){
+			$buff[] = sprintf('<img src="%s%s.gif" alt="%s" title="%s" style="margin-right:2px;" />', $path, $val, $val, $val);
 		}
-		return $buff;
+		return implode('', $buff);
 	}
 	
 	function hasUploadedFiles() {
