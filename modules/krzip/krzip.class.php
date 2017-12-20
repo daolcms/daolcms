@@ -24,11 +24,11 @@ class krzip extends ModuleObject {
 	public static $epostapi_host = 'http://biz.epost.go.kr/KpostPortal/openapi';
 	
 	function moduleInstall() {
-		return new BaseObject();
+		return $this->makeObject();
 	}
 	
 	function moduleUninstall() {
-		return new BaseObject();
+		return $this->makeObject();
 	}
 	
 	function checkUpdate() {
@@ -36,7 +36,11 @@ class krzip extends ModuleObject {
 	}
 	
 	function moduleUpdate() {
-		return new BaseObject();
+		return $this->makeObject();
+	}
+	
+	public function makeObject($code = 0, $message = 'success'){
+		return class_exists('BaseObject') ? new BaseObject($code, $message) : new Object($code, $message);
 	}
 }
 
