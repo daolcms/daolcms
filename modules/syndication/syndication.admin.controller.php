@@ -23,8 +23,8 @@ class syndicationAdminController extends syndication {
 		$config->syndication_token = Context::get('syndication_token');
 		$config->syndication_password = urlencode(Context::get('syndication_password'));
 		
-		if(!$config->site_url) return new BaseObject(-1, 'msg_site_url_is_null');
-		if(!$config->syndication_token) return new BaseObject(-1, 'msg_syndication_token_is_null');
+		if(!$config->site_url) return $this->makeObject(-1, 'msg_site_url_is_null');
+		if(!$config->syndication_token) return $this->makeObject(-1, 'msg_syndication_token_is_null');
 		
 		$oModuleController->updateModuleConfig('syndication', $config);
 		
@@ -42,7 +42,7 @@ class syndicationAdminController extends syndication {
 		}
 		
 		if(!$this->checkOpenSSLSupport()) {
-			return new BaseObject(-1, 'msg_need_openssl_support');
+			return $this->makeObject(-1, 'msg_need_openssl_support');
 		}
 		
 		$this->setMessage('success_applied');
@@ -62,8 +62,8 @@ class syndicationAdminController extends syndication {
 		$module_config = $oModuleModel->getModuleConfig('syndication');
 		
 		$site_url = trim(Context::get('site_url'));
-		if(!$module_config->site_url) return new BaseObject(-1, 'msg_site_url_is_null');
-		if(!$module_config->syndication_token) return new BaseObject(-1, 'msg_syndication_token_is_null');
+		if(!$module_config->site_url) return $this->makeObject(-1, 'msg_site_url_is_null');
+		if(!$module_config->syndication_token) return $this->makeObject(-1, 'msg_syndication_token_is_null');
 		
 		$id = $oSyndicationModel->getID('site');
 		
