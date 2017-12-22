@@ -1749,8 +1749,6 @@ class documentController extends document {
 				$category_srl,
 				$group_check_code,
 				$category_srl,
-				getUrl('', 'mid', $node->mid, 'category', $category_srl),
-				$expand,
 				var_export(getUrl('','mid',$node->mid,'category',$category_srl), true),
 				var_export($expand, true),
 				var_export($color, true),
@@ -1797,7 +1795,7 @@ class documentController extends document {
 			
 			$title = $node->title;
 			$description = $node->description;
-			$oModuleAdminModel = &getAdminModel('module');
+			$oModuleAdminModel = getAdminModel('module');
 			$langs = $oModuleAdminModel->getLangCode($site_srl, $title);
 			if(count($langs)){
 				foreach($langs as $key => $val){
@@ -1807,7 +1805,7 @@ class documentController extends document {
 						$category_srl,
 						$key,
 						var_export(str_replace('"','\\"', $val), true)
-					);	
+					);
 				}
 			}
 			
@@ -1833,9 +1831,9 @@ class documentController extends document {
 				$node->category_srl,
 				$node->parent_srl,
 				$node->category_srl,
+				$selected,
 				var_export($expand, true),
 				var_export($node->color, true),
-				$node->color,
 				$node->category_srl,
 				$child_buff,
 				$node->document_count,
