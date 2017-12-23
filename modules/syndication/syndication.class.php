@@ -87,6 +87,6 @@ class syndication extends ModuleObject {
 	}
 	
 	public function makeObject($code = 0, $message = 'success'){
-		return class_exists('BaseObject') ? $this->makeObject($code, $message) : new Object($code, $message);
+		return class_exists('BaseObject') ? new BaseObject($code, $message) : new Object($code, $message);
 	}
 }
