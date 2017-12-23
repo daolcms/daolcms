@@ -30,27 +30,56 @@ class fileModel extends file {
 		$upload_target_srl = Context::get('upload_target_srl');
 		if(!$upload_target_srl) $upload_target_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
 		
-		if($upload_target_srl) {
+		if($upload_target_srl){
+			$oDocumentModel = getModel('document');
+			$oCommentModel = getModel('comment');
+			$logged_info = Context::get('logged_info');
+
+			$oDocument = $oDocumentModel->getDocument($upload_target_srl);
+
+			// comment 권한 확인
+			if(!$oDocument->isExists()){
+				$oComment = $oCommentModel->getComment($upload_target_srl);
+				if($oComment->isExists() && $oComment->isSecret() && !$oComment->isGranted()){
+					return new Object(-1, 'msg_not_permitted');
+				}
+
+				$oDocument = $oDocumentModel->getDocument($oComment->get('document_srl'));
+			}
+
+			// document 권한 확인
+			if($oDocument->isExists() && $oDocument->isSecret() && !$oDocument->isGranted()){
+				return new Object(-1, 'msg_not_permitted');
+			}
+
+			// 모듈 권한 확인
+			if($oDocument->isExists()){
+				$grant = $oModuleModel->getGrant($oModuleModel->getModuleInfoByModuleSrl($oDocument->get('module_srl')), $logged_info);
+				if(!$grant->access){
+					return new Object(-1, 'msg_not_permitted');
+				}
+			}
+
 			$tmp_files = $this->getFiles($upload_target_srl);
-			if($tmp_files instanceof Object && !$tmp_files->toBool()) return $tmp_files;
-			
-			foreach($tmp_files as $file_info) {
-				$file_info = $tmp_files[$i];
+			if(!$tmp_files) $tmp_files = array();
+
+			foreach($tmp_files as $file_info){
 				if(!$file_info->file_srl) continue;
-				
-				$obj = null;
+
+				$obj = new stdClass;
 				$obj->file_srl = $file_info->file_srl;
 				$obj->source_filename = $file_info->source_filename;
 				$obj->file_size = $file_info->file_size;
 				$obj->disp_file_size = FileHandler::filesize($file_info->file_size);
-				if($file_info->direct_download == 'N') $obj->download_url = $this->getDownloadUrl($file_info->file_srl, $file_info->sid, $file_info->module_srl);
+				if($file_info->direct_download=='N') $obj->download_url = $this->getDownloadUrl($file_info->file_srl, $file_info->sid, $file_info->module_srl);
 				else $obj->download_url = str_replace('./', '', $file_info->uploaded_filename);
 				$obj->direct_download = $file_info->direct_download;
 				$obj->cover_image = ($file_info->cover_image === 'Y') ? true : false;
 				$files[] = $obj;
 				$attached_size += $file_info->file_size;
 			}
-		} else {
+		}
+		else{
 			$upload_target_srl = 0;
 			$attached_size = 0;
 			$files = array();
@@ -206,28 +235,26 @@ class fileModel extends file {
 		$oDocumentModel = getModel('document');
 		$oCommentModel = getModel('comment');
 		$logged_info = Context::get('logged_info');
-		
 		$oDocument = $oDocumentModel->getDocument($upload_target_srl);
 		
 		// comment 권한 확인
-		if(!$oDocument->isExists()) {
+		if(!$oDocument->isExists()){
 			$oComment = $oCommentModel->getComment($upload_target_srl);
-			if($oComment->isExists() && $oComment->isSecret() && !$oComment->isGranted()) {
+			if($oComment->isExists() && $oComment->isSecret() && !$oComment->isGranted()){
 				return $this->stop('msg_not_permitted');
 			}
-			
 			$oDocument = $oDocumentModel->getDocument($oComment->get('document_srl'));
 		}
 		
 		// document 권한 확인
-		if($oDocument->isExists() && $oDocument->isSecret() && !$oDocument->isGranted()) {
+		if($oDocument->isExists() && $oDocument->isSecret() && !$oDocument->isGranted()){
 			return $this->stop('msg_not_permitted');
 		}
 		
 		// 모듈 권한 확인
-		if($oDocument->isExists()) {
+		if($oDocument->isExists()){
 			$grant = $oModuleModel->getGrant($oModuleModel->getModuleInfoByModuleSrl($oDocument->get('module_srl')), $logged_info);
-			if(!$grant->access) {
+			if(!$grant->access){
 				return $this->stop('msg_not_permitted');
 			}
 		}
