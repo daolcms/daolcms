@@ -778,20 +778,20 @@ class menuAdminController extends menu {
 				$href = "getSiteUrl('$domain', '','mid','$node->url')";
 			}
 			else $href = var_export($url, true);
-			$open_window = $node->open_window;
-			$expand = $node->expand;
+			$open_window = ($node->open_window) ? $node->open_window : '';
+			$expand = ($node->expand) ? $node->expand : '';
 			
-			$normal_btn = $node->normal_btn;
+			$normal_btn = ($node->normal_btn) ? $node->normal_btn : '';
 			if($normal_btn && preg_match('/^\.\/files\/attach\/menu_button/i', $normal_btn)) $normal_btn = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $normal_btn);
 			else $normal_btn = '';
-			$hover_btn = $node->hover_btn;
+			$hover_btn = ($node->hover_btn) ? $node->hover_btn : '';
 			if($hover_btn && preg_match('/^\.\/files\/attach\/menu_button/i', $hover_btn)) $hover_btn = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $hover_btn);
 			else $hover_btn = '';
-			$active_btn = $node->active_btn;
+			$active_btn = ($node->active_btn) ? $node->active_btn : '';
 			if($active_btn && preg_match('/^\.\/files\/attach\/menu_button/i', $active_btn)) $active_btn = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $active_btn);
 			else $active_btn = '';
 			
-			$group_srls = $node->group_srls;
+			$group_srls = ($node->group_srls) ? $node->group_srls : '';
 			
 			if($normal_btn) {
 				if(preg_match('/\.png$/', $normal_btn)) $classname = 'class=&quot;iePngFix&quot;';
@@ -803,12 +803,17 @@ class menuAdminController extends menu {
 				$link = '<?php print $_names[$lang_type]; ?>';
 			}
 			// If the value of node->group_srls exists
-			if($group_srls) $group_check_code = sprintf('($is_admin==true||(is_array($group_srls)&&count(array_intersect($group_srls, array(%s))))||($is_logged&&%s))', $group_srls, $group_srls == -1 ? 1 : 0);
-			else $group_check_code = "true";
+			if($group_srls){
+				$group_check_code = sprintf('($is_admin==true||(is_array($group_srls)&&count(array_intersect($group_srls, array(%s))))||($is_logged&&%s))', $group_srls, $group_srls == -1 ? 1 : 0);
+			}
+			else{
+				$group_check_code = "true";
+			}
+			
 			$attribute = sprintf(
 				'node_srl="%d" parent_srl="%d" text="<?php if(%s) { %s }?>" url="<?php print(%s?%s:"")?>" href="<?php print(%s?%s:"")?>" open_window=%s expand=%s normal_btn=%s hover_btn=%s active_btn=%s link="<?php if(%s) {?>%s<?php }?>"',
 				$menu_item_srl,
-				$node->parent_srl,
+				($node->parent_srl) ? $node->parent_srl : '',
 				$group_check_code,
 				$name_str,
 				$group_check_code,
