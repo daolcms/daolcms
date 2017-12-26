@@ -7,7 +7,7 @@
 	</permissions>
 	<actions>
 		<action name="getFileList" type="model" standalone="true" />
-		<action name="procFileUpload" type="controller" standalone="true" />
+		<action name="procFileUpload" type="controller" standalone="true" check_csrf="false"/>
 		<action name="procFileIframeUpload" type="controller" standalone="true" />
 		<action name="procFileImageResize" type="controller" standalone="true" ruleset="imageResize" />
 		<action name="procFileDelete" type="controller" standalone="true" />
