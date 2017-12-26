@@ -75,6 +75,10 @@ class comment extends ModuleObject {
 		// 2012. 08. 29 Add a trigger to copy additional setting when the module is copied 
 		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'comment', 'controller', 'triggerCopyModule', 'after')) return true;
 		
+		if(!$oDB->isIndexExists("comments", "idx_parent_srl")){
+			return TRUE;
+		}
+		
 		return false;
 	}
 	
@@ -137,6 +141,10 @@ class comment extends ModuleObject {
 		// 2012. 08. 29 Add a trigger to copy additional setting when the module is copied 
 		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'comment', 'controller', 'triggerCopyModule', 'after')) {
 			$oModuleController->insertTrigger('module.procModuleAdminCopyModule', 'comment', 'controller', 'triggerCopyModule', 'after');
+		}
+		
+		if(!$oDB->isIndexExists("comments", "idx_parent_srl")){
+			$oDB->addIndex('comments', 'idx_parent_srl', array('parent_srl'));
 		}
 		
 		return new BaseObject(0, 'success_updated');
