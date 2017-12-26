@@ -239,6 +239,9 @@ if(__DEBUG_OUTPUT__ == 2) {
 // Set Timezone as server time
 date_default_timezone_set(@date_default_timezone_get());
 
+//include BaseObject
+include _DAOL_PATH_ . 'classes/object/BaseObject.class.php';
+
 if(!defined('__XE_LOADED_CLASS__')) {
 	// Require a function-defined-file for simple use
 	require(_DAOL_PATH_ . 'config/func.inc.php');
@@ -248,7 +251,6 @@ if(!defined('__XE_LOADED_CLASS__')) {
 	// include the class files
 	//TODO When _autoload() can be used for PHP5 based applications, it will be removed.
 	if(__DEBUG__) define('__ClassLoadStartTime__', getMicroTime());
-	require(_DAOL_PATH_ . 'classes/object/BaseObject.class.php');
 	require(_DAOL_PATH_ . 'classes/extravar/Extravar.class.php');
 	require(_DAOL_PATH_ . 'classes/handler/Handler.class.php');
 	require(_DAOL_PATH_ . 'classes/xml/XmlParser.class.php');
@@ -274,7 +276,4 @@ if(!defined('__XE_LOADED_CLASS__')) {
 	require(_DAOL_PATH_ . 'classes/security/Security.class.php');
 	require(_DAOL_PATH_ . 'classes/security/IpFilter.class.php');
 	if(__DEBUG__) $GLOBALS['__elapsed_class_load__'] = getMicroTime() - __ClassLoadStartTime__;
-}
-if(version_compare(PHP_VERSION, '7.2', '<')){
-	class_alias('BaseObject', 'Object', true);
 }
