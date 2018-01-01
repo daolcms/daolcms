@@ -9,7 +9,7 @@
  * @package /modules/document
  * @version 0.1
  */
-class documentItem extends Object {
+class documentItem extends BaseObject {
 	/**
 	 * Document number
 	 * @var int
@@ -700,7 +700,7 @@ class documentItem extends Object {
 			$thumbnail_type = $config->thumbnail_type;
 		}
 		// Define thumbnail information
-		$thumbnail_path = sprintf('files/cache/thumbnails/%s', getNumberingPath($this->document_srl, 3));
+		$thumbnail_path = sprintf('files/thumbnails/%s', getNumberingPath($this->document_srl, 3));
 		$thumbnail_file = sprintf('%s%dx%d.%s.jpg', $thumbnail_path, $width, $height, $thumbnail_type);
 		$thumbnail_lockfile = sprintf('%s%dx%d.%s.lock', $thumbnail_path, $width, $height, $thumbnail_type);
 		$thumbnail_url = Context::getRequestUri() . $thumbnail_file;
@@ -866,19 +866,27 @@ class documentItem extends Object {
 	 * @param int $time_check
 	 * @return string
 	 */
-	function printExtraImages($time_check = 43200) {
+	function printExtraImages($time_check = 43200){
 		if(!$this->document_srl) return;
-		// Get the icon directory
-		$path = sprintf('%s%s', getUrl(), 'modules/document/tpl/icons/');
-		
+
+		$oDocumentModel = getModel('document');
+		$documentConfig = $oDocumentModel->getDocumentConfig();
+		if(Mobile::isFromMobilePhone()){
+			$iconSkin = $documentConfig->micons;
+		}
+		else{
+			$iconSkin = $documentConfig->icons;
+		}
+		$path = sprintf('%s%s',getUrl(), "modules/document/tpl/icons/$iconSkin/");
+
 		$buffs = $this->getExtraImages($time_check);
 		if(!count($buffs)) return;
-		
-		$buff = null;
-		foreach($buffs as $key => $val) {
-			$buff .= sprintf('<img src="%s%s.gif" alt="%s" title="%s" style="margin-right:2px;" />', $path, $val, $val, $val);
+
+		$buff = array();
+		foreach($buffs as $key => $val){
+			$buff[] = sprintf('<img src="%s%s.gif" alt="%s" title="%s" style="margin-right:2px;" />', $path, $val, $val, $val);
 		}
-		return $buff;
+		return implode('', $buff);
 	}
 	
 	function hasUploadedFiles() {

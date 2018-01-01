@@ -112,7 +112,7 @@ class spamfilterAdminController extends spamfilter {
 		
 		foreach($word_list as $word) {
 			if(!preg_match("/^(.{2,40}[\r\n]+)*.{2,40}$/", $word)) {
-				return new Object(-1, 'msg_invalid');
+				return new BaseObject(-1, 'msg_invalid');
 			}
 		}
 		

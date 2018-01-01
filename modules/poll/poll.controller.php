@@ -44,7 +44,7 @@ class pollController extends poll {
 			if($val->title && count($val->item)) $args->poll[] = $val;
 		}
 		
-		if(!count($args->poll)) return new Object(-1, 'cmd_null_item');
+		if(!count($args->poll)) return new BaseObject(-1, 'cmd_null_item');
 		
 		$args->stop_date = $stop_date;
 		// Configure the variables
@@ -118,10 +118,10 @@ class pollController extends poll {
 		}
 		
 		// If there is no response item, display an error
-		if(!count($item_srls)) return new Object(-1, 'msg_check_poll_item');
+		if(!count($item_srls)) return new BaseObject(-1, 'msg_check_poll_item');
 		// Make sure is the poll has already been taken
 		$oPollModel = &getModel('poll');
-		if($oPollModel->isPolled($poll_srl)) return new Object(-1, 'msg_already_poll');
+		if($oPollModel->isPolled($poll_srl)) return new BaseObject(-1, 'msg_already_poll');
 		
 		$oDB = &DB::getInstance();
 		$oDB->begin();
@@ -190,7 +190,7 @@ class pollController extends poll {
 	 * @brief poll list
 	 **/
 	function procPollGetList() {
-		if(!Context::get('is_logged')) return new Object(-1, 'msg_not_permitted');
+		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_permitted');
 		$pollSrls = Context::get('poll_srls');
 		if($pollSrls) $pollSrlList = explode(',', $pollSrls);
 		
@@ -220,7 +220,7 @@ class pollController extends poll {
 	 **/
 	function triggerInsertDocumentPoll(&$obj) {
 		$this->syncPoll($obj->document_srl, $obj->content);
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -228,7 +228,7 @@ class pollController extends poll {
 	 **/
 	function triggerInsertCommentPoll(&$obj) {
 		$this->syncPoll($obj->comment_srl, $obj->content);
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -236,7 +236,7 @@ class pollController extends poll {
 	 **/
 	function triggerUpdateDocumentPoll(&$obj) {
 		$this->syncPoll($obj->document_srl, $obj->content);
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -244,7 +244,7 @@ class pollController extends poll {
 	 **/
 	function triggerUpdateCommentPoll(&$obj) {
 		$this->syncPoll($obj->comment_srl, $obj->content);
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -252,14 +252,14 @@ class pollController extends poll {
 	 **/
 	function triggerDeleteDocumentPoll(&$obj) {
 		$document_srl = $obj->document_srl;
-		if(!$document_srl) return new Object();
+		if(!$document_srl) return new BaseObject();
 		// Get the poll
 		$args->upload_target_srl = $document_srl;
 		$output = executeQuery('poll.getPollByTargetSrl', $args);
-		if(!$output->data) return new Object();
+		if(!$output->data) return new BaseObject();
 		
 		$poll_srl = $output->data->poll_srl;
-		if(!$poll_srl) return new Object();
+		if(!$poll_srl) return new BaseObject();
 		
 		$args->poll_srl = $poll_srl;
 		
@@ -275,7 +275,7 @@ class pollController extends poll {
 		$output = executeQuery('poll.deletePollLog', $args);
 		if(!$output->toBool()) return $output;
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -283,14 +283,14 @@ class pollController extends poll {
 	 **/
 	function triggerDeleteCommentPoll(&$obj) {
 		$comment_srl = $obj->comment_srl;
-		if(!$comment_srl) return new Object();
+		if(!$comment_srl) return new BaseObject();
 		// Get the poll
 		$args->upload_target_srl = $comment_srl;
 		$output = executeQuery('poll.getPollByTargetSrl', $args);
-		if(!$output->data) return new Object();
+		if(!$output->data) return new BaseObject();
 		
 		$poll_srl = $output->data->poll_srl;
-		if(!$poll_srl) return new Object();
+		if(!$poll_srl) return new BaseObject();
 		
 		$args->poll_srl = $poll_srl;
 		
@@ -306,7 +306,7 @@ class pollController extends poll {
 		$output = executeQuery('poll.deletePollLog', $args);
 		if(!$output->toBool()) return $output;
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**

@@ -27,7 +27,7 @@
 		if(!krzip) {
 			krzip = {
 				open: function (query) {
-					var request_url = "./"
+					var request_url = request_uri
 						.setQuery("module", "krzip")
 						.setQuery("act", "dispKrzipSearchForm")
 						.setQuery("query", query);
@@ -59,7 +59,7 @@
 			krzip.query = data.query;
 			ui.postcode.val(data[0]).trigger("change");
 			ui.roadAddress.val(data[1]).trigger("change");
-			ui.jibunAddress.val(data[2]).trigger("change");
+			ui.jibunAddress.val('').trigger("change");
 			ui.extraAddress.val(data[4]).trigger("change");
 			ui.detailAddress.trigger("focus");
 		}

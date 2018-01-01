@@ -24,6 +24,8 @@
 			guide         : $this.find(".krzip-guide")
 		};
 
+		var postcode_format = $this.data("postcode-format") == "5" ? "5" : "6";
+
 		var krzip = new daum.Postcode({
 			oncomplete: function (response) {
 				var fullAddr = "", extraAddr = "";
@@ -49,7 +51,11 @@
 				}
 
 				/* 우편번호 저장 */
-				ui.postcode.val(response.postcode).trigger("change");
+				if(postcode_format == "5" && response.zonecode) {
+					ui.postcode.val(response.zonecode).trigger("change");
+				} else {
+					ui.postcode.val(response.postcode).trigger("change");
+				}
 
 				/* 도로명 주소 저장 */
 				var roadAddr = (response.userSelectedType === "R" ? fullAddr : response.roadAddress);

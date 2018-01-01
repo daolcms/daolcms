@@ -10,14 +10,14 @@ class integration_search extends ModuleObject {
 	/**
 	 * Implement if additional tasks are necessary when installing
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function moduleInstall() {
 		// Registered in action forward
 		$oModuleController = &getController('module');
 		$oModuleController->insertActionForward('integration_search', 'view', 'IS');
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -42,7 +42,7 @@ class integration_search extends ModuleObject {
 	/**
 	 * Execute update
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function moduleUpdate() {
 		$oModuleModel = &getModel('module');
@@ -60,7 +60,7 @@ class integration_search extends ModuleObject {
 			}
 		}
 		
-		return new Object(0, 'success_updated');
+		return new BaseObject(0, 'success_updated');
 	}
 	
 	/**

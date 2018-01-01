@@ -11,7 +11,7 @@ class message extends ModuleObject {
 	 * @brief Implement if additional tasks are necessary when installing
 	 **/
 	function moduleInstall() {
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -49,7 +49,7 @@ class message extends ModuleObject {
 				}
 			}
 		}
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**

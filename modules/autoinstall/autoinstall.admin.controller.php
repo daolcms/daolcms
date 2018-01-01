@@ -40,7 +40,7 @@ class autoinstallAdminController extends autoinstall {
 	/**
 	 * Update easy install information
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function procAutoinstallAdminUpdateinfo() {
 		$this->_updateinfo();
@@ -144,7 +144,7 @@ class autoinstallAdminController extends autoinstall {
 	/**
 	 * Install package
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function procAutoinstallAdminPackageinstall() {
 		@set_time_limit(0);
@@ -248,7 +248,7 @@ class autoinstallAdminController extends autoinstall {
 	/**
 	 * Uninstall package
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function procAutoinstallAdminUninstallPackage() {
 		$package_srl = Context::get('package_srl');
@@ -267,7 +267,7 @@ class autoinstallAdminController extends autoinstall {
 	/**
 	 * Uninstall package by package serial number
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function uninstallPackageByPackageSrl($package_srl) {
 		$oModel = getModel('autoinstall');
@@ -279,7 +279,7 @@ class autoinstallAdminController extends autoinstall {
 	/**
 	 * Uninstall package by package path
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function uninstallPackageByPath($path) {
 		$path = $package->path;
@@ -319,6 +319,6 @@ class autoinstallAdminController extends autoinstall {
 		
 		$this->setMessage('success_deleted', 'update');
 		
-		return new Object();
+		return new BaseObject();
 	}
 }

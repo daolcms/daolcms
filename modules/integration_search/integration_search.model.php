@@ -25,7 +25,7 @@ class integration_searchModel extends module {
 	 * @param integer $page             page of page navigation
 	 * @param integer $list_count       list count of page navigation
 	 *
-	 * @return Object output document list
+	 * @return BaseObject output document list
 	 **/
 	function getDocuments($target, $module_srls_list, $search_target, $search_keyword, $page = 1, $list_count = 20) {
 		if(is_array($module_srls_list)) $module_srls_list = implode(',', $module_srls_list);
@@ -64,7 +64,7 @@ class integration_searchModel extends module {
 	 * @param integer $page             page of page navigation
 	 * @param integer $list_count       list count of page navigation
 	 *
-	 * @return Object output comment list
+	 * @return BaseObject output comment list
 	 **/
 	function getComments($target, $module_srls_list, $search_keyword, $page = 1, $list_count = 20) {
 		$args = new stdClass();
@@ -101,11 +101,11 @@ class integration_searchModel extends module {
 	 * @param integer $page             page of page navigation
 	 * @param integer $list_count       list count of page navigation
 	 *
-	 * @return Object output trackback list
+	 * @return BaseObject output trackback list
 	 **/
 	function getTrackbacks($target, $module_srls_list, $search_target = "title", $search_keyword, $page = 1, $list_count = 20) {
 		$oTrackbackModel = getAdminModel('trackback');
-		if(!$oTrackbackModel) return new Object();
+		if(!$oTrackbackModel) return new BaseObject();
 		
 		$args = new stdClass();
 		if(is_array($module_srls_list)) $module_srls = implode(',', $module_srls_list);
@@ -135,7 +135,7 @@ class integration_searchModel extends module {
 	 * @param integer $list_count       list count of page navigation
 	 * @param string  $direct_download  Y or N
 	 *
-	 * @return Object output file list
+	 * @return BaseObject output file list
 	 **/
 	function _getFiles($target, $module_srls_list, $search_keyword, $page, $list_count, $direct_download = 'Y') {
 		$args = new stdClass();
@@ -170,7 +170,7 @@ class integration_searchModel extends module {
 			if(preg_match('/\.(jpg|jpeg|gif|png)$/i', $val->source_filename)) {
 				$obj->type = 'image';
 				
-				$thumbnail_path = sprintf('files/cache/thumbnails/%s', getNumberingPath($val->file_srl, 3));
+				$thumbnail_path = sprintf('files/thumbnails/%s', getNumberingPath($val->file_srl, 3));
 				if(!is_dir($thumbnail_path)) FileHandler::makeDir($thumbnail_path);
 				$thumbnail_file = sprintf('%s%dx%d.%s.jpg', $thumbnail_path, 120, 120, 'crop');
 				$thumbnail_url = Context::getRequestUri() . $thumbnail_file;
@@ -223,7 +223,7 @@ class integration_searchModel extends module {
 	 * @param integer $page             page of page navigation
 	 * @param integer $list_count       list count of page navigation
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function getImages($target, $module_srls_list, $search_keyword, $page = 1, $list_count = 20) {
 		return $this->_getFiles($target, $module_srls_list, $search_keyword, $page, $list_count);
@@ -238,7 +238,7 @@ class integration_searchModel extends module {
 	 * @param integer $page             page of page navigation
 	 * @param integer $list_count       list count of page navigation
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function getFiles($target, $module_srls_list, $search_keyword, $page = 1, $list_count = 20) {
 		return $this->_getFiles($target, $module_srls_list, $search_keyword, $page, $list_count, 'N');

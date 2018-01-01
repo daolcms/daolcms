@@ -88,7 +88,7 @@ class point extends ModuleObject {
 		// Add a trigger for using points for permanent saving of a temporarily saved document 2009.05.19 zero
 		$oModuleController->insertTrigger('document.updateDocument', 'point', 'controller', 'triggerUpdateDocument', 'before');
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -171,7 +171,7 @@ class point extends ModuleObject {
 			$oModuleController->insertTrigger('module.procModuleAdminCopyModule', 'point', 'controller', 'triggerCopyModule', 'after');
 		}
 		
-		return new Object(0, 'success_updated');
+		return new BaseObject(0, 'success_updated');
 	}
 	
 	/**

@@ -11,7 +11,7 @@ class install extends ModuleObject {
 	 * @brief Implement if additional tasks are necessary when installing
 	 **/
 	function moduleInstall() {
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -25,7 +25,7 @@ class install extends ModuleObject {
 	 * @brief Execute update
 	 **/
 	function moduleUpdate() {
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**

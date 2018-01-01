@@ -118,7 +118,7 @@ class addonController extends addon {
 	/**
 	 * Adds mid into running mid list
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function procAddonSetupAddonAddMid() {
 		$site_module_info = Context::get('site_module_info');
@@ -132,7 +132,7 @@ class addonController extends addon {
 	/**
 	 * Deletes mid from running mid list
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function procAddonSetupAddonDelMid() {
 		$site_module_info = Context::get('site_module_info');
@@ -210,7 +210,7 @@ class addonController extends addon {
 	 * @param object $extra_vars Extra variables
 	 * @param int    $site_srl   Site srl
 	 * @param string $gtype      site or global
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function doSetup($addon, $extra_vars, $site_srl = 0, $gtype = 'site') {
 		if(!is_array($extra_vars->mid_list)) unset($extra_vars->mid_list);

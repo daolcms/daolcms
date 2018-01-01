@@ -32,13 +32,13 @@ class adminAdminModel extends admin {
 		}
 		$connection = ssh2_connect($ftp_info->ftp_host, $ftp_info->ftp_port);
 		if(!ssh2_auth_password($connection, $ftp_info->ftp_user, $ftp_info->ftp_password)) {
-			return new Object(-1, 'msg_ftp_invalid_auth_info');
+			return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 		}
 		
 		$sftp = ssh2_sftp($connection);
 		$curpwd = "ssh2.sftp://$sftp" . $this->pwd;
 		$dh = @opendir($curpwd);
-		if(!$dh) return new Object(-1, 'msg_ftp_invalid_path');
+		if(!$dh) return new BaseObject(-1, 'msg_ftp_invalid_path');
 		$list = array();
 		while(($file = readdir($dh)) !== false) {
 			if(is_dir($curpwd . $file)) {
@@ -62,7 +62,7 @@ class adminAdminModel extends admin {
 		require_once(_DAOL_PATH_ . 'libs/ftp.class.php');
 		$ftp_info = Context::getRequestVars();
 		if(!$ftp_info->ftp_user || !$ftp_info->ftp_password) {
-			return new Object(-1, 'msg_ftp_invalid_auth_info');
+			return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 		}
 		
 		$this->pwd = $ftp_info->ftp_root_path;
@@ -77,7 +77,7 @@ class adminAdminModel extends admin {
 		
 		if($ftp_info->sftp == 'Y') {
 			if(!function_exists('ssh2_sftp')) {
-				return new Object(-1, 'disable_sftp_support');
+				return new BaseObject(-1, 'disable_sftp_support');
 			}
 			return $this->getSFTPList();
 		}
@@ -91,7 +91,7 @@ class adminAdminModel extends admin {
 				$_list = $oFtp->ftp_rawlist($this->pwd);
 				$oFtp->ftp_quit();
 			} else {
-				return new Object(-1, 'msg_ftp_invalid_auth_info');
+				return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 			}
 		}
 		
@@ -105,7 +105,7 @@ class adminAdminModel extends admin {
 				if(strpos($v, 'd') === 0 || strpos($v, '<DIR>')) $list[] = substr(strrchr($v, ' '), 1) . '/';
 			}
 		} else {
-			return new Object(-1, 'msg_ftp_no_directory');
+			return new BaseObject(-1, 'msg_ftp_no_directory');
 		}
 		$this->add('list', $list);
 	}
@@ -437,7 +437,7 @@ class adminAdminModel extends admin {
 		$args->site_srl = $siteSrl;
 		$output = executeQueryArray('admin.getFavoriteList', $args);
 		if(!$output->toBool()) return $output;
-		if(!$output->data) return new Object();
+		if(!$output->data) return new BaseObject();
 		
 		if($isGetModuleInfo && is_array($output->data)) {
 			$oModuleModel = &getModel('module');
@@ -448,7 +448,7 @@ class adminAdminModel extends admin {
 			}
 		}
 		
-		$returnObject = new Object();
+		$returnObject = new BaseObject();
 		$returnObject->add('favoriteList', $output->data);
 		return $returnObject;
 	}
@@ -466,7 +466,7 @@ class adminAdminModel extends admin {
 		$output = executeQuery('admin.getFavorite', $args);
 		if(!$output->toBool()) return $output;
 		
-		$returnObject = new Object();
+		$returnObject = new BaseObject();
 		if($output->data) {
 			$returnObject->add('result', true);
 			$returnObject->add('favoriteSrl', $output->data->admin_favorite_srl);

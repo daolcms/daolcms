@@ -11,10 +11,10 @@
 class adminlogging extends ModuleObject {
 	/**
 	 * Install adminlogging module
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function moduleInstall() {
-		return new Object();
+		return new BaseObject();
 	}
 
 	/**
@@ -27,10 +27,10 @@ class adminlogging extends ModuleObject {
 
 	/**
 	 * Update module
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function moduleUpdate() {
-		return new Object();
+		return new BaseObject();
 	}
 
 	/**

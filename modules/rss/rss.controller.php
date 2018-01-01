@@ -18,7 +18,7 @@ class rssController extends rss {
 	/**
 	 * Check whether to use RSS rss url by adding
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function triggerRssUrlInsert() {
 		$oModuleModel = getModel('module');
@@ -34,7 +34,7 @@ class rssController extends rss {
 			$current_module_srl = $current_module_info->module_srl;
 		}
 		
-		if(!$current_module_srl) return new Object();
+		if(!$current_module_srl) return new BaseObject();
 		// Imported rss settings of the selected module
 		$oRssModel = getModel('rss');
 		$rss_config = $oRssModel->getRssModuleConfig($current_module_srl);
@@ -55,7 +55,7 @@ class rssController extends rss {
 			}
 		}
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 	function triggerCopyModule(&$obj) {

@@ -39,7 +39,7 @@ class layoutView extends layout {
 	function dispLayoutPreview() {
 		if(!checkCSRF()) {
 			$this->stop('msg_invalid_request');
-			return new Object(-1, 'msg_invalid_request');
+			return new BaseObject(-1, 'msg_invalid_request');
 		}
 		
 		// admin check
@@ -51,11 +51,11 @@ class layoutView extends layout {
 		$code = Context::get('code');
 		
 		$code_css = Context::get('code_css');
-		if(!$layout_srl || !$code) return new Object(-1, 'msg_invalid_request');
+		if(!$layout_srl || !$code) return new BaseObject(-1, 'msg_invalid_request');
 		// Get the layout information
 		$oLayoutModel = &getModel('layout');
 		$layout_info = $oLayoutModel->getLayout($layout_srl);
-		if(!$layout_info) return new Object(-1, 'msg_invalid_request');
+		if(!$layout_info) return new BaseObject(-1, 'msg_invalid_request');
 		// Separately handle the layout if its type is faceoff
 		if($layout_info && $layout_info->type == 'faceoff') $oLayoutModel->doActivateFaceOff($layout_info);
 		// Apply CSS directly

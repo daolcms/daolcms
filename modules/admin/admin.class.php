@@ -12,10 +12,10 @@
 class admin extends ModuleObject {
 	/**
 	 * Install admin module
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function moduleInstall() {
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -31,7 +31,7 @@ class admin extends ModuleObject {
 	
 	/**
 	 * Update module
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function moduleUpdate() {
 		$oDB = &DB::getInstance();
@@ -51,7 +51,7 @@ class admin extends ModuleObject {
 				}
 			}
 		}
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**

@@ -12,7 +12,7 @@ require_once(_DAOL_PATH_ . 'modules/comment/comment.item.php');
 class comment extends ModuleObject {
 	/**
 	 * Implemented if additional tasks are required when installing
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function moduleInstall() {
 		$oDB = &DB::getInstance();
@@ -39,7 +39,7 @@ class comment extends ModuleObject {
 			FileHandler::makeDir('./files/cache/tmp');
 		}
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -75,12 +75,16 @@ class comment extends ModuleObject {
 		// 2012. 08. 29 Add a trigger to copy additional setting when the module is copied 
 		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'comment', 'controller', 'triggerCopyModule', 'after')) return true;
 		
+		if(!$oDB->isIndexExists("comments", "idx_parent_srl")){
+			return TRUE;
+		}
+		
 		return false;
 	}
 	
 	/**
 	 * Execute update
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function moduleUpdate() {
 		$oDB = &DB::getInstance();
@@ -139,7 +143,11 @@ class comment extends ModuleObject {
 			$oModuleController->insertTrigger('module.procModuleAdminCopyModule', 'comment', 'controller', 'triggerCopyModule', 'after');
 		}
 		
-		return new Object(0, 'success_updated');
+		if(!$oDB->isIndexExists("comments", "idx_parent_srl")){
+			$oDB->addIndex('comments', 'idx_parent_srl', array('parent_srl'));
+		}
+		
+		return new BaseObject(0, 'success_updated');
 	}
 	
 	/**

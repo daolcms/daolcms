@@ -50,7 +50,7 @@ class member extends ModuleObject {
 	/**
 	 * Implement if additional tasks are necessary when installing
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function moduleInstall() {
 		// Register action forward (to use in administrator mode)
@@ -161,7 +161,7 @@ class member extends ModuleObject {
 		FileHandler::makeDir('./files/member_extra_info/profile_image');
 		FileHandler::makeDir('./files/member_extra_info/signature');
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -234,7 +234,7 @@ class member extends ModuleObject {
 	/**
 	 * Execute update
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function moduleUpdate() {
 		$oDB = &DB::getInstance();
@@ -356,7 +356,7 @@ class member extends ModuleObject {
 		if(!is_readable('./files/ruleset/find_member_account_by_question.xml'))
 			$oMemberAdminController->_createFindAccountByQuestion($config->identifier);
 		
-		return new Object(0, 'success_updated');
+		return new BaseObject(0, 'success_updated');
 	}
 	
 	/**
@@ -371,7 +371,7 @@ class member extends ModuleObject {
 	 * @brief Record login error and return the error, about IPaddress.
 	 **/
 	function recordLoginError($error = 0, $message = 'success') {
-		if($error == 0) return new Object($error, $message);
+		if($error == 0) return new BaseObject($error, $message);
 		
 		// Create a member model object
 		$oMemberModel = &getModel('member');
@@ -379,7 +379,7 @@ class member extends ModuleObject {
 		
 		// Check if there is recoding table.
 		$oDB = &DB::getInstance();
-		if(!$oDB->isTableExists('member_login_count') || $config->enable_login_fail_report == 'N') return new Object($error, $message);
+		if(!$oDB->isTableExists('member_login_count') || $config->enable_login_fail_report == 'N') return new BaseObject($error, $message);
 		
 		$args->ipaddress = $_SERVER['REMOTE_ADDR'];
 		
@@ -401,14 +401,14 @@ class member extends ModuleObject {
 			$args->count = 1;
 			$output = executeQuery('member.insertLoginCountByIp', $args);
 		}
-		return new Object($error, $message);
+		return new BaseObject($error, $message);
 	}
 	
 	/**
 	 * @brief Record login error and return the error, about MemberSrl.
 	 **/
 	function recordMemberLoginError($error = 0, $message = 'success', $args = NULL) {
-		if($error == 0 || !$args->member_srl) return new Object($error, $message);
+		if($error == 0 || !$args->member_srl) return new BaseObject($error, $message);
 		
 		// Create a member model object
 		$oMemberModel = &getModel('member');
@@ -416,7 +416,7 @@ class member extends ModuleObject {
 		
 		// Check if there is recoding table.
 		$oDB = &DB::getInstance();
-		if(!$oDB->isTableExists('member_count_history') || $config->enable_login_fail_report == 'N') return new Object($error, $message);
+		if(!$oDB->isTableExists('member_count_history') || $config->enable_login_fail_report == 'N') return new BaseObject($error, $message);
 		
 		$output = executeQuery('member.getLoginCountHistoryByMemberSrl', $args);
 		if($output->data && $output->data->content) {

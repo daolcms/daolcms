@@ -29,7 +29,7 @@ class commentView extends comment {
 			// get information of the selected module
 			$current_module_info = Context::get('current_module_info');
 			$current_module_srl = $current_module_info->module_srl;
-			if(!$current_module_srl) return new Object();
+			if(!$current_module_srl) return new BaseObject();
 		}
 		// get the comment configuration
 		$oCommentModel = &getModel('comment');
@@ -44,6 +44,6 @@ class commentView extends comment {
 		$tpl = $oTemplate->compile($this->module_path . 'tpl', 'comment_module_config');
 		$obj .= $tpl;
 		
-		return new Object();
+		return new BaseObject();
 	}
 }

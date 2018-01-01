@@ -380,10 +380,11 @@ class ModuleHandler extends Handler {
 		
 		$logged_info = Context::get('logged_info');
 		
-		// check CSRF for POST actions
-		if($_SERVER['REQUEST_METHOD'] !== 'GET' && Context::isInstalled() && $this->act !== 'procFileUpload' && !checkCSRF()) {
+		// check CSRF for non-GET actions
+		$use_check_csrf = !isset($xml_info->action->{$this->act}) || $xml_info->action->{$this->act}->check_csrf !== 'false';
+		if($use_check_csrf && $_SERVER['REQUEST_METHOD'] !== 'GET' && Context::isInstalled() && !checkCSRF()){
 			$this->error = 'msg_invalid_request';
-			$oMessageObject = &ModuleHandler::getModuleInstance('message', $display_mode);
+			$oMessageObject = ModuleHandler::getModuleInstance('message', $display_mode);
 			$oMessageObject->setError(-1);
 			$oMessageObject->setMessage($this->error);
 			$oMessageObject->dispMessage();
@@ -936,15 +937,15 @@ class ModuleHandler extends Handler {
 	 * @param string $trigger_name    trigger's name to call
 	 * @param string $called_position called position
 	 * @param object $obj             an object as a parameter to trigger
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function triggerCall($trigger_name, $called_position, &$obj) {
 		// skip if not installed
-		if(!Context::isInstalled()) return new Object();
+		if(!Context::isInstalled()) return new BaseObject();
 		
 		$oModuleModel = &getModel('module');
 		$triggers = $oModuleModel->getTriggers($trigger_name, $called_position);
-		if(!$triggers || !count($triggers)) return new Object();
+		if(!$triggers || !count($triggers)) return new BaseObject();
 		
 		foreach($triggers as $item) {
 			$module = $item->module;
@@ -960,7 +961,7 @@ class ModuleHandler extends Handler {
 			unset($oModule);
 		}
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**

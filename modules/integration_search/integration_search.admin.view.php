@@ -32,7 +32,7 @@ class integration_searchAdminView extends integration_search {
 	/**
 	 * Module selection and skin set
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function dispIntegration_searchAdminContent() {
 		// Get a list of skins(themes)
@@ -70,7 +70,7 @@ class integration_searchAdminView extends integration_search {
 	/**
 	 * Skin Settings
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function dispIntegration_searchAdminSkinInfo() {
 		$oModuleModel = &getModel('module');

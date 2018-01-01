@@ -7,7 +7,7 @@
 <load target="./js/daumapi.js" />
 
 <!--// BODY -->
-<div class="krZip" id="krzip-{$template_config->sequence_id}">
+<div class="krZip" id="krzip-{$template_config->sequence_id}" data-postcode-format="{$template_config->postcode_format}">
 	<input type="hidden" name="{$template_config->column_name}[]" class="krzip-hidden-postcode" value="{$template_config->values[0]}" />
 	<input type="hidden" name="{$template_config->column_name}[]" class="krzip-hidden-roadAddress" value="{$template_config->values[1]}" />
 	<input type="hidden" name="{$template_config->column_name}[]" class="krzip-hidden-jibunAddress" value="{$template_config->values[2]}" />
@@ -20,13 +20,13 @@
 	</div>
 	<div class="krzip-address-wrap">
 		<label>{$lang->cmd_krzip_address}</label>
-		<input type="text" class="krzip-roadAddress" value="{$template_config->values[1]}" disabled="disabled" />
-		<input type="text" class="krzip-jibunAddress" value="{$template_config->values[2]}" disabled="disabled" />
-		<input type="text" class="krzip-extraAddress" value="{$template_config->values[4]}" disabled="disabled" />
+		<input type="text" class="krzip-roadAddress<!--@if($template_config->show_box == 'only_road')--> krzip-input-expand<!--@end-->" value="{$template_config->values[1]}" disabled="disabled" />
+		<input type="text"|cond="$template_config->show_box == 'all'" type="hidden"|cond="$template_config->show_box == 'only_road'" class="krzip-jibunAddress" value="{$template_config->values[2]}" disabled="disabled" />
+		<input type="text"|cond="$template_config->show_box == 'all'" type="hidden"|cond="$template_config->show_box == 'only_road'" type="text" class="krzip-extraAddress" value="{$template_config->values[4]}" disabled="disabled" />
 	</div>
 	<div class="krzip-detailAddress-wrap">
 		<label>{$lang->cmd_krzip_detail_address}</label>
-		<input type="text" class="krzip-detailAddress" value="{$template_config->values[3]}" />
+		<input type="text" class="krzip-detailAddress<!--@if($template_config->show_box == 'only_road')--> krzip-input-expand<!--@end-->" value="{$template_config->values[3]}" />
 	</div>
 	<div class="krzip-guide"></div>
 </div>

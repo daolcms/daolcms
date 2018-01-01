@@ -11,13 +11,13 @@
 class menu extends ModuleObject {
 	/**
 	 * Implement if additional tasks are necessary when installing
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function moduleInstall() {
 		// Create a directory to use menu
 		FileHandler::makeDir('./files/cache/menu');
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -36,7 +36,7 @@ class menu extends ModuleObject {
 	
 	/**
 	 * Execute update
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function moduleUpdate() {
 		$oDB = &DB::getInstance();
@@ -50,7 +50,7 @@ class menu extends ModuleObject {
 			$oDB->addIndex('menu', 'idx_title', array('title'));
 		}
 		
-		return new Object(0, 'success_updated');
+		return new BaseObject(0, 'success_updated');
 	}
 	
 	/**

@@ -7,7 +7,7 @@
  * @class  EditorHandler
  * @author NAVER (developers@xpressengine.com)
  **/
-class EditorHandler extends Object {
+class EditorHandler extends BaseObject {
 	
 	/**
 	 * set the xml and other information of the component

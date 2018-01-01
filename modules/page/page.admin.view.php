@@ -203,7 +203,7 @@ class pageAdminView extends page {
 		if(method_exists($oPageMobile, $method)) {
 			$page_content = $oPageMobile->{$method}();
 		} else {
-			return new Object(-1, sprintf('%s method is not exists', $method));
+			return new BaseObject(-1, sprintf('%s method is not exists', $method));
 		}
 		
 		Context::set('module_info', $this->module_info);

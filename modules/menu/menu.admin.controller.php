@@ -88,7 +88,7 @@ class menuAdminController extends menu {
 		$menu_info = $oMenuAdminModel->getMenu($menu_srl);
 		
 		if($menu_info->title == '__XE_ADMIN__')
-			return new Object(-1, 'msg_adminmenu_cannot_delete');
+			return new BaseObject(-1, 'msg_adminmenu_cannot_delete');
 		
 		$this->deleteMenu($menu_srl);
 		
@@ -101,7 +101,7 @@ class menuAdminController extends menu {
 	/**
 	 * Delete menu
 	 * Delete menu_item and xml cache files
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function deleteMenu($menu_srl) {
 		// Delete cache files
@@ -124,7 +124,7 @@ class menuAdminController extends menu {
 		$output = executeQuery("menu.deleteMenu", $args);
 		if(!$output->toBool()) return $output;
 		
-		return new Object(0, 'success_deleted');
+		return new BaseObject(0, 'success_deleted');
 	}
 	
 	/**
@@ -215,7 +215,7 @@ class menuAdminController extends menu {
 				$cmArgs->module_srl = $source_args->module_srl;
 				$output = $oModuleController->updateModule($cmArgs);
 			}
-			if(!$output->toBool()) return new Object(-1, $output->message);
+			if(!$output->toBool()) return new BaseObject(-1, $output->message);
 		}
 		
 		// Check if already exists
@@ -299,7 +299,7 @@ class menuAdminController extends menu {
 		// Display an error that the category cannot be deleted if it has a child node
 		$output = executeQuery('menu.getChildMenuCount', $args);
 		if(!$output->toBool()) return $output;
-		if($output->data->count > 0) return new Object(-1, 'msg_cannot_delete_for_child');
+		if($output->data->count > 0) return new BaseObject(-1, 'msg_cannot_delete_for_child');
 		// Remove from the DB
 		$output = executeQuery("menu.deleteMenuItem", $args);
 		if(!$output->toBool()) return $output;
@@ -330,7 +330,7 @@ class menuAdminController extends menu {
 		$source_srl = Context::get('source_srl');
 		$target_srl = Context::get('target_srl');
 		
-		if(!$menu_srl || !$mode || !$target_srl) return new Object(-1, 'msg_invalid_request');
+		if(!$menu_srl || !$mode || !$target_srl) return new BaseObject(-1, 'msg_invalid_request');
 		$this->moveMenuItem($menu_srl, $parent_srl, $source_srl, $target_srl, $mode);
 	}
 	
@@ -443,7 +443,7 @@ class menuAdminController extends menu {
 		$oMenuAdminModel = &getAdminModel('menu');
 		
 		$target_item = $oMenuAdminModel->getMenuItemInfo($target_srl);
-		if($target_item->menu_item_srl != $target_srl) return new Object(-1, 'msg_invalid_request');
+		if($target_item->menu_item_srl != $target_srl) return new BaseObject(-1, 'msg_invalid_request');
 		// Move the menu location(change the order menu appears)
 		if($mode == 'move') {
 			$args->parent_srl = $parent_srl;
@@ -451,7 +451,7 @@ class menuAdminController extends menu {
 			
 			if($source_srl) {
 				$source_item = $oMenuAdminModel->getMenuItemInfo($source_srl);
-				if($source_item->menu_item_srl != $source_srl) return new Object(-1, 'msg_invalid_request');
+				if($source_item->menu_item_srl != $source_srl) return new BaseObject(-1, 'msg_invalid_request');
 				$args->listorder = $source_item->listorder - 1;
 			} else {
 				$output = executeQuery('menu.getMaxListorder', $args);
@@ -778,20 +778,20 @@ class menuAdminController extends menu {
 				$href = "getSiteUrl('$domain', '','mid','$node->url')";
 			}
 			else $href = var_export($url, true);
-			$open_window = $node->open_window;
-			$expand = $node->expand;
+			$open_window = ($node->open_window) ? $node->open_window : '';
+			$expand = ($node->expand) ? $node->expand : '';
 			
-			$normal_btn = $node->normal_btn;
+			$normal_btn = ($node->normal_btn) ? $node->normal_btn : '';
 			if($normal_btn && preg_match('/^\.\/files\/attach\/menu_button/i', $normal_btn)) $normal_btn = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $normal_btn);
 			else $normal_btn = '';
-			$hover_btn = $node->hover_btn;
+			$hover_btn = ($node->hover_btn) ? $node->hover_btn : '';
 			if($hover_btn && preg_match('/^\.\/files\/attach\/menu_button/i', $hover_btn)) $hover_btn = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $hover_btn);
 			else $hover_btn = '';
-			$active_btn = $node->active_btn;
+			$active_btn = ($node->active_btn) ? $node->active_btn : '';
 			if($active_btn && preg_match('/^\.\/files\/attach\/menu_button/i', $active_btn)) $active_btn = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $active_btn);
 			else $active_btn = '';
 			
-			$group_srls = $node->group_srls;
+			$group_srls = ($node->group_srls) ? $node->group_srls : '';
 			
 			if($normal_btn) {
 				if(preg_match('/\.png$/', $normal_btn)) $classname = 'class=&quot;iePngFix&quot;';
@@ -803,12 +803,17 @@ class menuAdminController extends menu {
 				$link = '<?php print $_names[$lang_type]; ?>';
 			}
 			// If the value of node->group_srls exists
-			if($group_srls) $group_check_code = sprintf('($is_admin==true||(is_array($group_srls)&&count(array_intersect($group_srls, array(%s))))||($is_logged&&%s))', $group_srls, $group_srls == -1 ? 1 : 0);
-			else $group_check_code = "true";
+			if($group_srls){
+				$group_check_code = sprintf('($is_admin==true||(is_array($group_srls)&&count(array_intersect($group_srls, array(%s))))||($is_logged&&%s))', $group_srls, $group_srls == -1 ? 1 : 0);
+			}
+			else{
+				$group_check_code = "true";
+			}
+			
 			$attribute = sprintf(
 				'node_srl="%d" parent_srl="%d" text="<?php if(%s) { %s }?>" url="<?php print(%s?%s:"")?>" href="<?php print(%s?%s:"")?>" open_window=%s expand=%s normal_btn=%s hover_btn=%s active_btn=%s link="<?php if(%s) {?>%s<?php }?>"',
 				$menu_item_srl,
-				$node->parent_srl,
+				($node->parent_srl) ? $node->parent_srl : '',
 				$group_check_code,
 				$name_str,
 				$group_check_code,

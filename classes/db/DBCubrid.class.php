@@ -697,7 +697,7 @@ class DBCubrid extends DB {
 	
 	/**
 	 * Handles insertAct
-	 * @param Object  $queryObject
+	 * @param BaseObject  $queryObject
 	 * @param boolean $with_values
 	 * @return resource
 	 */
@@ -721,7 +721,7 @@ class DBCubrid extends DB {
 	
 	/**
 	 * Handles updateAct
-	 * @param Object  $queryObject
+	 * @param BaseObject  $queryObject
 	 * @param boolean $with_values
 	 * @return resource
 	 */
@@ -745,7 +745,7 @@ class DBCubrid extends DB {
 	
 	/**
 	 * Handles deleteAct
-	 * @param Object  $queryObject
+	 * @param BaseObject  $queryObject
 	 * @param boolean $with_values
 	 * @return resource
 	 */
@@ -771,10 +771,10 @@ class DBCubrid extends DB {
 	 * Handle selectAct
 	 * To get a specific page list easily in select statement,
 	 * a method, navigation, is used
-	 * @param Object   $queryObject
+	 * @param BaseObject   $queryObject
 	 * @param resource $connection
 	 * @param boolean  $with_values
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _executeSelectAct($queryObject, $connection = NULL, $with_values = TRUE) {
 		if($this->use_prepared_statements == 'Y') {
@@ -796,7 +796,7 @@ class DBCubrid extends DB {
 				return $this->queryError($queryObject);
 			
 			$data = $this->_fetch($result);
-			$buff = new Object ();
+			$buff = new BaseObject ();
 			$buff->data = $data;
 			
 			unset($this->param);
@@ -806,13 +806,13 @@ class DBCubrid extends DB {
 	
 	/**
 	 * If have a error, return error object
-	 * @param Object $queryObject
-	 * @return Object
+	 * @param BaseObject $queryObject
+	 * @return BaseObject
 	 */
 	function queryError($queryObject) {
 		$limit = $queryObject->getLimit();
 		if($limit && $limit->isPageHandler()) {
-			$buff = new Object ();
+			$buff = new BaseObject ();
 			$buff->total_count = 0;
 			$buff->total_page = 0;
 			$buff->page = 1;
@@ -829,10 +829,10 @@ class DBCubrid extends DB {
 	
 	/**
 	 * If select query execute, return page info
-	 * @param Object   $queryObject
+	 * @param BaseObject   $queryObject
 	 * @param resource $connection
 	 * @param boolean  $with_values
-	 * @return Object Object with page info containing
+	 * @return BaseObject Object with page info containing
 	 */
 	function queryPageLimit($queryObject, $connection, $with_values) {
 		$limit = $queryObject->getLimit();
@@ -879,7 +879,7 @@ class DBCubrid extends DB {
 		if($page > $total_page) {
 			// If requested page is bigger than total number of pages, return empty list
 			
-			$buff = new Object ();
+			$buff = new BaseObject ();
 			$buff->total_count = $total_count;
 			$buff->total_page = $total_page;
 			$buff->page = $page;
@@ -898,7 +898,7 @@ class DBCubrid extends DB {
 		$virtual_no = $total_count - ($page - 1) * $list_count;
 		$data = $this->_fetch($result, $virtual_no);
 		
-		$buff = new Object ();
+		$buff = new BaseObject ();
 		$buff->total_count = $total_count;
 		$buff->total_page = $total_page;
 		$buff->page = $page;
@@ -928,11 +928,11 @@ class DBCubrid extends DB {
 	function getSelectPageSql($query, $with_values = TRUE, $start_count = 0, $list_count = 0) {
 		
 		$select = $query->getSelectString($with_values);
-		if($select == '') return new Object(-1, "Invalid query");
+		if($select == '') return new BaseObject(-1, "Invalid query");
 		$select = 'SELECT ' . $select;
 		
 		$from = $query->getFromString($with_values);
-		if($from == '') return new Object(-1, "Invalid query");
+		if($from == '') return new BaseObject(-1, "Invalid query");
 		$from = ' FROM ' . $from;
 		
 		$where = $query->getWhereString($with_values);

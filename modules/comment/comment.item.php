@@ -8,7 +8,7 @@
  * @package /modules/comment
  * @version 0.1
  */
-class commentItem extends Object {
+class commentItem extends BaseObject {
 	/**
 	 * comment number
 	 * @var int
@@ -396,7 +396,7 @@ class commentItem extends Object {
 		// get thumbail generation info on the doc module configuration.
 		if(!in_array($thumbnail_type, array('crop', 'ratio'))) $thumbnail_type = 'crop';
 		// Define thumbnail information
-		$thumbnail_path = sprintf('files/cache/thumbnails/%s', getNumberingPath($this->comment_srl, 3));
+		$thumbnail_path = sprintf('files/thumbnails/%s', getNumberingPath($this->comment_srl, 3));
 		$thumbnail_file = sprintf('%s%dx%d.%s.jpg', $thumbnail_path, $width, $height, $thumbnail_type);
 		$thumbnail_lockfile = sprintf('%s%dx%d.%s.lock', $thumbnail_path, $width, $height, $thumbnail_type);
 		$thumbnail_url = Context::getRequestUri() . $thumbnail_file;

@@ -10,54 +10,54 @@ class syndicationController extends syndication {
 	var $ping_message = '';
 	
 	function triggerInsertDocument(&$obj) {
-		if($obj->module_srl < 1) return new Object();
+		if($obj->module_srl < 1) return $this->makeObject();
 		
 		$oSyndicationModel = getModel('syndication');
 		$oModuleModel = getModel('module');
 		
-		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
+		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return $this->makeObject();
 		
 		$config = $oModuleModel->getModuleConfig('syndication');
 		
-		if($config->syndication_use != 'Y') return new Object();
+		if($config->syndication_use != 'Y') return $this->makeObject();
 		
 		$target_id = sprintf('%s-%s', $obj->module_srl, $obj->document_srl);
 		$id = $oSyndicationModel->getID('article', $target_id);
 		$this->ping($id, 'article');
 		
-		return new Object();
+		return $this->makeObject();
 	}
 	
 	function triggerUpdateDocument(&$obj) {
-		if($obj->module_srl < 1) return new Object();
+		if($obj->module_srl < 1) return $this->makeObject();
 		
 		$oSyndicationModel = getModel('syndication');
 		$oModuleModel = getModel('module');
 		
-		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
+		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return $this->makeObject();
 		
 		$config = $oModuleModel->getModuleConfig('syndication');
 		
-		if($config->syndication_use != 'Y') return new Object();
+		if($config->syndication_use != 'Y') return $this->makeObject();
 		
 		$target_id = sprintf('%s-%s', $obj->module_srl, $obj->document_srl);
 		$id = $oSyndicationModel->getID('article', $target_id);
 		$this->ping($id, 'article');
 		
-		return new Object();
+		return $this->makeObject();
 	}
 	
 	function triggerDeleteDocument(&$obj) {
-		if($obj->module_srl < 1) return new Object();
+		if($obj->module_srl < 1) return $this->makeObject();
 		
 		$oSyndicationModel = getModel('syndication');
 		$oModuleModel = getModel('module');
 		
-		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
+		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return $this->makeObject();
 		
 		$config = $oModuleModel->getModuleConfig('syndication');
 		
-		if($config->syndication_use != 'Y') return new Object();
+		if($config->syndication_use != 'Y') return $this->makeObject();
 		
 		$this->insertLog($obj->module_srl, $obj->document_srl, $obj->title, $obj->content);
 		
@@ -65,7 +65,7 @@ class syndicationController extends syndication {
 		$id = $oSyndicationModel->getID('article', $target_id);
 		$this->ping($id, 'deleted');
 		
-		return new Object();
+		return $this->makeObject();
 	}
 	
 	// @deplicate
@@ -73,36 +73,36 @@ class syndicationController extends syndication {
 		$oSyndicationModel = getModel('syndication');
 		$oModuleModel = getModel('module');
 		
-		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
+		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return $this->makeObject();
 		
 		$config = $oModuleModel->getModuleConfig('syndication');
 		
-		if($config->syndication_use != 'Y') return new Object();
+		if($config->syndication_use != 'Y') return $this->makeObject();
 		
 		$output = executeQuery('syndication.getExceptModule', $obj);
-		if($output->data->count) return new Object();
+		if($output->data->count) return $this->makeObject();
 		
 		
 		$id = $oSyndicationModel->getID('site', $obj->module_srl);
 		$this->ping($id, 'deleted');
 		
-		return new Object();
+		return $this->makeObject();
 	}
 	
 	function triggerMoveDocumentModule(&$obj) {
-		if($obj->module_srl < 1) return new Object();
+		if($obj->module_srl < 1) return $this->makeObject();
 		
 		$oSyndicationModel = getModel('syndication');
 		$oModuleModel = getModel('module');
 		
-		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
+		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return $this->makeObject();
 		
 		$config = $oModuleModel->getModuleConfig('syndication');
 		
-		if($config->syndication_use != 'Y') return new Object();
+		if($config->syndication_use != 'Y') return $this->makeObject();
 		
 		$arr_document_srl = explode(',', $obj->document_srls);
-		if(!$arr_document_srl) return new Object();
+		if(!$arr_document_srl) return $this->makeObject();
 		
 		foreach($arr_document_srl as $document_srl) {
 			$target_id = sprintf('%s-%s', $obj->module_srl, $document_srl);
@@ -110,18 +110,18 @@ class syndicationController extends syndication {
 			$this->ping($id, 'article');
 		}
 		
-		return new Object();
+		return $this->makeObject();
 	}
 	
 	function triggerMoveDocumentToTrash(&$obj) {
 		$oSyndicationModel = getModel('syndication');
 		$oModuleModel = getModel('module');
 		
-		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
+		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return $this->makeObject();
 		
 		$config = $oModuleModel->getModuleConfig('syndication');
 		
-		if($config->syndication_use != 'Y') return new Object();
+		if($config->syndication_use != 'Y') return $this->makeObject();
 		
 		$this->insertLog($obj->module_srl, $obj->document_srl, '', '');
 		
@@ -129,18 +129,18 @@ class syndicationController extends syndication {
 		$id = $oSyndicationModel->getID('article', $target_id);
 		$this->ping($id, 'deleted');
 		
-		return new Object();
+		return $this->makeObject();
 	}
 	
 	function triggerRestoreTrash(&$obj) {
 		$oSyndicationModel = getModel('syndication');
 		$oModuleModel = getModel('module');
 		
-		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return new Object();
+		if($oSyndicationModel->isExceptedModules($obj->module_srl)) return $this->makeObject();
 		
 		$config = $oModuleModel->getModuleConfig('syndication');
 		
-		if($config->syndication_use != 'Y') return new Object();
+		if($config->syndication_use != 'Y') return $this->makeObject();
 		
 		// 신디케이션 삭제 로그 제거
 		$this->deleteLog($obj->module_srl, $obj->document_srl);
@@ -149,7 +149,7 @@ class syndicationController extends syndication {
 		$id = $oSyndicationModel->getID('article', $target_id);
 		$this->ping($id, 'article');
 		
-		return new Object();
+		return $this->makeObject();
 	}
 	
 	function insertLog($module_srl, $document_srl, $title = null, $summary = null) {

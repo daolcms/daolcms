@@ -615,6 +615,7 @@ class moduleModel extends module {
 					$standalone = $action->attrs->standalone == 'true' ? 'true' : 'false';
 					$ruleset = $action->attrs->ruleset ? $action->attrs->ruleset : '';
 					$method = $action->attrs->method ? $action->attrs->method : '';
+					$check_csrf = $action->attrs->check_csrf == 'false' ? 'false' : 'true';
 					
 					$index = $action->attrs->index;
 					$admin_index = $action->attrs->admin_index;
@@ -628,6 +629,7 @@ class moduleModel extends module {
 					$info->action->{$name}->standalone = $standalone == 'true' ? true : false;
 					$info->action->{$name}->ruleset = $ruleset;
 					$info->action->{$name}->method = $method;
+					$info->action->{$name}->check_csrf = $check_csrf;
 					if($action->attrs->menu_name) {
 						if($menu_index == 'true') {
 							$info->menu->{$action->attrs->menu_name}->index = $name;
@@ -648,6 +650,7 @@ class moduleModel extends module {
 					$buff[] = sprintf('$info->action->%s->standalone=\'%s\';', $name, $standalone);
 					$buff[] = sprintf('$info->action->%s->ruleset=\'%s\';', $name, $ruleset);
 					$buff[] = sprintf('$info->action->%s->method=\'%s\';', $name, $method);
+					$buff[] = sprintf('$info->action->%s->check_csrf=\'%s\';', $name, $check_csrf);
 					
 					if($index == 'true') {
 						$default_index_act = $name;
@@ -687,22 +690,32 @@ class moduleModel extends module {
 	/**
 	 * @brief Get a list of skins for the module
 	 * Return file analysis of skin and skin.xml
-	 **/
-	function getSkins($path, $dir = 'skins') {
+	 */
+	function getSkins($path, $dir = 'skins'){
+		if(substr($path, -1) == '/'){
+			$path = substr($path, 0, -1);
+		}
+
 		$skin_path = sprintf("%s/%s/", $path, $dir);
 		$list = FileHandler::readDir($skin_path);
 		if(!count($list)) return;
-		
+
 		natcasesort($list);
-		
-		foreach($list as $skin_name) {
+
+		foreach($list as $skin_name){
+			if(!is_dir($skin_path . $skin_name)){
+				continue;
+			}
 			unset($skin_info);
 			$skin_info = $this->loadSkinInfo($path, $skin_name, $dir);
-			if(!$skin_info) $skin_info->title = $skin_name;
-			
+			if(!$skin_info){
+				$skin_info = new stdClass();
+				$skin_info->title = $skin_name;
+			}
+
 			$skin_list[$skin_name] = $skin_info;
 		}
-		
+
 		return $skin_list;
 	}
 	
@@ -1498,7 +1511,7 @@ class moduleModel extends module {
 	
 	function getFileBoxListHtml() {
 		$logged_info = Context::get('logged_info');
-		if($logged_info->is_admin != 'Y' && !$logged_info->is_site_admin) return new Object(-1, 'msg_not_permitted');
+		if($logged_info->is_admin != 'Y' && !$logged_info->is_site_admin) return new BaseObject(-1, 'msg_not_permitted');
 		$link = parse_url($_SERVER["HTTP_REFERER"]);
 		$link_params = explode('&', $link['query']);
 		foreach($link_params as $param) {

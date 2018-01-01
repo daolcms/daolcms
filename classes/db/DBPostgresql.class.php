@@ -477,11 +477,11 @@ class DBPostgresql extends DB {
 	 */
 	function getSelectSql($query) {
 		$select = $query->getSelectString();
-		if($select == '') return new Object(-1, "Invalid query");
+		if($select == '') return new BaseObject(-1, "Invalid query");
 		$select = 'SELECT ' . $select;
 		
 		$from = $query->getFromString();
-		if($from == '') return new Object(-1, "Invalid query");
+		if($from == '') return new BaseObject(-1, "Invalid query");
 		$from = ' FROM ' . $from;
 		
 		$where = $query->getWhereString();
@@ -519,7 +519,7 @@ class DBPostgresql extends DB {
 		$result = $this->_query($query, $connection);
 		if($this->isError()) {
 			if($limit && $output->limit->isPageHandler()) {
-				$buff = new Object ();
+				$buff = new BaseObject ();
 				$buff->total_count = 0;
 				$buff->total_page = 0;
 				$buff->page = 1;
@@ -557,7 +557,7 @@ class DBPostgresql extends DB {
 			$virtual_no = $total_count - ($limit->page - 1) * $limit->list_count;
 			$data = $this->_fetch($result, $virtual_no);
 			
-			$buff = new Object ();
+			$buff = new BaseObject ();
 			$buff->total_count = $total_count;
 			$buff->total_page = $total_page;
 			$buff->page = $limit->page->getValue();
@@ -565,7 +565,7 @@ class DBPostgresql extends DB {
 			$buff->page_navigation = new PageHandler($total_count, $total_page, $limit->page->getValue(), $limit->page_count);
 		} else {
 			$data = $this->_fetch($result);
-			$buff = new Object ();
+			$buff = new BaseObject ();
 			$buff->data = $data;
 		}
 		

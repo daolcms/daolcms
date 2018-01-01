@@ -1,4 +1,4 @@
-<!--#include("header.html")-->
+<include target="header.html" />
 
 <form action="./" method="post">
 	<input type="hidden" name="module" value="document" />
@@ -6,12 +6,27 @@
 	<div class="table">
 		<table width="100%" border="1" cellspacing="0">
 		<tr>
-			<th scope="col">{$lang->thumbnail_type}</th>
+			<th scope="col">{$lang->cmd_pc_icon_setting}</th>
 		</tr>
 		<tr>
 			<td>
-				<input type="radio" name="thumbnail_type" value="crop" <!--@if($config->thumbnail_type != 'ratio')-->checked="checked"<!--@end-->/> {$lang->thumbnail_crop} <br />
-				<input type="radio" name="thumbnail_type" value="ratio" <!--@if($config->thumbnail_type == 'ratio')-->checked="checked"<!--@end-->/> {$lang->thumbnail_ratio}
+				<select name="icons" id="icons">
+					<option value="">{$lang->notuse}</option>
+					<option loop="$pcIconSkinList => $key, $val" value="{$val->title}" selected="selected"|cond="$config->icons == $val->title">{$val->title}</option>
+				</select>
+				<p>{$lang->about_cmd_pc_icon_setting}</p>
+			</td>
+		</tr>
+		<tr>
+			<th scope="col">{$lang->cmd_mobile_icon_setting}</th>
+		</tr>
+		<tr>
+			<td>
+				<select name="micons" id="micons">
+					<option value="">{$lang->notuse}</option>
+					<option loop="$pcIconSkinList => $key, $val" value="{$val->title}" selected="selected"|cond="$config->micons == $val->title">{$val->title}</option>
+				</select>
+				<p>{$lang->about_cmd_mobile_icon_setting}</p>
 			</td>
 		</tr>
 		</table>

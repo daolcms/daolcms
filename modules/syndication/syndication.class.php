@@ -85,4 +85,8 @@ class syndication extends ModuleObject {
 		}
 		return TRUE;
 	}
+	
+	public function makeObject($code = 0, $message = 'success'){
+		return class_exists('BaseObject') ? new BaseObject($code, $message) : new Object($code, $message);
+	}
 }

@@ -29,7 +29,7 @@ class integration_searchView extends integration_search {
 	/**
 	 * Search Result
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function IS() {
 		$oFile = &getClass('file');
@@ -37,7 +37,7 @@ class integration_searchView extends integration_search {
 		$logged_info = Context::get('logged_info');
 		
 		// Check permissions
-		if(!$this->grant->access) return new Object(-1, 'msg_not_permitted');
+		if(!$this->grant->access) return new BaseObject(-1, 'msg_not_permitted');
 		
 		$config = $oModuleModel->getModuleConfig('integration_search');
 		if(!$config->skin) {

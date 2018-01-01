@@ -64,7 +64,7 @@ class autoinstall extends ModuleObject {
 	/**
 	 * For additional tasks required when installing
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function moduleInstall() {
 		$oModuleController = &getController('module');
@@ -106,7 +106,7 @@ class autoinstall extends ModuleObject {
 	/**
 	 * Execute update
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function moduleUpdate() {
 		$oDB =& DB::getInstance();
@@ -137,12 +137,12 @@ class autoinstall extends ModuleObject {
 			$oModuleController->insertModuleConfig('autoinstall', $config);
 		}
 		
-		return new Object(0, 'success_updated');
+		return new BaseObject(0, 'success_updated');
 	}
 	
 	/**
 	 * Re-generate the cache file
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function recompileCache() {
 	}

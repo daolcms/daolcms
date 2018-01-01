@@ -710,7 +710,7 @@ class DBFireBird extends DB {
 	function queryError($queryObject) {
 		$limit = $queryObject->getLimit();
 		if($limit && $limit->isPageHandler()) {
-			$buff = new Object ();
+			$buff = new BaseObject ();
 			$buff->total_count = 0;
 			$buff->total_page = 0;
 			$buff->page = 1;
@@ -753,7 +753,7 @@ class DBFireBird extends DB {
 			if($page > $total_page) {
 				// If requested page is bigger than total number of pages, return empty list
 				
-				$buff = new Object ();
+				$buff = new BaseObject ();
 				$buff->total_count = $total_count;
 				$buff->total_page = $total_page;
 				$buff->page = $page;
@@ -780,7 +780,7 @@ class DBFireBird extends DB {
 			if(!$this->transaction_started)
 				ibase_commit($connection);
 			
-			$buff = new Object ();
+			$buff = new BaseObject ();
 			$buff->total_count = $total_count;
 			$buff->total_page = $total_page;
 			$buff->page = $page;
@@ -788,7 +788,7 @@ class DBFireBird extends DB {
 			$buff->page_navigation = new PageHandler($total_count, $total_page, $page, $page_count);
 		} else {
 			$data = $this->_fetch($result);
-			$buff = new Object ();
+			$buff = new BaseObject ();
 			$buff->data = $data;
 		}
 		return $buff;
@@ -812,7 +812,7 @@ class DBFireBird extends DB {
 		$select = $query->getSelectString($with_values);
 		
 		if($select == '')
-			return new Object(-1, "Invalid query");
+			return new BaseObject(-1, "Invalid query");
 		
 		if($limit && $limit->isPageHandler())
 			$select = $limit . ' ' . $select;
@@ -820,7 +820,7 @@ class DBFireBird extends DB {
 			$select = 'SELECT ' . $select;
 		$from = $query->getFromString($with_values);
 		if($from == '')
-			return new Object(-1, "Invalid query");
+			return new BaseObject(-1, "Invalid query");
 		$from = ' FROM ' . $from;
 		
 		$where = $query->getWhereString($with_values);
@@ -842,7 +842,7 @@ class DBFireBird extends DB {
 		$sql = 'DELETE ';
 		
 		$from = $query->getFromString($with_values);
-		if($from == '') return new Object(-1, "Invalid query");
+		if($from == '') return new BaseObject(-1, "Invalid query");
 		
 		$sql .= ' FROM ' . $from;
 		

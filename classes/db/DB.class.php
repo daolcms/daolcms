@@ -147,13 +147,13 @@ class DB {
 	 */
 	function getInstance($db_type = NULL) {
 		if(!$db_type) $db_type = Context::getDBType();
-		if(!$db_type && Context::isInstalled()) return new Object(-1, 'msg_db_not_setted');
+		if(!$db_type && Context::isInstalled()) return new BaseObject(-1, 'msg_db_not_setted');
 		
 		if(!isset($GLOBALS['__DB__'])) $GLOBALS['__DB__'] = array();
 		if(!isset($GLOBALS['__DB__'][$db_type])) {
 			$class_name = 'DB' . ucfirst($db_type);
 			$class_file = _DAOL_PATH_ . "classes/db/$class_name.class.php";
-			if(!file_exists($class_file)) return new Object(-1, 'msg_db_not_setted');
+			if(!file_exists($class_file)) return new BaseObject(-1, 'msg_db_not_setted');
 			
 			// get a singletone instance of the database driver class
 			require_once($class_file);
@@ -392,7 +392,7 @@ class DB {
 	 */
 	function getError() {
 		$this->errstr = Context::convertEncodingStr($this->errstr);
-		return new Object($this->errno, $this->errstr);
+		return new BaseObject($this->errno, $this->errstr);
 	}
 	
 	/**
@@ -407,7 +407,7 @@ class DB {
 	function executeQuery($query_id, $args = NULL, $arg_columns = NULL, $type = NULL) {
 		static $cache_file = array();
 		
-		if(!$query_id) return new Object(-1, 'msg_invalid_queryid');
+		if(!$query_id) return new BaseObject(-1, 'msg_invalid_queryid');
 		if(!$this->db_type) return;
 		
 		$this->actDBClassStart();
@@ -432,13 +432,13 @@ class DB {
 			}
 			if(!$target || !$module || !$id) {
 				$this->actDBClassFinish();
-				return new Object(-1, 'msg_invalid_queryid');
+				return new BaseObject(-1, 'msg_invalid_queryid');
 			}
 			
 			$xml_file = sprintf('%s%s/%s/queries/%s.xml', _DAOL_PATH_, $target, $module, $id);
 			if(!file_exists($xml_file)) {
 				$this->actDBClassFinish();
-				return new Object(-1, 'msg_invalid_queryid');
+				return new BaseObject(-1, 'msg_invalid_queryid');
 			}
 			
 			// look for cache file
@@ -490,7 +490,7 @@ class DB {
 		
 		if(!in_array($type, array('master', 'slave'))) $type = 'slave';
 		
-		if(!file_exists($cache_file)) return new Object(-1, 'msg_invalid_queryid');
+		if(!file_exists($cache_file)) return new BaseObject(-1, 'msg_invalid_queryid');
 		
 		if($source_args) $args = @clone($source_args);
 		
@@ -522,7 +522,7 @@ class DB {
 		}
 		
 		if($this->isError()) $output = $this->getError();
-		else if(!is_a($output, 'Object') && !is_subclass_of($output, 'Object')) $output = new Object();
+		else if(!is_a($output, 'Object') && !is_subclass_of($output, 'Object')) $output = new BaseObject();
 		$output->add('_query', $this->query);
 		$output->add('_elapsed_time', sprintf("%0.5f", $this->elapsed_time));
 		
@@ -646,11 +646,11 @@ class DB {
 	 */
 	function getSelectSql($query, $with_values = TRUE) {
 		$select = $query->getSelectString($with_values);
-		if($select == '') return new Object(-1, "Invalid query");
+		if($select == '') return new BaseObject(-1, "Invalid query");
 		$select = 'SELECT ' . $select;
 		
 		$from = $query->getFromString($with_values);
-		if($from == '') return new Object(-1, "Invalid query");
+		if($from == '') return new BaseObject(-1, "Invalid query");
 		$from = ' FROM ' . $from;
 		
 		$where = $query->getWhereString($with_values);
@@ -722,7 +722,7 @@ class DB {
 		$sql .= $tables[0]->getAlias();
 		
 		$from = $query->getFromString($with_values);
-		if($from == '') return new Object(-1, "Invalid query");
+		if($from == '') return new BaseObject(-1, "Invalid query");
 		$sql .= ' FROM ' . $from;
 		
 		$where = $query->getWhereString($with_values);
@@ -740,10 +740,10 @@ class DB {
 	 */
 	function getUpdateSql($query, $with_values = TRUE, $with_priority = FALSE) {
 		$columnsList = $query->getUpdateString($with_values);
-		if($columnsList == '') return new Object(-1, "Invalid query");
+		if($columnsList == '') return new BaseObject(-1, "Invalid query");
 		
 		$tables = $query->getFromString($with_values);
-		if($tables == '') return new Object(-1, "Invalid query");
+		if($tables == '') return new BaseObject(-1, "Invalid query");
 		
 		$where = $query->getWhereString($with_values);
 		if($where != '') $where = ' WHERE ' . $where;

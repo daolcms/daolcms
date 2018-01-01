@@ -60,7 +60,7 @@ class fileAdminModel extends file {
 	 *
 	 * @param object $obj        Search options
 	 * @param array  $columnList Column list to get from DB
-	 * @return Object Object contains query result
+	 * @return BaseObject Object contains query result
 	 **/
 	function getFileList($obj, $columnList = array()) {
 		$args = new stdClass();

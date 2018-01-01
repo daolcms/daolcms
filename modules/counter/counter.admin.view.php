@@ -20,7 +20,7 @@ class counterAdminView extends counter {
 	/**
 	 * Admin page
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function dispCounterAdminIndex() {
 		// set today's if no date is given

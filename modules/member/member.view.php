@@ -442,7 +442,7 @@ class memberView extends member {
 	 * @Deplicated - instead Document View - dispTempSavedList method use
 	 **/
 	function dispSavedDocumentList() {
-		return new Object(0, 'Deplicated method');
+		return new BaseObject(0, 'Deplicated method');
 	}
 	
 	/**
@@ -469,7 +469,7 @@ class memberView extends member {
 		$temp_password = $_SESSION['xe_temp_password_' . $user_id];
 		unset($_SESSION['xe_temp_password_' . $user_id]);
 		
-		if(!$user_id || !$temp_password) return new Object(-1, 'msg_invaild_request');
+		if(!$user_id || !$temp_password) return new BaseObject(-1, 'msg_invaild_request');
 		
 		Context::set('temp_password', $temp_password);
 		

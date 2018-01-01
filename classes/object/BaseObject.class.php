@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Every modules inherits from Object class. It includes error, message, and other variables for communicatin purpose.
+ * Every modules inherits from BaseObject class. It includes error, message, and other variables for communicatin purpose.
  *
  * @author NAVER (developers@xpressengine.com)
  */
-class Object {
+class BaseObject {
 	
 	/**
 	 * Error code. If `0`, it is not an error.
@@ -38,7 +38,7 @@ class Object {
 	 * @param string $message Error message
 	 * @return void
 	 */
-	function Object($error = 0, $message = 'success') {
+	function __construct($error = 0, $message = 'success') {
 		$this->setError($error);
 		$this->setMessage($message);
 	}
@@ -119,7 +119,7 @@ class Object {
 	/**
 	 * Method to set multiple key/value pairs as an additional variables
 	 *
-	 * @param Object|array $object Either object or array containg key/value pairs to be added
+	 * @param BaseObject|array $object Either object or array containg key/value pairs to be added
 	 * @return void
 	 */
 	function adds($object) {
@@ -147,7 +147,7 @@ class Object {
 	/**
 	 * Method to retrieve an object containing a key/value paris
 	 *
-	 * @return Object Returns an object containing key/value pairs
+	 * @return BaseObject Returns an object containing key/value pairs
 	 */
 	function gets() {
 		$num_args = func_num_args();
@@ -171,7 +171,7 @@ class Object {
 	/**
 	 * Method to retrieve an object of key/value pairs
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function getObjectVars() {
 		$output = new stdClass();
@@ -200,7 +200,10 @@ class Object {
 	function toBoolean() {
 		return $this->toBool();
 	}
-	
 }
-/* End of file Object.class.php */
-/* Location: ./classes/object/Object.class.php */
+
+if(version_compare(PHP_VERSION, '7.2', '<') && !class_exists('Object', false)){
+	class_alias('BaseObject', 'Object');
+}
+/* End of file BaseObject.class.php */
+/* Location: ./classes/object/BaseObject.class.php */

@@ -13,10 +13,10 @@ require_once(_DAOL_PATH_ . 'modules/trash/model/TrashVO.php');
 class trash extends ModuleObject {
 	/**
 	 * Implement if additional tasks are necessary when installing
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function moduleInstall() {
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -32,13 +32,13 @@ class trash extends ModuleObject {
 	
 	/**
 	 * Execute update
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function moduleUpdate() {
 		//$oDB = &DB::getInstance();
 		//$oModuleModel = &getModel('module');
 		
-		return new Object(0, 'success_updated');
+		return new BaseObject(0, 'success_updated');
 		
 	}
 }

@@ -871,14 +871,11 @@ class Context {
 	 */
 	function convertEncoding($source_obj) {
 		$charset_list = array(
-			'UTF-8', 'EUC-KR', 'CP949', 'ISO8859-1', 'EUC-JP', 'SHIFT_JIS', 'CP932',
-			'EUC-CN', 'HZ', 'GBK', 'GB18030', 'EUC-TW', 'BIG5', 'CP950', 'BIG5-HKSCS',
-			'ISO2022-CN', 'ISO2022-CN-EXT', 'ISO2022-JP', 'ISO2022-JP-2', 'ISO2022-JP-1',
-			'ISO8859-6', 'ISO8859-8', 'JOHAB', 'ISO2022-KR', 'CP1255', 'CP1256', 'CP862',
-			'ASCII', 'ISO8859-1', 'ISO8850-2', 'ISO8850-3', 'ISO8850-4', 'ISO8850-5',
-			'ISO8850-7', 'ISO8850-9', 'ISO8850-10', 'ISO8850-13', 'ISO8850-14',
-			'ISO8850-15', 'ISO8850-16', 'CP1250', 'CP1251', 'CP1252', 'CP1253', 'CP1254',
-			'CP1257', 'CP850', 'CP866',
+			'UTF-8', 'EUC-KR', 'CP949', 'ISO8859-1', 'EUC-JP', 'SHIFT_JIS',
+			'CP932', 'EUC-CN', 'HZ', 'GBK', 'GB18030', 'EUC-TW', 'BIG5',
+			'CP950', 'BIG5-HKSCS', 'ISO8859-6', 'ISO8859-8', 'JOHAB', 'CP1255',
+			'CP1256', 'CP862', 'ASCII', 'ISO8859-1', 'CP1250', 'CP1251',
+			'CP1252', 'CP1253', 'CP1254', 'CP1257', 'CP850', 'CP866'
 		);
 		
 		$obj = clone($source_obj);
@@ -1464,7 +1461,7 @@ class Context {
 	 * Return after removing an argument on the requested URL
 	 *
 	 * @param string $ssl_mode SSL mode
-	 * @param string $domain   Domain
+	 * @param string $domain Domain
 	 * @retrun string converted URL
 	 */
 	function getRequestUri($ssl_mode = FOLLOW_REQUEST_SSL, $domain = null) {
@@ -1524,9 +1521,9 @@ class Context {
 	/**
 	 * Set a context value with a key
 	 *
-	 * @param string $key             Key
-	 * @param string $val             Value
-	 * @param mixed  $set_to_get_vars If not false, Set to get vars.
+	 * @param string $key Key
+	 * @param mixed $val Value
+	 * @param mixed $set_to_get_vars If not false, Set to get vars.
 	 * @return void
 	 */
 	function set($key, $val, $set_to_get_vars = 0) {
@@ -1583,7 +1580,7 @@ class Context {
 	/**
 	 * Return values from the GET/POST/XMLRPC
 	 *
-	 * @return Object Request variables.
+	 * @return BaseObject Request variables.
 	 */
 	function getRequestVars() {
 		$self = self::getInstance();

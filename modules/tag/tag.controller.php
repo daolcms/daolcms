@@ -17,12 +17,12 @@ class tagController extends tag {
 	 * @brief , (Comma) to clean up the tags attached to the trigger
 	 **/
 	function triggerArrangeTag(&$obj) {
-		if(!$obj->tags) return new Object();
+		if(!$obj->tags) return new BaseObject();
 		// tags by variable
 		$tag_list = explode(',', $obj->tags);
 		$tag_count = count($tag_list);
 		$tag_list = array_unique($tag_list);
-		if(!count($tag_list)) return new Object();
+		if(!count($tag_list)) return new BaseObject();
 		
 		foreach($tag_list as $tag) {
 			if(!trim($tag)) continue;
@@ -30,7 +30,7 @@ class tagController extends tag {
 		}
 		if(!count($arranged_tag_list)) $obj->tags = null;
 		else $obj->tags = implode(',', $arranged_tag_list);
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -41,7 +41,7 @@ class tagController extends tag {
 		$module_srl = $obj->module_srl;
 		$document_srl = $obj->document_srl;
 		$tags = $obj->tags;
-		if(!$document_srl) return new Object();
+		if(!$document_srl) return new BaseObject();
 		// Remove all tags that article
 		$output = $this->triggerDeleteTag($obj);
 		if(!$output->toBool()) return $output;
@@ -59,7 +59,7 @@ class tagController extends tag {
 			if(!$output->toBool()) return $output;
 		}
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -68,7 +68,7 @@ class tagController extends tag {
 	 **/
 	function triggerDeleteTag(&$obj) {
 		$document_srl = $obj->document_srl;
-		if(!$document_srl) return new Object();
+		if(!$document_srl) return new BaseObject();
 		
 		$args->document_srl = $document_srl;
 		return executeQuery('tag.deleteTag', $args);
@@ -79,7 +79,7 @@ class tagController extends tag {
 	 **/
 	function triggerDeleteModuleTags(&$obj) {
 		$module_srl = $obj->module_srl;
-		if(!$module_srl) return new Object();
+		if(!$module_srl) return new BaseObject();
 		
 		$oTagController = &getAdminController('tag');
 		return $oTagController->deleteModuleTags($module_srl);

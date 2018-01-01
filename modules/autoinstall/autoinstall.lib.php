@@ -68,7 +68,7 @@ class ModuleInstaller {
 	/**
 	 * Uninstall
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function uninstall() {
 		$oModel =& getModel('autoinstall');
@@ -128,14 +128,14 @@ class ModuleInstaller {
 	 *
 	 * Call module's moduleUninstall() and drop all tables related module
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function uninstallModule() {
 		$path_array = explode("/", $this->package->path);
 		$target_name = array_pop($path_array);
 		$oModule =& getModule($target_name, "class");
-		if(!$oModule) return new Object(-1, 'msg_invalid_request');
-		if(!method_exists($oModule, "moduleUninstall")) return new Object(-1, 'msg_invalid_request');
+		if(!$oModule) return new BaseObject(-1, 'msg_invalid_request');
+		if(!method_exists($oModule, "moduleUninstall")) return new BaseObject(-1, 'msg_invalid_request');
 		
 		$output = $oModule->moduleUninstall();
 		if(is_subclass_of($output, 'Object') && !$output->toBool()) return $output;
@@ -150,7 +150,7 @@ class ModuleInstaller {
 				$oDB->dropTable($filename);
 			}
 		}
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -189,7 +189,7 @@ class ModuleInstaller {
 	 *
 	 * Download file and install module
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function install() {
 		$this->_download();
@@ -202,7 +202,7 @@ class ModuleInstaller {
 		$this->installModule();
 		
 		FileHandler::removeDir($this->temp_dir);
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -231,7 +231,7 @@ class ModuleInstaller {
 	 * Remove directory
 	 *
 	 * @param string $path Path to remove
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _removeDir($path) {
 		$real_path = FileHandler::getRealPath($path);
@@ -295,14 +295,14 @@ class SFTPModuleInstaller extends ModuleInstaller {
 	/**
 	 * Connect to SFTP
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _connect() {
 		if(!function_exists('ssh2_connect')) {
-			return new Object(-1, 'msg_sftp_not_supported');
+			return new BaseObject(-1, 'msg_sftp_not_supported');
 		}
 		
-		if(!$this->ftp_info->ftp_user || !$this->ftp_info->sftp || $this->ftp_info->sftp != 'Y') return new Object(-1, 'msg_ftp_invalid_auth_info');
+		if(!$this->ftp_info->ftp_user || !$this->ftp_info->sftp || $this->ftp_info->sftp != 'Y') return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 		
 		if($this->ftp_info->ftp_host) {
 			$ftp_host = $this->ftp_info->ftp_host;
@@ -311,11 +311,11 @@ class SFTPModuleInstaller extends ModuleInstaller {
 		}
 		$this->connection = ssh2_connect($ftp_host, $this->ftp_info->ftp_port);
 		if(!ssh2_auth_password($this->connection, $this->ftp_info->ftp_user, $this->ftp_password)) {
-			return new Object(-1, 'msg_ftp_invalid_auth_info');
+			return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 		}
 		$_SESSION['ftp_password'] = $this->ftp_password;
 		$this->sftp = ssh2_sftp($this->connection);
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -330,42 +330,42 @@ class SFTPModuleInstaller extends ModuleInstaller {
 	 * Remove file
 	 *
 	 * @param string $path Path to remove
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _removeFile($path) {
 		if(substr($path, 0, 2) == "./") $path = substr($path, 2);
 		$target_path = $this->ftp_info->ftp_root_path . $path;
 		
 		if(!@ssh2_sftp_unlink($this->sftp, $target_path)) {
-			return new Object(-1, sprintf(Context::getLang('msg_delete_file_failed'), $path));
+			return new BaseObject(-1, sprintf(Context::getLang('msg_delete_file_failed'), $path));
 		}
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
 	 * Remove Directory
 	 *
 	 * @param string $path Path to remove
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _removeDir_real($path) {
 		if(substr($path, 0, 2) == "./") $path = substr($path, 2);
 		$target_path = $this->ftp_info->ftp_root_path . $path;
 		
 		if(!@ssh2_sftp_rmdir($this->sftp, $target_path)) {
-			return new Object(-1, sprintf(Context::getLang('msg_delete_dir_failed'), $path));
+			return new BaseObject(-1, sprintf(Context::getLang('msg_delete_dir_failed'), $path));
 		}
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
 	 * Copy directory
 	 *
 	 * @param array $file_list File list to copy
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _copyDir(&$file_list) {
-		if(!$this->ftp_password) return new Object(-1, 'msg_ftp_password_input');
+		if(!$this->ftp_password) return new BaseObject(-1, 'msg_ftp_password_input');
 		
 		$output = $this->_connect();
 		if(!$output->toBool()) return $output;
@@ -387,7 +387,7 @@ class SFTPModuleInstaller extends ModuleInstaller {
 				ssh2_scp_send($this->connection, FileHandler::getRealPath($this->download_path . "/" . $org_file), $target_dir . "/" . $file);
 			}
 		}
-		return new Object();
+		return new BaseObject();
 	}
 }
 
@@ -422,7 +422,7 @@ class PHPFTPModuleInstaller extends ModuleInstaller {
 	/**
 	 * Connect to FTP
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _connect() {
 		if($this->ftp_info->ftp_host) {
@@ -433,52 +433,52 @@ class PHPFTPModuleInstaller extends ModuleInstaller {
 		
 		$this->connection = ftp_connect($ftp_host, $this->ftp_info->ftp_port);
 		if(!$this->connection) {
-			return new Object(-1, sprintf(Context::getLang('msg_ftp_not_connected'), $ftp_host));
+			return new BaseObject(-1, sprintf(Context::getLang('msg_ftp_not_connected'), $ftp_host));
 		}
 		
 		$login_result = @ftp_login($this->connection, $this->ftp_info->ftp_user, $this->ftp_password);
 		if(!$login_result) {
 			$this->_close();
-			return new Object(-1, 'msg_ftp_invalid_auth_info');
+			return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 		}
 		
 		$_SESSION['ftp_password'] = $this->ftp_password;
 		if($this->ftp_info->ftp_pasv != "N") {
 			ftp_pasv($this->connection, true);
 		}
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
 	 * Remove file
 	 *
 	 * @param string $path Path to remove
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _removeFile($path) {
 		if(substr($path, 0, 2) == "./") $path = substr($path, 2);
 		$target_path = $this->ftp_info->ftp_root_path . $path;
 		
 		if(!@ftp_delete($this->connection, $target_path)) {
-			return new Object(-1, "failed to delete file " . $path);
+			return new BaseObject(-1, "failed to delete file " . $path);
 		}
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
 	 * Remove directory
 	 *
 	 * @param string $path Path to remove
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _removeDir_real($path) {
 		if(substr($path, 0, 2) == "./") $path = substr($path, 2);
 		$target_path = $this->ftp_info->ftp_root_path . $path;
 		
 		if(!@ftp_rmdir($this->connection, $target_path)) {
-			return new Object(-1, "failed to delete directory " . $path);
+			return new BaseObject(-1, "failed to delete directory " . $path);
 		}
-		return new Object();
+		return new BaseObject();
 	}
 	
 	
@@ -495,10 +495,10 @@ class PHPFTPModuleInstaller extends ModuleInstaller {
 	 * Copy directory
 	 *
 	 * @param array $file_list File list to copy
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _copyDir(&$file_list) {
-		if(!$this->ftp_password) return new Object(-1, 'msg_ftp_password_input');
+		if(!$this->ftp_password) return new BaseObject(-1, 'msg_ftp_password_input');
 		
 		$output = $this->_connect();
 		if(!$output->toBool()) return $output;
@@ -528,29 +528,29 @@ class PHPFTPModuleInstaller extends ModuleInstaller {
 					$ftp_path .= $path_list[$i] . "/";
 					if(!file_exists(FileHandler::getRealPath($real_path))) {
 						if(!@ftp_mkdir($this->connection, $ftp_path)) {
-							return new Object(-1, "msg_make_directory_failed");
+							return new BaseObject(-1, "msg_make_directory_failed");
 						}
 						
 						if(strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
 							if(function_exists('ftp_chmod')) {
 								if(!ftp_chmod($this->connection, 0755, $ftp_path)) {
-									return new Object(-1, "msg_permission_adjust_failed");
+									return new BaseObject(-1, "msg_permission_adjust_failed");
 								}
 							} else {
 								if(!ftp_site($this->connection, "CHMOD 755 " . $ftp_path)) {
-									return new Object(-1, "msg_permission_adjust_failed");
+									return new BaseObject(-1, "msg_permission_adjust_failed");
 								}
 							}
 						}
 					}
 				}
 				if(!ftp_put($this->connection, $target_dir . '/' . $file, FileHandler::getRealPath($this->download_path . "/" . $org_file), FTP_BINARY)) {
-					return new Object(-1, "msg_ftp_upload_failed");
+					return new BaseObject(-1, "msg_ftp_upload_failed");
 				}
 			}
 		}
 		$this->_close();
-		return new Object();
+		return new BaseObject();
 	}
 }
 
@@ -584,7 +584,7 @@ class FTPModuleInstaller extends ModuleInstaller {
 	/**
 	 * Connect to FTP
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _connect() {
 		if($this->ftp_info->ftp_host) {
@@ -595,45 +595,45 @@ class FTPModuleInstaller extends ModuleInstaller {
 		
 		$this->oFtp = new ftp();
 		if(!$this->oFtp->ftp_connect($ftp_host, $this->ftp_info->ftp_port)) {
-			return new Object(-1, sprintf(Context::getLang('msg_ftp_not_connected'), $ftp_host));
+			return new BaseObject(-1, sprintf(Context::getLang('msg_ftp_not_connected'), $ftp_host));
 		}
 		if(!$this->oFtp->ftp_login($this->ftp_info->ftp_user, $this->ftp_password)) {
 			$this->_close();
-			return new Object(-1, 'msg_ftp_invalid_auth_info');
+			return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 		}
 		$_SESSION['ftp_password'] = $this->ftp_password;
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
 	 * Remove file
 	 *
 	 * @param string $path Path to remove
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _removeFile($path) {
 		if(substr($path, 0, 2) == "./") $path = substr($path, 2);
 		$target_path = $this->ftp_info->ftp_root_path . $path;
 		
 		if(!$this->oFtp->ftp_delete($target_path)) {
-			return new Object(-1, sprintf(Context::getLang('msg_delete_file_failed'), $path));
+			return new BaseObject(-1, sprintf(Context::getLang('msg_delete_file_failed'), $path));
 		}
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
 	 * Remove directory
 	 * @param string $path Path to remove
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _removeDir_real($path) {
 		if(substr($path, 0, 2) == "./") $path = substr($path, 2);
 		$target_path = $this->ftp_info->ftp_root_path . $path;
 		
 		if(!$this->oFtp->ftp_rmdir($target_path)) {
-			return new Object(-1, sprintf(Context::getLang('msg_delete_dir_failed'), $path));
+			return new BaseObject(-1, sprintf(Context::getLang('msg_delete_dir_failed'), $path));
 		}
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -649,10 +649,10 @@ class FTPModuleInstaller extends ModuleInstaller {
 	 * Copy directory
 	 *
 	 * @param array $file_list File list to copy
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _copyDir(&$file_list) {
-		if(!$this->ftp_password) return new Object(-1, 'msg_ftp_password_input');
+		if(!$this->ftp_password) return new BaseObject(-1, 'msg_ftp_password_input');
 		
 		$output = $this->_connect();
 		if(!$output->toBool()) return $output;
@@ -687,7 +687,7 @@ class FTPModuleInstaller extends ModuleInstaller {
 		
 		$this->_close();
 		
-		return new Object();
+		return new BaseObject();
 	}
 }
 
@@ -708,17 +708,17 @@ class DirectModuleInstaller extends ModuleInstaller {
 	/**
 	 * empty
 	 *
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _connect() {
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
 	 * Remove file
 	 *
 	 * @param string $path Path to remove
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _removeFile($path) {
 		if(substr($path, 0, 2) == "./") {
@@ -727,15 +727,15 @@ class DirectModuleInstaller extends ModuleInstaller {
 		$target_path = FileHandler::getRealPath($path);
 		
 		if(!FileHandler::removeFile($target_path)) {
-			return new Object(-1, sprintf(Context::getLang('msg_delete_file_failed'), $path));
+			return new BaseObject(-1, sprintf(Context::getLang('msg_delete_file_failed'), $path));
 		}
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
 	 * Remove directory
 	 * @param string $path Path to remove
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _removeDir_real($path) {
 		if(substr($path, 0, 2) == "./") {
@@ -745,7 +745,7 @@ class DirectModuleInstaller extends ModuleInstaller {
 		
 		FileHandler::removeDir($target_path);
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 	/**
@@ -760,7 +760,7 @@ class DirectModuleInstaller extends ModuleInstaller {
 	 * Copy directory
 	 *
 	 * @param array $file_list File list to copy
-	 * @return Object
+	 * @return BaseObject
 	 */
 	function _copyDir(&$file_list) {
 		$output = $this->_connect();
@@ -794,7 +794,7 @@ class DirectModuleInstaller extends ModuleInstaller {
 		
 		$this->_close();
 		
-		return new Object();
+		return new BaseObject();
 	}
 	
 }

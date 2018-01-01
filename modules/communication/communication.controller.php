@@ -19,7 +19,7 @@ class communicationController extends communication {
 	 * @return void|Object (success : void, fail : Object)
 	 **/
 	function procCommunicationUpdateAllowMessage() {
-		if(!Context::get('is_logged')) return new Object(-1, 'msg_not_logged');
+		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
 		
 		$args = new stdClass();
 		$args->allow_message = Context::get('allow_message');
@@ -36,21 +36,21 @@ class communicationController extends communication {
 	
 	/**
 	 * Send a message
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function procCommunicationSendMessage() {
 		// Check login information
-		if(!Context::get('is_logged')) return new Object(-1, 'msg_not_logged');
+		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
 		$logged_info = Context::get('logged_info');
 		// Check variables
 		$receiver_srl = Context::get('receiver_srl');
-		if(!$receiver_srl) return new Object(-1, 'msg_not_exists_member');
+		if(!$receiver_srl) return new BaseObject(-1, 'msg_not_exists_member');
 		
 		$title = trim(Context::get('title'));
-		if(!$title) return new Object(-1, 'msg_title_is_null');
+		if(!$title) return new BaseObject(-1, 'msg_title_is_null');
 		
 		$content = trim(Context::get('content'));
-		if(!$content) return new Object(-1, 'msg_content_is_null');
+		if(!$content) return new BaseObject(-1, 'msg_content_is_null');
 		
 		$send_mail = Context::get('send_mail');
 		if($send_mail != 'Y') $send_mail = 'N';
@@ -59,10 +59,10 @@ class communicationController extends communication {
 		$oCommunicationModel = &getModel('communication');
 		$config = $oCommunicationModel->getConfig();
 		if(!$oCommunicationModel->checkGrant($config->grant_write)) {
-			return new Object(-1, 'msg_not_permitted');
+			return new BaseObject(-1, 'msg_not_permitted');
 		}
 		$receiver_member_info = $oMemberModel->getMemberInfoByMemberSrl($receiver_srl);
-		if($receiver_member_info->member_srl != $receiver_srl) return new Object(-1, 'msg_not_exists_member');
+		if($receiver_member_info->member_srl != $receiver_srl) return new BaseObject(-1, 'msg_not_exists_member');
 		// check whether to allow to receive the message(pass if a top-administrator)
 		if($logged_info->is_admin != 'Y') {
 			if($receiver_member_info->allow_message == 'F') {
@@ -110,7 +110,7 @@ class communicationController extends communication {
 	 * @param string  $title
 	 * @param string  $content
 	 * @param boolean $sender_log   (default true)
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function sendMessage($sender_srl, $receiver_srl, $title, $content, $sender_log = true) {
 		$content = removeHackTag($content);
@@ -189,7 +189,7 @@ class communicationController extends communication {
 		
 		$oDB->commit();
 		
-		return new Object(0, 'success_sended');
+		return new BaseObject(0, 'success_sended');
 	}
 	
 	/**
@@ -198,15 +198,15 @@ class communicationController extends communication {
 	 **/
 	function procCommunicationStoreMessage() {
 		// Check login information
-		if(!Context::get('is_logged')) return new Object(-1, 'msg_not_logged');
+		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
 		$logged_info = Context::get('logged_info');
 		// Check variable
 		$message_srl = Context::get('message_srl');
-		if(!$message_srl) return new Object(-1, 'msg_invalid_request');
+		if(!$message_srl) return new BaseObject(-1, 'msg_invalid_request');
 		// get the message
 		$oCommunicationModel = &getModel('communication');
 		$message = $oCommunicationModel->getSelectedMessage($message_srl);
-		if(!$message || $message->message_type != 'R') return new Object(-1, 'msg_invalid_request');
+		if(!$message || $message->message_type != 'R') return new BaseObject(-1, 'msg_invalid_request');
 		
 		$args = new stdClass();
 		$args->message_srl = $message_srl;
@@ -223,23 +223,23 @@ class communicationController extends communication {
 	 **/
 	function procCommunicationDeleteMessage() {
 		// Check login information
-		if(!Context::get('is_logged')) return new Object(-1, 'msg_not_logged');
+		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
 		$logged_info = Context::get('logged_info');
 		$member_srl = $logged_info->member_srl;
 		// Check the variable
 		$message_srl = Context::get('message_srl');
-		if(!$message_srl) return new Object(-1, 'msg_invalid_request');
+		if(!$message_srl) return new BaseObject(-1, 'msg_invalid_request');
 		// Get the message
 		$oCommunicationModel = &getModel('communication');
 		$message = $oCommunicationModel->getSelectedMessage($message_srl);
-		if(!$message) return new Object(-1, 'msg_invalid_request');
+		if(!$message) return new BaseObject(-1, 'msg_invalid_request');
 		// Check the grant
 		switch($message->message_type) {
 			case 'S':
-				if($message->sender_srl != $member_srl) return new Object(-1, 'msg_invalid_request');
+				if($message->sender_srl != $member_srl) return new BaseObject(-1, 'msg_invalid_request');
 				break;
 			case 'R':
-				if($message->receiver_srl != $member_srl) return new Object(-1, 'msg_invalid_request');
+				if($message->receiver_srl != $member_srl) return new BaseObject(-1, 'msg_invalid_request');
 				break;
 		}
 		// Delete
@@ -257,18 +257,18 @@ class communicationController extends communication {
 	 **/
 	function procCommunicationDeleteMessages() {
 		// Check login information
-		if(!Context::get('is_logged')) return new Object(-1, 'msg_not_logged');
+		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
 		$logged_info = Context::get('logged_info');
 		$member_srl = $logged_info->member_srl;
 		// check variables
-		if(!Context::get('message_srl_list')) return new Object(-1, 'msg_cart_is_null');
+		if(!Context::get('message_srl_list')) return new BaseObject(-1, 'msg_cart_is_null');
 		
 		$message_srl_list = Context::get('message_srl_list');
 		if(!is_array($message_srl_list)) $message_srl_list = explode('|@|', trim($message_srl_list));
-		if(!count($message_srl_list)) return new Object(-1, 'msg_cart_is_null');
+		if(!count($message_srl_list)) return new BaseObject(-1, 'msg_cart_is_null');
 		
 		$message_type = Context::get('message_type');
-		if(!$message_type || !in_array($message_type, array('R', 'S', 'T'))) return new Object(-1, 'msg_invalid_request');
+		if(!$message_type || !in_array($message_type, array('R', 'S', 'T'))) return new BaseObject(-1, 'msg_invalid_request');
 		
 		$message_count = count($message_srl_list);
 		$target = array();
@@ -277,7 +277,7 @@ class communicationController extends communication {
 			if(!$message_srl) continue;
 			$target[] = $message_srl;
 		}
-		if(!count($target)) return new Object(-1, 'msg_cart_is_null');
+		if(!count($target)) return new BaseObject(-1, 'msg_cart_is_null');
 		// Delete
 		$args = new stdClass();
 		$args->message_srls = implode(',', $target);
@@ -301,11 +301,11 @@ class communicationController extends communication {
 	 **/
 	function procCommunicationAddFriend() {
 		// Check login information
-		if(!Context::get('is_logged')) return new Object(-1, 'msg_not_logged');
+		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
 		$logged_info = Context::get('logged_info');
 		
 		$target_srl = (int)trim(Context::get('target_srl'));
-		if(!$target_srl) return new Object(-1, 'msg_invalid_request');
+		if(!$target_srl) return new BaseObject(-1, 'msg_invalid_request');
 		// Variable
 		$args = new stdClass();
 		$args->friend_srl = getNextSequence();
@@ -337,21 +337,21 @@ class communicationController extends communication {
 	function procCommunicationMoveFriend() {
 		// Check login information
 		if(!Context::get('is_logged')) {
-			return new Object(-1, 'msg_not_logged');
+			return new BaseObject(-1, 'msg_not_logged');
 		}
 		
 		$logged_info = Context::get('logged_info');
 		// Check variables
 		$friend_srl_list = Context::get('friend_srl_list');
 		if(!$friend_srl_list) {
-			return new Object(-1, 'msg_cart_is_null');
+			return new BaseObject(-1, 'msg_cart_is_null');
 		}
 		
 		if(!is_array($friend_srl_list)) {
 			$friend_srl_list = explode('|@|', $friend_srl_list);
 		}
 		
-		if(!count($friend_srl_list)) return new Object(-1, 'msg_cart_is_null');
+		if(!count($friend_srl_list)) return new BaseObject(-1, 'msg_cart_is_null');
 		
 		$friend_count = count($friend_srl_list);
 		$target = array();
@@ -360,7 +360,7 @@ class communicationController extends communication {
 			if(!$friend_srl) continue;
 			$target[] = $friend_srl;
 		}
-		if(!count($target)) return new Object(-1, 'msg_cart_is_null');
+		if(!count($target)) return new BaseObject(-1, 'msg_cart_is_null');
 		// Variables
 		$args = new stdClass();
 		$args->friend_srls = implode(',', $target);
@@ -382,7 +382,7 @@ class communicationController extends communication {
 	 **/
 	function procCommunicationDeleteFriend() {
 		// Check login information
-		if(!Context::get('is_logged')) return new Object(-1, 'msg_not_logged');
+		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
 		$logged_info = Context::get('logged_info');
 		$member_srl = $logged_info->member_srl;
 		// Check variables
@@ -391,7 +391,7 @@ class communicationController extends communication {
 		if(!is_array($friend_srl_list)) {
 			$friend_srl_list = explode('|@|', $friend_srl_list);
 		}
-		if(!count($friend_srl_list)) return new Object(-1, 'msg_cart_is_null');
+		if(!count($friend_srl_list)) return new BaseObject(-1, 'msg_cart_is_null');
 		
 		$friend_count = count($friend_srl_list);
 		$target = array();
@@ -400,7 +400,7 @@ class communicationController extends communication {
 			if(!$friend_srl) continue;
 			$target[] = $friend_srl;
 		}
-		if(!count($target)) return new Object(-1, 'msg_cart_is_null');
+		if(!count($target)) return new BaseObject(-1, 'msg_cart_is_null');
 		// Delete
 		$args = new stdClass();
 		$args->friend_srls = implode(',', $target);
@@ -420,7 +420,7 @@ class communicationController extends communication {
 	 **/
 	function procCommunicationAddFriendGroup() {
 		// Check login information
-		if(!Context::get('is_logged')) return new Object(-1, 'msg_not_logged');
+		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
 		$logged_info = Context::get('logged_info');
 		// Variables
 		$args = new stdClass();
@@ -428,7 +428,7 @@ class communicationController extends communication {
 		$args->member_srl = $logged_info->member_srl;
 		$args->title = Context::get('title');
 		$args->title = htmlspecialchars($args->title);
-		if(!$args->title) return new Object(-1, 'msg_invalid_request');
+		if(!$args->title) return new BaseObject(-1, 'msg_invalid_request');
 		// modify if friend_group_srl exists.
 		if($args->friend_group_srl) {
 			$output = executeQuery('communication.renameFriendGroup', $args);
@@ -469,7 +469,7 @@ class communicationController extends communication {
 	 **/
 	function procCommunicationRenameFriendGroup() {
 		// Check login information
-		if(!Context::get('is_logged')) return new Object(-1, 'msg_not_logged');
+		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
 		$logged_info = Context::get('logged_info');
 		// Variables
 		$args = new stdClass();
@@ -477,7 +477,7 @@ class communicationController extends communication {
 		$args->member_srl = $logged_info->member_srl;
 		$args->title = Context::get('title');
 		$args->title = htmlspecialchars($args->title);
-		if(!$args->title) return new Object(-1, 'msg_invalid_request');
+		if(!$args->title) return new BaseObject(-1, 'msg_invalid_request');
 		
 		$output = executeQuery('communication.renameFriendGroup', $args);
 		if(!$output->toBool()) return $output;
@@ -491,7 +491,7 @@ class communicationController extends communication {
 	 **/
 	function procCommunicationDeleteFriendGroup() {
 		// Check login information
-		if(!Context::get('is_logged')) return new Object(-1, 'msg_not_logged');
+		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
 		$logged_info = Context::get('logged_info');
 		// Variables
 		$args = new stdClass();
@@ -506,7 +506,7 @@ class communicationController extends communication {
 	/**
 	 * set a message status to be 'already read'
 	 * @param int $message_srl
-	 * @return Object
+	 * @return BaseObject
 	 **/
 	function setMessageReaded($message_srl) {
 		$args = new stdClass();
