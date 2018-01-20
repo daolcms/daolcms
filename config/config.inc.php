@@ -242,8 +242,7 @@ date_default_timezone_set(@date_default_timezone_get());
 //include BaseObject
 include _DAOL_PATH_ . 'classes/object/BaseObject.class.php';
 
-if(!defined('__XE_LOADED_CLASS__'))
-{
+if(!defined('__XE_LOADED_CLASS__')){
 	// Require a function-defined-file for simple use
 	require(_DAOL_PATH_ . 'config/func.inc.php');
 
@@ -347,18 +346,14 @@ if(!defined('__XE_LOADED_CLASS__'))
 		'TablesTag' => 'classes/xml/xmlquery/tags/table/TablesTag.class.php',
 	), CASE_LOWER);
 
-	function __xe_autoload($class_name)
-	{
+	function __xe_autoload($class_name){
 		$class_name = strtolower($class_name);
-		if(isset($GLOBALS['__xe_autoload_file_map'][$class_name]))
-		{
+		if(isset($GLOBALS['__xe_autoload_file_map'][$class_name])){
 			require _DAOL_PATH_ . $GLOBALS['__xe_autoload_file_map'][$class_name];
 		}
-		elseif(preg_match('/^([a-z0-9_]+?)(admin)?(view|controller|model|api|wap|mobile)?$/i', $class_name, $matches))
-		{
+		elseif(preg_match('/^([a-z0-9_]+?)(admin)?(view|controller|model|api|wap|mobile)?$/i', $class_name, $matches)){
 			$candidate_filename = 'modules/' . $matches[1] . '/' . $matches[1] . ($matches[2] ? '.admin' : '') . ($matches[3] ? ('.' . $matches[3]) : '.class') . '.php';
-			if(file_exists(_DAOL_PATH_ . $candidate_filename))
-			{
+			if(file_exists(_DAOL_PATH_ . $candidate_filename)){
 				require _DAOL_PATH_ . $candidate_filename;
 			}
 		}
