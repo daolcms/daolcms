@@ -7,7 +7,7 @@
  * @Adaptor DAOL Project (developer@daolcms.org)
  */
 
-//php 5.4 이상에서 WARNING 표시 문제 수정
+// Fixed issue displaying WARNING in php 5.4 or later
 if(version_compare(PHP_VERSION, '5.4.0', '<')) {
 	@error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING);
 } else {
@@ -219,14 +219,14 @@ if(!defined('__ERROR_LOG__')) {
 
 if(!defined('__DISABLE_DEFAULT_CSS__')) {
 	/**
-	 * XE의 기본 CSS 스타일을 로드하지 않도록 합니다.
+	 * Disable the DAOL's default CSS.
 	 *
-	 * CSS 적용이 해제됨에 따라 버튼, 팝업 메뉴 및 일부 중요 메시지 등이 표시되지 않을 수 있습니다.
+	 * Due to CSS being disabled, you might not see buttons, pop-up menus, and some important messages.
 	 * common/css/xe.css
 	 * common/css/mobile.css
 	 *
-	 * 0: CSS 적용 (기존과 동일)
-	 * 1: 사용하지 않음
+	 * 0: CSS apply (same as previous)
+	 * 1: Not used
 	 */
 	define('__DISABLE_DEFAULT_CSS__', 0);
 }
