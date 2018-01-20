@@ -4,8 +4,7 @@
 /**
  * File containing the XE 1.5 XmlQueryParserClass
  */
-if(!defined('__XE_LOADED_XML_CLASS__'))
-{
+if(!defined('__XE_LOADED_XML_CLASS__')){
 	define('__XE_LOADED_XML_CLASS__', 1);
 }
 
@@ -17,15 +16,13 @@ if(!defined('__XE_LOADED_XML_CLASS__'))
  * @package classes\xml
  * @version 0.1
  */
-class XmlQueryParser extends XmlParser
-{
+class XmlQueryParser extends XmlParser {
 
 	/**
 	 * constructor
 	 * @return void
 	 */
-	function XmlQueryParser()
-	{
+	function XmlQueryParser()	{
 
 	}
 
@@ -34,11 +31,9 @@ class XmlQueryParser extends XmlParser
 	 *
 	 * @return XmlQueryParser object
 	 */
-	function &getInstance()
-	{
+	function &getInstance(){
 		static $theInstance = NULL;
-		if(!isset($theInstance))
-		{
+		if(!isset($theInstance)){
 			$theInstance = new XmlQueryParser();
 		}
 		return $theInstance;
@@ -57,15 +52,13 @@ class XmlQueryParser extends XmlParser
 	 *
 	 * @return QueryParser object
 	 */
-	function &parse_xml_query($query_id, $xml_file, $cache_file)
-	{
+	function &parse_xml_query($query_id, $xml_file, $cache_file){
 		// Read xml file
 		$xml_obj = $this->getXmlFileContent($xml_file);
 
 		// insert, update, delete, select action
 		$action = strtolower($xml_obj->query->attrs->action);
-		if(!$action)
-		{
+		if(!$action){
 			return;
 		}
 
@@ -85,8 +78,7 @@ class XmlQueryParser extends XmlParser
 	 *
 	 * @return void
 	 */
-	function parse($query_id = NULL, $xml_file = NULL, $cache_file = NULL)
-	{
+	function parse($query_id = NULL, $xml_file = NULL, $cache_file = NULL){
 		$this->parse_xml_query($query_id, $xml_file, $cache_file);
 	}
 
@@ -97,12 +89,10 @@ class XmlQueryParser extends XmlParser
 	 * @param $xml_file
 	 * @return array|NULL
 	 */
-	function getXmlFileContent($xml_file)
-	{
+	function getXmlFileContent($xml_file){
 		$buff = FileHandler::readFile($xml_file);
 		$xml_obj = parent::parse($buff);
-		if(!$xml_obj)
-		{
+		if(!$xml_obj){
 			return;
 		}
 		unset($buff);
