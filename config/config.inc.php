@@ -253,7 +253,7 @@ if(!defined('__XE_LOADED_CLASS__')){
 	if(__DEBUG__)
 		define('__ClassLoadStartTime__', getMicroTime());
 
-	$__xe_autoload_file_map = array_change_key_case(array(
+	$__daol_autoload_file_map = array_change_key_case(array(
 		'CacheHandler' => 'classes/cache/CacheHandler.class.php',
 		'Context' => 'classes/context/Context.class.php',
 		'DB' => 'classes/db/DB.class.php',
@@ -346,10 +346,10 @@ if(!defined('__XE_LOADED_CLASS__')){
 		'TablesTag' => 'classes/xml/xmlquery/tags/table/TablesTag.class.php',
 	), CASE_LOWER);
 
-	function __xe_autoload($class_name){
+	function __daol_autoload($class_name){
 		$class_name = strtolower($class_name);
-		if(isset($GLOBALS['__xe_autoload_file_map'][$class_name])){
-			require _DAOL_PATH_ . $GLOBALS['__xe_autoload_file_map'][$class_name];
+		if(isset($GLOBALS['__daol_autoload_file_map'][$class_name])){
+			require _DAOL_PATH_ . $GLOBALS['__daol_autoload_file_map'][$class_name];
 		}
 		elseif(preg_match('/^([a-z0-9_]+?)(admin)?(view|controller|model|api|wap|mobile)?$/i', $class_name, $matches)){
 			$candidate_filename = 'modules/' . $matches[1] . '/' . $matches[1] . ($matches[2] ? '.admin' : '') . ($matches[3] ? ('.' . $matches[3]) : '.class') . '.php';
@@ -358,7 +358,7 @@ if(!defined('__XE_LOADED_CLASS__')){
 			}
 		}
 	}
-	spl_autoload_register('__xe_autoload');
+	spl_autoload_register('__daol_autoload');
 
 	if(__DEBUG__)
 		$GLOBALS['__elapsed_class_load__'] = getMicroTime() - __ClassLoadStartTime__;
