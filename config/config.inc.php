@@ -239,9 +239,6 @@ if(__DEBUG_OUTPUT__ == 2) {
 // Set Timezone as server time
 date_default_timezone_set(@date_default_timezone_get());
 
-//include BaseObject
-include _DAOL_PATH_ . 'classes/object/BaseObject.class.php';
-
 // Require a function-defined-file for simple use
 require(_DAOL_PATH_ . 'config/func.inc.php');
 
@@ -301,7 +298,7 @@ $GLOBALS['__daol_autoload_file_map'] = array_change_key_case(array(
 	'Mobile' => 'classes/mobile/Mobile.class.php',
 	'ModuleHandler' => 'classes/module/ModuleHandler.class.php',
 	'ModuleObject' => 'classes/module/ModuleObject.class.php',
-	'Object' => 'classes/object/Object.class.php',
+	'BaseObject' => 'classes/object/BaseObject.class.php',
 	'PageHandler' => 'classes/page/PageHandler.class.php',
 	'EmbedFilter' => 'classes/security/EmbedFilter.class.php',
 	'IpFilter' => 'classes/security/IpFilter.class.php',
