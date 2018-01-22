@@ -246,14 +246,15 @@ if(!defined('__XE_LOADED_CLASS__')){
 	// Require a function-defined-file for simple use
 	require(_DAOL_PATH_ . 'config/func.inc.php');
 
-	if(__DEBUG__)
+	if(__DEBUG__){
 		define('__StartTime__', getMicroTime());
+	}
 
-	// include the class files
-	if(__DEBUG__)
-		define('__ClassLoadStartTime__', getMicroTime());
+	if(__DEBUG__){
+		$GLOBALS['__elapsed_class_load__'] = 0;
+	}
 
-	$__daol_autoload_file_map = array_change_key_case(array(
+	$GLOBALS['__daol_autoload_file_map'] = array_change_key_case(array(
 		'CacheHandler' => 'classes/cache/CacheHandler.class.php',
 		'Context' => 'classes/context/Context.class.php',
 		'DB' => 'classes/db/DB.class.php',
@@ -297,7 +298,6 @@ if(!defined('__XE_LOADED_CLASS__')){
 		'Mobile' => 'classes/mobile/Mobile.class.php',
 		'ModuleHandler' => 'classes/module/ModuleHandler.class.php',
 		'ModuleObject' => 'classes/module/ModuleObject.class.php',
-		'Object' => 'classes/object/Object.class.php',
 		'PageHandler' => 'classes/page/PageHandler.class.php',
 		'EmbedFilter' => 'classes/security/EmbedFilter.class.php',
 		'IpFilter' => 'classes/security/IpFilter.class.php',
@@ -347,19 +347,36 @@ if(!defined('__XE_LOADED_CLASS__')){
 	), CASE_LOWER);
 
 	function __daol_autoload($class_name){
-		$class_name = strtolower($class_name);
-		if(isset($GLOBALS['__daol_autoload_file_map'][$class_name])){
-			require _DAOL_PATH_ . $GLOBALS['__daol_autoload_file_map'][$class_name];
+		if(__DEBUG__){
+			$time_at = getMicroTime();
 		}
-		elseif(preg_match('/^([a-z0-9_]+?)(admin)?(view|controller|model|api|wap|mobile)?$/i', $class_name, $matches)){
-			$candidate_filename = 'modules/' . $matches[1] . '/' . $matches[1] . ($matches[2] ? '.admin' : '') . ($matches[3] ? ('.' . $matches[3]) : '.class') . '.php';
+
+		if(isset($GLOBALS['__daol_autoload_file_map'][strtolower($class_name)])){
+			require _DAOL_PATH_ . $GLOBALS['__daol_autoload_file_map'][strtolower($class_name)];
+		}
+		elseif(preg_match('/^([a-zA-Z0-9_]+?)(Admin)?(View|Controller|Model|Api|Wap|Mobile)?$/', $class_name, $matches)){
+			$candidate_filename = array();
+			$candidate_filename[] = 'modules/' . $matches[1] . '/' . $matches[1];
+			if(isset($matches[2]) && $matches[2]) $candidate_filename[] = 'admin';
+			$candidate_filename[] = (isset($matches[3]) && $matches[3]) ? strtolower($matches[3]) : 'class';
+			$candidate_filename[] = 'php';
+
+			$candidate_filename = implode('.', $candidate_filename);
+
 			if(file_exists(_DAOL_PATH_ . $candidate_filename)){
 				require _DAOL_PATH_ . $candidate_filename;
 			}
 		}
+
+		if(__DEBUG__){
+			$GLOBALS['__elapsed_class_load__'] += getMicroTime() - $time_at;
+		}
 	}
 	spl_autoload_register('__daol_autoload');
 
-	if(__DEBUG__)
-		$GLOBALS['__elapsed_class_load__'] = getMicroTime() - __ClassLoadStartTime__;
+	if(file_exists(_DAOL_PATH_  . '/vendor/autoload.php')) {
+		require _DAOL_PATH_  . '/vendor/autoload.php';
+	}
+
+	
 }
