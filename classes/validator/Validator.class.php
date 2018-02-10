@@ -474,7 +474,7 @@ class Validator {
 		if($content === false) return false;
 		
 		if(is_callable('file_put_contents')) {
-			@file_put_contents($filepath, $content);
+			FileHandler::writeFile($filepath, $content);
 		} else {
 			$fp = @fopen($filepath, 'w');
 			if(is_resource($fp)) {

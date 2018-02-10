@@ -122,6 +122,8 @@ class FileHandler {
 		fwrite($fp, $buff);
 		fclose($fp);
 		chmod($file_name, 0644);
+		self::clearStatCache($filename);
+		self::invalidateOpcache($filename);
 	}
 	
 	/**
