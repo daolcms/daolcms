@@ -239,17 +239,6 @@ if(__DEBUG_OUTPUT__ == 2) {
 // Set Timezone as server time
 date_default_timezone_set(@date_default_timezone_get());
 
-// Require a function-defined-file for simple use
-require(_DAOL_PATH_ . 'config/func.inc.php');
-
-if(__DEBUG__){
-	define('__StartTime__', getMicroTime());
-}
-
-if(__DEBUG__){
-	$GLOBALS['__elapsed_class_load__'] = 0;
-}
-
 $GLOBALS['__daol_autoload_file_map'] = array_change_key_case(array(
 	'CacheBase' => 'classes/cache/CacheHandler.class.php',
 	'CacheHandler' => 'classes/cache/CacheHandler.class.php',
@@ -347,6 +336,28 @@ $GLOBALS['__daol_autoload_file_map'] = array_change_key_case(array(
 	'TablesTag' => 'classes/xml/xmlquery/tags/table/TablesTag.class.php',
 ), CASE_LOWER);
 
+/**
+ * Invalidates a cached script of OPcache when version is changed.
+ * @see https://github.com/daolcms/daol-core/issues/134
+ **/
+if(!is_dir(_DAOL_PATH_ . 'files/cache/store/' . __DAOL_VERSION__) && function_exists('opcache_get_status') && function_exists('opcache_invalidate')){
+	foreach($GLOBALS['__daol_autoload_file_map'] as $script){
+		opcache_invalidate(_DAOL_PATH_ . $script, true);
+	}
+	opcache_invalidate(_DAOL_PATH_ . 'config/func.inc.php', true);
+}
+
+// Require a function-defined-file for simple use
+require(_DAOL_PATH_ . 'config/func.inc.php');
+
+if(__DEBUG__){
+	define('__StartTime__', getMicroTime());
+}
+
+if(__DEBUG__){
+	$GLOBALS['__elapsed_class_load__'] = 0;
+}
+
 function __daol_autoload($class_name){
 	if(__DEBUG__){
 		$time_at = getMicroTime();
@@ -375,6 +386,10 @@ function __daol_autoload($class_name){
 }
 spl_autoload_register('__daol_autoload');
 
-if(file_exists(_DAOL_PATH_  . '/vendor/autoload.php')) {
+if(version_compare(PHP_VERSION, '7.2', '<')){
+	class_alias('BaseObject', 'Object', true);
+}
+
+if(file_exists(_DAOL_PATH_  . '/vendor/autoload.php')){
 	require _DAOL_PATH_  . '/vendor/autoload.php';
 }
