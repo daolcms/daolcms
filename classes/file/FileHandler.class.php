@@ -854,7 +854,7 @@ class FileHandler {
 			return;
 		}
 
-		$target = self:getRealPath($target);
+		$target = self::getRealPath($target);
 
 		if($include && self::isDir($target)){
 			self::clearStatCache(self::readDir($target, '', false, true), $include);
