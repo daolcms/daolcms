@@ -228,9 +228,9 @@ class DisplayHandler extends Handler {
 				$buff = str_repeat('=', 40) . "\n" . $buff . str_repeat('-', 40);
 				$buff = "\n<?php\n/*" . $buff . "*/\n?>\n";
 				
-				if(@!$fp = fopen($debug_file, 'a')) return;
-				fwrite($fp, $buff);
-				fclose($fp);
+				if(!@file_put_contents($debug_file, $buff, FILE_APPEND|LOCK_EX)){
+					return;
+				}
 			}
 		}
 	}
