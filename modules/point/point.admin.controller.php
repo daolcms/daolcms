@@ -276,7 +276,7 @@ class pointAdminController extends point {
 		$str = '';
 		foreach($member as $key => $val){
 			$val += (int)$config->signup_point;
-			$str . = $key.','.$val."\r\n";
+			$str .= $key.','.$val."\r\n";
 		}
 		
 		@file_put_contents('./files/cache/pointRecal.txt', $str, LOCK_EX);
