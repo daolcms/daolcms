@@ -125,6 +125,9 @@ class documentModel extends document {
 		
 		if(!isset($GLOBALS['XE_DOCUMENT_LIST'][$document_srl]) || $GLOBALS['XE_DOCUMENT_LIST'][$document_srl]->columnListKey != serialize($columnList)) {
 			$oDocument = new documentItem($document_srl, $load_extra_vars, $columnList);
+			if(!$oDocument->isExists()){
+				return $oDocument;
+			}
 			$GLOBALS['XE_DOCUMENT_LIST'][$document_srl] = $oDocument;
 			if($load_extra_vars) $this->setToAllDocumentExtraVars();
 			$GLOBALS['XE_DOCUMENT_LIST'][$document_srl]->columnListKey = serialize($columnList);
