@@ -122,6 +122,11 @@ module.exports = function(grunt) {
 					// modules/poll
 					'modules/poll/tpl/js/poll_admin.min.js': ['modules/poll/tpl/js/poll_admin.js'],
 					'modules/poll/tpl/js/poll.min.js': ['modules/poll/tpl/js/poll.js'],
+					// krzip
+					'modules/krzip/tpl/js/admin.min.js': ['modules/krzip/tpl/js/admin.js'],
+					'modules/krzip/tpl/js/daumapi.min.js': ['modules/krzip/tpl/js/daumapi.js'],
+					'modules/krzip/tpl/js/epostapi.min.js': ['modules/krzip/tpl/js/epostapi.js'],
+					'modules/krzip/tpl/js/epostapi.search.min.js': ['modules/krzip/tpl/js/epostapi.search.js'],
 				}
 			},
 			'layout': {
@@ -151,6 +156,9 @@ module.exports = function(grunt) {
 					'modules/editor/skins/xpresseditor/css/default.min.css': ['modules/editor/skins/xpresseditor/css/default.css'],
 					'modules/board/skins/daol_default/board.default.min.css': ['modules/board/skins/default/board.default.css'],
 					'modules/board/m.skins/daol_default/css/mboard.min.css': ['modules/board/m.skins/default/css/mboard.css'],
+					// krzip
+					'modules/krzip/tpl/css/default.min.css': ['modules/krzip/tpl/css/default.css'],
+					'modules/krzip/tpl/css/popup.min.css': ['modules/krzip/tpl/css/popup.css'],
 				}
 			},
 			'layout': {
