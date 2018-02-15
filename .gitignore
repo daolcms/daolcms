@@ -11,3 +11,5 @@ Thumbs.db
 codeception.yml
 config.user.inc.php
 jshint-report.html
+package-lock.json
+package.json
