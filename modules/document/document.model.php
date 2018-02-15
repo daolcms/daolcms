@@ -1188,6 +1188,7 @@ class documentModel extends document {
 		$args->start_date = $searchOpt->start_date ? $searchOpt->start_date : null;
 		$args->end_date = $searchOpt->end_date ? $searchOpt->end_date : null;
 		$args->member_srl = $searchOpt->member_srl;
+		$args->member_srls = $searchOpt->member_srls;
 		
 		$logged_info = Context::get('logged_info');
 		$sort_check = $this->_setSortIndex($searchOpt, $load_extra_vars);
