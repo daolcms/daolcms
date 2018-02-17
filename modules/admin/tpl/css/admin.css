@@ -261,7 +261,7 @@ body.modalContainer{_height:100%;_width:100%} /* IE6 only */
 .x .skipNav a:active,
 .x .skipNav a:focus{position:relative;width:auto;height:auto}
 /* Header */
-.x .header{position:relative;z-index:2;padding:0;zoom:1;}
+.x .header{position:relative;z-index:2;padding:10px 0 0 0;zoom:1;}
 .x .header:after{content:"";display:block;clear:both}
 .x .header a{text-decoration:none}
 .x .header h1{margin:5px 0 10px 5px;font-size:24px;display:inline-block;*display:inline;zoom:1;vertical-align:middle}
