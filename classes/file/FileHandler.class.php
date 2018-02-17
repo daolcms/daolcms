@@ -583,6 +583,8 @@ class FileHandler {
 		$request_config['observers'][] = new HTTP_Request2_Observer_Download($target_filename);
 		try{
 			$result = self::getRemoteResource($url, $body, $timeout, $method, $content_type, $headers, $cookies, $post_data, $request_config);
+			self::clearStatCache($target_filename);
+			self::invalidateOpcache($target_filename);
 		}
 		catch(Exception $e){
 			return FALSE;
