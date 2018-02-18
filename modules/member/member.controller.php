@@ -920,6 +920,7 @@ class memberController extends member {
 		}
 
 		return new BaseObject(0, 'success');
+	}
 	
 	/**
 	 * Delete Image Mark
