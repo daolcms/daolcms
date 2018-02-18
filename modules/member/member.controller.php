@@ -686,7 +686,7 @@ class memberController extends member {
 		else {
 			// 파일 용량 제한
 			$filesize = filesize($target_file);
-			if($max_filesize && $filesize > ($max_filesize * 1024){
+			if($max_filesize && $filesize > ($max_filesize * 1024)){
 				return $this->stop(implode(' ' , array(
 					Context::getLang('msg_not_uploaded_profile_image'),
 					Context::getLang('msg_exceeds_limit_size')
