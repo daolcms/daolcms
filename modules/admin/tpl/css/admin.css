@@ -89,11 +89,13 @@ a{text-decoration:none;}
 .x .form li label em{font-weight:normal}
 .x .form label.overlap{position:absolute;color:#aaa}
 .x .form input[type=text],
+.x .form input[type=number],
 .x .form input[type=password],
 .x .form input[type=file],
 .x .form select[size],
 .x .form textarea{position:relative;width:280px;margin:2px 0;border:1px solid #b7b7b7;border-right-color:#e1e1e1;border-bottom-color:#e1e1e1;background:transparent}
 .x .form input[type=text],
+.x .form input[type=number],
 .x .form input[type=password],
 .x .form input[type=file]{height:22px;line-height:22px;vertical-align:middle;padding:0 4px}
 .x .form input[type=text].loading,
