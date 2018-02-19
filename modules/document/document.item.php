@@ -130,7 +130,9 @@ class documentItem extends BaseObject {
 		$grant = $oModuleModel->getGrant($oModuleModel->getModuleInfoByModuleSrl($this->get('module_srl')), $logged_info);
 		if($grant->manager) return true;
 		
-		if($this->get('member_srl') && ($this->get('member_srl') == $logged_info->member_srl || $this->get('member_srl') * -1 == $logged_info->member_srl)) return true;
+		if($this->get('member_srl') && abs($this->get('member_srl')) == $logged_info->member_srl){
+			return $this->grant_cache = true;
+		}
 		
 		return false;
 	}
@@ -857,7 +859,10 @@ class documentItem extends BaseObject {
 	}
 	
 	function getStatus() {
-		if(!$this->get('status')) return $this->getDefaultStatus();
+		if(!$this->get('status')){
+			$oDocumentClass = getClass('document');
+			return $oDocumentClass->getDefaultStatus();
+		}
 		return $this->get('status');
 	}
 	

@@ -125,6 +125,9 @@ class documentModel extends document {
 		
 		if(!isset($GLOBALS['XE_DOCUMENT_LIST'][$document_srl]) || $GLOBALS['XE_DOCUMENT_LIST'][$document_srl]->columnListKey != serialize($columnList)) {
 			$oDocument = new documentItem($document_srl, $load_extra_vars, $columnList);
+			if(!$oDocument->isExists()){
+				return $oDocument;
+			}
 			$GLOBALS['XE_DOCUMENT_LIST'][$document_srl] = $oDocument;
 			if($load_extra_vars) $this->setToAllDocumentExtraVars();
 			$GLOBALS['XE_DOCUMENT_LIST'][$document_srl]->columnListKey = serialize($columnList);
@@ -225,7 +228,7 @@ class documentModel extends document {
 		} else {
 			// document.getDocumentList query execution
 			// Query_id if you have a group by clause getDocumentListWithinTag getDocumentListWithinComment or used again to perform the query because
-			$groupByQuery = array('document.getDocumentListWithinComment' => 1, 'document.getDocumentListWithinTag' => 1);
+			$groupByQuery = array('document.getDocumentListWithinComment' => 1, 'document.getDocumentListWithinTag' => 1, 'document.getDocumentListWithinExtraVars' => 1);
 			if(isset($groupByQuery[$query_id])) {
 				$group_args = clone($args);
 				$group_args->sort_index = 'documents.' . $args->sort_index;
@@ -1185,6 +1188,7 @@ class documentModel extends document {
 		$args->start_date = $searchOpt->start_date ? $searchOpt->start_date : null;
 		$args->end_date = $searchOpt->end_date ? $searchOpt->end_date : null;
 		$args->member_srl = $searchOpt->member_srl;
+		$args->member_srls = $searchOpt->member_srls;
 		
 		$logged_info = Context::get('logged_info');
 		$sort_check = $this->_setSortIndex($searchOpt, $load_extra_vars);
@@ -1278,6 +1282,21 @@ class documentModel extends document {
 				case 'uploaded_count' :
 					$args->{"s_" . $search_target} = (int)$search_keyword;
 					break;
+				case 'member_srls' :
+					$args->{"s_".$search_target} = (int)$search_keyword;
+
+					if($logged_info->member_srl){
+						$srls = explode(',', $search_keyword);
+						foreach($srls as $srl){
+							if(abs($srl) != $logged_info->member_srl){
+								break; // foreach
+							}
+
+							$args->{"s_".$search_target} = $search_keyword;
+							break; // foreach
+						}
+					}
+					break;
 				case 'blamed_count' :
 					$args->{"s_" . $search_target} = (int)$search_keyword * -1;
 					break;
@@ -1294,6 +1313,10 @@ class documentModel extends document {
 				case 'tag' :
 					$args->s_tags = str_replace(' ', '%', $search_keyword);
 					$query_id = 'document.getDocumentListWithinTag';
+					break;
+				case 'extra_vars':
+					$args->var_value = str_replace(' ', '%', $search_keyword);
+					$query_id = 'document.getDocumentListWithinExtraVars';
 					break;
 				default :
 					if(strpos($search_target, 'extra_vars') !== false) {

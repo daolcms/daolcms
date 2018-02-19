@@ -43,6 +43,9 @@ define('__ZBXE__', TRUE); // deprecated : __ZBXE__ will be removed. Use __XE__ i
 /**
  * @brief Include the necessary configuration files
  **/
+if(function_exists('opcache_invalidate')){
+	opcache_invalidate(dirname(__FILE__) . '/config/config.inc.php', true);
+}
 require dirname(__FILE__) . '/config/config.inc.php';
 
 /**

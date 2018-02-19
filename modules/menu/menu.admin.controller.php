@@ -859,8 +859,13 @@ class menuAdminController extends menu {
 			// List variables
 			$names = $oMenuAdminModel->getMenuItemNames($node->name, $site_srl);
 			unset($name_arr_str);
-			foreach($names as $key => $val) {
-				$name_arr_str .= sprintf('"%s"=>"%s",', $key, str_replace(array('\\', '"'), array('\\\\', '&quot;'), $val));
+			foreach($names as $key => $val){
+				if(preg_match('/\{\$lang->menu_gnb(?:_sub)?\[\'([a-zA-Z_]?[a-zA-Z_0-9]*)\'\]\}/', $val) === 1){
+					$name_arr_str .= sprintf('"%s"=>"%s",', $key, $val);
+				}
+				else{
+					$name_arr_str .= sprintf('"%s"=>\'%s\',', $key, str_replace(array('\\','\''), array('\\\\','\\\''), removeHackTag($val)));
+				}
 			}
 			$name_str = sprintf('$_menu_names[%d] = array(%s); %s', $node->menu_item_srl, $name_arr_str, $child_output['name']);
 			// If url value is not empty in the current node, put the value into an array url_list

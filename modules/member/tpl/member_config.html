@@ -1,4 +1,5 @@
 <load target="js/member_admin_config.js" />
+<load target="../../file/lang/lang.xml" />
 <load target="../../editor/tpl/js/editor_module_config.js" />
 <script type="text/javascript">
 	xe.lang.msg_delete_extend_form = '{$lang->msg_delete_extend_form}';
@@ -246,10 +247,10 @@
 							<input type="radio" id="{$item->name}_re" name="{$item->name}" value="required" checked="checked"|cond="$item->mustRequired || $item->required" disabled="disabled"|cond="$item->mustRequired || !$item->isUse" /> <label for="{$item->name}_re">{$lang->cmd_required}</label>
 							<input type="radio" id="{$item->name}_op" name="{$item->name}" value="option" checked="checked"|cond="!$item->mustRequired && ($item->isUse && !$item->required)" disabled="disabled"|cond="$item->mustRequired || !$item->isUse" /> <label for="{$item->name}_op">{$lang->cmd_optional}</label>
 							<div cond="$item->imageType" class="_subItem">
-								<label for="{$item->name}_max_width">{$lang->cmd_image_max_width}</label><input type="text" name="{$item->name}_max_width" id="{$item->name}_max_width" value="{$item->max_width}" style="width:30px" /> px
-								/
-								<label for="{$item->name}_max_height">{$lang->cmd_image_max_height}</label><input type="text" name="{$item->name}_max_height" id="{$item->name}_max_height" value="{$item->max_height}" style="width:30px" /> px
-							</div>
+								<label for="{$item->name}_max_width">{$lang->cmd_image_max_width}</label> <input type="number" min="1" name="{$item->name}_max_width" id="{$item->name}_max_width" value="{$item->max_width}" style="width:50px" /> px /
+								<label for="{$item->name}_max_height">{$lang->cmd_image_max_height}</label> <input type="number" min="1" name="{$item->name}_max_height" id="{$item->name}_max_height" value="{$item->max_height}" style="width:50px" /> px
+								<label for="{$item->name}_max_filesize">{$lang->allowed_filesize}</label> <input type="number" min="1" name="{$item->name}_max_filesize" id="{$item->name}_max_filesize" value="{$item->max_filesize}" style="width:50px" /> KB
+ 							</div>
 							<div cond="$item->name == 'signature'" style="padding-top:10px">
 								<select id="signature_editor" name="signature_editor_skin" onchange="getEditorSkinColorList(this.value)">
 								<!--@foreach($editor_skin_list as $editor_skin)-->

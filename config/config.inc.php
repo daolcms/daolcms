@@ -7,7 +7,7 @@
  * @Adaptor DAOL Project (developer@daolcms.org)
  */
 
-//php 5.4 이상에서 WARNING 표시 문제 수정
+// Fixed issue displaying WARNING in php 5.4 or later
 if(version_compare(PHP_VERSION, '5.4.0', '<')) {
 	@error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING);
 } else {
@@ -19,7 +19,7 @@ if(!defined('__XE__')) exit();
 /**
  * Display the version info of DAOL CMS.
  */
-define('__DAOL_VERSION__', '1.0.4.0');
+define('__DAOL_VERSION__', '1.0.5.0');
 
 /**
  * Display the version info of Based XE.
@@ -219,14 +219,14 @@ if(!defined('__ERROR_LOG__')) {
 
 if(!defined('__DISABLE_DEFAULT_CSS__')) {
 	/**
-	 * XE의 기본 CSS 스타일을 로드하지 않도록 합니다.
+	 * Disable the DAOL's default CSS.
 	 *
-	 * CSS 적용이 해제됨에 따라 버튼, 팝업 메뉴 및 일부 중요 메시지 등이 표시되지 않을 수 있습니다.
+	 * Due to CSS being disabled, you might not see buttons, pop-up menus, and some important messages.
 	 * common/css/xe.css
 	 * common/css/mobile.css
 	 *
-	 * 0: CSS 적용 (기존과 동일)
-	 * 1: 사용하지 않음
+	 * 0: CSS apply (same as previous)
+	 * 1: Not used
 	 */
 	define('__DISABLE_DEFAULT_CSS__', 0);
 }
@@ -239,41 +239,157 @@ if(__DEBUG_OUTPUT__ == 2) {
 // Set Timezone as server time
 date_default_timezone_set(@date_default_timezone_get());
 
-//include BaseObject
-include _DAOL_PATH_ . 'classes/object/BaseObject.class.php';
+$GLOBALS['__daol_autoload_file_map'] = array_change_key_case(array(
+	'CacheBase' => 'classes/cache/CacheHandler.class.php',
+	'CacheHandler' => 'classes/cache/CacheHandler.class.php',
+	'Context' => 'classes/context/Context.class.php',
+	'DB' => 'classes/db/DB.class.php',
+	'Query' => 'classes/db/queryparts/Query.class.php',
+	'Subquery' => 'classes/db/queryparts/Subquery.class.php',
+	'Condition' => 'classes/db/queryparts/condition/Condition.class.php',
+	'ConditionGroup' => 'classes/db/queryparts/condition/ConditionGroup.class.php',
+	'ConditionSubquery' => 'classes/db/queryparts/condition/ConditionSubquery.class.php',
+	'ConditionWithArgument' => 'classes/db/queryparts/condition/ConditionWithArgument.class.php',
+	'ConditionWithoutArgument' => 'classes/db/queryparts/condition/ConditionWithoutArgument.class.php',
+	'ClickCountExpression' => 'classes/db/queryparts/expression/ClickCountExpression.class.php',
+	'documentItem' => 'modules/document/document.item.php',
+	'commentItem' => 'modules/comment/comment.item.php',
+	'DeleteExpression' => 'classes/db/queryparts/expression/DeleteExpression.class.php',
+	'Expression' => 'classes/db/queryparts/expression/Expression.class.php',
+	'InsertExpression' => 'classes/db/queryparts/expression/InsertExpression.class.php',
+	'SelectExpression' => 'classes/db/queryparts/expression/SelectExpression.class.php',
+	'StarExpression' => 'classes/db/queryparts/expression/StarExpression.class.php',
+	'UpdateExpression' => 'classes/db/queryparts/expression/UpdateExpression.class.php',
+	'UpdateExpressionWithoutArgument' => 'classes/db/queryparts/expression/UpdateExpressionWithoutArgument.class.php',
+	'Limit' => 'classes/db/queryparts/limit/Limit.class.php',
+	'OrderByColumn' => 'classes/db/queryparts/order/OrderByColumn.class.php',
+	'CubridTableWithHint' => 'classes/db/queryparts/table/CubridTableWithHint.class.php',
+	'IndexHint' => 'classes/db/queryparts/table/IndexHint.class.php',
+	'JoinTable' => 'classes/db/queryparts/table/JoinTable.class.php',
+	'MssqlTableWithHint' => 'classes/db/queryparts/table/MssqlTableWithHint.class.php',
+	'MysqlTableWithHint' => 'classes/db/queryparts/table/MysqlTableWithHint.class.php',
+	'Table' => 'classes/db/queryparts/table/Table.class.php',
+	'DisplayHandler' => 'classes/display/DisplayHandler.class.php',
+	'HTMLDisplayHandler' => 'classes/display/HTMLDisplayHandler.php',
+	'JSCallbackDisplayHandler' => 'classes/display/JSCallbackDisplayHandler.php',
+	'JSONDisplayHandler' => 'classes/display/JSONDisplayHandler.php',
+	'VirtualXMLDisplayHandler' => 'classes/display/VirtualXMLDisplayHandler.php',
+	'XMLDisplayHandler' => 'classes/display/XMLDisplayHandler.php',
+	'EditorHandler' => 'classes/editor/EditorHandler.class.php',
+	'ExtraVar' => 'classes/extravar/Extravar.class.php',
+	'ExtraItem' => 'classes/extravar/Extravar.class.php',
+	'FileHandler' => 'classes/file/FileHandler.class.php',
+	'FileObject' => 'classes/file/FileObject.class.php',
+	'FrontEndFileHandler' => 'classes/frontendfile/FrontEndFileHandler.class.php',
+	'Handler' => 'classes/handler/Handler.class.php',
+	'XEHttpRequest' => 'classes/httprequest/XEHttpRequest.class.php',
+	'Mail' => 'classes/mail/Mail.class.php',
+	'Mobile' => 'classes/mobile/Mobile.class.php',
+	'ModuleHandler' => 'classes/module/ModuleHandler.class.php',
+	'ModuleObject' => 'classes/module/ModuleObject.class.php',
+	'BaseObject' => 'classes/object/BaseObject.class.php',
+	'PageHandler' => 'classes/page/PageHandler.class.php',
+	'EmbedFilter' => 'classes/security/EmbedFilter.class.php',
+	'IpFilter' => 'classes/security/IpFilter.class.php',
+	'Password' => 'classes/security/Password.class.php',
+	'Purifier' => 'classes/security/Purifier.class.php',
+	'Security' => 'classes/security/Security.class.php',
+	'UploadFileFilter' => 'classes/security/UploadFileFilter.class.php',
+	'TemplateHandler' => 'classes/template/TemplateHandler.class.php',
+	'Validator' => 'classes/validator/Validator.class.php',
+	'WidgetHandler' => 'classes/widget/WidgetHandler.class.php',
+	'GeneralXmlParser' => 'classes/xml/GeneralXmlParser.class.php',
+	'Xml_Node_' => 'classes/xml/XmlParser.class.php',
+	'XmlGenerator' => 'classes/xml/XmlGenerator.class.php',
+	'XmlJsFilter' => 'classes/xml/XmlJsFilter.class.php',
+	'XmlLangParser' => 'classes/xml/XmlLangParser.class.php',
+	'XmlParser' => 'classes/xml/XmlParser.class.php',
+	'XmlQueryParser' => 'classes/xml/XmlQueryParser.class.php',
+	'DBParser' => 'classes/xml/xmlquery/DBParser.class.php',
+	'QueryParser' => 'classes/xml/xmlquery/QueryParser.class.php',
+	'Argument' => 'classes/xml/xmlquery/argument/Argument.class.php',
+	'ConditionArgument' => 'classes/xml/xmlquery/argument/ConditionArgument.class.php',
+	'SortArgument' => 'classes/xml/xmlquery/argument/SortArgument.class.php',
+	'DefaultValue' => 'classes/xml/xmlquery/queryargument/DefaultValue.class.php',
+	'QueryArgument' => 'classes/xml/xmlquery/queryargument/QueryArgument.class.php',
+	'SortQueryArgument' => 'classes/xml/xmlquery/queryargument/SortQueryArgument.class.php',
+	'QueryArgumentValidator' => 'classes/xml/xmlquery/queryargument/validator/QueryArgumentValidator.class.php',
+	'ColumnTag' => 'classes/xml/xmlquery/tags/column/ColumnTag.class.php',
+	'InsertColumnTag' => 'classes/xml/xmlquery/tags/column/InsertColumnTag.class.php',
+	'InsertColumnTagWithoutArgument' => 'classes/xml/xmlquery/tags/column/InsertColumnTagWithoutArgument.class.php',
+	'InsertColumnsTag' => 'classes/xml/xmlquery/tags/column/InsertColumnsTag.class.php',
+	'SelectColumnTag' => 'classes/xml/xmlquery/tags/column/SelectColumnTag.class.php',
+	'SelectColumnsTag' => 'classes/xml/xmlquery/tags/column/SelectColumnsTag.class.php',
+	'UpdateColumnTag' => 'classes/xml/xmlquery/tags/column/UpdateColumnTag.class.php',
+	'UpdateColumnsTag' => 'classes/xml/xmlquery/tags/column/UpdateColumnsTag.class.php',
+	'ConditionGroupTag' => 'classes/xml/xmlquery/tags/condition/ConditionGroupTag.class.php',
+	'ConditionTag' => 'classes/xml/xmlquery/tags/condition/ConditionTag.class.php',
+	'ConditionsTag' => 'classes/xml/xmlquery/tags/condition/ConditionsTag.class.php',
+	'JoinConditionsTag' => 'classes/xml/xmlquery/tags/condition/JoinConditionsTag.class.php',
+	'GroupsTag' => 'classes/xml/xmlquery/tags/group/GroupsTag.class.php',
+	'IndexTag' => 'classes/xml/xmlquery/tags/navigation/IndexTag.class.php',
+	'LimitTag' => 'classes/xml/xmlquery/tags/navigation/LimitTag.class.php',
+	'NavigationTag' => 'classes/xml/xmlquery/tags/navigation/NavigationTag.class.php',
+	'QueryTag' => 'classes/xml/xmlquery/tags/query/QueryTag.class.php',
+	'HintTableTag' => 'classes/xml/xmlquery/tags/table/HintTableTag.class.php',
+	'TableTag' => 'classes/xml/xmlquery/tags/table/TableTag.class.php',
+	'TablesTag' => 'classes/xml/xmlquery/tags/table/TablesTag.class.php',
+), CASE_LOWER);
 
-if(!defined('__XE_LOADED_CLASS__')) {
-	// Require a function-defined-file for simple use
-	require(_DAOL_PATH_ . 'config/func.inc.php');
+/**
+ * Invalidates a cached script of OPcache when version is changed.
+ * @see https://github.com/daolcms/daol-core/issues/134
+ **/
+if(!is_dir(_DAOL_PATH_ . 'files/cache/store/' . __DAOL_VERSION__) && function_exists('opcache_get_status') && function_exists('opcache_invalidate')){
+	foreach($GLOBALS['__daol_autoload_file_map'] as $script){
+		opcache_invalidate(_DAOL_PATH_ . $script, true);
+	}
+	opcache_invalidate(_DAOL_PATH_ . 'config/func.inc.php', true);
+}
 
-	if(__DEBUG__) define('__StartTime__', getMicroTime());
+// Require a function-defined-file for simple use
+require(_DAOL_PATH_ . 'config/func.inc.php');
 
-	// include the class files
-	//TODO When _autoload() can be used for PHP5 based applications, it will be removed.
-	if(__DEBUG__) define('__ClassLoadStartTime__', getMicroTime());
-	require(_DAOL_PATH_ . 'classes/extravar/Extravar.class.php');
-	require(_DAOL_PATH_ . 'classes/handler/Handler.class.php');
-	require(_DAOL_PATH_ . 'classes/xml/XmlParser.class.php');
-	require(_DAOL_PATH_ . 'classes/xml/XmlGenerator.class.php');
-	require(_DAOL_PATH_ . 'classes/xml/XmlJsFilter.class.php');
-	require(_DAOL_PATH_ . 'classes/xml/XmlLangParser.class.php');
-	require(_DAOL_PATH_ . 'classes/cache/CacheHandler.class.php');
-	require(_DAOL_PATH_ . 'classes/context/Context.class.php');
-	require(_DAOL_PATH_ . 'classes/db/DB.class.php');
-	require(_DAOL_PATH_ . 'classes/file/FileHandler.class.php');
-	require(_DAOL_PATH_ . 'classes/widget/WidgetHandler.class.php');
-	require(_DAOL_PATH_ . 'classes/editor/EditorHandler.class.php');
-	require(_DAOL_PATH_ . 'classes/module/ModuleObject.class.php');
-	require(_DAOL_PATH_ . 'classes/module/ModuleHandler.class.php');
-	require(_DAOL_PATH_ . 'classes/display/DisplayHandler.class.php');
-	require(_DAOL_PATH_ . 'classes/template/TemplateHandler.class.php');
-	require(_DAOL_PATH_ . 'classes/mail/Mail.class.php');
-	require(_DAOL_PATH_ . 'classes/page/PageHandler.class.php');
-	require(_DAOL_PATH_ . 'classes/mobile/Mobile.class.php');
-	require(_DAOL_PATH_ . 'classes/validator/Validator.class.php');
-	require(_DAOL_PATH_ . 'classes/frontendfile/FrontEndFileHandler.class.php');
-	require(_DAOL_PATH_ . 'classes/security/Password.class.php');
-	require(_DAOL_PATH_ . 'classes/security/Security.class.php');
-	require(_DAOL_PATH_ . 'classes/security/IpFilter.class.php');
-	if(__DEBUG__) $GLOBALS['__elapsed_class_load__'] = getMicroTime() - __ClassLoadStartTime__;
+if(__DEBUG__){
+	define('__StartTime__', getMicroTime());
+}
+
+if(__DEBUG__){
+	$GLOBALS['__elapsed_class_load__'] = 0;
+}
+
+function __daol_autoload($class_name){
+	if(__DEBUG__){
+		$time_at = getMicroTime();
+	}
+
+	if(isset($GLOBALS['__daol_autoload_file_map'][strtolower($class_name)])){
+		require _DAOL_PATH_ . $GLOBALS['__daol_autoload_file_map'][strtolower($class_name)];
+	}
+	elseif(preg_match('/^([a-zA-Z0-9_]+?)(Admin)?(View|Controller|Model|Api|Wap|Mobile)?$/', $class_name, $matches)){
+		$candidate_filename = array();
+		$candidate_filename[] = 'modules/' . $matches[1] . '/' . $matches[1];
+		if(isset($matches[2]) && $matches[2]) $candidate_filename[] = 'admin';
+		$candidate_filename[] = (isset($matches[3]) && $matches[3]) ? strtolower($matches[3]) : 'class';
+		$candidate_filename[] = 'php';
+
+		$candidate_filename = implode('.', $candidate_filename);
+
+		if(file_exists(_DAOL_PATH_ . $candidate_filename)){
+			require _DAOL_PATH_ . $candidate_filename;
+		}
+	}
+
+	if(__DEBUG__){
+		$GLOBALS['__elapsed_class_load__'] += getMicroTime() - $time_at;
+	}
+}
+spl_autoload_register('__daol_autoload');
+
+if(version_compare(PHP_VERSION, '7.2', '<')){
+	class_alias('BaseObject', 'Object', true);
+}
+
+if(file_exists(_DAOL_PATH_  . '/vendor/autoload.php')){
+	require _DAOL_PATH_  . '/vendor/autoload.php';
 }

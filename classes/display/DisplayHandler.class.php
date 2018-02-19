@@ -33,17 +33,13 @@ class DisplayHandler extends Handler {
 		) $this->gz_enabled = true;
 		// Extract contents to display by the request method
 		if(Context::get('xeVirtualRequestMethod') == 'xml') {
-			require_once("./classes/display/VirtualXMLDisplayHandler.php");
 			$handler = new VirtualXMLDisplayHandler();
 		} else if(Context::getRequestMethod() == 'XMLRPC') {
-			require_once("./classes/display/XMLDisplayHandler.php");
 			$handler = new XMLDisplayHandler();
 			if(strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false) $this->gz_enabled = false;
 		} else if(Context::getRequestMethod() == 'JSON') {
-			require_once("./classes/display/JSONDisplayHandler.php");
 			$handler = new JSONDisplayHandler();
 		} else {
-			require_once("./classes/display/HTMLDisplayHandler.php");
 			$handler = new HTMLDisplayHandler();
 		}
 		
@@ -232,9 +228,9 @@ class DisplayHandler extends Handler {
 				$buff = str_repeat('=', 40) . "\n" . $buff . str_repeat('-', 40);
 				$buff = "\n<?php\n/*" . $buff . "*/\n?>\n";
 				
-				if(@!$fp = fopen($debug_file, 'a')) return;
-				fwrite($fp, $buff);
-				fclose($fp);
+				if(!@file_put_contents($debug_file, $buff, FILE_APPEND|LOCK_EX)){
+					return;
+				}
 			}
 		}
 	}
