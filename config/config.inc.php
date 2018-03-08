@@ -19,7 +19,7 @@ if(!defined('__XE__')) exit();
 /**
  * Display the version info of DAOL CMS.
  */
-define('__DAOL_VERSION__', '1.0.5.1-test');
+define('__DAOL_VERSION__', '1.0.5.1-test2');
 
 /**
  * Display the version info of Based XE.
