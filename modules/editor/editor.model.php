@@ -473,6 +473,12 @@ class editorModel extends editor {
 		$saved_doc = $output->data;
 		// Return null if no result is auto-saved
 		if(!$saved_doc) return;
+		
+		// @see https://github.com/daolcms/daol-core/issues/137
+		if($saved_doc->certify_key && !isset($auto_save_args->certify_key)){
+			return;
+		}
+		
 		// Check if the auto-saved document already exists
 		$oDocumentModel = &getModel('document');
 		$oSaved = $oDocumentModel->getDocument($saved_doc->document_srl);

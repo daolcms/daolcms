@@ -63,8 +63,10 @@ class editor extends ModuleObject {
 		// 2012. 08. 29 Add a trigger to copy additional setting when the module is copied 
 		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'editor', 'controller', 'triggerCopyModule', 'after')) return true;
 		
-		// 2018. 03. 06 Add column for autosave
+		// 2018. 03. 06 Add column and index for autosave
+		// @see https://github.com/daolcms/daol-core/issues/137
 		if(!$oDB->isColumnExists('editor_autosave', 'certify_key')) return true;
+		if(!$oDB->isIndexExists('editor_autosave', 'idx_certify_key')) return true;
 		
 		return false;
 	}
@@ -104,9 +106,13 @@ class editor extends ModuleObject {
 			$oModuleController->insertTrigger('module.procModuleAdminCopyModule', 'editor', 'controller', 'triggerCopyModule', 'after');
 		}
 		
-		// 2018. 03. 06 Add column for autosave
-		if(!$oDB->isColumnExists('editor_autosave','certify_key')) {
+		// 2018. 03. 06 Add column and index for autosave
+		// @see https://github.com/daolcms/daol-core/issues/137
+		if(!$oDB->isColumnExists('editor_autosave','certify_key')){
 			$oDB->addColumn('editor_autosave', 'certify_key', 'varchar', 100);
+		}
+		if(!$oDB->isIndexExists("editor_autosave","idx_certify_key")){
+			$oDB->addIndex("editor_autosave", "certify_key");
 		}
 		
 		return new BaseObject(0, 'success_updated');
