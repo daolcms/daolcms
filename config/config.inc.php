@@ -8,9 +8,10 @@
  */
 
 // Fixed issue displaying WARNING in php 5.4 or later
-if(version_compare(PHP_VERSION, '5.4.0', '<')) {
+if(version_compare(PHP_VERSION, '5.4.0', '<')){
 	@error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING);
-} else {
+}
+else{
 	@error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING ^ E_STRICT);
 }
 
@@ -47,9 +48,10 @@ define('_XE_PATH_', _DAOL_PATH_);
 ini_set('session.use_only_cookies', 0);
 
 // Include package setting file(official site, download site, etc)
-if(file_exists(_DAOL_PATH_ . 'config/package.inc.php')) {
+if(file_exists(_DAOL_PATH_ . 'config/package.inc.php')){
 	require _DAOL_PATH_ . 'config/package.inc.php';
-} else {
+}
+else{
 	/**
 	 * Package type
 	 */
@@ -87,11 +89,11 @@ if(file_exists(_DAOL_PATH_ . 'config/package.inc.php')) {
  * define('__ENABLE_PHPUNIT_TEST__', 0);
  * define('__PROXY_SERVER__', 'http://domain:port/path');
  */
-if(file_exists(_DAOL_PATH_ . 'config/config.user.inc.php')) {
+if(file_exists(_DAOL_PATH_ . 'config/config.user.inc.php')){
 	require _DAOL_PATH_ . 'config/config.user.inc.php';
 }
 
-if(!defined('__DEBUG__')) {
+if(!defined('__DEBUG__')){
 	/**
 	 * output debug message(bit value)
 	 *
@@ -105,7 +107,7 @@ if(!defined('__DEBUG__')) {
 	define('__DEBUG__', 0);
 }
 
-if(!defined('__DEBUG_OUTPUT__')) {
+if(!defined('__DEBUG_OUTPUT__')){
 	/**
 	 * output location of debug message
 	 *
@@ -118,7 +120,7 @@ if(!defined('__DEBUG_OUTPUT__')) {
 	define('__DEBUG_OUTPUT__', 0);
 }
 
-if(!defined('__DEBUG_PROTECT__')) {
+if(!defined('__DEBUG_PROTECT__')){
 	/**
 	 * output comments of the firePHP console and browser
 	 *
@@ -130,14 +132,14 @@ if(!defined('__DEBUG_PROTECT__')) {
 	define('__DEBUG_PROTECT__', 1);
 }
 
-if(!defined('__DEBUG_PROTECT_IP__')) {
+if(!defined('__DEBUG_PROTECT_IP__')){
 	/**
 	 * Set a ip address to allow debug
 	 */
 	define('__DEBUG_PROTECT_IP__', '127.0.0.1');
 }
 
-if(!defined('__DEBUG_DB_OUTPUT__')) {
+if(!defined('__DEBUG_DB_OUTPUT__')){
 	/**
 	 * DB error message definition
 	 *
@@ -149,7 +151,7 @@ if(!defined('__DEBUG_DB_OUTPUT__')) {
 	define('__DEBUG_DB_OUTPUT__', 0);
 }
 
-if(!defined('__LOG_SLOW_QUERY__')) {
+if(!defined('__LOG_SLOW_QUERY__')){
 	/**
 	 * Query log for only timeout query among DB queries
 	 *
@@ -162,7 +164,7 @@ if(!defined('__LOG_SLOW_QUERY__')) {
 	define('__LOG_SLOW_QUERY__', 0);
 }
 
-if(!defined('__DEBUG_QUERY__')) {
+if(!defined('__DEBUG_QUERY__')){
 	/**
 	 * Leave DB query information
 	 *
@@ -174,7 +176,7 @@ if(!defined('__DEBUG_QUERY__')) {
 	define('__DEBUG_QUERY__', 0);
 }
 
-if(!defined('__OB_GZHANDLER_ENABLE__')) {
+if(!defined('__OB_GZHANDLER_ENABLE__')){
 	/**
 	 * option to enable/disable a compression feature using ob_gzhandler
 	 *
@@ -187,7 +189,7 @@ if(!defined('__OB_GZHANDLER_ENABLE__')) {
 	define('__OB_GZHANDLER_ENABLE__', 1);
 }
 
-if(!defined('__ENABLE_PHPUNIT_TEST__')) {
+if(!defined('__ENABLE_PHPUNIT_TEST__')){
 	/**
 	 * decide to use/not use the php unit test (Path/tests/index.php)
 	 *
@@ -199,7 +201,7 @@ if(!defined('__ENABLE_PHPUNIT_TEST__')) {
 	define('__ENABLE_PHPUNIT_TEST__', 0);
 }
 
-if(!defined('__PROXY_SERVER__')) {
+if(!defined('__PROXY_SERVER__')){
 	/**
 	 * __PROXY_SERVER__ has server information to request to the external through the target server
 	 * FileHandler:: getRemoteResource uses the constant
@@ -207,7 +209,7 @@ if(!defined('__PROXY_SERVER__')) {
 	define('__PROXY_SERVER__', null);
 }
 
-if(!defined('__ERROR_LOG__')) {
+if(!defined('__ERROR_LOG__')){
 	/**
 	 * __ERROR_LOG__ is function of print PHP error log. It print over the warning error.
 	 *
@@ -217,7 +219,7 @@ if(!defined('__ERROR_LOG__')) {
 	define('__ERROR_LOG__', 0);
 }
 
-if(!defined('__DISABLE_DEFAULT_CSS__')) {
+if(!defined('__DISABLE_DEFAULT_CSS__')){
 	/**
 	 * Disable the DAOL's default CSS.
 	 *
@@ -232,7 +234,7 @@ if(!defined('__DISABLE_DEFAULT_CSS__')) {
 }
 
 // Require specific files when using Firebug console output
-if(__DEBUG_OUTPUT__ == 2) {
+if(__DEBUG_OUTPUT__ == 2){
 	require _DAOL_PATH_ . 'libs/FirePHPCore/FirePHP.class.php';
 }
 
