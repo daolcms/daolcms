@@ -112,7 +112,7 @@ class editor extends ModuleObject {
 			$oDB->addColumn('editor_autosave', 'certify_key', 'varchar', 100);
 		}
 		if(!$oDB->isIndexExists("editor_autosave","idx_certify_key")){
-			$oDB->addIndex("editor_autosave", "certify_key");
+			$oDB->addIndex("editor_autosave","idx_certify_key", "certify_key");
 		}
 		
 		return new BaseObject(0, 'success_updated');
