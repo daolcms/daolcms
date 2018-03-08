@@ -33,6 +33,7 @@ class TemplateHandler {
 		
 		$__templatehandler_root_tpl = null;
 		
+		ini_set('pcre.jit', "0");
 		$this->xe_path = rtrim(getScriptPath(), '/');
 	}
 	
@@ -346,7 +347,7 @@ class TemplateHandler {
 	 * @return string changed result
 	 **/
 	function _parseInline($buff) {
-		if(preg_match_all('/<([a-zA-Z]+\d?)(?>(?!<[a-z]+\d?[\s>]).)*?(?:[ \|]cond| loop)="/s', $buff, $match) === false) return $buff;
+		if(!preg_match_all('/<([a-zA-Z]+\d?)(?:\s)/', $buff, $match)) return $buff;
 		
 		$tags = array_diff(array_unique($match[1]), $this->skipTags);
 		

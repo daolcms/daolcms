@@ -354,17 +354,18 @@ class documentController extends document {
 		if(!isset($document_config->use_history)) $document_config->use_history = 'N';
 		$bUseHistory = $document_config->use_history == 'Y' || $document_config->use_history == 'Trace';
 		
-		if($bUseHistory) {
+		if($bUseHistory){
 			$args->history_srl = getNextSequence();
 			$args->document_srl = $obj->document_srl;
 			$args->module_srl = $module_srl;
 			if($document_config->use_history == 'Y') $args->content = $source_obj->get('content');
-			$args->nick_name = $source_obj->get('nick_name');
-			$args->member_srl = $source_obj->get('member_srl');
+			$args->nick_name = $logged_info->nick_name;
+			$args->member_srl = $logged_info->member_srl;
 			$args->regdate = $source_obj->get('last_update');
-			$args->ipaddress = $source_obj->get('ipaddress');
+			$args->ipaddress = $_SERVER['REMOTE_ADDR'];
 			$output = executeQuery("document.insertHistory", $args);
-		} else {
+		}
+		else {
 			$obj->ipaddress = $source_obj->get('ipaddress');
 		}
 		// List variables

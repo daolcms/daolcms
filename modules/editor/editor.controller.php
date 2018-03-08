@@ -218,22 +218,24 @@ class editorController extends editor {
 	 * @brief AutoSave
 	 **/
 	function doSaveDoc($args) {
-		
 		if(!$args->document_srl) $args->document_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
-		if(Context::get('is_logged')) {
-			$logged_info = Context::get('logged_info');
-			$args->member_srl = $logged_info->member_srl;
-		} else {
-			$args->ipaddress = $_SERVER['REMOTE_ADDR'];
-		}
+		
 		// Get the current module if module_srl doesn't exist
-		if(!$args->module_srl) {
-			$args->module_srl = Context::get('module_srl');
-		}
+		if(!$args->module_srl) $args->module_srl = Context::get('module_srl');
 		if(!$args->module_srl) {
 			$current_module_info = Context::get('current_module_info');
 			$args->module_srl = $current_module_info->module_srl;
 		}
+		
+		if(Context::get('is_logged')) {
+			$logged_info = Context::get('logged_info');
+			$args->member_srl = $logged_info->member_srl;
+		} else {
+			$args->certify_key = $_COOKIE['autosave_certify_key_' . $args->module_srl];
+			if(!$args->certify_key) $args->certify_key = Password::createSecureSalt(40);
+			setcookie('autosave_certify_key_' . $args->module_srl, $args->certify_key, $_SERVER['REQUEST_TIME'] + 3600, '', '', false, true);
+		}
+		
 		// Save
 		return executeQuery('editor.insertSavedDoc', $args);
 	}
@@ -273,18 +275,27 @@ class editorController extends editor {
 	 **/
 	function deleteSavedDoc($mode = false) {
 		$args = new stdClass();
-		if(Context::get('is_logged')) {
-			$logged_info = Context::get('logged_info');
-			$args->member_srl = $logged_info->member_srl;
-		} else {
-			$args->ipaddress = $_SERVER['REMOTE_ADDR'];
-		}
 		$args->module_srl = Context::get('module_srl');
+		
 		// Get the current module if module_srl doesn't exist
 		if(!$args->module_srl) {
 			$current_module_info = Context::get('current_module_info');
 			$args->module_srl = $current_module_info->module_srl;
 		}
+		
+		if(Context::get('is_logged')) {
+			$logged_info = Context::get('logged_info');
+			$args->member_srl = $logged_info->member_srl;
+		} else {
+			$args->certify_key = $_COOKIE['autosave_certify_key_' . $args->module_srl];
+			// @see https://github.com/daolcms/daol-core/issues/137
+			// 변경 이전에 작성된 게시물 호환성 유지
+			if(!$args->certify_key) {
+				unset($args->certify_key);
+				$args->ipaddress = $_SERVER['REMOTE_ADDR'];
+			}
+		}
+		
 		// Check if the auto-saved document already exists
 		$output = executeQuery('editor.getSavedDocument', $args);
 		$saved_doc = $output->data;
@@ -298,8 +309,10 @@ class editorController extends editor {
 				$output = ModuleHandler::triggerCall('editor.deleteSavedDoc', 'after', $saved_doc);
 			}
 		}
+		
 		// Delete the saved document
-		return executeQuery('editor.deleteSavedDoc', $args);
+		$output = executeQuery('editor.deleteSavedDoc', $args);
+		return $output;
 	}
 	
 	/**
