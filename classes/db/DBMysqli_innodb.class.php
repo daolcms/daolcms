@@ -269,7 +269,8 @@ class DBMysqli_innodb extends DBMysql {
 		 */
 		$longtext_exists = false;
 		foreach($fields as $field){
-			if(isset($resultArray[$field->name])) // When joined tables are used and the same column name appears twice, we should add it separately, otherwise bind_result fails{
+			// When joined tables are used and the same column name appears twice, we should add it separately, otherwise bind_result fails
+			if(isset($resultArray[$field->name])){
 				$field->name = 'repeat_' . $field->name;
 			}
 
