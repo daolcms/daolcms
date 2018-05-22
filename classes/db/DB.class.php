@@ -20,22 +20,6 @@ class DB {
 	static $isSupported = FALSE;
 
 	/**
-	 * priority of DBMS
-	 * @var array
-	 */
-	var $priority_dbms = array(
-		'mysqli' => 9,
-		'mysqli_innodb' => 8,
-		'mysql' => 7,
-		'mysql_innodb' => 6,
-		'cubrid' => 5,
-		'mssql' => 4,
-		'sqlite3_pdo' => 3,
-		'postgresql' => 2,
-		'firebird' => 1		
-	);
-
-	/**
 	 * count cache path
 	 * @var string
 	 */
@@ -288,31 +272,6 @@ class DB {
 
 		self::$supported_list = $get_supported_list;
 		return self::$supported_list;
-	}
-
-	/**
-	 * sort dbms as priority
-	 */
-	function _sortDBMS($a, $b){
-		if(!isset($this->priority_dbms[$a->db_type])){
-			$priority_a = 0;
-		}
-		else{
-			$priority_a = $this->priority_dbms[$a->db_type];
-		}
-
-		if(!isset($this->priority_dbms[$b->db_type])){
-			$priority_b = 0;
-		}
-		else{
-			$priority_b = $this->priority_dbms[$b->db_type];
-		}
-
-		if($priority_a == $priority_b){
-			return 0;
-		}
-
-		return ($priority_a > $priority_b) ? -1 : 1;
 	}
 
 	/**
