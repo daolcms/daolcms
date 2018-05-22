@@ -1,5 +1,6 @@
 <?php
 /* Copyright (C) NAVER <http://www.navercorp.com> */
+/* Copyright (C) DAOL Project <http://www.daolcms.org> */
 
 require_once('DBMysql.class.php');
 
@@ -10,6 +11,7 @@ require_once('DBMysql.class.php');
  * Does not use prepared statements, since mysql driver does not support them
  *
  * @author NAVER (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
  * @package /classes/db
  * @version 0.1
  */
@@ -42,16 +44,16 @@ class DBMysqli_innodb extends DBMysql {
 		// Attempt to connect
 		if($connection["db_port"]){
 			$result = @mysqli_connect($connection["db_hostname"]
-							, $connection["db_userid"]
-							, $connection["db_password"]
-							, $connection["db_database"]
-							, $connection["db_port"]);
+				, $connection["db_userid"]
+				, $connection["db_password"]
+				, $connection["db_database"]
+				, $connection["db_port"]);
 		}
 		else{
 			$result = @mysqli_connect($connection["db_hostname"]
-							, $connection["db_userid"]
-							, $connection["db_password"]
-							, $connection["db_database"]);
+				, $connection["db_userid"]
+				, $connection["db_password"]
+				, $connection["db_database"]);
 		}
 		$error = mysqli_connect_errno();
 		if($error){

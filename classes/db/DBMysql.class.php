@@ -14,7 +14,7 @@
 class DBMysql extends DB {
 
 	/**
-	 * prefix of a tablename (One or more DAOLs can be installed in a single DB)
+	 * prefix of a tablename (One or more DAOL CMS can be installed in a single DB)
 	 * @var string
 	 */
 	var $prefix = 'daol_'; // / <
