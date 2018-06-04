@@ -463,15 +463,15 @@
 			<value xml:lang="vi"><![CDATA[<span style="color:#FFD700;"><b>Không khuyến cáo sử dụng PostgreSQL.</b></span><br />Sử dụng <b>PostgreSQL</b> Database.]]></value>
 		</item>
 		<item name="firebird">
-			<value xml:lang="ko"><![CDATA[<span style="color:#FFD700;"><b>Firebird 사용을 권장하지 않습니다.</b></span><br />Firebird를 이용합니다.<br />DB 생성 방법 (create database "/path/dbname.fdb" page_size=8192 default character set UTF-8;)]]></value>
-			<value xml:lang="en"><![CDATA[<span style="color:#FFD700;"><b>Not recommended to use Firebird.</b></span><br />Use Firebird as a database.<br />You can create a database with (create database "/path/dbname.fdb" page_size=8192 default character set UTF-8;)]]></value>
+			<value xml:lang="ko"><![CDATA[<span style="color:#FFD700;"><b>Firebird 사용을 권장하지 않습니다.</b></span><br />Firebird를 이용합니다.<br />DB 생성 방법 (create database "/path/dbname.fdb" page_size=8192 default character set UTF8;)]]></value>
+			<value xml:lang="en"><![CDATA[<span style="color:#FFD700;"><b>Not recommended to use Firebird.</b></span><br />Use Firebird as a database.<br />You can create a database with (create database "/path/dbname.fdb" page_size=8192 default character set UTF8;)]]></value>
 			<value xml:lang="jp"><![CDATA[<span style="color:#FFD700;"><b>Firebirdの使用することをお勧めしません。</b></span><br />Firebird DBを利用します。<br />DB生成方法 (create database "/path/dbname.fdb" page_size=8192 default character set UTF8;)]]></value>
 			<value xml:lang="zh-CN"><![CDATA[<span style="color:#FFD700;"><b>不推荐使用Firebird。</b></span><br />使用Firebird DB。]]></value>
 			<value xml:lang="zh-TW"><![CDATA[<span style="color:#FFD700;"><b>不推薦使用Firebird。</b></span><br />使用 Firebird DB。<br />DB 建立方式 (create database "/path/dbname.fdb" page_size=8192 default character set UTF8;)]]></value>
 			<value xml:lang="fr"><![CDATA[<span style="color:#FFD700;"><b>Pas recommandé d'utiliser Firebird.</b></span><br />Utiliser la Base de Données de Firebird.]]></value>
 			<value xml:lang="ru"><![CDATA[<span style="color:#FFD700;"><b>Не рекомендуется указывать использовать Firebird.</b></span><br />Используем Firebird DB.]]></value>
 			<value xml:lang="es"><![CDATA[<span style="color:#FFD700;"><b>No se recomienda usar Firebird.</b></span><br />Usar BD Firebird. Cómo crear <br /> PP (crear base de datos "/ path / dbname.fdb" page_size = 8192 el conjunto de caracteres UTF8 por defecto;)]]></value>
-			<value xml:lang="tr"><![CDATA[<span style="color:#FFD700;"><b>Firebird kullanmanız tavsiye edilmez.</b></span><br />Firebird'ü veritabanı olarak kullanın.<br /> (create database "/path/dbname.fdb" page_size=8192 default character set UTF-8;) ile veritabanı oluşturabilirsiniz]]></value>
+			<value xml:lang="tr"><![CDATA[<span style="color:#FFD700;"><b>Firebird kullanmanız tavsiye edilmez.</b></span><br />Firebird'ü veritabanı olarak kullanın.<br /> (create database "/path/dbname.fdb" page_size=8192 default character set UTF8;) ile veritabanı oluşturabilirsiniz]]></value>
 			<value xml:lang="vi"><![CDATA[<span style="color:#FFD700;"><b>Không khuyến cáo sử dụng Firebird.</b></span><br />Sử dụng <b>Firebird</b> Database.]]></value>
 		</item>
 	</item>
