@@ -2801,4 +2801,9 @@
 		<value xml:lang="en"><![CDATA[Completed.]]></value>
 		<value xml:lang="jp"><![CDATA[完了しました。]]></value>
 	</item>
+	<item name="allow_transparent_thumbnail">
+		<value xml:lang="ko"><![CDATA[리사이즈 이미지에 투명 배경을 허용합니다. (PNG only)]]></value>
+		<value xml:lang="en"><![CDATA[Allow transparent background on resized image (PNG only)]]></value>
+		<value xml:lang="jp"><![CDATA[サイズ変更した画像に透明な背景を許可します。(PNG only)]]></value>
+	</item>
 </lang>

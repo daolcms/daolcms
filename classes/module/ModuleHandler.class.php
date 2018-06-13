@@ -613,7 +613,7 @@ class ModuleHandler extends Handler {
 			Context::addHtmlFooter($footer);
 		}
 		
-		if($type == "view" && $kind != 'admin') {
+		if(($type == 'view' || $type == 'mobile') && $kind != 'admin'){
 			$module_config = $oModuleModel->getModuleConfig('module');
 			if($module_config->htmlFooter) {
 				Context::addHtmlFooter($module_config->htmlFooter);

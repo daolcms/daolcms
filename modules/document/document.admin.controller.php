@@ -59,7 +59,9 @@ class documentAdminController extends document {
 		$triggerObj = new stdClass();
 		$triggerObj->document_srls = implode(',', $document_srl_list);
 		$triggerObj->module_srl = $module_srl;
+		$triggerObj->source_module_srl = array();
 		$triggerObj->category_srl = $category_srl;
+		
 		// Call a trigger (before)
 		$output = ModuleHandler::triggerCall('document.moveDocumentModule', 'before', $triggerObj);
 		if(!$output->toBool()) {
@@ -71,6 +73,8 @@ class documentAdminController extends document {
 			$document_srl = $document_srl_list[$i];
 			$oDocument = $oDocumentModel->getDocument($document_srl);
 			if(!$oDocument->isExists()) continue;
+			
+			$triggerObj->source_module_srl[$document_srl] = $oDocument->get('module_srl');
 			
 			$source_category_srl = $oDocument->get('category_srl');
 			
