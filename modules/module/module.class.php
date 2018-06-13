@@ -49,6 +49,8 @@ class module extends ModuleObject {
 		$oDB = &DB::getInstance();
 		// 2008. 10. 27 Add multi-index in the table, the module_part_config
 		if(!$oDB->isIndexExists("module_part_config", "idx_module_part_config")) return true;
+		// 2018. 06. 12 Add a unique key to the module_part_config table
+		if(!$oDB->isIndexExists("module_part_config", "unique_module_part_config")) return true;
 		// 2008. 11. 13 Delete unique constraint on mid in modules. Add site_srl and then create unique index on site_srl and mid
 		if(!$oDB->isIndexExists('modules', "idx_site_mid")) return true;
 		// Move permissions/skin information of all modules to the table, grants.
@@ -341,6 +343,11 @@ class module extends ModuleObject {
 				}
 			}
 		}
+		
+		if(!$oDB->isIndexExists("module_part_config", "unique_module_part_config")){
+			$oDB->addIndex("module_part_config", "unique_module_part_config", array("module", "module_srl"), TRUE);
+		}
+		
 		return new BaseObject(0, 'success_updated');
 	}
 	

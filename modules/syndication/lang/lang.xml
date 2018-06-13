@@ -1,10 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <lang>
-	<item name="help">
-		<value xml:lang="ko"><![CDATA[도움말]]></value>
-		<value xml:lang="en"><![CDATA[Help]]></value>
-		<value xml:lang="jp"><![CDATA[ヘルプ]]></value>
-	</item>
 	<item name="syndication">
 		<value xml:lang="ko"><![CDATA[신디케이션]]></value>
 		<value xml:lang="en"><![CDATA[Syndication]]></value>
