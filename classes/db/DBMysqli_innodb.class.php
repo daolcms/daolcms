@@ -5,8 +5,8 @@
 require_once('DBMysql.class.php');
 
 /**
- * Class to use MySQLi DBMS as mysqli_*
- * mysql handling class
+ * Class to use MySQLi innoDB DBMS as mysqli_*
+ * mysql innodb handling class
  *
  * Does not use prepared statements, since mysql driver does not support them
  *
@@ -15,23 +15,23 @@ require_once('DBMysql.class.php');
  * @package /classes/db
  * @version 0.1
  */
-class DBMysqli extends DBMysql {
+class DBMysqli_innodb extends DBMysql {
 
 	/**
 	 * Constructor
 	 * @return void
 	 */
-	function DBMysqli($auto_connect = TRUE){
+	function DBMysqli_innodb($auto_connect = TRUE){
 		$this->_setDBInfo();
 		if($auto_connect) $this->_connect();
 	}
 
 	/**
 	 * Create an instance of this class
-	 * @return DBMysqli return DBMysqli object instance
+	 * @return DBMysqli_innodb return DBMysqli_innodb object instance
 	 */
 	function create(){
-		return new DBMysqli;
+		return new DBMysqli_innodb;
 	}
 
 	/**
@@ -44,16 +44,16 @@ class DBMysqli extends DBMysql {
 		// Attempt to connect
 		if($connection["db_port"]){
 			$result = @mysqli_connect($connection["db_hostname"]
-							, $connection["db_userid"]
-							, $connection["db_password"]
-							, $connection["db_database"]
-							, $connection["db_port"]);
+				, $connection["db_userid"]
+				, $connection["db_password"]
+				, $connection["db_database"]
+				, $connection["db_port"]);
 		}
 		else{
 			$result = @mysqli_connect($connection["db_hostname"]
-							, $connection["db_userid"]
-							, $connection["db_password"]
-							, $connection["db_database"]);
+				, $connection["db_userid"]
+				, $connection["db_password"]
+				, $connection["db_database"]);
 		}
 		$error = mysqli_connect_errno();
 		if($error){
@@ -73,6 +73,57 @@ class DBMysqli extends DBMysql {
 	function _close($connection){
 		mysqli_close($connection);
 	}
+
+	/**
+	 * DB transaction start
+	 * this method is private
+	 * @return boolean
+	 */
+	function _begin($transactionLevel = 0){
+		$connection = $this->_getConnection('master');
+
+		if(!$transactionLevel){
+			$this->_query("begin");
+		}
+		else{
+			$this->_query("SAVEPOINT SP" . $transactionLevel, $connection);
+		}
+		return true;
+	}
+
+	/**
+	 * DB transaction rollback
+	 * this method is private
+	 * @return boolean
+	 */
+	function _rollback($transactionLevel = 0){
+		$connection = $this->_getConnection('master');
+
+		$point = $transactionLevel - 1;
+
+		if($point){
+			$this->_query("ROLLBACK TO SP" . $point, $connection);
+		}
+		else{
+			mysqli_rollback($connection);
+			$this->setQueryLog( array("query"=>"rollback") );
+		}
+		return true;
+	}
+
+	/**
+	 * DB transaction commit
+	 * this method is private
+	 * @return boolean
+	 */
+	function _commit(){
+		$connection = $this->_getConnection('master');
+		mysqli_commit($connection);
+		$this->setQueryLog( array("query"=>"commit") );
+		return true;
+	}
+
+
 
 	/**
 	 * Handles quatation of the string variables from the query
@@ -377,9 +428,83 @@ class DBMysqli extends DBMysql {
 		return mysqli_free_result($result);
 	}
 
+	/**
+	 * Create table by using the schema xml
+	 *
+	 * type : number, varchar, tinytext, text, bigtext, char, date, \n
+	 * opt : notnull, default, size\n
+	 * index : primary key, index, unique\n
+	 * @param string $xml_doc xml schema contents
+	 * @return void|object
+	 */
+	function _createTable($xml_doc){
+		// xml parsing
+		$oXml = new XmlParser();
+		$xml_obj = $oXml->parse($xml_doc);
+		// Create a table schema
+		$table_name = $xml_obj->table->attrs->name;
+		if($this->isTableExists($table_name)){
+			return;
+		}
+		$table_name = $this->prefix . $table_name;
+
+		if(!is_array($xml_obj->table->column)){
+			$columns[] = $xml_obj->table->column;
+		}
+		else{
+			$columns = $xml_obj->table->column;
+		}
+
+		foreach($columns as $column){
+			$name = $column->attrs->name;
+			$type = $column->attrs->type;
+			$size = $column->attrs->size;
+			$notnull = $column->attrs->notnull;
+			$primary_key = $column->attrs->primary_key;
+			$index = $column->attrs->index;
+			$unique = $column->attrs->unique;
+			$default = $column->attrs->default;
+			$auto_increment = $column->attrs->auto_increment;
+
+			$column_schema[] = sprintf('`%s` %s%s %s %s %s', $name, $this->column_type[$type], $size ? '(' . $size . ')' : '', isset($default) ? "default '" . $default . "'" : '', $notnull ? 'not null' : '', $auto_increment ? 'auto_increment' : '');
+
+			if($primary_key){
+				$primary_list[] = $name;
+			}
+			else if($unique){
+				$unique_list[$unique][] = $name;
+			}
+			else if($index){
+				$index_list[$index][] = $name;
+			}
+		}
+
+		if(count($primary_list)){
+			$column_schema[] = sprintf("primary key (%s)", '`' . implode($primary_list, '`,`') . '`');
+		}
+
+		if(count($unique_list)){
+			foreach($unique_list as $key => $val){
+				$column_schema[] = sprintf("unique %s (%s)", $key, '`' . implode($val, '`,`') . '`');
+			}
+		}
+
+		if(count($index_list)){
+			foreach($index_list as $key => $val){
+				$column_schema[] = sprintf("index %s (%s)", $key, '`' . implode($val, '`,`') . '`');
+			}
+		}
+
+		$schema = sprintf('create table `%s` (%s%s) %s;', $this->addQuotes($table_name), "\n", implode($column_schema, ",\n"), "ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci");
+
+		$output = $this->_query($schema);
+		if(!$output){
+			return false;
+		}
+	}
 }
 
-DBMysqli::$isSupported = function_exists('mysqli_connect');
+DBMysqli_innodb::$isSupported = function_exists('mysqli_connect');
 
 /* End of file DBMysqli.class.php */
 /* Location: ./classes/db/DBMysqli.class.php */

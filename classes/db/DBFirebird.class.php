@@ -14,7 +14,7 @@ class DBFireBird extends DB {
 	/**
 	 * @brief connection to Firebird DB
 	 **/
-	var $prefix = 'daol_'; // / <prefix of XE tables(One more XE can be installed on a single DB)
+	var $prefix = 'daol_'; // / <prefix of DAOL CMS tables(One more DAOL CMS can be installed on a single DB)
 	var $idx_no = 0; // counter for creating an index
 	var $comment_syntax = '/* %s */';
 	
@@ -38,7 +38,7 @@ class DBFireBird extends DB {
 	/**
 	 * @brief constructor
 	 **/
-	function DBFireBird() {
+	function DBFireBird(){
 		$this->_setDBInfo();
 		$this->_connect();
 	}
@@ -46,50 +46,43 @@ class DBFireBird extends DB {
 	/**
 	 * @brief create an instance of this class
 	 */
-	function create() {
+	function create(){
 		return new DBFireBird;
-	}
-	
-	/**
-	 * @brief Return if installable
-	 **/
-	function isSupported() {
-		if(!function_exists('ibase_connect')) return false;
-		return true;
 	}
 	
 	/**
 	 * @brief DB Connection
 	 **/
-	function __connect($connection) {
+	function __connect($connection){
 		//if(strpos($this->hostname, ':')===false && $this->port) $this->hostname .= ':'.$this->port;
 		// attempts to connect
 		$host = $connection["db_hostname"] . "/" . $connection["db_port"] . ":" . $connection["db_database"];
 		
 		$result = ibase_connect($host, $connection["db_userid"], $connection["db_password"]);
-		if(ibase_errmsg()) {
+		if(ibase_errmsg()){
 			$this->setError(ibase_errcode(), ibase_errmsg());
 			return;
 		}
 		// Error when Firebird version is lower than 2.0
-		if(($service = ibase_service_attach($connection["db_hostname"], $connection["db_userid"], $connection["db_password"])) != FALSE) {
+		if(($service = ibase_service_attach($connection["db_hostname"], $connection["db_userid"], $connection["db_password"])) != FALSE){
 			// get server version and implementation strings
 			$server_info = ibase_server_info($service, IBASE_SVC_SERVER_VERSION);
 			ibase_service_detach($service);
-		} else {
+		}
+		else{
 			$this->setError(ibase_errcode(), ibase_errmsg());
 			ibase_close($result);
 			return;
 		}
 		
 		$pos = strpos($server_info, "Firebird");
-		if($pos !== false) {
+		if($pos !== false){
 			$ver = substr($server_info, $pos + strlen("Firebird"));
 			$ver = trim($ver);
 		}
 		
-		if($ver < "2.0") {
-			$this->setError(-1, "XE cannot be installed under the version of firebird 2.0. Current firebird version is " . $ver);
+		if($ver < "2.0"){
+			$this->setError(-1, "DAOL CMS cannot be installed under the version of firebird 2.0. Current firebird version is " . $ver);
 			ibase_close($result);
 			return;
 		}
@@ -99,7 +92,7 @@ class DBFireBird extends DB {
 	/**
 	 * @brief DB disconnect
 	 **/
-	function _close($connection) {
+	function _close($connection){
 		ibase_commit($connection);
 		ibase_close($connection);
 	}
@@ -107,7 +100,7 @@ class DBFireBird extends DB {
 	/**
 	 * @brief handles quatation of the string variables from the query
 	 **/
-	function addQuotes($string) {
+	function addQuotes($string){
 		if(version_compare(PHP_VERSION, "5.4.0", "<") && get_magic_quotes_gpc())
 			$string = stripslashes(str_replace("\\", "\\\\", $string));
 		if(!is_numeric($string))
@@ -118,13 +111,15 @@ class DBFireBird extends DB {
 	/**
 	 * @brief put double quotes for tabls, column names in the query statement
 	 **/
-	function addDoubleQuotes($string) {
+	function addDoubleQuotes($string){
 		if($string == "*") return $string;
 		
-		if(strpos($string, "'") !== false) {
+		if(strpos($string, "'") !== false){
 			$string = str_replace("'", "\"", $string);
-		} else if(strpos($string, "\"") !== false) {
-		} else {
+		}
+		else if(strpos($string, "\"") !== false){
+		}
+		else{
 			$string = "\"" . $string . "\"";
 		}
 		
@@ -134,24 +129,26 @@ class DBFireBird extends DB {
 	/**
 	 * @brief put double quotes for tabls, column names in the query statement
 	 **/
-	function autoQuotes($string) {
+	function autoQuotes($string){
 		$string = strtolower($string);
 		// for substr function
-		if(strpos($string, "substr(") !== false) {
+		if(strpos($string, "substr(") !== false){
 			$tokken = strtok($string, "(,)");
 			$tokken = strtok("(,)");
-			while($tokken) {
+			while($tokken){
 				$tokkens[] = $tokken;
 				$tokken = strtok("(,)");
 			}
 			
-			if(count($tokkens) !== 3) return $string;
+			if(count($tokkens) !== 3){
+				return $string;
+			}
 			return sprintf("substring(%s from %s for %s)", $this->addDoubleQuotes($tokkens[0]), $tokkens[1], $tokkens[2]);
 		}
 		
 		// as
 		$as = false;
-		if(($no1 = strpos($string, " as ")) !== false) {
+		if(($no1 = strpos($string, " as ")) !== false){
 			$as = substr($string, $no1, strlen($string) - $no1);
 			$string = substr($string, 0, $no1);
 			
@@ -162,7 +159,7 @@ class DBFireBird extends DB {
 		// for functions
 		$tmpFunc1 = null;
 		$tmpFunc2 = null;
-		if(($no1 = strpos($string, '(')) !== false && ($no2 = strpos($string, ')')) !== false) {
+		if(($no1 = strpos($string, '(')) !== false && ($no2 = strpos($string, ')')) !== false){
 			$tmpFunc1 = substr($string, 0, $no1 + 1);
 			$tmpFunc2 = substr($string, $no2, strlen($string) - $no2 + 1);
 			$string = trim(substr($string, $no1 + 1, $no2 - $no1 - 1));
@@ -170,48 +167,64 @@ class DBFireBird extends DB {
 		// for (table.column) structure
 		preg_match("/((?i)[a-z0-9_-]+)[.]((?i)[a-z0-9_\-\*]+)/", $string, $matches);
 		
-		if($matches) {
+		if($matches){
 			$string = $this->addDoubleQuotes($matches[1]) . "." . $this->addDoubleQuotes($matches[2]);
-		} else {
+		}
+		else{
 			$string = $this->addDoubleQuotes($string);
 		}
 		
-		if($tmpFunc1 != null) $string = $tmpFunc1 . $string;
-		if($tmpFunc2 != null) $string = $string . $tmpFunc2;
+		if($tmpFunc1 != null){
+			$string = $tmpFunc1 . $string;
+		}
+		if($tmpFunc2 != null){
+			$string = $string . $tmpFunc2;
+		}
 		
-		if($as !== false) $string = $string . " as " . $as;
+		if($as !== false){
+			$string = $string . " as " . $as;
+		}
 		return $string;
 	}
 	
-	function autoValueQuotes($string, $tables) {
+	function autoValueQuotes($string, $tables){
 		$tok = strtok($string, ",");
-		while($tok !== false) {
+		while($tok !== false){
 			$values[] = $tok;
 			$tok = strtok(",");
 		}
 		
-		foreach($values as $val1) {
+		foreach($values as $val1){
 			// for (table.column) structure
 			preg_match("/((?i)[a-z0-9_-]+)[.]((?i)[a-z0-9_\-\*]+)/", $val1, $matches);
-			if($matches) {
+			if($matches){
 				$isTable = false;
 				
-				foreach($tables as $key2 => $val2) {
-					if($key2 == $matches[1]) $isTable = true;
-					if($val2 == $matches[1]) $isTable = true;
+				foreach($tables as $key2 => $val2){
+					if($key2 == $matches[1]){
+						$isTable = true;
+					}
+					if($val2 == $matches[1]){
+						$isTable = true;
+					}
 				}
 				
-				if($isTable) {
+				if($isTable){
 					$return[] = $this->addDoubleQuotes($matches[1]) . "." . $this->addDoubleQuotes($matches[2]);
-				} else {
+				}
+				else{
 					$return[] = $val1;
 				}
-			} else if(!is_numeric($val1)) {
-				if(strpos($val1, "'") !== 0)
+			}
+			else if(!is_numeric($val1)){
+				if(strpos($val1, "'") !== 0){
 					$return[] = "'" . $val1 . "'";
-				else
+				}
+				else{
 					$return[] = $val1;
-			} else {
+				}
+			}
+			else{
 				$return[] = $val1;
 			}
 		}
@@ -222,14 +235,14 @@ class DBFireBird extends DB {
 	/**
 	 * @brief Begin transaction
 	 **/
-	function _begin($transactionLevel = 0) {
+	function _begin($transactionLevel = 0){
 		return true;
 	}
 	
 	/**
 	 * @brief Rollback
 	 **/
-	function _rollback($transactionLevel = 0) {
+	function _rollback($transactionLevel = 0){
 		$connection = $this->_getConnection('master');
 		ibase_rollback($connection);
 		return true;
@@ -238,7 +251,7 @@ class DBFireBird extends DB {
 	/**
 	 * @brief Commits
 	 **/
-	function _commit() {
+	function _commit(){
 		$connection = $this->_getConnection('master');
 		ibase_commit($connection);
 		return true;
@@ -253,26 +266,31 @@ class DBFireBird extends DB {
 	 *        object if a row returned \n
 	 *        return\n
 	 **/
-	function __query($query, $connection, $params = null) {
-		if(count($params) == 0) {
+	function __query($query, $connection, $params = null){
+		if(count($params) == 0){
 			// Execute the query statement
 			$result = ibase_query($connection, $query);
-		} else {
+		}
+		else{
 			// Execute the query(for blob type)
 			$query = ibase_prepare($connection, $query);
 			//$fnarr = array_merge(array($query), $params);
 			$result = ibase_execute($query);
 		}
 		// Error Check
-		if(ibase_errmsg()) $this->setError(ibase_errcode(), ibase_errmsg());
+		if(ibase_errmsg()){
+			$this->setError(ibase_errcode(), ibase_errmsg());
+		}
 		
 		return $result;
 	}
 	
 	function _queryInsertUpdateDeleteSelect($query, $params = null, $connection) {
-		if(!$connection) return;
+		if(!$connection){
+			return;
+		}
 		
-		if(count($params) == 0) {
+		if(count($params) == 0){
 			// Notify to start a query execution
 			$this->actStart($query);
 			// Execute the query statement
@@ -280,7 +298,8 @@ class DBFireBird extends DB {
 			$result = ibase_query($trans, $query);
 			ibase_commit($trans);
 			unset($trans);
-		} else {
+		}
+		else{
 			// Notify to start a query execution
 			$log = $query . "\n\t\t\t";
 			$log .= implode(",", $params);
@@ -291,20 +310,26 @@ class DBFireBird extends DB {
 			$result = ibase_execute($query);
 		}
 		// Error Check
-		if(ibase_errmsg()) $this->setError(ibase_errcode(), ibase_errmsg());
+		if(ibase_errmsg()){
+			$this->setError(ibase_errcode(), ibase_errmsg());
+		}
 		// Notify to complete a query execution
 		$this->actFinish();
 		// Return the result
 		return $result;
 	}
 	
-	function getTableInfo($result) {
+	function getTableInfo($result){
 		$coln = ibase_num_fields($result);
 		$column_type = array();
-		for($i = 0; $i < $coln; $i++) {
+		for($i = 0; $i < $coln; $i++){
 			$col_info = ibase_field_info($result, $i);
-			if($col_info['name'] === "") $column_type[$col_info['alias']] = $col_info['type'];
-			else    $column_type[$col_info['name']] = $col_info['type'];
+			if($col_info['name'] === ""){
+				$column_type[$col_info['alias']] = $col_info['type'];
+			}
+			else{
+				$column_type[$col_info['name']] = $col_info['type'];
+			}
 		}
 		return $column_type;
 	}
@@ -312,38 +337,42 @@ class DBFireBird extends DB {
 	/**
 	 * @brief Fetch the result
 	 **/
-	function _fetch($result, $output = null) {
-		if(!$this->isConnected() || $this->isError() || !$result) return;
+	function _fetch($result, $output = null){
+		if(!$this->isConnected() || $this->isError() || !$result){
+			return;
+		}
 		$output->column_type = $this->getTableInfo($result);
 		
-		while($tmp = ibase_fetch_object($result)) {
-			foreach($tmp as $key => $val) {
+		while($tmp = ibase_fetch_object($result)){
+			foreach($tmp as $key => $val){
 				$type = $output->column_type[$key];
 				// type value is null when $key is an alias. so get a type by finding actual coloumn name
-				if($type == null && $output->columns && count($output->columns)) {
-					foreach($output->columns as $cols) {
-						if($cols['alias'] == $key) {
+				if($type == null && $output->columns && count($output->columns)){
+					foreach($output->columns as $cols){
+						if($cols['alias'] == $key){
 							// checks if the format is table.column or a regular expression
 							preg_match("/\w+[.](\w+)/", $cols['name'], $matches);
-							if($matches) {
+							if($matches){
 								$type = $output->column_type[$matches[1]];
-							} else {
+							}
+							else{
 								$type = $output->column_type[$cols['name']];
 							}
 						}
 					}
 				}
 				
-				if(($type == "text" || $type == "bigtext" || $type == "BLOB") && $tmp->{$key}) {
+				if(($type == "text" || $type == "bigtext" || $type == "BLOB") && $tmp->{$key}){
 					$blob_data = ibase_blob_info($tmp->{$key});
 					$blob_hndl = ibase_blob_open($tmp->{$key});
 					
-					if($blob_data[1] === 1) {
+					if($blob_data[1] === 1){
 						$tmp->{$key} = ibase_blob_get($blob_hndl, $blob_data[0]);
-					} else {
-						for($i = 0; $i < $blob_data[1]; $i++) {
+					}
+					else {
+						for($i = 0; $i < $blob_data[1]; $i++){
 							$readsize = $blob_data[2];
-							if($i == ($blob_data[1] - 1)) {
+							if($i == ($blob_data[1] - 1)){
 								$readsize = $blob_data[0] - (($blob_data[1] - 1) * $blob_data[2]);
 							}
 							$totalimage .= ibase_blob_get($blob_hndl, $readsize);
@@ -351,7 +380,8 @@ class DBFireBird extends DB {
 					}
 					
 					ibase_blob_close($blob_hndl);
-				} else if($type == "CHAR") {
+				}
+				else if($type == "CHAR"){
 					$tmp->{$key} = trim($tmp->{$key});    // remove blanks generated when DB character set is UTF8
 				}
 			}
@@ -366,7 +396,7 @@ class DBFireBird extends DB {
 	/**
 	 * @brief return sequence value incremented by 1(increase the value of the generator in firebird)
 	 **/
-	function getNextSequence() {
+	function getNextSequence(){
 		//$gen = "GEN_".$this->prefix."sequence_ID";
 		$gen = 'GEN_XE_SEQUENCE_ID';
 		$sequence = ibase_gen_id($gen, 1);
@@ -376,13 +406,15 @@ class DBFireBird extends DB {
 	/**
 	 * @brief returns if the table already exists
 	 **/
-	function isTableExists($target_name) {
+	function isTableExists($target_name){
 		$query = sprintf("select rdb\$relation_name from rdb\$relations where rdb\$system_flag=0 and rdb\$relation_name = '%s%s';", $this->prefix, $target_name);
 		$result = $this->_query($query);
 		$tmp = $this->_fetch($result);
 		$connection = $this->_getConnection('master');
-		if(!$tmp) {
-			if(!$this->transaction_started) ibase_rollback($connection);
+		if(!$tmp){
+			if(!$this->transaction_started){
+				ibase_rollback($connection);
+			}
 			return false;
 		}
 		if(!$this->transaction_started) ibase_commit($connection);
@@ -392,22 +424,38 @@ class DBFireBird extends DB {
 	/**
 	 * @brief add a column to the table
 	 **/
-	function addColumn($table_name, $column_name, $type = 'number', $size = '', $default = '', $notnull = false) {
+	function addColumn($table_name, $column_name, $type = 'number', $size = '', $default = '', $notnull = false){
 		$type = $this->column_type[$type];
-		if(strtoupper($type) == 'INTEGER') $size = null;
-		else if(strtoupper($type) == 'BIGINT') $size = null;
-		else if(strtoupper($type) == 'BLOB SUB_TYPE TEXT SEGMENT SIZE 32') $size = null;
-		else if(strtoupper($type) == 'VARCHAR' && !$size) $size = 256;
+		if(strtoupper($type) == 'INTEGER'){
+			$size = null;
+		}
+		else if(strtoupper($type) == 'BIGINT'){
+			$size = null;
+		}
+		else if(strtoupper($type) == 'BLOB SUB_TYPE TEXT SEGMENT SIZE 32'){
+			$size = null;
+		}
+		else if(strtoupper($type) == 'VARCHAR' && !$size){
+			$size = 256;
+		}
 		
 		$query = sprintf("ALTER TABLE \"%s%s\" ADD \"%s\" ", $this->prefix, $table_name, $column_name);
-		if($size) $query .= sprintf(" %s(%s) ", $type, $size);
-		else $query .= sprintf(" %s ", $type);
-		if(!is_null($default)) $query .= sprintf(" DEFAULT '%s' ", $default);
-		if($notnull) $query .= " NOT NULL ";
+		if($size){
+			$query .= sprintf(" %s(%s) ", $type, $size);
+		}
+		else{
+			$query .= sprintf(" %s ", $type);
+		}
+		if(!is_null($default)){
+			$query .= sprintf(" DEFAULT '%s' ", $default);
+		}
+		if($notnull){
+			$query .= " NOT NULL ";
+		}
 		
 		$this->_query($query);
 		
-		if(!$this->transaction_started) {
+		if(!$this->transaction_started){
 			$connection = $this->_getConnection('master');
 			ibase_commit($connection);
 		}
@@ -416,10 +464,10 @@ class DBFireBird extends DB {
 	/**
 	 * @brief drop a column from the table
 	 **/
-	function dropColumn($table_name, $column_name) {
+	function dropColumn($table_name, $column_name){
 		$query = sprintf("alter table %s%s drop %s ", $this->prefix, $table_name, $column_name);
 		$this->_query($query);
-		if(!$this->transaction_started) {
+		if(!$this->transaction_started){
 			$connection = $this->_getConnection('master');
 			ibase_commit($connection);
 		}
@@ -430,24 +478,28 @@ class DBFireBird extends DB {
 	/**
 	 * @brief return column information of the table
 	 **/
-	function isColumnExists($table_name, $column_name) {
+	function isColumnExists($table_name, $column_name){
 		$query = sprintf("SELECT RDB\$FIELD_NAME as \"FIELD\" FROM RDB\$RELATION_FIELDS WHERE RDB\$RELATION_NAME = '%s%s'", $this->prefix, $table_name);
 		$result = $this->_query($query);
 		$connection = $this->_getConnection('master');
 		
-		if($this->isError()) {
+		if($this->isError()){
 			if(!$this->transaction_started) ibase_rollback($connection);
 			return false;
 		}
 		
 		$output = $this->_fetch($result);
-		if(!$this->transaction_started) ibase_commit($connection);
+		if(!$this->transaction_started){
+			ibase_commit($connection);
+		}
 		
-		if($output) {
+		if($output){
 			$column_name = strtolower($column_name);
-			foreach($output as $key => $val) {
+			foreach($output as $key => $val){
 				$name = trim(strtolower($val->FIELD));
-				if($column_name == $name) return true;
+				if($column_name == $name){
+					return true;
+				}
 			}
 		}
 		return false;
@@ -458,35 +510,41 @@ class DBFireBird extends DB {
 	 * $target_columns = array(col1, col2)
 	 * $is_unique? unique : none
 	 **/
-	function addIndex($table_name, $index_name, $target_columns, $is_unique = false) {
+	function addIndex($table_name, $index_name, $target_columns, $is_unique = false){
 		// index name size should be limited to 31 byte. no index name assigned
 		// if index name omitted, Firebird automatically assign its name like "RDB $10"
 		// deletes indexes when deleting the table
-		if(!is_array($target_columns)) $target_columns = array($target_columns);
+		if(!is_array($target_columns)){
+			$target_columns = array($target_columns);
+		}
 		
 		$query = sprintf('CREATE %s INDEX "" ON "%s%s" ("%s");', $is_unique ? 'UNIQUE' : '', $this->prefix, $table_name, implode('", "', $target_columns));
 		$this->_query($query);
 		
 		$connection = $this->_getConnection('master');
-		if(!$this->transaction_started) ibase_commit($connection);
+		if(!$this->transaction_started){
+			ibase_commit($connection);
+		}
 	}
 	
 	/**
 	 * @brief drop an index from the table
 	 **/
-	function dropIndex($table_name, $index_name, $is_unique = false) {
+	function dropIndex($table_name, $index_name, $is_unique = false){
 		$query = sprintf('DROP INDEX "%s" ON "%s%s"', $index_name, $this->prefix, $table_name);
 		$this->_query($query);
 		
 		$connection = $this->_getConnection('master');
-		if(!$this->transaction_started) ibase_commit($connection);
+		if(!$this->transaction_started){
+			ibase_commit($connection);
+		}
 	}
 	
 	
 	/**
 	 * @brief return index information of the table
 	 **/
-	function isIndexExists($table_name, $index_name) {
+	function isIndexExists($table_name, $index_name){
 		$query = "SELECT\n";
 		$query .= "   RDB\$INDICES.rdb\$index_name AS Key_name\n";
 		$query .= "FROM\n";
@@ -502,12 +560,16 @@ class DBFireBird extends DB {
 		$query .= "'";
 		
 		$result = $this->_query($query);
-		if($this->isError()) return;
+		if($this->isError()){
+			return;
+		}
 		$output = $this->_fetch($result);
 		
-		if(!$output) {
+		if(!$output){
 			$connection = $this->_getConnection('master');
-			if(!$this->transaction_started) ibase_rollback($connection);
+			if(!$this->transaction_started){
+				ibase_rollback($connection);
+			}
 			return false;
 		}
 		
@@ -516,8 +578,10 @@ class DBFireBird extends DB {
 			ibase_commit($connection);
 		}
 		
-		if(!is_array($output)) $output = array($output);
-		for($i = 0; $i < count($output); $i++) {
+		if(!is_array($output)){
+			$output = array($output);
+		}
+		for($i = 0; $i < count($output); $i++){
 			if(trim($output[$i]->KEY_NAME) == $index_name) return true;
 		}
 		
@@ -527,15 +591,17 @@ class DBFireBird extends DB {
 	/**
 	 * @brief creates a table by using xml file
 	 **/
-	function createTableByXml($xml_doc) {
+	function createTableByXml($xml_doc){
 		return $this->_createTable($xml_doc);
 	}
 	
 	/**
 	 * @brief creates a table by using xml file
 	 **/
-	function createTableByXmlFile($file_name) {
-		if(!file_exists($file_name)) return;
+	function createTableByXmlFile($file_name){
+		if(!file_exists($file_name)){
+			return;
+		}
 		// read xml file
 		$buff = FileHandler::readFile($file_name);
 		return $this->_createTable($buff);
@@ -548,19 +614,25 @@ class DBFireBird extends DB {
 	 * opt : notnull, default, size\n
 	 * index : primary key, index, unique\n
 	 **/
-	function _createTable($xml_doc) {
+	function _createTable($xml_doc){
 		// xml parsing
 		$oXml = new XmlParser();
 		$xml_obj = $oXml->parse($xml_doc);
 		// Create a table schema
 		$table_name = $xml_obj->table->attrs->name;
-		if($this->isTableExists($table_name)) return;
+		if($this->isTableExists($table_name)){
+			return;
+		}
 		$table_name = $this->prefix . $table_name;
 		
-		if(!is_array($xml_obj->table->column)) $columns[] = $xml_obj->table->column;
-		else $columns = $xml_obj->table->column;
+		if(!is_array($xml_obj->table->column)){
+			$columns[] = $xml_obj->table->column;
+		}
+		else{
+			$columns = $xml_obj->table->column;
+		}
 		
-		foreach($columns as $column) {
+		foreach($columns as $column){
 			$name = $column->attrs->name;
 			$type = $column->attrs->type;
 			$size = $column->attrs->size;
@@ -571,10 +643,18 @@ class DBFireBird extends DB {
 			$default = $column->attrs->default;
 			$auto_increment = $column->attrs->auto_increment;
 			
-			if($this->column_type[$type] == 'INTEGER') $size = null;
-			else if($this->column_type[$type] == 'BIGINT') $size = null;
-			else if($this->column_type[$type] == 'BLOB SUB_TYPE TEXT SEGMENT SIZE 32') $size = null;
-			else if($this->column_type[$type] == 'VARCHAR' && !$size) $size = 256;
+			if($this->column_type[$type] == 'INTEGER'){
+				$size = null;
+			}
+			else if($this->column_type[$type] == 'BIGINT'){
+				$size = null;
+			}
+			else if($this->column_type[$type] == 'BLOB SUB_TYPE TEXT SEGMENT SIZE 32'){
+				$size = null;
+			}
+			else if($this->column_type[$type] == 'VARCHAR' && !$size){
+				$size = 256;
+			}
 			
 			$column_schema[] = sprintf('"%s" %s%s %s %s',
 				$name,
@@ -583,19 +663,27 @@ class DBFireBird extends DB {
 				is_null($default) ? "" : "DEFAULT '" . $default . "'",
 				$notnull ? 'NOT NULL' : '');
 			
-			if($auto_increment) $auto_increment_list[] = $name;
+			if($auto_increment){
+				$auto_increment_list[] = $name;
+			}
 			
-			if($primary_key) $primary_list[] = $name;
-			else if($unique) $unique_list[$unique][] = $name;
-			else if($index) $index_list[$index][] = $name;
+			if($primary_key){
+				$primary_list[] = $name;
+			}
+			else if($unique){
+				$unique_list[$unique][] = $name;
+			}
+			else if($index){
+				$index_list[$index][] = $name;
+			}
 		}
 		
-		if(count($primary_list)) {
+		if(count($primary_list)){
 			$column_schema[] = sprintf("PRIMARY KEY(\"%s\")%s", implode("\",\"", $primary_list), "\n");
 		}
 		
-		if(count($unique_list)) {
-			foreach($unique_list as $key => $val) {
+		if(count($unique_list)){
+			foreach($unique_list as $key => $val){
 				$column_schema[] = sprintf("UNIQUE(\"%s\")%s", implode("\",\"", $val), "\n");
 			}
 		}
@@ -603,21 +691,23 @@ class DBFireBird extends DB {
 		$schema = sprintf("CREATE TABLE \"%s\" (%s%s); \n", $table_name, "\n", implode($column_schema, ",\n"));
 		
 		$output = $this->_query($schema);
-		if(!$this->transaction_started) {
+		if(!$this->transaction_started){
 			$connection = $this->_getConnection('master');
 			ibase_commit($connection);
 		}
-		if(!$output) return false;
+		if(!$output){
+			return false;
+		}
 		
-		if(count($index_list)) {
-			foreach($index_list as $key => $val) {
+		if(count($index_list)){
+			foreach($index_list as $key => $val){
 				// index name size should be limited to 31 byte. no index name assigned
 				// if index name omitted, Firebird automatically assign its name like "RDB $10"
 				// deletes indexes when deleting the table
 				$schema = sprintf("CREATE INDEX \"\" ON \"%s\" (\"%s\");",
-					$table_name, implode($val, "\",\""));
+				$table_name, implode($val, "\",\""));
 				$output = $this->_query($schema);
-				if(!$this->transaction_started) {
+				if(!$this->transaction_started){
 					$connection = $this->_getConnection('master');
 					ibase_commit($connection);
 				}
@@ -625,14 +715,18 @@ class DBFireBird extends DB {
 			}
 		}
 		
-		if($_GLOBALS['XE_EXISTS_SEQUENCE']) return;
+		if($_GLOBALS['XE_EXISTS_SEQUENCE']){
+			return;
+		}
 		$schema = 'CREATE GENERATOR GEN_XE_SEQUENCE_ID;';
 		$output = $this->_query($schema);
-		if(!$this->transaction_started) {
+		if(!$this->transaction_started){
 			$connection = $this->_getConnection('master');
 			ibase_commit($connection);
 		}
-		if(!$output) return false;
+		if(!$output){
+			return false;
+		}
 		$_GLOBALS['XE_EXISTS_SEQUENCE'] = true;
 		/*if($auto_increment_list)
 		foreach($auto_increment_list as $increment) {
@@ -663,27 +757,33 @@ class DBFireBird extends DB {
 	/**
 	 * @brief Handle the insertAct
 	 **/
-	function _executeInsertAct($queryObject) {
+	function _executeInsertAct($queryObject){
 		$query = $this->getInsertSql($queryObject);
-		if(is_a($query, 'Object')) return;
+		if(is_a($query, 'Object')){
+			return;
+		}
 		return $this->_queryInsertUpdateDeleteSelect($query);
 	}
 	
 	/**
 	 * @brief handles updateAct
 	 **/
-	function _executeUpdateAct($queryObject) {
+	function _executeUpdateAct($queryObject){
 		$query = $this->getUpdateSql($queryObject);
-		if(is_a($query, 'Object')) return;
+		if(is_a($query, 'Object')){
+			return;
+		}
 		return $this->_queryInsertUpdateDeleteSelect($query);
 	}
 	
 	/**
 	 * @brief handles deleteAct
 	 **/
-	function _executeDeleteAct($queryObject) {
+	function _executeDeleteAct($queryObject){
 		$query = $this->getDeleteSql($queryObject);
-		if(is_a($query, 'Object')) return;
+		if(is_a($query, 'Object')){
+			return;
+		}
 		return $this->_queryInsertUpdateDeleteSelect($query);
 	}
 	
@@ -695,21 +795,27 @@ class DBFireBird extends DB {
 	 **/
 	function _executeSelectAct($queryObject, $connection) {
 		$query = $this->getSelectSql($queryObject);
-		if(strpos($query, "substr")) {
+		if(strpos($query, "substr")){
 			$query = str_replace("substr", "substring", $query);
 			$query = $this->replaceSubstrFormat($query);
 		}
-		if(is_a($query, 'Object')) return;
+		if(is_a($query, 'Object')){
+			return;
+		}
 		$query .= (__DEBUG_QUERY__ & 1 && $queryObject->query_id) ? sprintf(' ' . $this->comment_syntax, $this->query_id) : '';
 		$result = $this->_queryInsertUpdateDeleteSelect($query, null, $connection);
 		
-		if($this->isError()) return $this->queryError($queryObject);
-		else return $this->queryPageLimit($queryObject, $result, $connection);
+		if($this->isError()){
+			return $this->queryError($queryObject);
+		}
+		else{
+			return $this->queryPageLimit($queryObject, $result, $connection);
+		}
 	}
 	
-	function queryError($queryObject) {
+	function queryError($queryObject){
 		$limit = $queryObject->getLimit();
-		if($limit && $limit->isPageHandler()) {
+		if($limit && $limit->isPageHandler()){
 			$buff = new BaseObject ();
 			$buff->total_count = 0;
 			$buff->total_page = 0;
@@ -720,17 +826,19 @@ class DBFireBird extends DB {
 				1, /* $page */
 				1, /* $page_count */
 				10); //default page handler values
-		} else
+		}
+		else{
 			return;
+		}
 	}
 	
-	function queryPageLimit($queryObject, $result, $connection) {
+	function queryPageLimit($queryObject, $result, $connection){
 		$limit = $queryObject->getLimit();
-		if($limit && $limit->isPageHandler()) {
+		if($limit && $limit->isPageHandler()){
 			// Total count
 			$temp_where = $queryObject->getWhereString(true, false);
 			$count_query = sprintf('select count(*) as "count" %s %s', 'FROM ' . $queryObject->getFromString(), ($temp_where === '' ? '' : ' WHERE ' . $temp_where));
-			if($queryObject->getGroupByString() != '') {
+			if($queryObject->getGroupByString() != ''){
 				$count_query = sprintf('select count(*) as "count" from (%s) xet', $count_query);
 			}
 			
@@ -740,17 +848,27 @@ class DBFireBird extends DB {
 			$total_count = (int)$count_output->count;
 			
 			$list_count = $limit->list_count->getValue();
-			if(!$list_count) $list_count = 20;
+			if(!$list_count){
+				$list_count = 20;
+			}
 			$page_count = $limit->page_count->getValue();
-			if(!$page_count) $page_count = 10;
+			if(!$page_count){
+				$page_count = 10;
+			}
 			$page = $limit->page->getValue();
-			if(!$page) $page = 1;
+			if(!$page){
+				$page = 1;
+			}
 			// Total pages
-			if($total_count) $total_page = (int)(($total_count - 1) / $list_count) + 1;
-			else    $total_page = 1;
+			if($total_count){
+				$total_page = (int)(($total_count - 1) / $list_count) + 1;
+			}
+			else{
+				$total_page = 1;
+			}
 			
 			// check the page variables
-			if($page > $total_page) {
+			if($page > $total_page){
 				// If requested page is bigger than total number of pages, return empty list
 				
 				$buff = new BaseObject ();
@@ -764,21 +882,24 @@ class DBFireBird extends DB {
 			$start_count = ($page - 1) * $list_count;
 			
 			$query = $this->getSelectSql($queryObject, true, $start_count);
-			if(strpos($query, "substr")) {
+			if(strpos($query, "substr")){
 				$query = str_replace("substr", "substring", $query);
 				$query = $this->replaceSubstrFormat($query);
 			}
 			$query .= (__DEBUG_QUERY__ & 1 && $queryObject->query_id) ? sprintf(' ' . $this->comment_syntax, $this->query_id) : '';
 			$result = $this->_query($query, null, $connection);
-			if($this->isError())
+			if($this->isError()){
 				return $this->queryError($queryObject);
+			}
 			
 			$virtual_no = $total_count - ($page - 1) * $list_count;
-			while($tmp = ibase_fetch_object($result))
+			while($tmp = ibase_fetch_object($result)){
 				$data[$virtual_no--] = $tmp;
+			}
 			
-			if(!$this->transaction_started)
+			if(!$this->transaction_started){
 				ibase_commit($connection);
+			}
 			
 			$buff = new BaseObject ();
 			$buff->total_count = $total_count;
@@ -786,7 +907,8 @@ class DBFireBird extends DB {
 			$buff->page = $page;
 			$buff->data = $data;
 			$buff->page_navigation = new PageHandler($total_count, $total_page, $page, $page_count);
-		} else {
+		}
+		else{
 			$data = $this->_fetch($result);
 			$buff = new BaseObject ();
 			$buff->data = $data;
@@ -794,70 +916,90 @@ class DBFireBird extends DB {
 		return $buff;
 	}
 	
-	function getParser() {
+	function getParser(){
 		return new DBParser('"', '"', $this->prefix);
 	}
 	
-	function getSelectSql($query, $with_values = true, $start_count = 0) {
+	function getSelectSql($query, $with_values = true, $start_count = 0){
 		$limit = $query->getLimit();
-		if($limit && $limit->isPageHandler()) {
+		if($limit && $limit->isPageHandler()){
 			$list_count = $limit->list_count->getValue();
-			if(!$limit->page) $page = 1;
-			else $page = $limit->page->getValue();
-			if(!$start_count)
+			if(!$limit->page){
+				$page = 1;
+			}
+			else{
+				$page = $limit->page->getValue();
+			}
+			if(!$start_count){
 				$start_count = ($page - 1) * $list_count;
+			}
 			$limit = sprintf('SELECT FIRST %d SKIP %d ', $list_count, $start_count);
 		}
 		
 		$select = $query->getSelectString($with_values);
 		
-		if($select == '')
+		if($select == ''){
 			return new BaseObject(-1, "Invalid query");
+		}
 		
-		if($limit && $limit->isPageHandler())
+		if($limit && $limit->isPageHandler()){
 			$select = $limit . ' ' . $select;
-		else
+		}
+		else{
 			$select = 'SELECT ' . $select;
+		}
 		$from = $query->getFromString($with_values);
-		if($from == '')
+		if($from == ''){
 			return new BaseObject(-1, "Invalid query");
+		}
 		$from = ' FROM ' . $from;
 		
 		$where = $query->getWhereString($with_values);
-		if($where != '')
+		if($where != ''){
 			$where = ' WHERE ' . $where;
+		}
 		
 		$groupBy = $query->getGroupByString();
-		if($groupBy != '')
+		if($groupBy != ''){
 			$groupBy = ' GROUP BY ' . $groupBy;
+		}
 		
 		$orderBy = $query->getOrderByString();
-		if($orderBy != '')
+		if($orderBy != ''){
 			$orderBy = ' ORDER BY ' . $orderBy;
+		}
 		
 		return $select . ' ' . $from . ' ' . $where . ' ' . $groupBy . ' ' . $orderBy;
 	}
 	
-	function getDeleteSql($query, $with_values = true) {
+	function getDeleteSql($query, $with_values = true){
 		$sql = 'DELETE ';
 		
 		$from = $query->getFromString($with_values);
-		if($from == '') return new BaseObject(-1, "Invalid query");
+		if($from == ''){
+			return new BaseObject(-1, "Invalid query");
+		}
 		
 		$sql .= ' FROM ' . $from;
 		
 		$where = $query->getWhereString($with_values);
-		if($where != '') $sql .= ' WHERE ' . $where;
+		if($where != ''){
+			$sql .= ' WHERE ' . $where;
+		}
 		
 		return $sql;
 	}
 	
-	function replaceSubstrFormat($queryString) {
+	function replaceSubstrFormat($queryString){
 		//replacing substr("string",number,number) with substr("string" from number for number)
 		$pattern = '/substring\("(\w+)",(\d+),(\d+)\)/i';
 		$replacement = 'substring("${1}" from $2 for $3)';
 		
 		return preg_replace($pattern, $replacement, $queryString);
 	}
-	
 }
+
+DBFirebird::$isSupported = function_exists('ibase_connect');
+
+/* End of file DBFirebird.class.php */
+/* Location: ./classes/db/DBFirebird.class.php */
