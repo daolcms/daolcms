@@ -265,10 +265,10 @@ class layoutModel extends layout {
 		else{
 			$cache_file = $this->getUserLayoutCache($layout_srl, Context::getLangType());
 		}
-		if(file_exists($cache_file) && filemtime($cache_file) > filemtime($xml_file)){
+
+		if(file_exists($cache_file)&&filemtime($cache_file)>filemtime($xml_file)){
 			include($cache_file);
-			
-			
+
 			if($layout_info->extra_var && $vars){
 				foreach($vars as $key => $value){
 					if(!$layout_info->extra_var->{$key} && !$layout_info->{$key}){
@@ -276,25 +276,26 @@ class layoutModel extends layout {
 					}
 				}
 			}
-			
+
 			if(!$layout_info->title){
 				$layout_info->title = $layout;
 			}
-			
+
 			return $layout_info;
 		}
 		// If no cache file exists, parse the xml and then return the variable.
 		$oXmlParser = new XmlParser();
 		$tmp_xml_obj = $oXmlParser->loadXmlFile($xml_file);
+
 		if($tmp_xml_obj->layout) $xml_obj = $tmp_xml_obj->layout;
 		elseif($tmp_xml_obj->skin) $xml_obj = $tmp_xml_obj->skin;
-		
+
 		if(!$xml_obj) return;
-		
+
 		$buff = array();
 		$buff[] = '$layout_info = new stdClass;';
 		$buff[] = sprintf('$layout_info->site_srl = "%s";', $site_srl);
-		
+
 		if($xml_obj->version && $xml_obj->attrs->version == '0.2'){
 			// Layout title, version and other information
 			sscanf($xml_obj->date->body, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
@@ -340,8 +341,9 @@ class layoutModel extends layout {
 					$count = count($extra_vars);
 					$extra_var_count += $count;
 					
-					for($i=0;$i<$count;$i++){
-						unset($var, $options);
+					for($i = 0; $i < $extra_var_count; $i++){
+						unset($var);
+						unset($options);
 						$var = $extra_vars[$i];
 						$name = $var->attrs->name;
 
@@ -416,6 +418,7 @@ class layoutModel extends layout {
 			$buff[] = sprintf('$layout_info->author[0]->name = "%s";', $xml_obj->author->name->body);
 			$buff[] = sprintf('$layout_info->author[0]->email_address = "%s";', $xml_obj->author->attrs->email_address);
 			$buff[] = sprintf('$layout_info->author[0]->homepage = "%s";', $xml_obj->author->attrs->link);
+			
 			// Extra vars (user defined variables to use in a template)
 			$extra_var_groups = $xml_obj->extra_vars->group;
 			if(!$extra_var_groups) $extra_var_groups = $xml_obj->extra_vars;
@@ -424,29 +427,30 @@ class layoutModel extends layout {
 				$extra_vars = $group->var;
 				if($extra_vars){
 					if(!is_array($extra_vars)) $extra_vars = array($extra_vars);
-					
+
 					$extra_var_count = count($extra_vars);
-					
-					$buff .= sprintf('$layout_info->extra_var_count = "%s";', $extra_var_count);
+
+					$buff[] = sprintf('$layout_info->extra_var_count = "%s";', $extra_var_count);
 					for($i = 0; $i < $extra_var_count; $i++){
 						unset($var);
 						unset($options);
 						$var = $extra_vars[$i];
 						$name = $var->attrs->name;
-						
-						$buff .= sprintf('$layout_info->extra_var->%s->group = "%s";', $name, $group->title->body);
-						$buff .= sprintf('$layout_info->extra_var->%s->title = "%s";', $name, $var->title->body);
-						$buff .= sprintf('$layout_info->extra_var->%s->type = "%s";', $name, $var->attrs->type);
-						$buff .= sprintf('$layout_info->extra_var->%s->value = $vars->%s;', $name, $name);
-						$buff .= sprintf('$layout_info->extra_var->%s->description = "%s";', $name, str_replace('"', '\"', $var->description->body));
-						
+
+						$buff[] = sprintf('$layout_info->extra_var->%s->group = "%s";', $name, $group->title->body);
+						$buff[] = sprintf('$layout_info->extra_var->%s->title = "%s";', $name, $var->title->body);
+						$buff[] = sprintf('$layout_info->extra_var->%s->type = "%s";', $name, $var->attrs->type);
+						$buff[] = sprintf('$layout_info->extra_var->%s->value = $vars->%s;', $name, $name);
+						$buff[] = sprintf('$layout_info->extra_var->%s->description = "%s";', $name, str_replace('"','\"',$var->description->body));
+
 						$options = $var->options;
 						if(!$options) continue;
-						
+
 						if(!is_array($options)) $options = array($options);
 						$options_count = count($options);
-						for($j = 0; $j < $options_count; $j++){
-							$buff .= sprintf('$layout_info->extra_var->%s->options["%s"]->val = "%s";', $var->attrs->name, $options[$j]->value->body, $options[$j]->title->body);
+						for($j=0;$j<$options_count;$j++)
+						{
+							$buff[] = sprintf('$layout_info->extra_var->%s->options["%s"]->val = "%s";', $var->attrs->name, $options[$j]->value->body, $options[$j]->title->body);
 						}
 					}
 				}
@@ -455,41 +459,38 @@ class layoutModel extends layout {
 			if($xml_obj->menus->menu){
 				$menus = $xml_obj->menus->menu;
 				if(!is_array($menus)) $menus = array($menus);
-				
+
 				$menu_count = count($menus);
-				$buff .= sprintf('$layout_info->menu_count = "%s";', $menu_count);
-				for($i = 0; $i < $menu_count; $i++){
+				$buff[] = sprintf('$layout_info->menu_count = "%s";', $menu_count);
+				for($i=0;$i<$menu_count;$i++){
 					$name = $menus[$i]->attrs->name;
-					if($menus[$i]->attrs->default == "true") $buff .= sprintf('$layout_info->default_menu = "%s";', $name);
-					$buff .= sprintf('$layout_info->menu->%s->name = "%s";', $name, $menus[$i]->attrs->name);
-					$buff .= sprintf('$layout_info->menu->%s->title = "%s";', $name, $menus[$i]->title->body);
-					$buff .= sprintf('$layout_info->menu->%s->maxdepth = "%s";', $name, $menus[$i]->maxdepth->body);
-					
-					$buff .= sprintf('$layout_info->menu->%s->menu_srl = $vars->%s;', $name, $name);
-					$buff .= sprintf('$layout_info->menu->%s->xml_file = "./files/cache/menu/".$vars->%s.".xml.php";', $name, $name);
-					$buff .= sprintf('$layout_info->menu->%s->php_file = "./files/cache/menu/".$vars->%s.".php";', $name, $name);
+					if($menus[$i]->attrs->default == "true") $buff[] = sprintf('$layout_info->default_menu = "%s";', $name);
+					$buff[] = sprintf('$layout_info->menu->%s->name = "%s";',$name, $name);
+					$buff[] = sprintf('$layout_info->menu->%s->title = "%s";',$name, $menus[$i]->title->body);
+					$buff[] = sprintf('$layout_info->menu->%s->maxdepth = "%s";',$name, $menus[$i]->maxdepth->body);
+					$buff[] = sprintf('$layout_info->menu->%s->menu_srl = $vars->%s;', $name, $name);
+					$buff[] = sprintf('$layout_info->menu->%s->xml_file = "./files/cache/menu/".$vars->%s.".xml.php";',$name, $name);
+					$buff[] = sprintf('$layout_info->menu->%s->php_file = "./files/cache/menu/".$vars->%s.".php";',$name, $name);
 				}
 			}
-			
 		}
 		
 		// header_script
 		$oModuleModel = getModel('module');
 		$layout_config = $oModuleModel->getModulePartConfig('layout', $layout_srl);
 		$header_script = trim($layout_config->header_script);
-		
+
 		if($header_script){
-			$buff .= sprintf(' $layout_info->header_script = "%s"; ', str_replace(array('$', '"'), array('\$', '\\"'), $header_script));
+			$buff[] = sprintf(' $layout_info->header_script = "%s"; ', str_replace(array('$','"'),array('\$','\\"'),$header_script));
 		}
-		
-		$buff = '<?php if(!defined("__XE__")) exit(); ' . $buff . ' ?>';
-		FileHandler::writeFile($cache_file, $buff);
-		if(is_readable($cache_file)) include($cache_file);
-		
+
+		FileHandler::writeFile($cache_file, '<?php if(!defined("__XE__")) exit(); ' . join(PHP_EOL, $buff));
+		if(FileHandler::exists($cache_file)) include($cache_file);
+
 		if(!$layout_info->title){
 			$layout_info->title = $layout;
 		}
-		
+
 		return $layout_info;
 	}
 	
