@@ -276,6 +276,20 @@ class menuAdminController extends menu {
 		$this->setRedirectUrl($returnUrl);
 	}
 	
+	public function updateMenuItem($itemInfo){
+		$output = $this->_updateMenuItem($itemInfo);
+
+		// recreate menu cache file
+		$this->makeXmlFile($itemInfo->menu_srl);
+		return $output;
+	}
+
+	public function _updateMenuItem($itemInfo){
+		$output = executeQuery('menu.updateMenuItem', $itemInfo);
+
+		return $output;
+	}
+	
 	/**
 	 * Delete menu item(menu of the menu)
 	 * @return void|Object

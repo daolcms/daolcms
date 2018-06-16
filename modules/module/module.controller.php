@@ -366,7 +366,14 @@ class moduleController extends module {
 	/**
 	 * @brief Modify module information
 	 **/
-	function updateModule($args) {
+	function updateModule($args){
+		if(isset($args->isMenuCreate)){
+			$isMenuCreate = $args->isMenuCreate;
+		}
+		else{
+			$isMenuCreate = TRUE;
+		}
+
 		$output = $this->arrangeModuleInfo($args, $extra_vars);
 		if(!$output->toBool()) return $output;
 		
@@ -396,6 +403,25 @@ class moduleController extends module {
 		if(!$output->toBool()) {
 			$oDB->rollback();
 			return $output;
+		}
+		
+		if($isMenuCreate === TRUE){
+			$menuArgs = new stdClass;
+			$menuArgs->url = $module_info->mid;
+			$menuArgs->site_srl = $module_info->site_srl;
+			$menuOutput = executeQueryArray('menu.getMenuItemByUrl', $menuArgs);
+			if($menuOutput->data && count($menuOutput->data)){
+				$oMenuAdminController = getAdminController('menu');
+				foreach($menuOutput->data as $itemInfo){
+					$itemInfo->url = $args->mid;
+	
+					$updateMenuItemOutput = $oMenuAdminController->updateMenuItem($itemInfo);
+					if(!$updateMenuItemOutput->toBool()){
+						$oDB->rollback();
+						return $updateMenuItemOutput;
+					}
+				}
+			}
 		}
 
 		// if mid changed, change mid of success_return_url to new mid
