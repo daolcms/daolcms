@@ -140,11 +140,14 @@ class XEHttpRequest {
 		}
 		
 		$body = '';
-		while(!feof($sock)) {
-			if($is_chunked) {
+		while(!feof($sock)){
+			if($is_chunked){
 				$chunk_size = hexdec(fgets($sock));
-				if($chunk_size) $body .= fread($sock, $chunk_size);
-			} else {
+				if($chunk_size){
+					$body .= fgets($sock, $chunk_size+1);
+				}
+			}
+			else{
 				$body .= fgets($sock, 512);
 			}
 		}
