@@ -49,6 +49,16 @@
 
 	$output = executeQuery('menu.insertMenuItem', $item_args);
 	if(!$output->toBool()) return $output;
+	
+	// create 1depth menuitem
+	$item_args->menu_srl = $menu_srl;
+	$item_args->url = 'admin';
+	$item_args->name = 'Dashboard';
+	$parent_srl = $item_args->menu_item_srl = getNextSequence();
+	$item_args->listorder = -1*$item_args->menu_item_srl;
+
+	$output = executeQuery('menu.insertMenuItem', $item_args);
+	if(!$output->toBool()) return $output;
 
 	// XML 파일을 갱신
 	$oMenuAdminController->makeXmlFile($menu_srl);
