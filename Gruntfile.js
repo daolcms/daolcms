@@ -131,9 +131,9 @@ module.exports = function(grunt) {
 			},
 			'layout': {
 				files: {
-					'layouts/daol_official/js/banner.min.js': ['layouts/daol_official/js/banner.js'],
 					'layouts/daol_official/js/layout.min.js': ['layouts/daol_official/js/layout.js'],
-					'layouts/daol_official/js/slides.min.js': ['layouts/daol_official/js/slides.js'],
+					'layouts/daol_official/js/slides/slides.min.js': ['layouts/daol_official/js/slides/slides.js'],
+					'layouts/daol_official/js/slides/slides_start.min.js': ['layouts/daol_official/js/slides/slides_start.js'],
 				}
 			},
 		},
