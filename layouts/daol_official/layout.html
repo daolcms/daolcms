@@ -1,30 +1,38 @@
-<!--%import("css/layout.min.css")--> 
+<!--// LANG -->
+<!--%import("lang/lang.xml")-->
+
+<!--// CSS -->
+<!--%import("css/layout.min.css")-->
+
+<!--// JS -->
 <!--%import("js/layout.min.js")-->
 <!--@if($layout_info->banner_style=="y")-->
-	<!--%import("js/slides.min.js")-->
-	<!--%import("js/banner.min.js")-->
+	<!--%import("js/slides/slides.min.js")-->
+	<!--%import("js/slides/slides_start.min.js")-->
 <!--@end-->
+
 {@
 $banner_img_1 = $layout_info->banner_image_1 ? $layout_info->banner_image_1 : "./layouts/daol_official/img/slider_default.png";
 $banner_img_2 = $layout_info->banner_image_2 ? $layout_info->banner_image_2 : "./layouts/daol_official/img/slider_default.png";
 $banner_img_3 = $layout_info->banner_image_3 ? $layout_info->banner_image_3 : "./layouts/daol_official/img/slider_default.png";
 $banner_img_4 = $layout_info->banner_image_4 ? $layout_info->banner_image_4 : "./layouts/daol_official/img/slider_default.png";
 }
-<div class="header">
+
+<div class="daolcms_header">
 	<div class="header_login">
 		<div class="top_login">
-		<div class="login">
-		<!--@if(!$is_logged)-->
-			<li>방문자님, 환영합니다!</li>
-			<li><a href="#" onclick="jQuery('#loginWindow').css('display','block');" accesskey="L">로그인</a></li>
-			<li><a href="{getUrl('act','dispMemberSignUpForm')}">회원가입</a></li>
-		<!--@else-->
-			<li>{$logged_info->nick_name}님, 환영합니다!</li>
-			<li cond="$grant->manager"><a href="{getUrl('','module','admin')}">관리</a></li>
-			<li><a href="{getUrl('act','dispMemberInfo')}">회원정보</a></li>
-			<li><a href="{getUrl('act','dispMemberLogout')}">로그아웃</a></li>
-		<!--@end-->
-		</div>
+			<div class="login">
+				<!--@if(!$is_logged)-->
+					<li>{$lang->daol_official_welcome_visitor}</li>
+					<li><a href="#" onclick="jQuery('#loginWindow').css('display','block');" accesskey="L">{$lang->cmd_login}</a></li>
+					<li><a href="{getUrl('act','dispMemberSignUpForm')}">{$lang->cmd_signup}</a></li>
+				<!--@else-->
+					<li>{sprintf($lang->daol_official_welcome_member, $logged_info->nick_name)}</li>
+					<li cond="$grant->manager"><a href="{getUrl('','module','admin')}">{$lang->cmd_management}</a></li>
+					<li><a href="{getUrl('act','dispMemberInfo')}">{$lang->member_info}</a></li>
+					<li><a href="{getUrl('act','dispMemberLogout')}">{$lang->cmd_logout}</a></li>
+				<!--@end-->
+			</div>
 		</div>
 	</div>
 	<div class="header_logo">
@@ -58,9 +66,10 @@ $banner_img_4 = $layout_info->banner_image_4 ? $layout_info->banner_image_4 : ".
 		</div>
 	</div>
 </div>
+
 <!--@if($layout_info->banner_style=="y")-->
-<div class="doc_banner">
-	<div class="doc_slide">
+<div class="daolcms_banner">
+	<div class="container">
 		<div id="slides">
 		   <div class="slides_container">
 				<div class="slide">
@@ -80,11 +89,18 @@ $banner_img_4 = $layout_info->banner_image_4 ? $layout_info->banner_image_4 : ".
 	</div>
 </div>
 <!--@end-->
-<div id="doc">
-	<!--@if($layout_info->body_style=="sub")-->
-	<div class="xdt_page2">
-		<div class="xdt_sub">
-			<div loop="$main_menu->list=>$key1,$val1" class="xdt_sub_top" cond="$val1['selected']">
+
+<div class="daolcms_page">
+	<!--@if($layout_info->body_style=="main")-->
+	<div class="container">
+		<div class="main_page">
+			{$content}
+		</div>
+	</div>
+	<!--@elseif($layout_info->body_style=="sub")-->
+	<div class="container">
+		<div class="sub_menu">
+			<div loop="$main_menu->list=>$key1,$val1" class="sub_menu_top" cond="$val1['selected']">
 				<a href="{$val1['href']}" target="_blank"|cond="$val1['open_window']=='Y'">{$val1['link']}</a>
 			</div>
 			<ul class="nav" loop="$main_menu->list=>$key1,$val1" cond="$val1['selected'] && $val1['list']">
@@ -95,34 +111,74 @@ $banner_img_4 = $layout_info->banner_image_4 ? $layout_info->banner_image_4 : ".
 				</li>
 			</ul>
 		</div>
-		<div class="page2">
-		{$content}
-		</div>
-	</div>
-	<!--@elseif($layout_info->body_style=="main")-->
-	<div class="xdt_page">
-		<div class="page1">
-		{$content}
+		<div class="sub_page">
+			{$content}
 		</div>
 	</div>
 	<!--@end-->
 </div>
-<div class="footer">
-   <div class="footer_content">
-	<p class="copy">
-	Copyrights © {$layout_info->footer_copy} 	
-	</p>
-	<ul class="menu">
-	   <li loop="$footer_menu->list=>$key1,$val1" class="active"|cond="$val1['selected']">
-	     <a href="{$val1['href']}" target="_blank"|cond="$val1['open_window']=='Y'">{$val1['link']}</a>
-	   </li>
-	</ul>
+
+<div class="daolcms_footer">
+	<div class="container">
+		<div class="sitemap">
+			<div class="logo">
+				<!--@if($layout_info->footer_logo_url)-->
+					<a href="{$layout_info->footer_logo_url}">
+				<!--@else-->
+					<a href="/">
+				<!--@end-->
+				<!--@if($layout_info->footer_logo_image)-->
+					<img src="{$layout_info->footer_logo_image}" alt="{$layout_info->footer_logo_url}" class="iePngFix" /></a>
+				<!--@else-->
+					<img src="img/nologo.png" class="iePngFix" /></a>
+				<!--@end-->
+			</div>
+			<div class="sitemap_menu">
+				<!--@foreach($sitemap_menu->list as $key => $val)-->
+					<!--@if($val['link'])-->
+						<div class="sitemap_menu_sub">
+							<div class="h2">
+								<a href="{$val['href']}"<!--@if($val['open_window']=='Y')--> onclick="window.open(this.href);return false;"<!--@end-->>{$val['text']}</a>
+							</div>
+							<!--@if($val['list'])-->
+								<ul>
+									<!--@foreach($val['list'] as $k => $v)-->
+										<!--@if($val['link'])-->
+											<li>
+												<a href="{$v['href']}"<!--@if($v['open_window']=='Y')--> onclick="window.open(this.href);return false;"<!--@end-->>{$v['text']}</a>
+											</li>
+										<!--@end-->
+									<!--@end-->
+								</ul>
+							<!--@end-->
+						</div>
+					<!--@end-->
+				<!--@end-->
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<p class="copyright">
+			<!--@if($layout_info->footer_copy)-->
+				Copyrights © {$layout_info->footer_copy}
+			<!--@else-->
+				Copyright © DAOL CMS. All Rights Reserved.
+			<!--@end-->
+		</p>
+		<ul class="menu">
+		   <li loop="$footer_menu->list=>$key1,$val1" class="active"|cond="$val1['selected']">
+				<a href="{$val1['href']}" target="_blank"|cond="$val1['open_window']=='Y'">{$val1['link']}</a>
+		   </li>
+		</ul>
 	</div>
 </div>
+
 <!--@if(!$is_logged)-->
 	{@ $member_config = MemberModel::getMemberConfig(); }
 	<!--%import("./filter/login.xml")-->
-	<!--@if($member_config->enable_openid=='Y')--><!--%import("./filter/openid_login.xml")--><!--@end-->
+	<!--@if($member_config->enable_openid=='Y')-->
+		<!--%import("./filter/openid_login.xml")-->
+	<!--@end-->
 	<!-- loginWindow -->
 	<!--@if($XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'layouts/daol_official/1')-->
 		<style type="text/css">
@@ -159,9 +215,9 @@ $banner_img_4 = $layout_info->banner_image_4 ? $layout_info->banner_image_4 : ".
 			</form>
 			<div class="help">
 				<ol>
-				<li><a href="{getUrl('act','dispMemberSignUpForm')}">회원가입</a></li>
-				<li><a href="{getUrl('act','dispMemberFindAccount')}">아이디,비밀번호 찾기</a></li>
-				<li><a href="{getUrl('act','dispMemberResendAuthMail')}">인증 메일 재발송</a></li>
+				<li><a href="{getUrl('act','dispMemberSignUpForm')}">{$lang->cmd_signup}</a></li>
+				<li><a href="{getUrl('act','dispMemberFindAccount')}">{$lang->cmd_find_member_account}</a></li>
+				<li><a href="{getUrl('act','dispMemberResendAuthMail')}">{$lang->cmd_resend_auth_mail}</a></li>
 				</ol>
 			</div>
 			<button type="button" class="close" onclick="document.getElementById('loginWindow').style.display='none'" accesskey="X"><span>Close Login Layer</span></button>
