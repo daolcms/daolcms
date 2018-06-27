@@ -15,7 +15,6 @@
 	$output = executeQuery('menu.insertMenu', $menu_args);
 	if(!$output->toBool()) return $output;
 
-/////////////////////////////////////////////////////////////////////////////
     function insertMenuItem($url, $name, $menu_srl, $parent_srl = NULL) {
         $item_args = new stdClass();
         $item_args->menu_srl = $menu_srl; 
@@ -39,54 +38,6 @@
 
     $outputs = insertMenuItem('admin', 'Dashboard', $menu_srl);
     if(!$outputs[0]->toBool()) return $outputs[0];
-
-/*
-	// insertMenuItem
-	// create 1depth menuitem
-	$item_args = new stdClass;
-	$item_args->menu_srl = $menu_srl;
-	$item_args->url = 'welcome_page';
-	$item_args->name = 'Welcome Page';
-	$parent_srl = $item_args->menu_item_srl = getNextSequence();
-	$item_args->listorder = -1*$item_args->menu_item_srl;
-
-	$output = executeQuery('menu.insertMenuItem', $item_args);
-	if(!$output->toBool()) return $output;
-
-	// create 1depth menuitem
-	$item_args->menu_srl = $menu_srl;
-	$item_args->url = 'board';
-	$item_args->name = 'Board';
-	$parent_srl = $item_args->menu_item_srl = getNextSequence();
-	$item_args->listorder = -1*$item_args->menu_item_srl;
-
-	$output = executeQuery('menu.insertMenuItem', $item_args);
-	if(!$output->toBool()) return $output;
-
-	// create 2depth menuitem
-	unset($item_args);
-	$item_args = new stdClass;
-	$item_args->menu_srl = $menu_srl;
-	$item_args->parent_srl = $parent_srl;
-	$item_args->url = 'board';
-	$item_args->name = 'Board';
-	$item_args->menu_item_srl = getNextSequence();
-	$item_args->listorder = -1*$item_args->menu_item_srl;
-
-	$output = executeQuery('menu.insertMenuItem', $item_args);
-	if(!$output->toBool()) return $output;
-	
-	// create 1depth menuitem
-	$item_args->menu_srl = $menu_srl;
-	$item_args->url = 'admin';
-	$item_args->name = 'Dashboard';
-	$parent_srl = $item_args->menu_item_srl = getNextSequence();
-	$item_args->listorder = -1*$item_args->menu_item_srl;
-
-	$output = executeQuery('menu.insertMenuItem', $item_args);
-	if(!$output->toBool()) return $output;
-*/
-//////////////////////////////////////////////////////////////////////////////////////
 
 	// XML 파일을 갱신
 	$oMenuAdminController->makeXmlFile($menu_srl);
