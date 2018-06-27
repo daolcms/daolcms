@@ -1,64 +1,47 @@
 <?php
+	function insertMenu($title, $site_srl) {
+		$menu_args = new stdClass;
+		$menu_args->title = $title;
+		$menu_args->site_srl = $site_srl;
+		$menu_args->menu_srl = getNextSequence();
+		$menu_args->listorder = $menu_args->menu_srl * -1;
+		$output = executeQuery('menu.insertMenu', $menu_args);
+		return array($output, $menu_args->menu_srl);
+	}
+
+	function insertMenuItem($url, $name, $menu_srl, $parent_srl = NULL) {
+		$item_args = new stdClass;
+		$item_args->url = $url;
+		$item_args->name = $name;
+		$item_args->menu_srl = $menu_srl; 
+		$item_args->menu_item_srl = getNextSequence();
+		$item_args->parent_srl = $parent_srl;
+		$item_args->listorder = -1 * $item_args->menu_item_srl;
+		$output = executeQuery('menu.insertMenuItem', $item_args);
+		return array($output, $item_args->menu_item_srl);
+	}
+
 	// ko/en/...
 	$lang = Context::getLangType();
 	$logged_info = Context::get('logged_info');
 
 	$oMenuAdminController = getAdminController('menu');
-	
-	// insertMenu
-	$menu_args = new stdClass;
-	$menu_args->site_srl = 0;
-	$menu_args->title = 'Main Menu';
-	$menu_srl = $menu_args->menu_srl = getNextSequence();
-	$menu_args->listorder = $menu_srl * -1;
 
-	$output = executeQuery('menu.insertMenu', $menu_args);
-	if(!$output->toBool()) return $output;
+	$outputs = insertMenu('Main Menu', 0);
+	if(!$outputs[0]->toBool()) return $outputs[0];
+	$menu_srl = $outputs[1];
 
-	// insertMenuItem
-	$item_args = new stdClass;
-	
-	// create 1depth menuitem
-	$item_args->menu_srl = $menu_srl;
-	$item_args->url = 'welcome_page';
-	$item_args->name = 'Welcome Page';
-	$parent_srl = $item_args->menu_item_srl = getNextSequence();
-	$item_args->listorder = -1*$item_args->menu_item_srl;
+	$outputs = insertMenuItem('welcome_page', 'Welcome Page', $menu_srl);
+	if(!$outputs[0]->toBool()) return $outputs[0];
 
-	$output = executeQuery('menu.insertMenuItem', $item_args);
-	if(!$output->toBool()) return $output;
+	$outputs = insertMenuItem('board', 'Board', $menu_srl);
+	if(!$outputs[0]->toBool()) return $outputs[0];
 
-	// create 1depth menuitem
-	$item_args->menu_srl = $menu_srl;
-	$item_args->url = 'board';
-	$item_args->name = 'Board';
-	$parent_srl = $item_args->menu_item_srl = getNextSequence();
-	$item_args->listorder = -1*$item_args->menu_item_srl;
+	$outputs = insertMenuItem('board', 'Board', $menu_srl, $outputs[1]);
+	if(!$outputs[0]->toBool()) return $outputs[0];
 
-	$output = executeQuery('menu.insertMenuItem', $item_args);
-	if(!$output->toBool()) return $output;
-
-	// create 2depth menuitem
-	unset($item_args);
-	$item_args->menu_srl = $menu_srl;
-	$item_args->parent_srl = $parent_srl;
-	$item_args->url = 'board';
-	$item_args->name = 'Board';
-	$item_args->menu_item_srl = getNextSequence();
-	$item_args->listorder = -1*$item_args->menu_item_srl;
-
-	$output = executeQuery('menu.insertMenuItem', $item_args);
-	if(!$output->toBool()) return $output;
-	
-	// create 1depth menuitem
-	$item_args->menu_srl = $menu_srl;
-	$item_args->url = 'admin';
-	$item_args->name = 'Dashboard';
-	$parent_srl = $item_args->menu_item_srl = getNextSequence();
-	$item_args->listorder = -1*$item_args->menu_item_srl;
-
-	$output = executeQuery('menu.insertMenuItem', $item_args);
-	if(!$output->toBool()) return $output;
+	$outputs = insertMenuItem('admin', 'Dashboard', $menu_srl);
+	if(!$outputs[0]->toBool()) return $outputs[0];
 
 	// XML 파일을 갱신
 	$oMenuAdminController->makeXmlFile($menu_srl);
