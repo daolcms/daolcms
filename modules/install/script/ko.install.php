@@ -1,5 +1,11 @@
 <?php
-	function insertMenu($title, $site_srl) {
+	// ko/en/...
+	$lang = Context::getLangType();
+	$logged_info = Context::get('logged_info');
+
+	$oMenuAdminController = getAdminController('menu');
+
+	function insertMenu($title, $site_srl){
 		$menu_args = new stdClass;
 		$menu_args->title = $title;
 		$menu_args->site_srl = $site_srl;
@@ -9,7 +15,7 @@
 		return array($output, $menu_args->menu_srl);
 	}
 
-	function insertMenuItem($url, $name, $menu_srl, $parent_srl = NULL) {
+	function insertMenuItem($url, $name, $menu_srl, $parent_srl = NULL){
 		$item_args = new stdClass;
 		$item_args->url = $url;
 		$item_args->name = $name;
@@ -20,12 +26,6 @@
 		$output = executeQuery('menu.insertMenuItem', $item_args);
 		return array($output, $item_args->menu_item_srl);
 	}
-
-	// ko/en/...
-	$lang = Context::getLangType();
-	$logged_info = Context::get('logged_info');
-
-	$oMenuAdminController = getAdminController('menu');
 
 	$outputs = insertMenu('Main Menu', 0);
 	if(!$outputs[0]->toBool()) return $outputs[0];
