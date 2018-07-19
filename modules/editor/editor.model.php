@@ -463,7 +463,7 @@ class editorModel extends editor {
 			$auto_save_args->member_srl = $logged_info->member_srl;
 		} else {
 			$auto_save_args->certify_key = $_COOKIE['autosave_certify_key_' . $auto_save_args->module_srl];
-			// @see https://github.com/daolcms/daol-core/issues/137
+			// @see https://github.com/daolcms/daolcms/issues/137
 			// 변경 이전에 작성된 게시물 호환성 유지
 			if(!$auto_save_args->certify_key) $auto_save_args->ipaddress = $_SERVER['REMOTE_ADDR'];
 		}
@@ -474,7 +474,7 @@ class editorModel extends editor {
 		// Return null if no result is auto-saved
 		if(!$saved_doc) return;
 		
-		// @see https://github.com/daolcms/daol-core/issues/137
+		// @see https://github.com/daolcms/daolcms/issues/137
 		if($saved_doc->certify_key && !isset($auto_save_args->certify_key)){
 			return;
 		}

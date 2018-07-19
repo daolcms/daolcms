@@ -340,7 +340,7 @@ $GLOBALS['__daol_autoload_file_map'] = array_change_key_case(array(
 
 /**
  * Invalidates a cached script of OPcache when version is changed.
- * @see https://github.com/daolcms/daol-core/issues/134
+ * @see https://github.com/daolcms/daolcms/issues/134
  **/
 if(!is_dir(_DAOL_PATH_ . 'files/cache/store/' . __DAOL_VERSION__) && function_exists('opcache_get_status') && function_exists('opcache_invalidate')){
 	foreach($GLOBALS['__daol_autoload_file_map'] as $script){

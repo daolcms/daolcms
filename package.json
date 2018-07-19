@@ -5,10 +5,10 @@
   "license": "LGPL-2.1",
   "repository": {
     "type": "git",
-    "url": "git://github.com/daolcms/daol-core.git"
+    "url": "git://github.com/daolcms/daolcms.git"
   },
   "bugs": {
-    "url": "https://github.com/daolcms/daol-core/issues"
+    "url": "https://github.com/daolcms/daolcms/issues"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
