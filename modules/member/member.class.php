@@ -320,7 +320,7 @@ class member extends ModuleObject {
 		}
 		
 		// 회원정보에서 이메일 노출 제거
-		// @see https://github.com/daolcms/daol-core/issues/129
+		// @see https://github.com/daolcms/daolcms/issues/129
 		foreach($config->signupForm as $form){
 			if($form->name === 'email_address'){
 				$form->isPublic = 'N';

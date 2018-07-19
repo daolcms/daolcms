@@ -64,7 +64,7 @@ class editor extends ModuleObject {
 		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'editor', 'controller', 'triggerCopyModule', 'after')) return true;
 		
 		// 2018. 03. 06 Add column and index for autosave
-		// @see https://github.com/daolcms/daol-core/issues/137
+		// @see https://github.com/daolcms/daolcms/issues/137
 		if(!$oDB->isColumnExists('editor_autosave', 'certify_key')) return true;
 		if(!$oDB->isIndexExists('editor_autosave', 'idx_certify_key')) return true;
 		
@@ -107,7 +107,7 @@ class editor extends ModuleObject {
 		}
 		
 		// 2018. 03. 06 Add column and index for autosave
-		// @see https://github.com/daolcms/daol-core/issues/137
+		// @see https://github.com/daolcms/daolcms/issues/137
 		if(!$oDB->isColumnExists('editor_autosave','certify_key')){
 			$oDB->addColumn('editor_autosave', 'certify_key', 'varchar', 100);
 		}

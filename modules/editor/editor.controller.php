@@ -288,7 +288,7 @@ class editorController extends editor {
 			$args->member_srl = $logged_info->member_srl;
 		} else {
 			$args->certify_key = $_COOKIE['autosave_certify_key_' . $args->module_srl];
-			// @see https://github.com/daolcms/daol-core/issues/137
+			// @see https://github.com/daolcms/daolcms/issues/137
 			// 변경 이전에 작성된 게시물 호환성 유지
 			if(!$args->certify_key) {
 				unset($args->certify_key);
