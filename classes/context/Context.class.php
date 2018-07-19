@@ -1887,7 +1887,7 @@ class Context {
 	 * @param string $plugin_name plugin name
 	 * @return void
 	 */
-	function loadJavascriptPlugin($plugin_name) {
+	function loadJavascriptPlugin($plugin_name){
 		static $loaded_plugins = array();
 		
 		$self = self::getInstance();
@@ -1914,7 +1914,8 @@ class Context {
 				$self->loadFile(array('//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css', 'all', '', 0), true);
 			}
 			$self->loadFile(array('./common/js/plugins/ui/jquery.ui.datepicker-ko.js', 'body', '', 0), true);
-		} else {
+		}
+		else{
 			if($loaded_plugins[$plugin_name]) return;
 			$loaded_plugins[$plugin_name] = true;
 			
@@ -1923,7 +1924,7 @@ class Context {
 			if(!is_readable($info_file)) return;
 			
 			$list = file($info_file);
-			foreach($list as $filename) {
+			foreach($list as $filename){
 				$filename = trim($filename);
 				if(!$filename) continue;
 				
