@@ -160,9 +160,11 @@ class HTMLDisplayHandler {
 		// convert the final layout
 		Context::set('content', $output);
 		$oTemplate = &TemplateHandler::getInstance();
-		if(Mobile::isFromMobilePhone()) {
+		if(Mobile::isFromMobilePhone()){
+			$this->_loadJSCSS();
 			$output = $oTemplate->compile('./common/tpl', 'mobile_layout');
-		} else {
+		}
+		else{
 			$this->_loadJSCSS();
 			$this->_addMetaTag();
 			$output = $oTemplate->compile('./common/tpl', 'common_layout');
