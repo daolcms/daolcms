@@ -249,6 +249,7 @@ class layoutModel extends layout {
 		// Read the xml file for module skin information
 		if(!$xml_file) $xml_file = sprintf("%sconf/info.xml", $layout_path);
 		if(!file_exists($xml_file)){
+			$layout_info = new stdClass;
 			$layout_info->title = $layout;
 			$layout_info->layout = $layout;
 			$layout_info->path = $layout_path;
