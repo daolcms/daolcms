@@ -309,7 +309,7 @@ class DB {
 				if(!file_exists($debug_file)) $buff[] = '<?php exit(); ?>';
 				$buff[] = print_r($log, TRUE);
 				
-				@file_put_contents($log_file, implode("\n", $buff) . "\n\n", FILE_APPEND|LOCK_EX);
+				@file_put_contents($debug_file, implode("\n", $buff) . "\n\n", FILE_APPEND|LOCK_EX);
 			}
 		} else {
 			$log['result'] = 'Success';
