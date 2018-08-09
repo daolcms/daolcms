@@ -243,8 +243,13 @@
 
 				if(!fileinfo) return;
 
-				if(/\.(jpe?g|png|gif)$/i.test(fileinfo.source_filename)) {
-					temp_code += '<img src="' + window.request_uri + fileinfo.download_url + '" alt="' + fileinfo.source_filename + '" editor_component="image_link" data-file-srl="' + fileinfo.file_srl + '" />';
+				if(/\.(jpe?g|png|gif)$/i.test(fileinfo.download_url)) {
+					if(fileinfo.download_url.indexOf('http://')!=-1 || fileinfo.download_url.indexOf('https://')!=-1) {
+						temp_code += '<img src="' + fileinfo.download_url + '" alt="' + fileinfo.source_filename + '" editor_component="image_link" data-file-srl="' + fileinfo.file_srl + '" />';
+					}
+					else {
+						temp_code += '<img src="' + window.request_uri + fileinfo.download_url + '" alt="' + fileinfo.source_filename + '" editor_component="image_link" data-file-srl="' + fileinfo.file_srl + '" />';
+					}
 					temp_code += "\r\n<p><br></p>\r\n";
 				} else {
 					temp_code += '<a href="' + window.request_uri + fileinfo.download_url + '" data-file-srl="' + fileinfo.file_srl + '">' + fileinfo.source_filename + "</a>\n";
@@ -261,6 +266,7 @@
 			var self = this;
 			var file_srls = [];
 			var data = $container.data();
+			var img = _getCkeInstance(data.editorSequence).document.find('img');
 
 			if(!file_srl)
 			{
@@ -283,6 +289,21 @@
 				file_srls = file_srls.split(',');
 				$.each(file_srls, function(idx, srl){
 					data.settings.fileList.find('ul').find('li[data-file-srl=' + srl + ']').remove();
+
+
+					for(var i = 0; i <= img.count() - 1; i++) {
+						var elItem = img.getItem(i);
+						if(elItem.getAttribute('data-file-srl') == srl) {
+							var elParent = elItem.getParent();
+							console.debug('_deleteFile', elParent, elParent.getHtml(), elParent.getChildCount(), elParent.getChildren())
+
+							if(elParent.getChildCount() === 1) {
+								elParent.remove();
+							} else {
+								elItem.remove();
+							}
+						}
+					}
 				});
 				self.loadFilelist($container);
 			});
@@ -357,16 +378,18 @@
 				if(res.error != 0) return;
 
 				data.settings.filelistImages.find('li').removeClass('xefu-is-cover-image');
-
 				var $parentLi = $el.closest('li');
-				
+
 				if(res.is_cover == 'N') {
-					$parentLi.removeClass('xefu-is-cover-image');
+
+				$parentLi.removeClass('xefu-is-cover-image');
+
+				} else if(res.is_cover == 'Y') {
+
+				$parentLi.addClass('xefu-is-cover-image');
+
 				}
-				
-				else if(res.is_cover == 'Y') {
-					$parentLi.addClass('xefu-is-cover-image');
-				}
+
 			});
 		}
 	});
