@@ -425,7 +425,7 @@ function getFullSiteUrl(){
  */
 function getCurrentPageUrl(){
 	$protocol = $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://';
-	$url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	$url = $protocol . $_SERVER['HTTP_HOST'] . preg_replace('/[<>"]/', '', $_SERVER['REQUEST_URI']);
 	return htmlspecialchars($url, ENT_COMPAT, 'UTF-8', FALSE);
 }
 
@@ -1056,7 +1056,7 @@ function getScriptPath(){
  * @return string
  **/
 function getRequestUriByServerEnviroment(){
-	return str_replace('<', '&lt;', $_SERVER['REQUEST_URI']);
+	return str_replace('<', '&lt;', preg_replace('/[<>"]/', '', $_SERVER['REQUEST_URI']));
 }
 
 /**
