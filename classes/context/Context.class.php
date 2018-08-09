@@ -1893,8 +1893,8 @@ class Context {
 		
 		if($cdn_info->cdn_use == 'Y' && $plugin_name == 'ui') {
 			if($cdn_info->cdn_type == 'jsdelivr') {
-				$self->loadFile(array('//cdn.jsdelivr.net/jquery.ui/1.12.1/jquery-ui.min.js', 'body', '', 0), true);
-				$self->loadFile(array('//cdn.jsdelivr.net/jquery.ui/1.12.1/themes/jquery-ui.min.css', 'all', '', 0), true);
+				$self->loadFile(array('//cdn.jsdelivr.net/npm/jquery-ui-dist@1.12.1/jquery-ui.min.js', 'body', '', 0), true);
+				$self->loadFile(array('//cdn.jsdelivr.net/npm/jquery-ui-dist@1.12.1/jquery-ui.min.css', 'all', '', 0), true);
 			}
 			if($cdn_info->cdn_type == 'microsoft') {
 				$self->loadFile(array('//ajax.aspnetcdn.com/ajax/jquery.ui/1.12.1/jquery-ui.min.js', 'body', '', 0), true);
