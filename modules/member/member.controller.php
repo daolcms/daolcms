@@ -337,7 +337,7 @@ class memberController extends member {
 		$checkInfos = array('user_id', 'user_name', 'nick_name', 'email_address');
 		foreach($checkInfos as $val) {
 			if(isset($args->{$val})) {
-				$args->{$val} = preg_replace('/[\pZ\pC]+/u', '', $args->{$val});
+				$args->{$val} = preg_replace('/[\pZ\pC]+/u', '', html_entity_decode($args->{$val}));
 			}
 		}
 		$output = $this->insertMember($args);
@@ -493,7 +493,7 @@ class memberController extends member {
 		$checkInfos = array('user_id', 'user_name', 'nick_name', 'email_address');
 		foreach($checkInfos as $val) {
 			if(isset($args->{$val})) {
-				$args->{$val} = preg_replace('/[\pZ\pC]+/u', '', $args->{$val});
+				$args->{$val} = preg_replace('/[\pZ\pC]+/u', '', html_entity_decode($args->{$val}));
 			}
 		}
 		
