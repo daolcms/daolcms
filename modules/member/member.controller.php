@@ -1749,11 +1749,16 @@ class memberController extends member {
 		// When user checked to use auto-login
 		if($keep_signed) {
 			// Key generate for auto login
-			$autologin_args->autologin_key = $random_key . $extra_key;
+			$oPassword = new Password();
+			$random_key = $oPassword->createSecureSalt(32, 'hex');
+			$extra_key = strtolower($user_id).$this->memberInfo->password.$_SERVER['HTTP_USER_AGENT'];
+			$extra_key = substr(hash_hmac('sha256', $extra_key, $random_key), 0, 32);
+			$autologin_args = new stdClass;
+			$autologin_args->autologin_key = $random_key.$extra_key;
 			$autologin_args->member_srl = $this->memberInfo->member_srl;
 			executeQuery('member.deleteAutologin', $autologin_args);
 			$autologin_output = executeQuery('member.insertAutologin', $autologin_args);
-			if($autologin_output->toBool()) setCookie('xeak', $autologin_args->autologin_key, time() + 31536000);
+			if($autologin_output->toBool()) setCookie('xeak', $autologin_args->autologin_key, $_SERVER['REQUEST_TIME'] + 31536000);
 		}
 		if($this->memberInfo->is_admin == 'Y') {
 			$oMemberAdminModel = &getAdminModel('member');
