@@ -16,25 +16,25 @@ class memberModel extends member {
 	/**
 	 * @brief Initialization
 	 **/
-	function init() {
+	function init(){
 	}
 	
 	/**
 	 * @brief Return member's configuration
 	 **/
-	function getMemberConfig() {
+	function getMemberConfig(){
 		static $member_config;
 		
-		if($member_config) {
+		if($member_config){
 			return $member_config;
 		}
 		
 		// Get member configuration stored in the DB
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('member');
 		//for multi language
-		if(is_array($config->signupForm)) {
-			foreach($config->signupForm AS $key => $value) {
+		if(is_array($config->signupForm)){
+			foreach($config->signupForm AS $key => $value){
 				$config->signupForm[$key]->title = ($value->isDefaultForm) ? Context::getLang($value->name) : $value->title;
 				if($config->signupForm[$key]->isPublic != 'N') $config->signupForm[$key]->isPublic = 'Y';
 				if($value->name == 'find_account_question') $config->signupForm[$key]->isPublic = 'N';
@@ -74,22 +74,22 @@ class memberModel extends member {
 		return $config;
 	}
 	
-	function _getAgreement() {
+	function _getAgreement(){
 		$agreement_file = _DAOL_PATH_ . 'files/member_extra_info/agreement_' . Context::get('lang_type') . '.txt';
-		if(is_readable($agreement_file)) {
+		if(is_readable($agreement_file)){
 			return FileHandler::readFile($agreement_file);
 		}
 		
 		$db_info = Context::getDBInfo();
 		$agreement_file = _DAOL_PATH_ . 'files/member_extra_info/agreement_' . $db_info->lang_type . '.txt';
-		if(is_readable($agreement_file)) {
+		if(is_readable($agreement_file)){
 			return FileHandler::readFile($agreement_file);
 		}
 		
 		$lang_selected = Context::loadLangSelected();
-		foreach($lang_selected as $key => $val) {
+		foreach($lang_selected as $key => $val){
 			$agreement_file = _DAOL_PATH_ . 'files/member_extra_info/agreement_' . $key . '.txt';
-			if(is_readable($agreement_file)) {
+			if(is_readable($agreement_file)){
 				return FileHandler::readFile($agreement_file);
 			}
 		}
@@ -100,7 +100,7 @@ class memberModel extends member {
 	/**
 	 * @brief Display menus of the member
 	 **/
-	function getMemberMenu() {
+	function getMemberMenu(){
 		// Get member_srl of he target member and logged info of the current user
 		$member_srl = Context::get('target_srl');
 		$mid = Context::get('cur_mid');
@@ -119,23 +119,23 @@ class memberModel extends member {
 		
 		ModuleHandler::triggerCall('member.getMemberMenu', 'before', $null);
 		
-		$oMemberController = &getController('member');
+		$oMemberController = getController('member');
 		// Display member information (Don't display to non-logged user)
-		if($logged_info->member_srl) {
+		if($logged_info->member_srl){
 			$url = getUrl('', 'mid', $mid, 'act', 'dispMemberInfo', 'member_srl', $member_srl);
 			$oMemberController->addMemberPopupMenu($url, 'cmd_view_member_info', $icon_path, 'self');
 		}
 		// When click other's nickname
-		if($member_srl != $logged_info->member_srl && $logged_info->member_srl) {
+		if($member_srl != $logged_info->member_srl && $logged_info->member_srl){
 			// Get email config
-			foreach($this->module_config->signupForm as $field) {
-				if($field->name == 'email_address') {
+			foreach($this->module_config->signupForm as $field){
+				if($field->name == 'email_address'){
 					$email_config = $field;
 					break;
 				}
 			}
 			// Send an email only if email address is public
-			if(($logged_info->is_admin == 'Y' || $email_config->isPublic == 'Y') && $member_info->email_address) {
+			if(($logged_info->is_admin == 'Y' || $email_config->isPublic == 'Y') && $member_info->email_address){
 				$url = 'mailto:' . htmlspecialchars($member_info->email_address);
 				$oMemberController->addMemberPopupMenu($url, 'cmd_send_email', $icon_path);
 			}
@@ -149,7 +149,7 @@ class memberModel extends member {
 		// Call a trigger (after)
 		ModuleHandler::triggerCall('member.getMemberMenu', 'after', $null);
 		// Display a menu for editting member info to a top administrator
-		if($logged_info->is_admin == 'Y') {
+		if($logged_info->is_admin == 'Y'){
 			$url = getUrl('', 'module', 'admin', 'act', 'dispMemberAdminInsert', 'member_srl', $member_srl);
 			$oMemberController->addMemberPopupMenu($url, 'cmd_manage_member_info', $icon_path, 'MemberModifyInfo');
 			
@@ -162,7 +162,7 @@ class memberModel extends member {
 		// Change a language of pop-up menu
 		$menus = Context::get('member_popup_menu_list');
 		$menus_count = count($menus);
-		for($i = 0; $i < $menus_count; $i++) {
+		for($i = 0; $i < $menus_count; $i++){
 			$menus[$i]->str = Context::getLang($menus[$i]->str);
 		}
 		// Get a list of finalized pop-up menu
@@ -172,18 +172,20 @@ class memberModel extends member {
 	/**
 	 * @brief Check if logged-in
 	 **/
-	function isLogged() {
-		if($_SESSION['is_logged']) {
-			if(Mobile::isFromMobilePhone()) {
+	function isLogged(){
+		if($_SESSION['is_logged']){
+			if(Mobile::isFromMobilePhone()){
 				return true;
-			} elseif(filter_var($_SESSION['ipaddress'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+			}
+			elseif(filter_var($_SESSION['ipaddress'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)){
 				// IPv6: require same /48
-				if(strncmp(inet_pton($_SESSION['ipaddress']), inet_pton($_SERVER['REMOTE_ADDR']), 6) == 0) {
+				if(strncmp(inet_pton($_SESSION['ipaddress']), inet_pton($_SERVER['REMOTE_ADDR']), 6) == 0){
 					return true;
 				}
-			} else {
+			}
+			else{
 				// IPv4: require same /24
-				if(ip2long($_SESSION['ipaddress']) >> 8 == ip2long($_SERVER['REMOTE_ADDR']) >> 8) {
+				if(ip2long($_SESSION['ipaddress']) >> 8 == ip2long($_SERVER['REMOTE_ADDR']) >> 8){
 					return true;
 				}
 			}
@@ -196,23 +198,24 @@ class memberModel extends member {
 	/**
 	 * @brief Return session information of the logged-in user
 	 **/
-	function getLoggedInfo() {
+	function getLoggedInfo(){
 		// Return session info if session info is requested and the user is logged-in
-		if($this->isLogged()) {
+		if($this->isLogged()){
 			$logged_info = Context::get('logged_info');
 			// Admin/Group list defined depending on site_module_info
 			$site_module_info = Context::get('site_module_info');
-			if($site_module_info->site_srl) {
+			if($site_module_info->site_srl){
 				$logged_info->group_list = $this->getMemberGroups($logged_info->member_srl, $site_module_info->site_srl);
 				// Add is_site_admin bool variable into logged_info if site_administrator is
-				$oModuleModel = &getModel('module');
+				$oModuleModel = getModel('module');
 				if($oModuleModel->isSiteAdmin($logged_info)) $logged_info->is_site_admin = true;
 				else $logged_info->is_site_admin = false;
-			} else {
+			}
+			else{
 				// Register a default group if the site doesn't have a member group
-				if(!count($logged_info->group_list)) {
+				if(!count($logged_info->group_list)){
 					$default_group = $this->getDefaultGroup(0);
-					$oMemberController = &getController('member');
+					$oMemberController = getController('member');
 					$oMemberController->addMemberToGroup($logged_info->member_srl, $default_group->group_srl, 0);
 					$groups[$default_group->group_srl] = $default_group->title;
 					$logged_info->group_list = $groups;
@@ -230,7 +233,7 @@ class memberModel extends member {
 	/**
 	 * @brief Return member information with user_id
 	 **/
-	function getMemberInfoByUserID($user_id, $columnList = array()) {
+	function getMemberInfoByUserID($user_id, $columnList = array()){
 		if(!$user_id) return;
 		
 		$args->user_id = $user_id;
@@ -246,7 +249,7 @@ class memberModel extends member {
 	/**
 	 * @brief Return member information with email_address
 	 **/
-	function getMemberInfoByEmailAddress($email_address) {
+	function getMemberInfoByEmailAddress($email_address){
 		if(!$email_address) return;
 
 		$args = new stdClass();
@@ -271,18 +274,19 @@ class memberModel extends member {
 	/**
 	 * @brief Return member information with member_srl
 	 **/
-	function getMemberInfoByMemberSrl($member_srl, $site_srl = 0, $columnList = array()) {
+	function getMemberInfoByMemberSrl($member_srl, $site_srl = 0, $columnList = array()){
 		if(!$member_srl) return;
 		
 		//columnList size zero... get full member info
-		if(!$GLOBALS['__member_info__'][$member_srl] || count($columnList) == 0) {
+		if(!$GLOBALS['__member_info__'][$member_srl] || count($columnList) == 0){
 			$oCacheHandler = &CacheHandler::getInstance('object');
-			if($oCacheHandler->isSupport()) {
+			if($oCacheHandler->isSupport()){
 				$cache_key = 'object:' . $member_srl;
 				$GLOBALS['__member_info__'][$member_srl] = $oCacheHandler->get($cache_key);
 			}
 			
-			if(!$GLOBALS['__member_info__'][$member_srl]) {
+			if(!$GLOBALS['__member_info__'][$member_srl]){
+				$args = new stdClass();
 				$args->member_srl = $member_srl;
 				$output = executeQuery('member.getMemberInfoByMemberSrl', $args, $columnList);
 				if(!$output->data) return;
@@ -299,16 +303,16 @@ class memberModel extends member {
 	/**
 	 * @brief Add member info from extra_vars and other information
 	 **/
-	function arrangeMemberInfo($info, $site_srl = 0) {
-		if(!$GLOBALS['__member_info__'][$info->member_srl]) {
-			$oModuleModel = &getModel('module');
+	function arrangeMemberInfo($info, $site_srl = 0){
+		if(!$GLOBALS['__member_info__'][$info->member_srl]){
+			$oModuleModel = getModel('module');
 			$config = $oModuleModel->getModuleConfig('member');
 			
 			
 			$info->profile_image = $this->getProfileImage($info->member_srl);
 			$info->image_name = $this->getImageName($info->member_srl);
 			$info->image_mark = $this->getImageMark($info->member_srl);
-			if($config->group_image_mark == 'Y') {
+			if($config->group_image_mark == 'Y'){
 				$info->group_mark = $this->getGroupImageMark($info->member_srl, $site_srl);
 			}
 			$info->signature = $this->getSignature($info->member_srl);
@@ -316,14 +320,14 @@ class memberModel extends member {
 			
 			$extra_vars = unserialize($info->extra_vars);
 			unset($info->extra_vars);
-			if($extra_vars) {
-				foreach($extra_vars as $key => $val) {
+			if($extra_vars){
+				foreach($extra_vars as $key => $val){
 					if(!is_array($val)) if(preg_match('/\|\@\|/i', $val)) $val = explode('|@|', $val);
 					if(!$info->{$key}) $info->{$key} = $val;
 				}
 			}
 			
-			if(strlen($info->find_account_answer) == 32 && preg_match('/[a-zA-Z0-9]+/', $info->find_account_answer)) {
+			if(strlen($info->find_account_answer) == 32 && preg_match('/[a-zA-Z0-9]+/', $info->find_account_answer)){
 				$info->find_account_answer = null;
 			}
 			
@@ -334,11 +338,12 @@ class memberModel extends member {
 			$info->homepage = strip_tags($info->homepage);
 			$info->blog = strip_tags($info->blog);
 			
-			if($extra_vars) {
-				foreach($extra_vars as $key => $val) {
-					if(is_array($val)) {
+			if($extra_vars){
+				foreach($extra_vars as $key => $val){
+					if(is_array($val)){
 						$oSecurity->encodeHTML($key . '.');
-					} else {
+					}
+					else{
 						$oSecurity->encodeHTML($key);
 					}
 				}
@@ -346,11 +351,11 @@ class memberModel extends member {
 			
 			// Check format.
 			$oValidator = new Validator();
-			if(!$oValidator->applyRule('url', $info->homepage)) {
+			if(!$oValidator->applyRule('url', $info->homepage)){
 				$info->homepage = '';
 			}
 			
-			if(!$oValidator->applyRule('url', $info->blog)) {
+			if(!$oValidator->applyRule('url', $info->blog)){
 				$info->blog = '';
 			}
 			
@@ -363,7 +368,8 @@ class memberModel extends member {
 	/**
 	 * @brief Get member_srl corresponding to userid
 	 **/
-	function getMemberSrlByUserID($user_id) {
+	function getMemberSrlByUserID($user_id){
+		$args = new stdClass();
 		$args->user_id = $user_id;
 		$output = executeQuery('member.getMemberSrl', $args);
 		return $output->data->member_srl;
@@ -372,7 +378,8 @@ class memberModel extends member {
 	/**
 	 * @brief Get member_srl corresponding to EmailAddress
 	 **/
-	function getMemberSrlByEmailAddress($email_address) {
+	function getMemberSrlByEmailAddress($email_address){
+		$args = new stdClass();
 		$args->email_address = $email_address;
 		$output = executeQuery('member.getMemberSrl', $args);
 		return $output->data->member_srl;
@@ -381,7 +388,8 @@ class memberModel extends member {
 	/**
 	 * @brief Get member_srl corresponding to nickname
 	 **/
-	function getMemberSrlByNickName($nick_name) {
+	function getMemberSrlByNickName($nick_name){
+		$args = new stdClass();
 		$args->nick_name = $nick_name;
 		$output = executeQuery('member.getMemberSrl', $args);
 		return $output->data->member_srl;
@@ -390,7 +398,7 @@ class memberModel extends member {
 	/**
 	 * @brief Return member_srl of the current logged-in user
 	 **/
-	function getLoggedMemberSrl() {
+	function getLoggedMemberSrl(){
 		if(!$this->isLogged()) return;
 		return $_SESSION['member_srl'];
 	}
@@ -398,7 +406,7 @@ class memberModel extends member {
 	/**
 	 * @brief Return user_id of the current logged-in user
 	 **/
-	function getLoggedUserID() {
+	function getLoggedUserID(){
 		if(!$this->isLogged()) return;
 		$logged_info = Context::get('logged_info');
 		return $logged_info->user_id;
@@ -407,16 +415,17 @@ class memberModel extends member {
 	/**
 	 * @brief Get a list of groups which the member_srl belongs to
 	 **/
-	function getMemberGroups($member_srl, $site_srl = 0, $force_reload = false) {
+	function getMemberGroups($member_srl, $site_srl = 0, $force_reload = false){
 		// cache controll
 		$oCacheHandler = &CacheHandler::getInstance('object');
-		if($oCacheHandler->isSupport()) {
+		if($oCacheHandler->isSupport()){
 			$cache_key = 'object_member_groups:' . $member_srl . '_' . $site_srl;
 			$output = $oCacheHandler->get($cache_key);
 		}
 		static $member_groups = array();
-		if(!$member_groups[$member_srl][$site_srl] || $force_reload) {
-			if(!$output) {
+		if(!$member_groups[$member_srl][$site_srl] || $force_reload){
+			if(!$output){
+				$args = new stdClass();
 				$args->member_srl = $member_srl;
 				$args->site_srl = $site_srl;
 				$output = executeQuery('member.getMemberGroups', $args);
@@ -429,7 +438,7 @@ class memberModel extends member {
 			$group_list = $output->data;
 			if(!is_array($group_list)) $group_list = array($group_list);
 			
-			foreach($group_list as $group) {
+			foreach($group_list as $group){
 				$result[$group->group_srl] = $group->title;
 			}
 			$member_groups[$member_srl][$site_srl] = $result;
@@ -440,7 +449,7 @@ class memberModel extends member {
 	/**
 	 * @brief Get a list of groups which member_srls belong to
 	 **/
-	function getMembersGroups($member_srls, $site_srl = 0) {
+	function getMembersGroups($member_srls, $site_srl = 0){
 		$args->member_srls = implode(',', $member_srls);
 		$args->site_srl = $site_srl;
 		$args->sort_index = 'list_order';
@@ -448,7 +457,7 @@ class memberModel extends member {
 		if(!$output->data) return array();
 		
 		$result = array();
-		foreach($output->data as $key => $val) {
+		foreach($output->data as $key => $val){
 			$result[$val->member_srl][] = $val->title;
 		}
 		return $result;
@@ -457,7 +466,8 @@ class memberModel extends member {
 	/**
 	 * @brief Get a default group
 	 **/
-	function getDefaultGroup($site_srl = 0, $columnList = array()) {
+	function getDefaultGroup($site_srl = 0, $columnList = array()){
+		$args = new stdClass();
 		$args->site_srl = $site_srl;
 		$output = executeQuery('member.getDefaultGroup', $args, $columnList);
 		return $output->data;
@@ -466,7 +476,7 @@ class memberModel extends member {
 	/**
 	 * @brief Get an admin group
 	 **/
-	function getAdminGroup($columnList = array()) {
+	function getAdminGroup($columnList = array()){
 		$output = executeQuery('member.getAdminGroup', $args, $columnList);
 		return $output->data;
 	}
@@ -474,7 +484,8 @@ class memberModel extends member {
 	/**
 	 * @brief Get group info corresponding to group_srl
 	 **/
-	function getGroup($group_srl, $columnList = array()) {
+	function getGroup($group_srl, $columnList = array()){
+		$args = new stdClass();
 		$args->group_srl = $group_srl;
 		$output = executeQuery('member.getGroup', $args, $columnList);
 		return $output->data;
@@ -483,24 +494,25 @@ class memberModel extends member {
 	/**
 	 * @brief Get a list of groups
 	 **/
-	function getGroups($site_srl = 0) {
-		if(!$GLOBALS['__group_info__'][$site_srl]) {
+	function getGroups($site_srl = 0){
+		if(!$GLOBALS['__group_info__'][$site_srl]){
 			$result = array();
 			
-			if(!isset($site_srl)) {
+			if(!isset($site_srl)){
 				$site_srl = 0;
 			}
+			$args = new stdClass();
 			$args->site_srl = $site_srl;
 			$args->sort_index = 'list_order';
 			$args->order_type = 'asc';
 			$output = executeQueryArray('member.getGroups', $args);
-			if(!$output->toBool() || !$output->data) {
+			if(!$output->toBool() || !$output->data){
 				return array();
 			}
 			
 			$group_list = $output->data;
 			
-			foreach($group_list as $val) {
+			foreach($group_list as $val){
 				$result[$val->group_srl] = $val;
 			}
 			
@@ -516,13 +528,14 @@ class memberModel extends member {
 	 * To use as extend_filter, the argument should be boolean.
 	 * When the argument is true, it returns object result in type of filter.
 	 **/
-	function getJoinFormList($filter_response = false) {
+	function getJoinFormList($filter_response = false){
 		global $lang;
 		// Set to ignore if a super administrator.
 		$logged_info = Context::get('logged_info');
 		
-		if(!$this->join_form_list) {
+		if(!$this->join_form_list){
 			// Argument setting to sort list_order column
+			$args = new stdClass();
 			$args->sort_index = "list_order";
 			$output = executeQuery('member.getJoinFormList', $args);
 			// NULL if output data deosn't exist
@@ -531,7 +544,7 @@ class memberModel extends member {
 			// Need to unserialize because serialized array is inserted into DB in case of default_value
 			if(!is_array($join_form_list)) $join_form_list = array($join_form_list);
 			$join_form_count = count($join_form_list);
-			for($i = 0; $i < $join_form_count; $i++) {
+			for($i = 0; $i < $join_form_count; $i++){
 				$join_form_list[$i]->column_name = strtolower($join_form_list[$i]->column_name);
 				
 				$member_join_form_srl = $join_form_list[$i]->member_join_form_srl;
@@ -542,10 +555,11 @@ class memberModel extends member {
 				// Add language variable
 				$lang->extend_vars[$column_name] = $column_title;
 				// unserialize if the data type if checkbox, select and so on
-				if(in_array($column_type, array('checkbox', 'select', 'radio'))) {
+				if(in_array($column_type, array('checkbox', 'select', 'radio'))){
 					$join_form_list[$i]->default_value = unserialize($default_value);
 					if(!$join_form_list[$i]->default_value[0]) $join_form_list[$i]->default_value = '';
-				} else {
+				}
+				else{
 					$join_form_list[$i]->default_value = '';
 				}
 				
@@ -554,9 +568,9 @@ class memberModel extends member {
 			$this->join_form_list = $list;
 		}
 		// Get object style if the filter_response is true
-		if($filter_response && count($this->join_form_list)) {
+		if($filter_response && count($this->join_form_list)){
 			
-			foreach($this->join_form_list as $key => $val) {
+			foreach($this->join_form_list as $key => $val){
 				if($val->is_active != 'Y') continue;
 				unset($obj);
 				$obj->type = $val->column_type;
@@ -584,17 +598,18 @@ class memberModel extends member {
 	 *
 	 * @return array $joinFormList
 	 **/
-	function getUsedJoinFormList() {
+	function getUsedJoinFormList(){
+		$args = new stdClass();
 		$args->sort_index = "list_order";
 		$output = executeQueryArray('member.getJoinFormList', $args);
 		
-		if(!$output->toBool()) {
+		if(!$output->toBool()){
 			return array();
 		}
 		
 		$joinFormList = array();
-		foreach($output->data as $val) {
-			if($val->is_active != 'Y') {
+		foreach($output->data as $val){
+			if($val->is_active != 'Y'){
 				continue;
 			}
 			
@@ -607,22 +622,22 @@ class memberModel extends member {
 	/**
 	 * @brief Combine extend join form and member information (used to modify member information)
 	 **/
-	function getCombineJoinForm($member_info) {
+	function getCombineJoinForm($member_info){
 		$extend_form_list = $this->getJoinFormlist();
 		if(!$extend_form_list) return;
 		// Member info is open only to an administrator and him/herself when is_private is true. 
 		$logged_info = Context::get('logged_info');
 		
-		foreach($extend_form_list as $srl => $item) {
+		foreach($extend_form_list as $srl => $item){
 			$column_name = $item->column_name;
 			$value = $member_info->{$column_name};
 			
-			if($logged_info->is_admin != 'Y' && $logged_info->member_srl != $member_info->member_srl && $member_info->{'open_' . $column_name} != 'Y') {
+			if($logged_info->is_admin != 'Y' && $logged_info->member_srl != $member_info->member_srl && $member_info->{'open_' . $column_name} != 'Y'){
 				$extend_form_list[$srl]->is_private = true;
 				continue;
 			}
 			// Change values depening on the type of extend form
-			switch($item->column_type) {
+			switch($item->column_type){
 				case 'checkbox' :
 					if($value && !is_array($value)) $value = array($value);
 					break;
@@ -647,7 +662,7 @@ class memberModel extends member {
 	/**
 	 * @brief Get a join form
 	 **/
-	function getJoinForm($member_join_form_srl) {
+	function getJoinForm($member_join_form_srl){
 		$args->member_join_form_srl = $member_join_form_srl;
 		$output = executeQuery('member.getJoinForm', $args);
 		$join_form = $output->data;
@@ -656,9 +671,10 @@ class memberModel extends member {
 		$column_type = $join_form->column_type;
 		$default_value = $join_form->default_value;
 		
-		if(in_array($column_type, array('checkbox', 'select', 'radio'))) {
+		if(in_array($column_type, array('checkbox', 'select', 'radio'))){
 			$join_form->default_value = unserialize($default_value);
-		} else {
+		}
+		else{
 			$join_form->default_value = '';
 		}
 		
@@ -668,8 +684,8 @@ class memberModel extends member {
 	/**
 	 * @brief Get a list of denied IDs
 	 **/
-	function getDeniedIDList() {
-		if(!$this->denied_id_list) {
+	function getDeniedIDList(){
+		if(!$this->denied_id_list){
 			$args->sort_index = "list_order";
 			$args->page = Context::get('page');
 			$args->list_count = 40;
@@ -681,15 +697,15 @@ class memberModel extends member {
 		return $this->denied_id_list;
 	}
 	
-	function getDeniedIDs() {
+	function getDeniedIDs(){
 		$output = executeQueryArray('member.getDeniedIDs');
 		if(!$output->toBool()) return array();
 		return $output->data;
 	}
 	
-	function getDeniedNickNames() {
+	function getDeniedNickNames(){
 		$output = executeQueryArray('member.getDeniedNickNames');
-		if(!$output->toBool()) {
+		if(!$output->toBool()){
 			return array();
 		}
 		
@@ -699,7 +715,8 @@ class memberModel extends member {
 	/**
 	 * @brief Verify if ID is denied
 	 **/
-	function isDeniedID($user_id) {
+	function isDeniedID($user_id){
+		$args = new stdClass();
 		$args->user_id = $user_id;
 		$output = executeQuery('member.chkDeniedID', $args);
 		if($output->data->count) return true;
@@ -709,11 +726,12 @@ class memberModel extends member {
 	/**
 	 * @brief Verify if nick name is denied
 	 **/
-	function isDeniedNickName($nickName) {
+	function isDeniedNickName($nickName){
+		$args = new stdClass();
 		$args->nick_name = $nickName;
 		$output = executeQuery('member.chkDeniedNickName', $args);
 		if($output->data->count) return true;
-		if(!$output->toBool()) {
+		if(!$output->toBool()){
 			return true;
 		}
 		return false;
@@ -722,15 +740,15 @@ class memberModel extends member {
 	/**
 	 * @brief Get information of the profile image
 	 **/
-	function getProfileImage($member_srl) {
-		if(!isset($GLOBALS['__member_info__']['profile_image'][$member_srl])) {
+	function getProfileImage($member_srl){
+		if(!isset($GLOBALS['__member_info__']['profile_image'][$member_srl])){
 			$GLOBALS['__member_info__']['profile_image'][$member_srl] = null;
 			$exts = array('gif', 'jpg', 'png');
-			for($i = 0; $i < 3; $i++) {
+			for($i = 0; $i < 3; $i++){
 				$image_name_file = sprintf('files/member_extra_info/profile_image/%s%d.%s', getNumberingPath($member_srl), $member_srl, $exts[$i]);
-				if(file_exists($image_name_file)) {
+				if(file_exists($image_name_file)){
 					list($width, $height, $type, $attrs) = getimagesize($image_name_file);
-					$info = null;
+					$info = new stdClass();
 					$info->width = $width;
 					$info->height = $height;
 					$info->src = Context::getRequestUri() . $image_name_file . '?' . date('YmdHis', filemtime($image_name_file));
@@ -747,11 +765,12 @@ class memberModel extends member {
 	/**
 	 * @brief Get the image name
 	 **/
-	function getImageName($member_srl) {
-		if(!isset($GLOBALS['__member_info__']['image_name'][$member_srl])) {
+	function getImageName($member_srl){
+		if(!isset($GLOBALS['__member_info__']['image_name'][$member_srl])){
 			$image_name_file = sprintf('files/member_extra_info/image_name/%s%d.gif', getNumberingPath($member_srl), $member_srl);
-			if(file_exists($image_name_file)) {
+			if(file_exists($image_name_file)){
 				list($width, $height, $type, $attrs) = getimagesize($image_name_file);
+				$info = new stdClass();
 				$info->width = $width;
 				$info->height = $height;
 				$info->src = Context::getRequestUri() . $image_name_file . '?' . date('YmdHis', filemtime($image_name_file));
@@ -765,10 +784,10 @@ class memberModel extends member {
 	/**
 	 * @brief Get the image mark
 	 **/
-	function getImageMark($member_srl) {
-		if(!isset($GLOBALS['__member_info__']['image_mark'][$member_srl])) {
+	function getImageMark($member_srl){
+		if(!isset($GLOBALS['__member_info__']['image_mark'][$member_srl])){
 			$image_mark_file = sprintf('files/member_extra_info/image_mark/%s%d.gif', getNumberingPath($member_srl), $member_srl);
-			if(file_exists($image_mark_file)) {
+			if(file_exists($image_mark_file)){
 				list($width, $height, $type, $attrs) = getimagesize($image_mark_file);
 				$info->width = $width;
 				$info->height = $height;
@@ -785,21 +804,22 @@ class memberModel extends member {
 	/**
 	 * @brief Get the image mark of the group
 	 **/
-	function getGroupImageMark($member_srl, $site_srl = 0) {
-		if(!isset($GLOBALS['__member_info__']['group_image_mark'][$member_srl])) {
-			$oModuleModel = &getModel('module');
+	function getGroupImageMark($member_srl, $site_srl = 0){
+		if(!isset($GLOBALS['__member_info__']['group_image_mark'][$member_srl])){
+			$oModuleModel = getModel('module');
 			$config = $oModuleModel->getModuleConfig('member');
-			if($config->group_image_mark != 'Y') {
+			if($config->group_image_mark != 'Y'){
 				return null;
 			}
 			$member_group = $this->getMemberGroups($member_srl, $site_srl);
 			$groups_info = $this->getGroups($site_srl);
-			if(count($member_group) > 0 && is_array($member_group)) {
+			if(count($member_group) > 0 && is_array($member_group)){
 				$memberGroups = array_keys($member_group);
 				
-				foreach($groups_info as $group_srl => $group_info) {
-					if(in_array($group_srl, $memberGroups)) {
-						if($group_info->image_mark) {
+				foreach($groups_info as $group_srl => $group_info){
+					if(in_array($group_srl, $memberGroups)){
+						if($group_info->image_mark){
+							$info = new stdClass();
 							$info->title = $group_info->title;
 							$info->description = $group_info->description;
 							$info->src = $group_info->image_mark;
@@ -819,10 +839,10 @@ class memberModel extends member {
 	/**
 	 * @brief Get user's signature
 	 **/
-	function getSignature($member_srl) {
-		if(!isset($GLOBALS['__member_info__']['signature'][$member_srl])) {
+	function getSignature($member_srl){
+		if(!isset($GLOBALS['__member_info__']['signature'][$member_srl])){
 			$filename = sprintf('files/member_extra_info/signature/%s%d.signature.php', getNumberingPath($member_srl), $member_srl);
-			if(file_exists($filename)) {
+			if(file_exists($filename)){
 				$buff = FileHandler::readFile($filename);
 				$signature = trim(substr($buff, 40));
 				$GLOBALS['__member_info__']['signature'][$member_srl] = $signature;
@@ -838,9 +858,9 @@ class memberModel extends member {
 	 * @param int    $member_srl      Set this to member_srl when comparing a member's password (optional)
 	 * @return bool
 	 **/
-	function isValidPassword($hashed_password, $password_text, $member_srl = null) {
+	function isValidPassword($hashed_password, $password_text, $member_srl = null){
 		// False if no password in entered
-		if(!$password_text) {
+		if(!$password_text){
 			return false;
 		}
 		
@@ -848,27 +868,27 @@ class memberModel extends member {
 		$oPassword = new Password();
 		$current_algorithm = $oPassword->checkAlgorithm($hashed_password);
 		$match = $oPassword->checkPassword($password_text, $hashed_password, $current_algorithm);
-		if(!$match) {
+		if(!$match){
 			return false;
 		}
 		
 		// Update the encryption method if necessary
 		$config = $this->getMemberConfig();
-		if($member_srl > 0 && $config->password_hashing_auto_upgrade != 'N') {
+		if($member_srl > 0 && $config->password_hashing_auto_upgrade != 'N'){
 			$need_upgrade = false;
 			
-			if(!$need_upgrade) {
+			if(!$need_upgrade){
 				$required_algorithm = $oPassword->getCurrentlySelectedAlgorithm();
 				if($required_algorithm !== $current_algorithm) $need_upgrade = true;
 			}
 			
-			if(!$need_upgrade) {
+			if(!$need_upgrade){
 				$required_work_factor = $oPassword->getWorkFactor();
 				$current_work_factor = $oPassword->checkWorkFactor($hashed_password);
 				if($current_work_factor !== false && $required_work_factor > $current_work_factor) $need_upgrade = true;
 			}
 			
-			if($need_upgrade === true) {
+			if($need_upgrade === true){
 				$args = new stdClass();
 				$args->member_srl = $member_srl;
 				$args->hashed_password = $this->hashPassword($password_text, $required_algorithm);
@@ -887,7 +907,7 @@ class memberModel extends member {
 	 *                              algorithm)
 	 * @return string
 	 */
-	function hashPassword($password_text, $algorithm = null) {
+	function hashPassword($password_text, $algorithm = null){
 		$oPassword = new Password();
 		return $oPassword->createHash($password_text, $algorithm);
 	}
@@ -918,12 +938,12 @@ class memberModel extends member {
 		return true;
 	}
 	
-	function getAdminGroupSrl($site_srl = 0) {
+	function getAdminGroupSrl($site_srl = 0){
 		$groupSrl = 0;
 		$output = $this->getGroups($site_srl);
-		if(is_array($output)) {
-			foreach($output AS $key => $value) {
-				if($value->is_admin == 'Y') {
+		if(is_array($output)){
+			foreach($output AS $key => $value){
+				if($value->is_admin == 'Y'){
 					$groupSrl = $value->group_srl;
 					break;
 				}

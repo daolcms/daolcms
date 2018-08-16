@@ -14,9 +14,9 @@ class memberView extends member {
 	/**
 	 * @brief Initialization
 	 **/
-	function init() {
+	function init(){
 		// Get the member configuration
-		$oMemberModel = &getModel('member');
+		$oMemberModel = getModel('member');
 		$this->member_config = $oMemberModel->getMemberConfig();
 		Context::set('member_config', $this->member_config);
 		$oSecurity = new Security();
@@ -24,24 +24,26 @@ class memberView extends member {
 		
 		$skin = $this->member_config->skin;
 		// Set the template path
-		if(!$skin) {
+		if(!$skin){
 			$skin = 'default';
 			$template_path = sprintf('%sskins/%s', $this->module_path, $skin);
-		} else {
+		}
+		else{
 			//check theme
 			$config_parse = explode('|@|', $skin);
-			if(count($config_parse) > 1) {
+			if(count($config_parse) > 1){
 				$template_path = sprintf('./themes/%s/modules/member/', $config_parse[0]);
-			} else {
+			}
+			else{
 				$template_path = sprintf('%sskins/%s', $this->module_path, $skin);
 			}
 		}
 		// Template path
 		$this->setTemplatePath($template_path);
 		
-		$oLayoutModel = &getModel('layout');
+		$oLayoutModel = getModel('layout');
 		$layout_info = $oLayoutModel->getLayout($this->member_config->layout_srl);
-		if($layout_info) {
+		if($layout_info){
 			$this->module_info->layout_srl = $this->member_config->layout_srl;
 			$this->setLayoutPath($layout_info->path);
 		}
@@ -50,16 +52,16 @@ class memberView extends member {
 	/**
 	 * @brief Display member information
 	 **/
-	function dispMemberInfo() {
-		$oMemberModel = &getModel('member');
+	function dispMemberInfo(){
+		$oMemberModel = getModel('member');
 		$logged_info = Context::get('logged_info');
 		// Don't display member info to non-logged user
 		if(!$logged_info->member_srl) return $this->stop('msg_not_permitted');
 		
 		$member_srl = Context::get('member_srl');
-		if(!$member_srl && Context::get('is_logged')) {
+		if(!$member_srl && Context::get('is_logged')){
 			$member_srl = $logged_info->member_srl;
-		} elseif(!$member_srl) {
+		} elseif(!$member_srl){
 			return $this->dispMemberSignUpForm();
 		}
 		
@@ -70,7 +72,7 @@ class memberView extends member {
 		unset($member_info->email_id);
 		unset($member_info->email_host);
 		
-		if($logged_info->is_admin != 'Y' && ($member_info->member_srl != $logged_info->member_srl)) {
+		if($logged_info->is_admin != 'Y' && ($member_info->member_srl != $logged_info->member_srl)){
 			$start = strpos($member_info->email_address, '@') + 1;
 			$replaceStr = str_repeat('*', (strlen($member_info->email_address) - $start));
 			$member_info->email_address = substr_replace($member_info->email_address, $replaceStr, $start);
@@ -90,52 +92,60 @@ class memberView extends member {
 		$this->setTemplateFile('member_info');
 	}
 	
-	function _getDisplayedMemberInfo($memberInfo, $extendFormInfo, $memberConfig) {
+	function _getDisplayedMemberInfo($memberInfo, $extendFormInfo, $memberConfig){
 		$logged_info = Context::get('logged_info');
 		$displayDatas = array();
-		foreach($memberConfig->signupForm as $no => $formInfo) {
-			if(!$formInfo->isUse) {
+		foreach($memberConfig->signupForm as $no => $formInfo){
+			if(!$formInfo->isUse){
 				continue;
 			}
 			
-			if($formInfo->name == 'password' || $formInfo->name == 'find_account_question') {
+			if($formInfo->name == 'password' || $formInfo->name == 'find_account_question'){
 				continue;
 			}
 			
-			if($logged_info->is_admin != 'Y' && $memberInfo->member_srl != $logged_info->member_srl && $formInfo->isPublic != 'Y') {
+			if($logged_info->is_admin != 'Y' && $memberInfo->member_srl != $logged_info->member_srl && $formInfo->isPublic != 'Y'){
 				continue;
 			}
 			
 			$item = $formInfo;
 			
-			if($formInfo->isDefaultForm) {
+			if($formInfo->isDefaultForm){
 				$item->title = Context::getLang($formInfo->name);
 				$item->value = $memberInfo->{$formInfo->name};
 				
-				if($formInfo->name == 'profile_image' && $memberInfo->profile_image) {
+				if($formInfo->name == 'profile_image' && $memberInfo->profile_image){
 					$target = $memberInfo->profile_image;
 					$item->value = '<img src="' . $target->src . '" />';
-				} elseif($formInfo->name == 'image_name' && $memberInfo->image_name) {
+				}
+				elseif($formInfo->name == 'image_name' && $memberInfo->image_name){
 					$target = $memberInfo->image_name;
 					$item->value = '<img src="' . $target->src . '" />';
-				} elseif($formInfo->name == 'image_mark' && $memberInfo->image_mark) {
+				}
+				elseif($formInfo->name == 'image_mark' && $memberInfo->image_mark){
 					$target = $memberInfo->image_mark;
 					$item->value = '<img src="' . $target->src . '" />';
-				} elseif($formInfo->name == 'birthday' && $memberInfo->birthday) {
+				}
+				elseif($formInfo->name == 'birthday' && $memberInfo->birthday){
 					$item->value = zdate($item->value, 'Y-m-d');
 				}
-			} else {
+			}
+			else{
 				$item->title = $extendFormInfo[$formInfo->member_join_form_srl]->column_title;
 				$orgValue = $extendFormInfo[$formInfo->member_join_form_srl]->value;
-				if($formInfo->type == 'tel' && is_array($orgValue)) {
+				if($formInfo->type == 'tel' && is_array($orgValue)){
 					$item->value = implode('-', $orgValue);
-				} elseif($formInfo->type == 'kr_zip' && is_array($orgValue)) {
+				}
+				elseif($formInfo->type == 'kr_zip' && is_array($orgValue)){
 					$item->value = implode(' ', $orgValue);
-				} elseif($formInfo->type == 'checkbox' && is_array($orgValue)) {
+				}
+				elseif($formInfo->type == 'checkbox' && is_array($orgValue)){
 					$item->value = implode(", ", $orgValue);
-				} elseif($formInfo->type == 'date') {
+				}
+				elseif($formInfo->type == 'date'){
 					$item->value = zdate($orgValue, "Y-m-d");
-				} else {
+				}
+				else{
 					$item->value = nl2br($orgValue);
 				}
 			}
@@ -152,13 +162,13 @@ class memberView extends member {
 	/**
 	 * @brief Display member join form
 	 **/
-	function dispMemberSignUpForm() {
+	function dispMemberSignUpForm(){
 		//setcookie for redirect url in case of going to member sign up
 		setcookie("XE_REDIRECT_URL", $_SERVER['HTTP_REFERER']);
 		
 		$member_config = $this->member_config;
 		
-		$oMemberModel = &getModel('member');
+		$oMemberModel = getModel('member');
 		// Get the member information if logged-in
 		if($oMemberModel->isLogged()) return $this->stop('msg_already_logged');
 		// call a trigger (before) 
@@ -167,11 +177,12 @@ class memberView extends member {
 		// Error appears if the member is not allowed to join
 		if($member_config->enable_join != 'Y') return $this->stop('msg_signup_disabled');
 		
-		$oMemberAdminView = &getAdminView('member');
+		$oMemberAdminView = getAdminView('member');
 		$formTags = $oMemberAdminView->_getMemberInputTag($member_info);
 		Context::set('formTags', $formTags);
 		
 		global $lang;
+		$identifierForm = new stdClass();
 		$identifierForm->title = $lang->{$member_config->identifier};
 		$identifierForm->name = $member_config->identifier;
 		$identifierForm->value = $member_info->{$member_config->identifier};
@@ -184,25 +195,26 @@ class memberView extends member {
 	}
 	
 	
-	function dispMemberModifyInfoBefore() {
+	function dispMemberModifyInfoBefore(){
 		$logged_info = Context::get('logged_info');
-		$oMemberModel = &getModel('member');
-		if(!$oMemberModel->isLogged() || empty($logged_info)) {
+		$oMemberModel = getModel('member');
+		if(!$oMemberModel->isLogged() || empty($logged_info)){
 			return $this->stop('msg_not_logged');
 		}
 		
 		$_SESSION['rechecked_password_step'] = 'INPUT_PASSWORD';
 		
 		$templateFile = $this->getTemplatePath() . 'rechecked_password.html';
-		if(!is_readable($templateFile)) {
+		if(!is_readable($templateFile)){
 			$templatePath = sprintf('%sskins/default', $this->module_path);
 			$this->setTemplatePath($templatePath);
 		}
 		
-		if($this->member_config->identifier == 'email_address') {
+		if($this->member_config->identifier == 'email_address'){
 			Context::set('identifierTitle', Context::getLang('email_address'));
 			Context::set('identifierValue', $logged_info->email_address);
-		} else {
+		}
+		else{
 			Context::set('identifierTitle', Context::getLang('user_id'));
 			Context::set('identifierValue', $logged_info->user_id);
 		}
@@ -213,8 +225,8 @@ class memberView extends member {
 	/**
 	 * @brief Modify member information
 	 **/
-	function dispMemberModifyInfo() {
-		if($_SESSION['rechecked_password_step'] != 'VALIDATE_PASSWORD') {
+	function dispMemberModifyInfo(){
+		if($_SESSION['rechecked_password_step'] != 'VALIDATE_PASSWORD'){
 			$this->dispMemberModifyInfoBefore();
 			return;
 		}
@@ -223,7 +235,7 @@ class memberView extends member {
 		
 		$member_config = $this->member_config;
 		
-		$oMemberModel = &getModel('member');
+		$oMemberModel = getModel('member');
 		// A message appears if the user is not logged-in
 		if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
 		
@@ -239,8 +251,9 @@ class memberView extends member {
 		Context::set('extend_form_list', $oMemberModel->getCombineJoinForm($member_info));
 		
 		// Editor of the module set for signing by calling getEditor
-		if($member_info->member_srl) {
-			$oEditorModel = &getModel('editor');
+		if($member_info->member_srl){
+			$oEditorModel = getModel('editor');
+			$option = new stdClass();
 			$option->primary_key_name = 'member_srl';
 			$option->content_key_name = 'signature';
 			$option->allow_fileupload = false;
@@ -258,11 +271,12 @@ class memberView extends member {
 		
 		$this->member_info = $member_info;
 		
-		$oMemberAdminView = &getAdminView('member');
+		$oMemberAdminView = getAdminView('member');
 		$formTags = $oMemberAdminView->_getMemberInputTag($member_info);
 		Context::set('formTags', $formTags);
 		
 		global $lang;
+		$identifierForm = new stdClass();
 		$identifierForm->title = $lang->{$member_config->identifier};
 		$identifierForm->name = $member_config->identifier;
 		$identifierForm->value = $member_info->{$member_config->identifier};
@@ -278,8 +292,8 @@ class memberView extends member {
 	/**
 	 * @brief Display documents written by the member
 	 **/
-	function dispMemberOwnDocument() {
-		$oMemberModel = &getModel('member');
+	function dispMemberOwnDocument(){
+		$oMemberModel = getModel('member');
 		// A message appears if the user is not logged-in
 		if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
 		
@@ -291,7 +305,7 @@ class memberView extends member {
 		Context::set('search_target', 'member_srls');
 		Context::set('search_keyword', implode(',', array($member_srl, $member_srl * -1)));
 		
-		$oDocumentAdminView = &getAdminView('document');
+		$oDocumentAdminView = getAdminView('document');
 		$oDocumentAdminView->dispDocumentAdminList();
 		
 		$oSecurity = new Security();
@@ -304,12 +318,13 @@ class memberView extends member {
 	/**
 	 * @brief Display documents scrapped by the member
 	 **/
-	function dispMemberScrappedDocument() {
-		$oMemberModel = &getModel('member');
+	function dispMemberScrappedDocument(){
+		$oMemberModel = getModel('member');
 		// A message appears if the user is not logged-in
 		if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
 		
 		$logged_info = Context::get('logged_info');
+		$args = new stdClass();
 		$args->member_srl = $logged_info->member_srl;
 		$args->page = (int)Context::get('page');
 		
@@ -326,17 +341,18 @@ class memberView extends member {
 	/**
 	 * @brief Display documents saved by the member
 	 **/
-	function dispMemberSavedDocument() {
-		$oMemberModel = &getModel('member');
+	function dispMemberSavedDocument(){
+		$oMemberModel = getModel('member');
 		// A message appears if the user is not logged-in
 		if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
 		// Get the saved document(module_srl is set to member_srl instead)
 		$logged_info = Context::get('logged_info');
+		$args = new stdClass();
 		$args->member_srl = $logged_info->member_srl;
 		$args->page = (int)Context::get('page');
 		$args->statusList = array('TEMP');
 		
-		$oDocumentModel = &getModel('document');
+		$oDocumentModel = getModel('document');
 		$output = $oDocumentModel->getDocumentList($args, true);
 		Context::set('total_count', $output->total_count);
 		Context::set('total_page', $output->total_page);
@@ -350,8 +366,8 @@ class memberView extends member {
 	/**
 	 * @brief Display the login form
 	 **/
-	function dispMemberLoginForm() {
-		if(Context::get('is_logged')) {
+	function dispMemberLoginForm(){
+		if(Context::get('is_logged')){
 			Context::set('redirect_url', getNotEncodedUrl('act', ''));
 			$this->setTemplatePath($this->module_path . 'tpl');
 			$this->setTemplateFile('redirect.html');
@@ -359,7 +375,7 @@ class memberView extends member {
 		}
 		
 		// get member module configuration.
-		$oMemberModel = &getModel('member');
+		$oMemberModel = getModel('member');
 		$config = $this->member_config;
 		Context::set('identifier', $config->identifier);
 		
@@ -371,8 +387,8 @@ class memberView extends member {
 	/**
 	 * @brief Change the user password
 	 **/
-	function dispMemberModifyPassword() {
-		$oMemberModel = &getModel('member');
+	function dispMemberModifyPassword(){
+		$oMemberModel = getModel('member');
 		// A message appears if the user is not logged-in
 		if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
 		
@@ -385,10 +401,11 @@ class memberView extends member {
 		$member_info = $oMemberModel->getMemberInfoByMemberSrl($member_srl, 0, $columnList);
 		Context::set('member_info', $member_info);
 		
-		if($memberConfig->identifier == 'user_id') {
+		if($memberConfig->identifier == 'user_id'){
 			Context::set('identifier', 'user_id');
 			Context::set('formValue', $member_info->user_id);
-		} else {
+		}
+		else{
 			Context::set('identifier', 'email_address');
 			Context::set('formValue', $member_info->email_address);
 		}
@@ -399,8 +416,8 @@ class memberView extends member {
 	/**
 	 * @brief Member withdrawl
 	 **/
-	function dispMemberLeave() {
-		$oMemberModel = &getModel('member');
+	function dispMemberLeave(){
+		$oMemberModel = getModel('member');
 		// A message appears if the user is not logged-in
 		if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
 		
@@ -412,10 +429,11 @@ class memberView extends member {
 		$member_info = $oMemberModel->getMemberInfoByMemberSrl($member_srl);
 		Context::set('member_info', $member_info);
 		
-		if($memberConfig->identifier == 'user_id') {
+		if($memberConfig->identifier == 'user_id'){
 			Context::set('identifier', 'user_id');
 			Context::set('formValue', $member_info->user_id);
-		} else {
+		}
+		else{
 			Context::set('identifier', 'email_address');
 			Context::set('formValue', $member_info->email_address);
 		}
@@ -426,8 +444,8 @@ class memberView extends member {
 	/**
 	 * @brief Member log-out
 	 **/
-	function dispMemberLogout() {
-		$oMemberController = &getController('member');
+	function dispMemberLogout(){
+		$oMemberController = getController('member');
 		$output = $oMemberController->procMemberLogout();
 		if(!$output->redirect_url)
 			$this->setRedirectUrl(getNotEncodedUrl('act', ''));
@@ -441,17 +459,17 @@ class memberView extends member {
 	 * @brief      Display a list of saved articles
 	 * @Deplicated - instead Document View - dispTempSavedList method use
 	 **/
-	function dispSavedDocumentList() {
+	function dispSavedDocumentList(){
 		return new BaseObject(0, 'Deplicated method');
 	}
 	
 	/**
 	 * @brief Find user ID and password
 	 **/
-	function dispMemberFindAccount() {
+	function dispMemberFindAccount(){
 		if(Context::get('is_logged')) return $this->stop('already_logged');
 		
-		$oMemberModel = &getModel('member');
+		$oMemberModel = getModel('member');
 		$config = $this->member_config;
 		
 		Context::set('identifier', $config->identifier);
@@ -462,7 +480,7 @@ class memberView extends member {
 	/**
 	 * @brief Generate a temporary password
 	 **/
-	function dispMemberGetTempPassword() {
+	function dispMemberGetTempPassword(){
 		if(Context::get('is_logged')) return $this->stop('already_logged');
 		
 		$user_id = Context::get('user_id');
@@ -503,8 +521,8 @@ class memberView extends member {
 	/**
 	 * @brief 이메일 주소를 기본 로그인 계정 사용시 이메일 주소 변경을 위한 화면 추가
 	 **/
-	function dispMemberModifyEmailAddress() {
-		if($_SESSION['rechecked_password_step'] != 'VALIDATE_PASSWORD' && $_SESSION['rechecked_password_step'] != 'INPUT_DATA') {
+	function dispMemberModifyEmailAddress(){
+		if($_SESSION['rechecked_password_step'] != 'VALIDATE_PASSWORD' && $_SESSION['rechecked_password_step'] != 'INPUT_DATA'){
 			Context::set('success_return_url', getUrl('', 'mid', Context::get('mid'), 'act', 'dispMemberModifyEmailAddress'));
 			$this->dispMemberModifyInfoBefore();
 			return;
@@ -519,8 +537,8 @@ class memberView extends member {
 	 * Add javascript codes into the header by checking values of member join form, required and others
 	 * @return void
 	 */
-	function addExtraFormValidatorMessage() {
-		$oMemberModel = &getModel('member');
+	function addExtraFormValidatorMessage(){
+		$oMemberModel = getModel('member');
 		$extraList = $oMemberModel->getUsedJoinFormList();
 		
 		$js_code = array();
@@ -530,11 +548,12 @@ class memberView extends member {
 		$js_code[] = 'if(!validator) return false;';
 		
 		$errorLang = array();
-		foreach($extraList as $val) {
+		foreach($extraList as $val){
 			$title = str_ireplace(array('<script', '</script'), array('<scr"+"ipt', '</scr"+"ipt'), addslashes($val->column_title));
-			if($val->column_type == 'kr_zip' || $val->column_type == 'tel') {
+			if($val->column_type == 'kr_zip' || $val->column_type == 'tel'){
 				$js_code[] = sprintf('validator.cast("ADD_MESSAGE", ["%s[]","%s"]);', $val->column_name, $title);
-			} else {
+			}
+			else{
 				$js_code[] = sprintf('validator.cast("ADD_MESSAGE", ["%s","%s"]);', $val->column_name, $title);
 			}
 			
