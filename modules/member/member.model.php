@@ -248,12 +248,22 @@ class memberModel extends member {
 	 **/
 	function getMemberInfoByEmailAddress($email_address) {
 		if(!$email_address) return;
+
+		$args = new stdClass();
 		
-		$args->email_address = $email_address;
-		$output = executeQuery('member.getMemberInfoByEmailAddress', $args);
+		$db_info = Context::getDBInfo ();
+		if($db_info->master_db['db_type'] == "cubrid"){
+			$args->email_address = strtolower($email_address);
+			$output = executeQuery('member.getMemberInfoByEmailAddressForCubrid', $args);
+		}
+		else{
+			$args->email_address = $email_address;
+			$output = executeQuery('member.getMemberInfoByEmailAddress', $args);
+		}
+		
 		if(!$output->toBool()) return $output;
 		if(!$output->data) return;
-		
+
 		$member_info = $this->arrangeMemberInfo($output->data);
 		return $member_info;
 	}
