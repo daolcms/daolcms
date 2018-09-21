@@ -34,16 +34,18 @@ class menuAdminController extends menu {
 	 * Initialization
 	 * @return void
 	 */
-	function init() {
+	function init(){
 	}
 	
 	/**
 	 * Add a menu
 	 * @return void|object
 	 */
-	function procMenuAdminInsert() {
+	function procMenuAdminInsert(){
 		// List variables
 		$site_module_info = Context::get('site_module_info');
+		
+		$args = new stdClass();
 		$args->site_srl = (int)$site_module_info->site_srl;
 		$args->title = Context::get('title');
 		$args->menu_srl = getNextSequence();
@@ -63,8 +65,9 @@ class menuAdminController extends menu {
 	 * Change the menu title
 	 * @return void|object
 	 */
-	function procMenuAdminUpdate() {
+	function procMenuAdminUpdate(){
 		// List variables
+		$args = new stdClass();
 		$args->title = Context::get('title');
 		$args->menu_srl = Context::get('menu_srl');
 		
@@ -81,10 +84,10 @@ class menuAdminController extends menu {
 	 * Delete menu process method
 	 * @return void|Object
 	 */
-	function procMenuAdminDelete() {
+	function procMenuAdminDelete(){
 		$menu_srl = Context::get('menu_srl');
 		
-		$oMenuAdminModel = &getAdminModel('menu');
+		$oMenuAdminModel = getAdminModel('menu');
 		$menu_info = $oMenuAdminModel->getMenu($menu_srl);
 		
 		if($menu_info->title == '__XE_ADMIN__')
@@ -103,23 +106,27 @@ class menuAdminController extends menu {
 	 * Delete menu_item and xml cache files
 	 * @return BaseObject
 	 */
-	function deleteMenu($menu_srl) {
+	function deleteMenu($menu_srl){
 		// Delete cache files
 		$cache_list = FileHandler::readDir("./files/cache/menu", "", false, true);
-		if(count($cache_list)) {
-			foreach($cache_list as $cache_file) {
+		if(count($cache_list)){
+			foreach($cache_list as $cache_file){
 				$pos = strpos($cache_file, $menu_srl . '.');
 				if($pos > 0) FileHandler::removeFile($cache_file);
 			}
 		}
+		
 		// Delete images of menu buttons
 		$image_path = sprintf('./files/attach/menu_button/%s', $menu_srl);
 		FileHandler::removeDir($image_path);
 		
+		$args = new stdClass();
 		$args->menu_srl = $menu_srl;
+		
 		// Delete menu items
 		$output = executeQuery("menu.deleteMenuItems", $args);
 		if(!$output->toBool()) return $output;
+		
 		// Delete the menu
 		$output = executeQuery("menu.deleteMenu", $args);
 		if(!$output->toBool()) return $output;
@@ -131,7 +138,7 @@ class menuAdminController extends menu {
 	 * Add an item to the menu
 	 * @return void
 	 */
-	function procMenuAdminInsertItem() {
+	function procMenuAdminInsertItem(){
 		// List variables to insert
 		$source_args = Context::getRequestVars();
 		
@@ -154,6 +161,7 @@ class menuAdminController extends menu {
 		$btnOutput = $this->_uploadButton($source_args);
 		
 		// Re-order variables (Column's order is different between form and DB)
+		$args = new stdClass();
 		$args->menu_srl = $source_args->menu_srl;
 		$args->menu_item_srl = $source_args->menu_item_srl;
 		$args->parent_srl = $source_args->parent_srl;
@@ -165,7 +173,7 @@ class menuAdminController extends menu {
 		else
 			$args->name = $source_args->menu_name;
 		
-		if(!strstr($args->name, '$user_lang->')) {
+		if(!strstr($args->name, '$user_lang->')){
 			$args->name = htmlspecialchars($args->name);
 		}
 		
@@ -178,16 +186,17 @@ class menuAdminController extends menu {
 		$args->group_srls = $source_args->group_srls;
 		
 		// if cType is CREATE, create module
-		if($source_args->cType == 'CREATE' || $source_args->cType == 'SELECT') {
+		if($source_args->cType == 'CREATE' || $source_args->cType == 'SELECT'){
 			$site_module_info = Context::get('site_module_info');
+			$cmArgs = new stdClass();
 			$cmArgs->site_srl = (int)$site_module_info->site_srl;
 			$cmArgs->browser_title = $args->name;
 			$cmArgs->menu_srl = $source_args->menu_srl;
-			if($source_args->layout_srl) {
+			if($source_args->layout_srl){
 				$cmArgs->layout_srl = $source_args->layout_srl;
 			}
 			
-			switch($source_args->module_type) {
+			switch($source_args->module_type){
 				case 'WIDGET' :
 				case 'ARTICLE' :
 				case 'OUTSIDE' :
@@ -199,14 +208,15 @@ class menuAdminController extends menu {
 					unset($cmArgs->page_type);
 			}
 			
-			$oModuleController = &getController('module');
-			if($source_args->cType == 'CREATE') {
+			$oModuleController = getController('module');
+			if($source_args->cType == 'CREATE'){
 				$cmArgs->mid = $source_args->create_menu_url;
 				$output = $oModuleController->insertModule($cmArgs);
-			} else {
-				$oModuleModel = &getModel('module');
+			}
+			else{
+				$oModuleModel = getModel('module');
 				$module_info = $oModuleModel->getModuleInfoByModuleSrl($source_args->module_srl);
-				if($cmArgs->layout_srl) {
+				if($cmArgs->layout_srl){
 					$module_info->layout_srl = $cmArgs->layout_srl;
 				}
 				$cmArgs = $module_info;
@@ -219,7 +229,7 @@ class menuAdminController extends menu {
 		}
 		
 		// Check if already exists
-		$oMenuModel = &getAdminModel('menu');
+		$oMenuModel = getAdminModel('menu');
 		$item_info = $oMenuModel->getMenuItemInfo($args->menu_item_srl);
 		
 		// button is deleted, db delete
@@ -229,12 +239,13 @@ class menuAdminController extends menu {
 		
 		$message = '';
 		// Update if exists
-		if(!empty($args->menu_item_srl) && $item_info->menu_item_srl == $args->menu_item_srl) {
+		if(!empty($args->menu_item_srl) && $item_info->menu_item_srl == $args->menu_item_srl){
 			$output = executeQuery('menu.updateMenuItem', $args);
 			if(!$output->toBool()) return $output;
 			$message = 'success_updated';
 			// Insert if not exist
-		} else {
+		}
+		else{
 			if(!$args->menu_item_srl) $args->menu_item_srl = getNextSequence();
 			$args->listorder = -1 * $args->menu_item_srl;
 			$output = executeQuery('menu.insertMenuItem', $args);
@@ -247,20 +258,21 @@ class menuAdminController extends menu {
 		// Update the xml file and get its location
 		$xml_file = $this->makeXmlFile($args->menu_srl);
 		// If a new menu item that mid is URL is added, the current layout is applied
-		if(preg_match('/^([a-zA-Z0-9\_\-]+)$/', $args->url)) {
+		if(preg_match('/^([a-zA-Z0-9\_\-]+)$/', $args->url)){
 			$mid = $args->url;
 			
+			$mid_args = new stdClass();
 			$mid_args->menu_srl = $args->menu_srl;
 			$mid_args->mid = $mid;
 			// Get layout value of menu_srl
 			$output = executeQuery('menu.getMenuLayout', $args);
 			// Set if layout value is not specified in the module
-			$oModuleModel = &getModel('module');
+			$oModuleModel = getModel('module');
 			$columnList = array('layout_srl');
 			$module_info = $oModuleModel->getModuleInfoByMid($mid, 0, $columnList);
 			if(!$module_info->layout_srl && $output->data->layout_srl) $mid_args->layout_srl = $output->data->layout_srl;
 			// Change menu value of the mid to the menu
-			$oModuleController = &getController('module');
+			$oModuleController = getController('module');
 			$oModuleController->updateModuleMenu($mid_args);
 		}
 		
@@ -294,11 +306,11 @@ class menuAdminController extends menu {
 	 * Delete menu item(menu of the menu)
 	 * @return void|Object
 	 */
-	function procMenuAdminDeleteItem() {
+	function procMenuAdminDeleteItem(){
 		// List variables
 		$args = Context::gets('menu_srl', 'menu_item_srl');
 		
-		$oMenuAdminModel = &getAdminModel('menu');
+		$oMenuAdminModel = getAdminModel('menu');
 		
 		// Get information of the menu
 		$menu_info = $oMenuAdminModel->getMenu($args->menu_srl);
@@ -337,7 +349,7 @@ class menuAdminController extends menu {
 	 * Move menu items
 	 * @return void
 	 */
-	function procMenuAdminMoveItem() {
+	function procMenuAdminMoveItem(){
 		$menu_srl = Context::get('menu_srl');
 		$mode = Context::get('mode');
 		$parent_srl = Context::get('parent_srl');
@@ -352,8 +364,9 @@ class menuAdminController extends menu {
 	 * Arrange menu items
 	 * @return void|object
 	 */
-	function procMenuAdminArrangeItem() {
+	function procMenuAdminArrangeItem(){
 		$this->menuSrl = Context::get('menu_srl');
+		$args = new stdClass();
 		$args->title = Context::get('title');
 		$parentKeyList = Context::get('parent_key');
 		$this->itemKeyList = Context::get('item_key');
@@ -364,8 +377,8 @@ class menuAdminController extends menu {
 		if(!$output->toBool()) return $output;
 		
 		$this->map = array();
-		if(is_array($parentKeyList)) {
-			foreach($parentKeyList as $no => $srl) {
+		if(is_array($parentKeyList)){
+			foreach($parentKeyList as $no => $srl){
 				if($srl === 0) continue;
 				if(!is_array($this->map[$srl])) $this->map[$srl] = array();
 				$this->map[$srl][] = $no;
@@ -373,15 +386,15 @@ class menuAdminController extends menu {
 		}
 		
 		$result = array();
-		if(is_array($this->itemKeyList)) {
-			foreach($this->itemKeyList as $srl) {
-				if(!$this->checked[$srl]) {
-					unset($target);
+		if(is_array($this->itemKeyList)){
+			foreach($this->itemKeyList as $srl){
+				if(!$this->checked[$srl]){
+					$target = new stdClass();
 					$this->checked[$srl] = 1;
 					$target->node = $srl;
 					$target->child = array();
 					
-					while(count($this->map[$srl])) {
+					while(count($this->map[$srl])){
 						$this->_setParent($srl, array_shift($this->map[$srl]), $target);
 					}
 					$result[] = $target;
@@ -389,9 +402,9 @@ class menuAdminController extends menu {
 			}
 		}
 		
-		if(is_array($result)) {
+		if(is_array($result)){
 			$i = 0;
-			foreach($result AS $key => $node) {
+			foreach($result AS $key => $node){
 				$this->moveMenuItem($this->menuSrl, 0, $i, $node->node, 'move');    //move parent node
 				$this->_recursiveMoveMenuItem($node);    //move child node
 				$i = $node->node;
@@ -411,16 +424,17 @@ class menuAdminController extends menu {
 	 * @param object $target
 	 * @return void
 	 */
-	function _setParent($parent_srl, $child_index, &$target) {
+	function _setParent($parent_srl, $child_index, &$target){
 		$child_srl = $this->itemKeyList[$child_index];
 		$this->checked[$child_srl] = 1;
 		
+		$child_node = new stdClass();
 		$child_node->node = $child_srl;
 		$child_node->parent_node = $parent_srl;
 		$child_node->child = array();
 		$target->child[] = $child_node;
 		
-		while(count($this->map[$child_srl])) {
+		while(count($this->map[$child_srl])){
 			$this->_setParent($child_srl, array_shift($this->map[$child_srl]), $child_node);
 		}
 		//return $target;
@@ -431,9 +445,9 @@ class menuAdminController extends menu {
 	 * @param object $result
 	 * @return void
 	 */
-	function _recursiveMoveMenuItem($result) {
+	function _recursiveMoveMenuItem($result){
 		$i = 0;
-		while(count($result->child)) {
+		while(count($result->child)){
 			unset($node);
 			$node = array_shift($result->child);
 			
@@ -452,22 +466,24 @@ class menuAdminController extends menu {
 	 * @param string $mode 'move' or 'insert'
 	 * @return void
 	 */
-	function moveMenuItem($menu_srl, $parent_srl, $source_srl, $target_srl, $mode) {
+	function moveMenuItem($menu_srl, $parent_srl, $source_srl, $target_srl, $mode){
 		// Get the original menus
-		$oMenuAdminModel = &getAdminModel('menu');
+		$oMenuAdminModel = getAdminModel('menu');
 		
 		$target_item = $oMenuAdminModel->getMenuItemInfo($target_srl);
 		if($target_item->menu_item_srl != $target_srl) return new BaseObject(-1, 'msg_invalid_request');
 		// Move the menu location(change the order menu appears)
-		if($mode == 'move') {
+		if($mode == 'move'){
+			$args = new stdClass();
 			$args->parent_srl = $parent_srl;
 			$args->menu_srl = $menu_srl;
 			
-			if($source_srl) {
+			if($source_srl){
 				$source_item = $oMenuAdminModel->getMenuItemInfo($source_srl);
 				if($source_item->menu_item_srl != $source_srl) return new BaseObject(-1, 'msg_invalid_request');
 				$args->listorder = $source_item->listorder - 1;
-			} else {
+			}
+			else{
 				$output = executeQuery('menu.getMaxListorder', $args);
 				if(!$output->toBool()) return $output;
 				$args->listorder = (int)$output->data->listorder;
@@ -482,7 +498,8 @@ class menuAdminController extends menu {
 			$output = executeQuery('menu.updateMenuItemNode', $args);
 			if(!$output->toBool()) return $output;
 			// Add a child
-		} elseif($mode == 'insert') {
+		}
+		elseif($mode == 'insert'){
 			$args->menu_item_srl = $target_srl;
 			$args->parent_srl = $parent_srl;
 			$args->listorder = -1 * getNextSequence();
@@ -501,11 +518,11 @@ class menuAdminController extends menu {
 	 * It looks unnecessary at this moment however no need to eliminate the feature. Just leave it.
 	 * @return void
 	 */
-	function procMenuAdminMakeXmlFile() {
+	function procMenuAdminMakeXmlFile(){
 		// Check input value
 		$menu_srl = Context::get('menu_srl');
 		// Get information of the menu
-		$oMenuAdminModel = &getAdminModel('menu');
+		$oMenuAdminModel = getAdminModel('menu');
 		$menu_info = $oMenuAdminModel->getMenu($menu_srl);
 		$menu_title = $menu_info->title;
 		// Re-generate the xml file
@@ -519,18 +536,19 @@ class menuAdminController extends menu {
 	 * Register a menu image button
 	 * @return void
 	 */
-	function procMenuAdminUploadButton() {
+	function procMenuAdminUploadButton(){
 		$menu_srl = Context::get('menu_srl');
 		$menu_item_srl = Context::get('menu_item_srl');
 		$target = Context::get('target');
 		$target_file = Context::get($target);
 		// Error occurs when the target is neither a uploaded file nor a valid file
-		if(!$menu_srl || !$menu_item_srl) {
+		if(!$menu_srl || !$menu_item_srl){
 			Context::set('error_messge', Context::getLang('msg_invalid_request'));
-		} else if(!$target_file || !is_uploaded_file($target_file['tmp_name']) || !preg_match('/\.(gif|jpeg|jpg|png)/i', $target_file['name']) || !checkUploadedFile($target_file['tmp_name'])) {
+		}
+		else if(!$target_file || !is_uploaded_file($target_file['tmp_name']) || !preg_match('/\.(gif|jpeg|jpg|png)/i', $target_file['name']) || !checkUploadedFile($target_file['tmp_name'])){
 			Context::set('error_messge', Context::getLang('msg_invalid_request'));
 		} // Move the file to a specific director if the uploaded file meets requirement
-		else {
+		else{
 			$tmp_arr = explode('.', $target_file['name']);
 			$ext = $tmp_arr[count($tmp_arr) - 1];
 			
@@ -552,7 +570,7 @@ class menuAdminController extends menu {
 	 * Remove the menu image button
 	 * @return void
 	 */
-	function procMenuAdminDeleteButton() {
+	function procMenuAdminDeleteButton(){
 		$menu_srl = Context::get('menu_srl');
 		$menu_item_srl = Context::get('menu_item_srl');
 		$target = Context::get('target');
@@ -566,13 +584,13 @@ class menuAdminController extends menu {
 	 * Get all act list for admin menu
 	 * @return void
 	 */
-	function procMenuAdminAllActList() {
-		$oModuleModel = &getModel('module');
+	function procMenuAdminAllActList(){
+		$oModuleModel = getModel('module');
 		$installed_module_list = $oModuleModel->getModulesXmlInfo();
-		if(is_array($installed_module_list)) {
+		if(is_array($installed_module_list)){
 			$currentLang = Context::getLangType();
 			$menuList = array();
-			foreach($installed_module_list AS $key => $value) {
+			foreach($installed_module_list AS $key => $value){
 				$info = $oModuleModel->getModuleActionXml($value->module);
 				if($info->menu) $menuList[$value->module] = $info->menu;
 				unset($info->menu);
@@ -585,7 +603,7 @@ class menuAdminController extends menu {
 	 * Get all act list for admin menu
 	 * @return void|object
 	 */
-	function procMenuAdminInsertItemForAdminMenu() {
+	function procMenuAdminInsertItemForAdminMenu(){
 		$requestArgs = Context::getRequestVars();
 		$tmpMenuName = explode(':', $requestArgs->menu_name);
 		$moduleName = $tmpMenuName[0];
@@ -593,14 +611,14 @@ class menuAdminController extends menu {
 		
 		// variable setting
 		$logged_info = Context::get('logged_info');
-		//$oMenuAdminModel = &getAdminModel('menu');
-		$oMemberModel = &getModel('member');
+		//$oMenuAdminModel = getAdminModel('menu');
+		$oMemberModel = getModel('member');
 		
 		//$parentMenuInfo = $oMenuAdminModel->getMenuItemInfo($requestArgs->parent_srl);
 		$groupSrlList = $oMemberModel->getMemberGroups($logged_info->member_srl);
 		
 		//preg_match('/\{\$lang->menu_gnb\[(.*?)\]\}/i', $parentMenuInfo->name, $m);
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		//$info = $oModuleModel->getModuleInfoXml($moduleName);
 		$info = $oModuleModel->getModuleActionXml($moduleName);
 		
@@ -609,14 +627,16 @@ class menuAdminController extends menu {
 		if(empty($url)) $url = getNotEncodedFullUrl('', 'module', 'admin');
 		$dbInfo = Context::getDBInfo();
 		
+		$args = new stdClass();
 		$args->menu_item_srl = (!$requestArgs->menu_item_srl) ? getNextSequence() : $requestArgs->menu_item_srl;
 		$args->parent_srl = $requestArgs->parent_srl;
 		$args->menu_srl = $requestArgs->menu_srl;
 		$args->name = sprintf('{$lang->menu_gnb_sub[\'%s\']}', $menuName);
 		//if now page is https...
-		if(strpos($url, 'https') !== false) {
+		if(strpos($url, 'https') !== false){
 			$args->url = str_replace('https' . substr($dbInfo->default_url, 4), '', $url);
-		} else {
+		}
+		else{
 			$args->url = str_replace($dbInfo->default_url, '', $url);
 		}
 		$args->open_window = 'N';
@@ -628,14 +648,14 @@ class menuAdminController extends menu {
 		$args->listorder = -1 * $args->menu_item_srl;
 		
 		// Check if already exists
-		$oMenuModel = &getAdminModel('menu');
+		$oMenuModel = getAdminModel('menu');
 		$item_info = $oMenuModel->getMenuItemInfo($args->menu_item_srl);
 		// Update if exists
-		if($item_info->menu_item_srl == $args->menu_item_srl) {
+		if($item_info->menu_item_srl == $args->menu_item_srl){
 			$output = executeQuery('menu.updateMenuItem', $args);
 			if(!$output->toBool()) return $output;
 		} // Insert if not exist
-		else {
+		else{
 			$args->listorder = -1 * $args->menu_item_srl;
 			$output = executeQuery('menu.insertMenuItem', $args);
 			if(!$output->toBool()) return $output;
@@ -655,17 +675,18 @@ class menuAdminController extends menu {
 	 * @param int $menu_srl
 	 * @return string
 	 */
-	function makeXmlFile($menu_srl) {
+	function makeXmlFile($menu_srl){
 		// Return if there is no information when creating the xml file
 		if(!$menu_srl) return;
 		// Get menu informaton
+		$args = new stdClass();
 		$args->menu_srl = $menu_srl;
 		$output = executeQuery('menu.getMenu', $args);
 		if(!$output->toBool() || !$output->data) return $output;
 		$site_srl = (int)$output->data->site_srl;
 		
-		if($site_srl) {
-			$oModuleModel = &getModel('module');
+		if($site_srl){
+			$oModuleModel = getModel('module');
 			$columnList = array('sites.domain');
 			$site_info = $oModuleModel->getSiteInfo($site_srl, $columnList);
 			$domain = $site_info->domain;
@@ -676,11 +697,11 @@ class menuAdminController extends menu {
 		$output = executeQuery('menu.getMenuItems', $args);
 		if(!$output->toBool()) return;
 		// Specify the name of the cache file
-		$xml_file = sprintf("./files/cache/menu/%s.xml.php", $menu_srl);
-		$php_file = sprintf("./files/cache/menu/%s.php", $menu_srl);
+		$xml_file = sprintf(_DAOL_PATH_ . "files/cache/menu/%s.xml.php", $menu_srl);
+		$php_file = sprintf(_DAOL_PATH_ . "files/cache/menu/%s.php", $menu_srl);
 		// If no data found, generate an XML file without node data
 		$list = $output->data;
-		if(!$list) {
+		if(!$list){
 			$xml_buff = "<root />";
 			FileHandler::writeFile($xml_file, $xml_buff);
 			FileHandler::writeFile($php_file, '<?php if(!defined("__XE__")) exit(); ?>');
@@ -690,7 +711,7 @@ class menuAdminController extends menu {
 		if(!is_array($list)) $list = array($list);
 		// Create a tree for loop
 		$list_count = count($list);
-		for($i = 0; $i < $list_count; $i++) {
+		for($i = 0; $i < $list_count; $i++){
 			$node = $list[$i];
 			$menu_item_srl = $node->menu_item_srl;
 			$parent_srl = $node->parent_srl;
@@ -704,15 +725,15 @@ class menuAdminController extends menu {
 			'$logged_info = Context::get(\'logged_info\'); ' .
 			'$site_srl = ' . $site_srl . ';' .
 			'$site_admin = false;' .
-			'if($site_srl) { ' .
-			'$oModuleModel = &getModel(\'module\');' .
+			'if($site_srl){ ' .
+			'$oModuleModel = getModel(\'module\');' .
 			'$site_module_info = $oModuleModel->getSiteInfo($site_srl); ' .
 			'if($site_module_info) Context::set(\'site_module_info\',$site_module_info);' .
 			'else $site_module_info = Context::get(\'site_module_info\');' .
 			'$grant = $oModuleModel->getGrant($site_module_info, $logged_info); ' .
 			'if($grant->manager ==1) $site_admin = true;' .
 			'}' .
-			'if($is_logged) {' .
+			'if($is_logged){' .
 			'if($logged_info->is_admin=="Y") $is_admin = true; ' .
 			'else $is_admin = false; ' .
 			'$group_srls = array_keys($logged_info->group_list); ' .
@@ -746,6 +767,7 @@ class menuAdminController extends menu {
 		$php_buff = sprintf(
 			'<?php ' .
 			'if(!defined("__XE__")) exit(); ' .
+			'$menu = new stdClass();' .
 			'%s; ' .
 			'%s; ' .
 			'$menu->list = array(%s); ' .
@@ -771,24 +793,24 @@ class menuAdminController extends menu {
 	 * @param string $domain
 	 * @return string
 	 */
-	function getXmlTree($source_node, $tree, $site_srl, $domain) {
+	function getXmlTree($source_node, $tree, $site_srl, $domain){
 		if(!$source_node) return;
 		
-		$oMenuAdminModel = &getAdminModel('menu');
+		$oMenuAdminModel = getAdminModel('menu');
 		
-		foreach($source_node as $menu_item_srl => $node) {
+		foreach($source_node as $menu_item_srl => $node){
 			$child_buff = "";
 			// Get data of the child nodes
 			if($menu_item_srl && $tree[$menu_item_srl]) $child_buff = $this->getXmlTree($tree[$menu_item_srl], $tree, $site_srl, $domain);
 			// List variables
 			$names = $oMenuAdminModel->getMenuItemNames($node->name, $site_srl);
-			foreach($names as $key => $val) {
+			foreach($names as $key => $val){
 				$name_arr_str .= sprintf('"%s"=>%s,',$key, var_export($val, true));
 			}
 			$name_str = sprintf('$_names = array(%s); print $_names[$lang_type];', $name_arr_str);
 			
 			$url = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $node->url);
-			if(preg_match('/^([0-9a-zA-Z\_\-]+)$/', $node->url)) {
+			if(preg_match('/^([0-9a-zA-Z\_\-]+)$/', $node->url)){
 				$href = "getSiteUrl('$domain', '','mid','$node->url')";
 			}
 			else $href = var_export($url, true);
@@ -807,13 +829,14 @@ class menuAdminController extends menu {
 			
 			$group_srls = ($node->group_srls) ? $node->group_srls : '';
 			
-			if($normal_btn) {
+			if($normal_btn){
 				if(preg_match('/\.png$/', $normal_btn)) $classname = 'class=&quot;iePngFix&quot;';
 				else $classname = '';
 				if($hover_btn) $hover_str = sprintf('onmouseover=&quot;this.src=\'%s\'&quot;', $hover_btn); else $hover_str = '';
 				if($active_btn) $active_str = sprintf('onmousedown=&quot;this.src=\'%s\'&quot;', $active_btn); else $active_str = '';
 				$link = sprintf('&lt;img src=&quot;%s&quot; onmouseout=&quot;this.src=\'%s\'&quot; alt=&quot;<?php print htmlspecialchars($_names[$lang_type]) ?>&quot; %s %s %s /&gt;', $normal_btn, $normal_btn, $hover_str, $active_str, $classname);
-			} else {
+			}
+			else{
 				$link = '<?php print $_names[$lang_type]; ?>';
 			}
 			// If the value of node->group_srls exists
@@ -860,13 +883,13 @@ class menuAdminController extends menu {
 	 * @param string $domain
 	 * @return array
 	 */
-	function getPhpCacheCode($source_node, $tree, $site_srl, $domain) {
+	function getPhpCacheCode($source_node, $tree, $site_srl, $domain){
 		$output = array("buff" => "", "url_list" => array());
 		if(!$source_node) return $output;
 		
-		$oMenuAdminModel = &getAdminModel('menu');
+		$oMenuAdminModel = getAdminModel('menu');
 		
-		foreach($source_node as $menu_item_srl => $node) {
+		foreach($source_node as $menu_item_srl => $node){
 			// Get data from child nodes if exist.
 			if($menu_item_srl && $tree[$menu_item_srl]) $child_output = $this->getPhpCacheCode($tree[$menu_item_srl], $tree, $site_srl, $domain);
 			else $child_output = array("buff" => "", "url_list" => array());
@@ -900,7 +923,7 @@ class menuAdminController extends menu {
 			$hover_btn = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $node->hover_btn);
 			$active_btn = str_replace(array('&', '"', '<', '>'), array('&amp;', '&quot;', '&lt;', '&gt;'), $node->active_btn);
 			
-			foreach($child_output['url_list'] as $key => $val) {
+			foreach($child_output['url_list'] as $key => $val){
 				$child_output['url_list'][$key] = addslashes($val);
 			}
 			
@@ -922,7 +945,7 @@ class menuAdminController extends menu {
 			
 			$group_srls = $node->group_srls;
 			
-			if($normal_btn) {
+			if($normal_btn){
 				if(preg_match('/\.png$/', $normal_btn)) $classname = 'class=\"iePngFix\"';
 				else $classname = '';
 				if($hover_btn) $hover_str = sprintf('onmouseover=\"this.src=\'%s\'\"', $hover_btn); else $hover_str = '';
@@ -930,7 +953,8 @@ class menuAdminController extends menu {
 				$link = sprintf('"<img src=\"%s\" onmouseout=\"this.src=\'%s\'\" alt=\"".$_menu_names[%d][$lang_type]."\" %s %s %s />"', $normal_btn, $normal_btn, $node->menu_item_srl, $hover_str, $active_str, $classname);
 				if($active_btn) $link_active = sprintf('"<img src=\"%s\" alt=\"".$_menu_names[%d][$lang_type]."\" %s />"', $active_btn, $node->menu_item_srl, $classname);
 				else $link_active = $link;
-			} else {
+			}
+			else{
 				$link_active = $link = sprintf('$_menu_names[%d][$lang_type]', $node->menu_item_srl);
 			}
 			// Create properties (check if it belongs to the menu node by url_list. It looks a trick but fast and powerful)
@@ -971,7 +995,7 @@ class menuAdminController extends menu {
 	 * @param int   $layout_srl
 	 * @param array $menu_srl_list
 	 */
-	function updateMenuLayout($layout_srl, $menu_srl_list) {
+	function updateMenuLayout($layout_srl, $menu_srl_list){
 		if(!count($menu_srl_list)) return;
 		// Delete the value of menu_srls
 		$args->menu_srls = implode(',', $menu_srl_list);
@@ -980,7 +1004,7 @@ class menuAdminController extends menu {
 		
 		$args->layout_srl = $layout_srl;
 		// Mapping menu_srls, layout_srl
-		for($i = 0; $i < count($menu_srl_list); $i++) {
+		for($i = 0; $i < count($menu_srl_list); $i++){
 			$args->menu_srl = $menu_srl_list[$i];
 			$output = executeQuery('menu.insertMenuLayout', $args);
 			if(!$output->toBool()) return $output;
@@ -992,14 +1016,14 @@ class menuAdminController extends menu {
 	 * @param object $args
 	 * @return array
 	 */
-	function _uploadButton($args) {
+	function _uploadButton($args){
 		// path setting
 		$path = sprintf('./files/attach/menu_button/%d/', $args->menu_srl);
 		if($args->menu_normal_btn || $args->menu_hover_btn || $args->menu_active_btn)
 			if(!is_dir($path)) FileHandler::makeDir($path);
 		
-		if($args->isNormalDelete == 'Y' || $args->isHoverDelete == 'Y' || $args->isActiveDelete == 'Y') {
-			$oMenuModel = &getAdminModel('menu');
+		if($args->isNormalDelete == 'Y' || $args->isHoverDelete == 'Y' || $args->isActiveDelete == 'Y'){
+			$oMenuModel = getAdminModel('menu');
 			$itemInfo = $oMenuModel->getMenuItemInfo($args->menu_item_srl);
 			
 			if($args->isNormalDelete == 'Y' && $itemInfo->normal_btn) FileHandler::removeFile($itemInfo->normal_btn);
@@ -1009,39 +1033,39 @@ class menuAdminController extends menu {
 		
 		$returnArray = array();
 		// normal button
-		if($args->menu_normal_btn) {
+		if($args->menu_normal_btn){
 			$tmp_arr = explode('.', $args->menu_normal_btn['name']);
 			$ext = $tmp_arr[count($tmp_arr) - 1];
 			
 			$filename = sprintf('%s%d.%s.%s', $path, $args->menu_item_srl, 'menu_normal_btn', $ext);
 			
-			if(checkUploadedFile($args->menu_normal_btn['tmp_name'])) {
+			if(checkUploadedFile($args->menu_normal_btn['tmp_name'])){
 				move_uploaded_file($args->menu_normal_btn ['tmp_name'], $filename);
 				$returnArray ['normal_btn'] = $filename;
 			}
 		}
 		
 		// hover button
-		if($args->menu_hover_btn) {
+		if($args->menu_hover_btn){
 			$tmp_arr = explode('.', $args->menu_hover_btn['name']);
 			$ext = $tmp_arr[count($tmp_arr) - 1];
 			
 			$filename = sprintf('%s%d.%s.%s', $path, $args->menu_item_srl, 'menu_hover_btn', $ext);
 			
-			if(checkUploadedFile($args->menu_hover_btn['tmp_name'])) {
+			if(checkUploadedFile($args->menu_hover_btn['tmp_name'])){
 				move_uploaded_file($args->menu_hover_btn['tmp_name'], $filename);
 				$returnArray['hover_btn'] = $filename;
 			}
 		}
 		
 		// active button
-		if($args->menu_active_btn) {
+		if($args->menu_active_btn){
 			$tmp_arr = explode('.', $args->menu_active_btn['name']);
 			$ext = $tmp_arr[count($tmp_arr) - 1];
 			
 			$filename = sprintf('%s%d.%s.%s', $path, $args->menu_item_srl, 'menu_active_btn', $ext);
 			
-			if(checkUploadedFile($args->menu_active_btn['tmp_name'])) {
+			if(checkUploadedFile($args->menu_active_btn['tmp_name'])){
 				move_uploaded_file($args->menu_active_btn['tmp_name'], $filename);
 				$returnArray['active_btn'] = $filename;
 			}
