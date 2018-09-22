@@ -13,7 +13,7 @@ class menuAdminModel extends menu {
 	 * Initialization
 	 * @return void
 	 */
-	function init() {
+	function init(){
 	}
 	
 	/**
@@ -21,11 +21,12 @@ class menuAdminModel extends menu {
 	 * @param object $obj
 	 * @return object
 	 */
-	function getMenuList($obj) {
-		if(!$obj->site_srl) {
+	function getMenuList($obj){
+		if(!$obj->site_srl){
 			$site_module_info = Context::get('site_module_info');
 			$obj->site_srl = (int)$site_module_info->site_srl;
 		}
+		$args = new stdClass();
 		$args->site_srl = $obj->site_srl;
 		$args->sort_index = $obj->sort_index;
 		$args->page = $obj->page ? $obj->page : 1;
@@ -44,12 +45,13 @@ class menuAdminModel extends menu {
 	 * @param int $site_srl
 	 * @return array
 	 */
-	function getMenus($site_srl = null) {
-		if(!isset($site_srl)) {
+	function getMenus($site_srl = null){
+		if(!isset($site_srl)){
 			$site_module_info = Context::get('site_module_info');
 			$site_srl = (int)$site_module_info->site_srl;
 		}
 		// Get information from the DB
+		$args = new stdClass();
 		$args->site_srl = $site_srl;
 		$args->menu_srl = $menu_srl;
 		$output = executeQueryArray('menu.getMenus', $args);
@@ -64,8 +66,9 @@ class menuAdminModel extends menu {
 	 * @param int $menu_srl
 	 * @return object
 	 */
-	function getMenu($menu_srl) {
+	function getMenu($menu_srl){
 		// Get information from the DB
+		$args = new stdClass();
 		$args->menu_srl = $menu_srl;
 		$output = executeQuery('menu.getMenu', $args);
 		if(!$output->data) return;
@@ -82,8 +85,12 @@ class menuAdminModel extends menu {
 	 * @param string $title
 	 * @return object
 	 */
-	function getMenuByTitle($title) {
+	function getMenuByTitle($title){
 		// Get information from the DB
+		if(!is_array($title)){
+			$title = array($title);
+		}
+		$args = new stdClass();
 		$args->title = $title;
 		$output = executeQuery('menu.getMenuByTitle', $args);
 		if(!$output->data) return;
@@ -91,7 +98,7 @@ class menuAdminModel extends menu {
 		if(is_array($output->data)) $menu_info = $output->data[0];
 		else $menu_info = $output->data;
 		
-		if($menu_info->menu_srl) {
+		if($menu_info->menu_srl){
 			$menu_info->xml_file = sprintf('./files/cache/menu/%s.xml.php', $menu_info->menu_srl);
 			$menu_info->php_file = sprintf('./files/cache/menu/%s.php', $menu_info->menu_srl);
 		}
@@ -104,8 +111,9 @@ class menuAdminModel extends menu {
 	 * @param int $menu_item_srl
 	 * @return object
 	 */
-	function getMenuItemInfo($menu_item_srl) {
+	function getMenuItemInfo($menu_item_srl){
 		// Get the menu information if menu_item_srl exists
+		$args = new stdClass();
 		$args->menu_item_srl = $menu_item_srl;
 		$output = executeQuery('menu.getMenuItem', $args);
 		$node = $output->data;
@@ -114,7 +122,7 @@ class menuAdminModel extends menu {
 		else $node->group_srls = array();
 		
 		$tmp_name = unserialize($node->name);
-		if($tmp_name && count($tmp_name)) {
+		if($tmp_name && count($tmp_name)){
 			$selected_lang = array();
 			$rand_name = $tmp_name[Context::getLangType()];
 			if(!$rand_name) $rand_name = array_shift($tmp_name);
@@ -127,46 +135,57 @@ class menuAdminModel extends menu {
 	 * Return item information of the menu_srl
 	 * @return void
 	 */
-	function getMenuAdminItemInfo() {
+	function getMenuAdminItemInfo(){
 		$menuItemSrl = Context::get('menu_item_srl');
 		$menuItem = $this->getMenuItemInfo($menuItemSrl);
 		
-		if(!$menuItem->url) {
+		if(!$menuItem->url){
 			$menuItem->moduleType = null;
-		} else if(!preg_match('/^http/i', $menuItem->url)) {
-			$oModuleModel = &getModel('module');
+		}
+		else if(!preg_match('/^http/i', $menuItem->url)){
+			$oModuleModel = getModel('module');
 			$moduleInfo = $oModuleModel->getModuleInfoByMid($menuItem->url, 0);
 			if(!$moduleInfo) $menuItem->moduleType = 'url';
-			else {
-				if($moduleInfo->mid == $menuItem->url) {
+			else{
+				if($moduleInfo->mid == $menuItem->url){
 					$menuItem->moduleType = $moduleInfo->module;
 					$menuItem->pageType = $moduleInfo->page_type;
 					$menuItem->layoutSrl = $moduleInfo->layout_srl;
 				}
 			}
-		} else $menuItem->moduleType = 'url';
+		}
+		else{
+			$menuItem->moduleType = 'url';
+		}
 		
 		// get groups
-		$oMemberModel = &getModel('member');
-		$oModuleAdminModel = &getAdminModel('module');
+		$oMemberModel = getModel('member');
+		$oModuleAdminModel = getAdminModel('module');
 		$output = $oMemberModel->getGroups();
-		if(is_array($output)) {
+		if(is_array($output)){
 			$groupList = array();
-			foreach($output AS $key => $value) {
-				
+			foreach($output AS $key => $value){
+				$groupList[$value->group_srl] = new stdClass();
 				$groupList[$value->group_srl]->group_srl = $value->group_srl;
-				if(substr($value->title, 0, 12) == '$user_lang->') {
+				if(substr($value->title, 0, 12) == '$user_lang->'){
 					$tmp = $oModuleAdminModel->getLangCode(0, $value->title);
 					$groupList[$value->group_srl]->title = $tmp[Context::getLangType()];
-				} else $groupList[$value->group_srl]->title = $value->title;
+				}
+				else{
+					$groupList[$value->group_srl]->title = $value->title;
+				}
 				
-				if(in_array($key, $menuItem->group_srls)) $groupList[$value->group_srl]->isChecked = true;
-				else $groupList[$value->group_srl]->isChecked = false;
+				if(in_array($key, $menuItem->group_srls)){
+					$groupList[$value->group_srl]->isChecked = true;
+				}
+				else{
+					$groupList[$value->group_srl]->isChecked = false;
+				}
 			}
 		}
 		$menuItem->groupList = $groupList;
 		
-		$oModuleController = &getController('module');
+		$oModuleController = getController('module');
 		$menuItem->name_key = $menuItem->name;
 		$oModuleController->replaceDefinedLangCode($menuItem->name);
 		
@@ -180,7 +199,8 @@ class menuAdminModel extends menu {
 	 * @param array $columnList
 	 * @return object
 	 */
-	function getMenuItems($menu_srl, $parent_srl = null, $columnList = array()) {
+	function getMenuItems($menu_srl, $parent_srl = null, $columnList = array()){
+		$args = new stdClass();
 		$args->menu_srl = $menu_srl;
 		$args->parent_srl = $parent_srl;
 		
@@ -194,13 +214,13 @@ class menuAdminModel extends menu {
 	 * @param int    $site_srl
 	 * @return array
 	 */
-	function getMenuItemNames($source_name, $site_srl = null) {
-		if(!$site_srl) {
+	function getMenuItemNames($source_name, $site_srl = null){
+		if(!$site_srl){
 			$site_module_info = Context::get('site_module_info');
 			$site_srl = (int)$site_module_info->site_srl;
 		}
 		// Get language code
-		$oModuleAdminModel = &getAdminModel('module');
+		$oModuleAdminModel = getAdminModel('module');
 		return $oModuleAdminModel->getLangCode($site_srl, $source_name);
 	}
 	
@@ -209,16 +229,17 @@ class menuAdminModel extends menu {
 	 * Return html after compiling tpl on the server in order to add menu information on the admin page
 	 * @return void
 	 */
-	function getMenuAdminTplInfo() {
+	function getMenuAdminTplInfo(){
 		// Get information on the menu for the parameter settings
 		$menu_item_srl = Context::get('menu_item_srl');
 		$parent_srl = Context::get('parent_srl');
 		// Get a list of member groups
-		$oMemberModel = &getModel('member');
+		$oMemberModel = getModel('member');
 		$group_list = $oMemberModel->getGroups();
 		Context::set('group_list', $group_list);
 		// Add a sub-menu if there is parent_srl but not menu_item_srl
-		if(!$menu_item_srl && $parent_srl) {
+		$item_info = new stdClass;
+		if(!$menu_item_srl && $parent_srl){
 			// Get information of the parent menu
 			$parent_info = $this->getMenuItemInfo($parent_srl);
 			// Default parameter settings for a new menu
@@ -226,11 +247,12 @@ class menuAdminModel extends menu {
 			$item_info->parent_srl = $parent_srl;
 			$item_info->parent_menu_name = $parent_info->name;
 			// In case of modifying the existing menu or addting a new menu to the root
-		} else {
+		}
+		else{
 			// Get information of the menu if menu_item_srl exists
 			if($menu_item_srl) $item_info = $this->getMenuItemInfo($menu_item_srl);
 			// Get only menu_item_srl if no values found, considering it as adding a new menu
-			if(!$item_info->menu_item_srl) {
+			if(!$item_info->menu_item_srl){
 				$item_info->menu_item_srl = getNextSequence();
 			}
 		}
@@ -254,14 +276,14 @@ class menuAdminModel extends menu {
 	 * @param int $site_srl
 	 * @return array
 	 */
-	function getModuleListInSitemap($site_srl = 0) {
-		$oModuleModel = &getModel('module');
+	function getModuleListInSitemap($site_srl = 0){
+		$oModuleModel = getModel('module');
 		$columnList = array('module');
 		$moduleList = array('page');
 		
 		$output = $oModuleModel->getModuleListByInstance($site_srl, $columnList);
-		if(is_array($output->data)) {
-			foreach($output->data AS $key => $value) {
+		if(is_array($output->data)){
+			foreach($output->data AS $key => $value){
 				array_push($moduleList, $value->module);
 			}
 		}
@@ -273,8 +295,8 @@ class menuAdminModel extends menu {
 		$moduleList = array_unique($moduleList);
 		
 		$moduleInfoList = array();
-		if(is_array($moduleList)) {
-			foreach($moduleList AS $key => $value) {
+		if(is_array($moduleList)){
+			foreach($moduleList AS $key => $value){
 				$moduleInfo = $oModuleModel->getModuleInfoXml($value);
 				$moduleInfoList[$value] = $moduleInfo;
 			}
