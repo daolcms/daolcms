@@ -10,20 +10,20 @@ class message extends ModuleObject {
 	/**
 	 * @brief Implement if additional tasks are necessary when installing
 	 **/
-	function moduleInstall() {
+	function moduleInstall(){
 		return new BaseObject();
 	}
 	
 	/**
 	 * @brief a method to check if successfully installed
 	 **/
-	function checkUpdate() {
-		$oModuleModel = &getModel('module');
+	function checkUpdate(){
+		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('message');
 		
-		if($config->skin) {
+		if($config->skin){
 			$config_parse = explode('.', $config->skin);
-			if(count($config_parse) > 1) {
+			if(count($config_parse) > 1){
 				$template_path = sprintf('./themes/%s/modules/message/', $config_parse[0]);
 				if(is_dir($template_path)) return true;
 			}
@@ -34,17 +34,17 @@ class message extends ModuleObject {
 	/**
 	 * @brief Execute update
 	 **/
-	function moduleUpdate() {
-		$oModuleModel = &getModel('module');
+	function moduleUpdate(){
+		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('message');
 		
-		if($config->skin) {
+		if($config->skin){
 			$config_parse = explode('.', $config->skin);
-			if(count($config_parse) > 1) {
+			if(count($config_parse) > 1){
 				$template_path = sprintf('./themes/%s/modules/message/', $config_parse[0]);
-				if(is_dir($template_path)) {
+				if(is_dir($template_path)){
 					$config->skin = implode('|@|', $config_parse);
-					$oModuleController = &getController('module');
+					$oModuleController = getController('module');
 					$oModuleController->updateModuleConfig('message', $config);
 				}
 			}
@@ -55,6 +55,6 @@ class message extends ModuleObject {
 	/**
 	 * @brief Re-generate the cache file
 	 **/
-	function recompileCache() {
+	function recompileCache(){
 	}
 }

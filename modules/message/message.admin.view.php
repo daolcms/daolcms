@@ -10,15 +10,15 @@ class messageAdminView extends message {
 	/**
 	 * @brief Initialization
 	 **/
-	function init() {
+	function init(){
 	}
 	
 	/**
 	 * @brief Configuration
 	 **/
-	function dispMessageAdminConfig() {
+	function dispMessageAdminConfig(){
 		// Get a list of skins(themes)
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		
 		$skin_list = $oModuleModel->getskins($this->module_path);
 		Context::set('skin_list', $skin_list);
@@ -40,5 +40,4 @@ class messageAdminView extends message {
 		
 		$this->setTemplateFile('config');
 	}
-	
 }

@@ -6,26 +6,27 @@ class messageMobile extends messageView {
 	/**
 	 * @brief Initialization
 	 **/
-	function init() {
+	function init(){
 	}
 	
 	/**
 	 * @brief Message output
 	 **/
-	function dispMessage() {
+	function dispMessage(){
 		// Get configurations (using module model object)
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('message');
+		if(!is_object($config)) $config = new stdClass();
 		if(!$config->mskin) $config->mskin = 'default';
 		// Set the template path
 		$template_path = sprintf('%sm.skins/%s', $this->module_path, $config->mskin);
 		// Get the member configuration
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$member_config = $oModuleModel->getModuleConfig('member');
 		Context::set('member_config', $member_config);
 		// Set a flag to check if the https connection is made when using SSL and create https url 
 		$ssl_mode = false;
-		if($member_config->enable_ssl == 'Y') {
+		if($member_config->enable_ssl == 'Y'){
 			if(preg_match('/^https:\/\//i', Context::getRequestUri())) $ssl_mode = true;
 		}
 		Context::set('ssl_mode', $ssl_mode);
