@@ -332,14 +332,40 @@ class moduleModel extends module {
 	/**
 	 * @brief Get forward value by the value of act
 	 **/
-	function getActionForward($act, $module = "") {
-		$args->act = $act;
-		$args->module = ($module) ? $module : null;
-		if(strlen($args->module) > 0) $output = executeQuery('module.getActionForwardWithModule', $args);
-		else $output = executeQuery('module.getActionForward', $args);
-		return $output->data;
+	function getActionForward($act){
+		$action_forward = false;
+		// cache controll
+		$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+		if($oCacheHandler->isSupport()){
+			$cache_key = 'action_forward';
+			$action_forward = $oCacheHandler->get($cache_key);
+		}
+
+		// retrieve and caching all registered action_forward
+		if($action_forward === false){
+			$args = new stdClass();
+			$output = executeQueryArray('module.getActionForward',$args);
+			if(!$output->toBool()) return new stdClass;
+			if(!$output->data) $output->data = array();
+
+			$action_forward = array();
+			foreach($output->data as $item){
+				$action_forward[$item->act] = $item;
+			}
+
+			if($oCacheHandler->isSupport()){
+				$oCacheHandler->put($cache_key, $action_forward);
+			}
+		}
+
+		if($action_forward[$act]){
+			return $action_forward[$act];
+		}
+		else{
+			return new stdClass();
+		}
 	}
-	
+
 	/**
 	 * @brief Get a list of all triggers on the trigger_name
 	 **/
