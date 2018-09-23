@@ -11,7 +11,7 @@ class moduleController extends module {
 	/**
 	 * @brief Initialization
 	 **/
-	function init() {
+	function init(){
 	}
 	
 	/**
@@ -19,24 +19,40 @@ class moduleController extends module {
 	 * Action forward finds and forwards if an action is not in the requested module
 	 * This is used when installing a module
 	 **/
-	function insertActionForward($module, $type, $act) {
+	function insertActionForward($module, $type, $act){
+		$args = new stdClass();
 		$args->module = $module;
 		$args->type = $type;
 		$args->act = $act;
 		
 		$output = executeQuery('module.insertActionForward', $args);
+		
+		$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+		if($oCacheHandler->isSupport()){
+			$cache_key = 'action_forward';
+			$oCacheHandler->delete($cache_key);
+		}
+		
 		return $output;
 	}
 	
 	/**
 	 * @brief Delete action forward
 	 **/
-	function deleteActionForward($module, $type, $act) {
+	function deleteActionForward($module, $type, $act){
+		$args = new stdClass();
 		$args->module = $module;
 		$args->type = $type;
 		$args->act = $act;
 		
 		$output = executeQuery('module.deleteActionForward', $args);
+		
+		$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+		if($oCacheHandler->isSupport())		{
+			$cache_key = 'action_forward';
+			$oCacheHandler->delete($cache_key);
+		}
+		
 		return $output;
 	}
 	
@@ -45,7 +61,8 @@ class moduleController extends module {
 	 * module trigger is to call a trigger to a target module
 	 *
 	 **/
-	function insertTrigger($trigger_name, $module, $type, $called_method, $called_position) {
+	function insertTrigger($trigger_name, $module, $type, $called_method, $called_position){
+		$args = new stdClass();
 		$args->trigger_name = $trigger_name;
 		$args->module = $module;
 		$args->type = $type;
@@ -54,11 +71,11 @@ class moduleController extends module {
 		
 		$output = executeQuery('module.insertTrigger', $args);
 		
-		if($output->toBool()) {
+		if($output->toBool()){
 			//remove from cache
 			$GLOBALS['__triggers__'] = NULL;
 			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
-			if($oCacheHandler->isSupport()) {
+			if($oCacheHandler->isSupport()){
 				$cache_key = 'triggers';
 				$oCacheHandler->delete($cache_key);
 			}
@@ -72,7 +89,8 @@ class moduleController extends module {
 	 * @brief Delete module trigger
 	 *
 	 **/
-	function deleteTrigger($trigger_name, $module, $type, $called_method, $called_position) {
+	function deleteTrigger($trigger_name, $module, $type, $called_method, $called_position){
+		$args = new stdClass();
 		$args->trigger_name = $trigger_name;
 		$args->module = $module;
 		$args->type = $type;
@@ -81,11 +99,11 @@ class moduleController extends module {
 		
 		$output = executeQuery('module.deleteTrigger', $args);
 		
-		if($output->toBool()) {
+		if($output->toBool()){
 			//remove from cache
 			$GLOBALS['__triggers__'] = NULL;
 			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
-			if($oCacheHandler->isSupport()) {
+			if($oCacheHandler->isSupport()){
 				$cache_key = 'triggers';
 				$oCacheHandler->delete($cache_key);
 			}
@@ -98,16 +116,16 @@ class moduleController extends module {
 	 * @brief Delete module trigger
 	 *
 	 **/
-	function deleteModuleTriggers($module) {
+	function deleteModuleTriggers($module){
 		$args = new stdClass();
 		$args->module = $module;
 		
 		$output = executeQuery('module.deleteModuleTriggers', $args);
-		if($output->toBool()) {
+		if($output->toBool()){
 			//remove from cache
 			$GLOBALS['__triggers__'] = NULL;
 			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
-			if($oCacheHandler->isSupport()) {
+			if($oCacheHandler->isSupport()){
 				$cache_key = 'triggers';
 				$oCacheHandler->delete($cache_key);
 			}
@@ -120,7 +138,7 @@ class moduleController extends module {
 	 * @brief Add module extend
 	 *
 	 **/
-	function insertModuleExtend($parent_module, $extend_module, $type, $kind = '') {
+	function insertModuleExtend($parent_module, $extend_module, $type, $kind = ''){
 		if($kind != 'admin') $kind = '';
 		if(!in_array($type, array('model', 'controller', 'view', 'api', 'mobile'))) return false;
 		if(in_array($parent_module, array('module', 'addon', 'widget', 'layout'))) return false;
@@ -128,6 +146,7 @@ class moduleController extends module {
 		$cache_file = './files/config/module_extend.php';
 		FileHandler::removeFile($cache_file);
 		
+		$args = new stdClass();
 		$args->parent_module = $parent_module;
 		$args->extend_module = $extend_module;
 		$args->type = $type;
@@ -144,10 +163,11 @@ class moduleController extends module {
 	 * @brief Delete module extend
 	 *
 	 **/
-	function deleteModuleExtend($parent_module, $extend_module, $type, $kind = '') {
+	function deleteModuleExtend($parent_module, $extend_module, $type, $kind = ''){
 		$cache_file = './files/config/module_extend.php';
 		FileHandler::removeFile($cache_file);
 		
+		$args = new stdClass();
 		$args->parent_module = $parent_module;
 		$args->extend_module = $extend_module;
 		$args->type = $type;
@@ -159,14 +179,17 @@ class moduleController extends module {
 	}
 	
 	
-	function updateModuleConfig($module, $config, $site_srl = 0) {
+	function updateModuleConfig($module, $config, $site_srl = 0){
+		$args = new stdClass();
 		$args->module = $module;
 		$args->site_srl = $site_srl;
 		
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$origin_config = $oModuleModel->getModuleConfig($module, $site_srl);
 		
-		foreach($config as $key => $val) {
+		if(!$origin_config) $origin_config = new stdClass();
+		
+		foreach($config as $key => $val){
 			$origin_config->{$key} = $val;
 		}
 		
@@ -177,7 +200,8 @@ class moduleController extends module {
 	 * @brief Enter a specific set of modules
 	 * In order to manage global configurations of modules such as board, member and so on
 	 **/
-	function insertModuleConfig($module, $config, $site_srl = 0) {
+	function insertModuleConfig($module, $config, $site_srl = 0){
+		$args = new stdClass();
 		$args->module = $module;
 		$args->config = serialize($config);
 		$args->site_srl = $site_srl;
@@ -188,10 +212,9 @@ class moduleController extends module {
 		$output = executeQuery('module.insertModuleConfig', $args);
 		
 		//remove from cache
-		$oCacheHandler = &CacheHandler::getInstance('object');
-		if($oCacheHandler->isSupport()) {
-			$cache_key = 'object:module_config:module_' . $module . '_site_srl_' . $site_srl;
-			$oCacheHandler->delete($cache_key);
+		$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+		if($oCacheHandler->isSupport()){
+			$oCacheHandler->invalidateGroupKey('site_and_module');
 		}
 		return $output;
 	}
@@ -200,7 +223,8 @@ class moduleController extends module {
 	 * @brief Save module configurations of the mid
 	 * Manage mid configurations depending on module
 	 **/
-	function insertModulePartConfig($module, $module_srl, $config) {
+	function insertModulePartConfig($module, $module_srl, $config){
+		$args = new stdClass();
 		$args->module = $module;
 		$args->module_srl = $module_srl;
 		$args->config = serialize($config);
@@ -208,14 +232,13 @@ class moduleController extends module {
 		$output = executeQuery('module.deleteModulePartConfig', $args);
 		if(!$output->toBool()) return $output;
 		
-		//remove from cache
-		$oCacheHandler = &CacheHandler::getInstance('object');
-		if($oCacheHandler->isSupport()) {
-			$cache_key = 'object_module_part_config:' . $module . '_' . $module_srl;
-			$oCacheHandler->delete($cache_key);
-		}
-		
 		$output = executeQuery('module.insertModulePartConfig', $args);
+		
+		//remove from cache
+		$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+		if($oCacheHandler->isSupport()){
+			$oCacheHandler->invalidateGroupKey('site_and_module');
+		}
 		
 		
 		return $output;
@@ -224,21 +247,23 @@ class moduleController extends module {
 	/**
 	 * @brief create virtual site
 	 **/
-	function insertSite($domain, $index_module_srl) {
-		if(isSiteID($domain)) {
-			$oModuleModel = &getModel('module');
+	function insertSite($domain, $index_module_srl){
+		if(isSiteID($domain)){
+			$oModuleModel = getModel('module');
 			if($oModuleModel->isIDExists($domain, 0)) return new BaseObject(-1, 'msg_already_registed_vid');
-		} else {
+		}
+		else{
 			$domain = strtolower($domain);
 		}
 		
+		$args = new stdClass();
 		$args->site_srl = getNextSequence();
 		$args->domain = preg_replace('/\/$/', '', $domain);
 		$args->index_module_srl = $index_module_srl;
 		$args->default_language = Context::getLangType();
 		
 		$columnList = array('modules.site_srl');
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$output = $oModuleModel->getSiteInfoByDomain($args->domain, $columnList);
 		if($output) return new BaseObject(-1, 'msg_already_registed_vid');
 		
@@ -252,16 +277,16 @@ class moduleController extends module {
 	/**
 	 * @brief modify virtual site
 	 **/
-	function updateSite($args) {
-		$oModuleModel = &getModel('module');
+	function updateSite($args){
+		$oModuleModel = getModel('module');
 		$columnList = array('sites.site_srl', 'sites.domain');
 		$site_info = $oModuleModel->getSiteInfo($args->site_srl, $columnList);
-		if($site_info->domain != $args->domain) {
+		if($site_info->domain != $args->domain){
 			$info = $oModuleModel->getSiteInfoByDomain($args->domain, $columnList);
 			if($info->site_srl && $info->site_srl != $args->site_srl) return new BaseObject(-1, 'msg_already_registed_domain');
 			if(isSiteID($args->domain) && $oModuleModel->isIDExists($args->domain)) return new BaseObject(-1, 'msg_already_registed_vid');
 			
-			if($args->domain && !isSiteID($args->domain)) {
+			if($args->domain && !isSiteID($args->domain)){
 				$args->domain = $args->domain;
 			}
 			
@@ -274,9 +299,9 @@ class moduleController extends module {
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($args->index_module_srl);
 		$mid = $module_info->mid;
 		
-		$oCacheHandler = &CacheHandler::getInstance('object');
-		if($oCacheHandler->isSupport()) {
-			if($args->site_srl == 0) {
+		$oCacheHandler = CacheHandler::getInstance('object');
+		if($oCacheHandler->isSupport()){
+			if($args->site_srl == 0){
 				$cache_key = 'object_default_mid:_';
 				$oCacheHandler->delete($cache_key);
 			}
@@ -289,7 +314,7 @@ class moduleController extends module {
 	/**
 	 * @brief Arrange module information
 	 **/
-	function arrangeModuleInfo(&$args, &$extra_vars) {
+	function arrangeModuleInfo(&$args, &$extra_vars){
 		// Remove unnecessary information
 		unset($args->body);
 		unset($args->act);
@@ -326,12 +351,12 @@ class moduleController extends module {
 	/**
 	 * @brief Insert module
 	 **/
-	function insertModule($args) {
+	function insertModule($args){
 		$output = $this->arrangeModuleInfo($args, $extra_vars);
 		if(!$output->toBool()) return $output;
 		// Check whether the module name already exists
 		if(!$args->site_srl) $args->site_srl = 0;
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		if($oModuleModel->isIDExists($args->mid, $args->site_srl)) return new BaseObject(-1, 'msg_module_name_exists');
 		
 		// begin transaction
@@ -340,6 +365,7 @@ class moduleController extends module {
 		// Get colorset from the skin information
 		$module_path = ModuleHandler::getModulePath($args->module);
 		$skin_info = $oModuleModel->loadSkinInfo($module_path, $args->skin);
+		$skin_vars = new stdClass();
 		$skin_vars->colorset = $skin_info->colorset[0]->name;
 		// Arrange variables and then execute a query
 		if(!$args->module_srl) $args->module_srl = getNextSequence();
@@ -349,7 +375,7 @@ class moduleController extends module {
 		
 		// Insert a module
 		$output = executeQuery('module.insertModule', $args);
-		if(!$output->toBool()) {
+		if(!$output->toBool()){
 			$oDB->rollback();
 			return $output;
 		}
@@ -358,6 +384,12 @@ class moduleController extends module {
 		
 		// commit
 		$oDB->commit();
+		
+		//remove from cache
+		$oCacheHandler = CacheHandler::getInstance('object', null, true);
+		if($oCacheHandler->isSupport()){
+			$oCacheHandler->invalidateGroupKey('site_and_module');
+		}
 		
 		$output->add('module_srl', $args->module_srl);
 		return $output;
@@ -381,8 +413,8 @@ class moduleController extends module {
 		$oDB = &DB::getInstance();
 		$oDB->begin();
 		
-		if(!$args->site_srl || !$args->browser_title) {
-			$oModuleModel = &getModel('module');
+		if(!$args->site_srl || !$args->browser_title){
+			$oModuleModel = getModel('module');
 			$columnList = array('module_srl', 'site_srl', 'browser_title');
 			$module_info = $oModuleModel->getModuleInfoByModuleSrl($args->module_srl);
 			
@@ -391,7 +423,7 @@ class moduleController extends module {
 		}
 		
 		$output = executeQuery('module.isExistsModuleName', $args);
-		if(!$output->toBool() || $output->data->count) {
+		if(!$output->toBool() || $output->data->count){
 			$oDB->rollback();
 			return new BaseObject(-1, 'msg_module_name_exists');
 		}
@@ -400,13 +432,13 @@ class moduleController extends module {
 		$args->is_skin_fix = (!$args->is_skin_fix) ? 'N' : 'Y';
 		
 		$output = executeQuery('module.updateModule', $args);
-		if(!$output->toBool()) {
+		if(!$output->toBool()){
 			$oDB->rollback();
 			return $output;
 		}
 		
 		if($isMenuCreate === TRUE){
-			$menuArgs = new stdClass;
+			$menuArgs = new stdClass();
 			$menuArgs->url = $module_info->mid;
 			$menuArgs->site_srl = $module_info->site_srl;
 			$menuOutput = executeQueryArray('menu.getMenuItemByUrl', $menuArgs);
@@ -437,26 +469,32 @@ class moduleController extends module {
 		$output->add('module_srl', $args->module_srl);
 		
 		//remove from cache
-		$oCacheHandler = &CacheHandler::getInstance('object');
-		if($oCacheHandler->isSupport()) {
-			$cache_key = 'object_module_info:' . $args->module_srl;
-			$oCacheHandler->delete($cache_key);
-			$cache_key = 'object:' . $args->mid . '_' . $args->site_srl;
-			$oCacheHandler->delete($cache_key);
-			$cache_key = 'object:module_extra_vars_' . $args->module_srl;
-			$oCacheHandler->delete($cache_key);
+		$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+		if($oCacheHandler->isSupport()){
+			$oCacheHandler->invalidateGroupKey('site_and_module');
 		}
+		
 		return $output;
 	}
 	
 	/**
 	 * @brief Change the module's virtual site
 	 **/
-	function updateModuleSite($module_srl, $site_srl, $layout_srl = 0) {
+	function updateModuleSite($module_srl, $site_srl, $layout_srl = 0){
+		$args = new stdClass();
 		$args->module_srl = $module_srl;
 		$args->site_srl = $site_srl;
 		$args->layout_srl = $layout_srl;
-		return executeQuery('module.updateModuleSite', $args);
+		$output = executeQuery('module.updateModuleSite', $args);
+		if(!$output->toBool()) return $output;
+
+		//remove from cache
+		$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+		if($oCacheHandler->isSupport()){
+			$oCacheHandler->invalidateGroupKey('site_and_module');
+		}
+
+		return $output;
 	}
 	
 	/**
@@ -464,11 +502,11 @@ class moduleController extends module {
 	 *
 	 * Attempt to delete all related information when deleting a module.
 	 **/
-	function deleteModule($module_srl) {
+	function deleteModule($module_srl){
 		if(!$module_srl) return new BaseObject(-1, 'msg_invalid_request');
 		
 		// check start module
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$columnList = array('sites.index_module_srl');
 		$start_module = $oModuleModel->getSiteInfo(0, $columnList);
 		if($module_srl == $start_module->index_module_srl) return new BaseObject(-1, 'msg_cannot_delete_startmodule');
@@ -482,10 +520,11 @@ class moduleController extends module {
 		$oDB = &DB::getInstance();
 		$oDB->begin();
 		
+		$args = new stdClass();
 		$args->module_srl = $module_srl;
 		// Delete module information from the DB
 		$output = executeQuery('module.deleteModule', $args);
-		if(!$output->toBool()) {
+		if(!$output->toBool()){
 			$oDB->rollback();
 			return $output;
 		}
@@ -498,9 +537,9 @@ class moduleController extends module {
 		// Remove the module manager
 		$this->deleteAdminId($module_srl);
 		// Call a trigger (after)
-		if($output->toBool()) {
+		if($output->toBool()){
 			$trigger_output = ModuleHandler::triggerCall('module.deleteModule', 'after', $trigger_obj);
-			if(!$trigger_output->toBool()) {
+			if(!$trigger_output->toBool()){
 				$oDB->rollback();
 				return $trigger_output;
 			}
@@ -508,13 +547,11 @@ class moduleController extends module {
 		
 		// commit
 		$oDB->commit();
+		
 		//remove from cache
-		$oCacheHandler = &CacheHandler::getInstance('object');
-		if($oCacheHandler->isSupport()) {
-			$cache_key = 'object_module_info:' . $args->module_srl;
-			$oCacheHandler->delete($cache_key);
-			$cache_key = 'object:module_extra_vars_' . $args->module_srl;
-			$oCacheHandler->delete($cache_key);
+		$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+		if($oCacheHandler->isSupport()){
+			$oCacheHandler->invalidateGroupKey('site_and_module');
 		}
 		return $output;
 	}
@@ -523,14 +560,14 @@ class moduleController extends module {
 	 * @brief Change other information of the module
 	 * @deprecated
 	 */
-	function updateModuleSkinVars($module_srl, $skin_vars) {
+	function updateModuleSkinVars($module_srl, $skin_vars){
 		return new BaseObject();
 	}
 	
 	/**
 	 * @brief Set is_default as N in all modules(the default module is disabled)
 	 **/
-	function clearDefaultModule() {
+	function clearDefaultModule(){
 		$output = executeQuery('module.clearDefaultModule');
 		if(!$output->toBool()) return $output;
 		
@@ -540,14 +577,14 @@ class moduleController extends module {
 	/**
 	 * @brief Update menu_srl of mid which belongs to menu_srl
 	 **/
-	function updateModuleMenu($args) {
+	function updateModuleMenu($args){
 		return executeQuery('module.updateModuleMenu', $args);
 	}
 	
 	/**
 	 * @brief Update layout_srl of mid which belongs to menu_srl
 	 **/
-	function updateModuleLayout($layout_srl, $menu_srl_list) {
+	function updateModuleLayout($layout_srl, $menu_srl_list){
 		if(!count($menu_srl_list)) return;
 		
 		$args->layout_srl = $layout_srl;
@@ -559,8 +596,9 @@ class moduleController extends module {
 	/**
 	 * @brief Change the site administrator
 	 **/
-	function insertSiteAdmin($site_srl, $arr_admins) {
+	function insertSiteAdmin($site_srl, $arr_admins){
 		// Remove the site administrator
+		$args = new stdClass();
 		$args->site_srl = $site_srl;
 		
 		$output = executeQuery('module.deleteSiteAdmin', $args);
@@ -568,24 +606,26 @@ class moduleController extends module {
 		if(!$output->toBool()) return $output;
 		// Get user id of an administrator
 		if(!is_array($arr_admins) || !count($arr_admins)) return new BaseObject();
-		foreach($arr_admins as $key => $user_id) {
+		foreach($arr_admins as $key => $user_id){
 			if(!trim($user_id)) continue;
 			$admins[] = trim($user_id);
 		}
 		if(!count($admins)) return new BaseObject();
 		
-		$oMemberModel = &getModel('member');
+		$oMemberModel = getModel('member');
 		$member_config = $oMemberModel->getMemberConfig();
-		if($member_config->identifier == 'email_address') {
+		if($member_config->identifier == 'email_address'){
 			$args->email_address = '\'' . implode('\',\'', $admins) . '\'';
-		} else {
+		}
+		else{
 			$args->user_ids = '\'' . implode('\',\'', $admins) . '\'';
 		}
 		$output = executeQueryArray('module.getAdminSrls', $args);
 		if(!$output->toBool() || !$output->data) return $output;
 		
-		foreach($output->data as $key => $val) {
+		foreach($output->data as $key => $val){
 			unset($args);
+			$args = new stdClass();
 			$args->site_srl = $site_srl;
 			$args->member_srl = $val->member_srl;
 			$output = executeQueryArray('module.insertSiteAdmin', $args);
@@ -597,8 +637,8 @@ class moduleController extends module {
 	/**
 	 * @brief Specify the admin ID to a module
 	 **/
-	function insertAdminId($module_srl, $admin_id) {
-		$oMemberModel = &getModel('member');
+	function insertAdminId($module_srl, $admin_id){
+		$oMemberModel = getModel('member');
 		$member_config = $oMemberModel->getMemberConfig();
 		
 		if($member_config->identifier == 'email_address')
@@ -607,6 +647,7 @@ class moduleController extends module {
 			$member_info = $oMemberModel->getMemberInfoByUserID($admin_id);
 		
 		if(!$member_info->member_srl) return;
+		$args = new stdClass();
 		$args->module_srl = $module_srl;
 		$args->member_srl = $member_info->member_srl;
 		return executeQuery('module.insertAdminId', $args);
@@ -615,11 +656,12 @@ class moduleController extends module {
 	/**
 	 * @brief Remove the admin ID from a module
 	 **/
-	function deleteAdminId($module_srl, $admin_id = '') {
+	function deleteAdminId($module_srl, $admin_id = ''){
+		$args = new stdClass();
 		$args->module_srl = $module_srl;
 		
-		if($admin_id) {
-			$oMemberModel = &getModel('member');
+		if($admin_id){
+			$oMemberModel = getModel('member');
 			$member_info = $oMemberModel->getMemberInfoByUserID($admin_id);
 			if($member_info->member_srl) $args->member_srl = $member_info->member_srl;
 		}
@@ -631,7 +673,7 @@ class moduleController extends module {
 	 * @param $module_srl Sequence of module
 	 * @param $obj        Skin variables
 	 */
-	function insertModuleSkinVars($module_srl, $obj) {
+	function insertModuleSkinVars($module_srl, $obj){
 		return $this->_insertModuleSkinVars($module_srl, $obj, 'P');
 	}
 	
@@ -640,7 +682,7 @@ class moduleController extends module {
 	 * @param $module_srl Sequence of module
 	 * @param $obj        Skin variables
 	 */
-	function insertModuleMobileSkinVars($module_srl, $obj) {
+	function insertModuleMobileSkinVars($module_srl, $obj){
 		return $this->_insertModuleSkinVars($module_srl, $obj, 'M');
 	}
 	
@@ -648,14 +690,14 @@ class moduleController extends module {
 	/**
 	 * @brief Insert skin vars to a module
 	 **/
-	function _insertModuleSkinVars($module_srl, $obj, $mode) {
+	function _insertModuleSkinVars($module_srl, $obj, $mode){
 		$mode = $mode === 'P' ? 'P' : 'M';
 		
 		$oDB = DB::getInstance();
 		$oDB->begin();
 		
 		$output = $this->_deleteModuleSkinVars($module_srl, $mode);
-		if(!$output->toBool()) {
+		if(!$output->toBool()){
 			$oDB->rollback();
 			return $output;
 		}
@@ -663,9 +705,9 @@ class moduleController extends module {
 		getDestroyXeVars($obj);
 		if(!$obj || !count($obj)) return new BaseObject();
 		
-		$args = new stdClass;
+		$args = new stdClass();
 		$args->module_srl = $module_srl;
-		foreach($obj as $key => $val) {
+		foreach($obj as $key => $val){
 			// #17927989 For an old board which used the old blog module
 			// it often saved menu item(stdClass) on the skin info column
 			// When updating the module on XE core 1.2.0 later versions, it occurs an error
@@ -677,12 +719,13 @@ class moduleController extends module {
 			$args->value = trim($val);
 			if(!$args->name || !$args->value) continue;
 			
-			if($mode === 'P') {
+			if($mode === 'P'){
 				$output = executeQuery('module.insertModuleSkinVars', $args);
-			} else {
+			}
+			else{
 				$output = executeQuery('module.insertModuleMobileSkinVars', $args);
 			}
-			if(!$output->toBool()) {
+			if(!$output->toBool()){
 				return $output;
 				$oDB->rollback();
 			}
@@ -696,7 +739,7 @@ class moduleController extends module {
 	 * Remove skin vars ofa module
 	 * @param $module_srl seqence of module
 	 */
-	function deleteModuleSkinVars($module_srl) {
+	function deleteModuleSkinVars($module_srl){
 		return $this->_deleteModuleSkinVars($module_srl, 'P');
 	}
 	
@@ -704,28 +747,29 @@ class moduleController extends module {
 	 * Remove mobile skin vars ofa module
 	 * @param $module_srl seqence of module
 	 */
-	function deleteModuleMobileSkinVars($module_srl) {
+	function deleteModuleMobileSkinVars($module_srl){
 		return $this->_deleteModuleSkinVars($module_srl, 'M');
 	}
 	
 	/**
 	 * @brief Remove skin vars of a module
 	 **/
-	function _deleteModuleSkinVars($module_srl, $mode) {
+	function _deleteModuleSkinVars($module_srl, $mode){
 		$args->module_srl = $module_srl;
 		$mode = $mode === 'P' ? 'P' : 'M';
 		
-		if($mode === 'P') {
+		if($mode === 'P'){
 			$cache_key = 'object_module_skin_vars:' . $module_srl;
 			$query = 'module.deleteModuleSkinVars';
-		} else {
+		}
+		else{
 			$cache_key = 'object_module_mobile_skin_vars:' . $module_srl;
 			$query = 'module.deleteModuleMobileSkinVars';
 		}
 		
 		//remove from cache
-		$oCacheHandler = &CacheHandler::getInstance('object');
-		if($oCacheHandler->isSupport()) {
+		$oCacheHandler = CacheHandler::getInstance('object');
+		if($oCacheHandler->isSupport()){
 			$oCacheHandler->delete($cache_key);
 		}
 		
@@ -735,15 +779,15 @@ class moduleController extends module {
 	/**
 	 * @brief Register extra vars to the module
 	 **/
-	function insertModuleExtraVars($module_srl, $obj) {
+	function insertModuleExtraVars($module_srl, $obj){
 		$this->deleteModuleExtraVars($module_srl);
 		getDestroyXeVars($obj);
 		if(!$obj || !count($obj)) return;
 		
-		foreach($obj as $key => $val) {
+		foreach($obj as $key => $val){
 			if(is_object($val) || is_array($val)) continue;
 			
-			$args = null;
+			$args = new stdClass();
 			$args->module_srl = $module_srl;
 			$args->name = trim($key);
 			$args->value = trim($val);
@@ -755,12 +799,13 @@ class moduleController extends module {
 	/**
 	 * @brief Remove extra vars from the module
 	 **/
-	function deleteModuleExtraVars($module_srl) {
+	function deleteModuleExtraVars($module_srl){
+		$args = new stdClass();
 		$args->module_srl = $module_srl;
 		return executeQuery('module.deleteModuleExtraVars', $args);
 		//remove from cache
-		$oCacheHandler = &CacheHandler::getInstance('object');
-		if($oCacheHandler->isSupport()) {
+		$oCacheHandler = CacheHandler::getInstance('object');
+		if($oCacheHandler->isSupport()){
 			$cache_key = 'object:module_extra_vars_' . $module_srl;
 			$oCacheHandler->delete($cache_key);
 		}
@@ -769,15 +814,15 @@ class moduleController extends module {
 	/**
 	 * @brief Grant permission to the module
 	 **/
-	function insertModuleGrants($module_srl, $obj) {
+	function insertModuleGrants($module_srl, $obj){
 		$this->deleteModuleGrants($module_srl);
 		if(!$obj || !count($obj)) return;
 		
-		foreach($obj as $name => $val) {
+		foreach($obj as $name => $val){
 			if(!$val || !count($val)) continue;
 			
-			foreach($val as $group_srl) {
-				$args = null;
+			foreach($val as $group_srl){
+				$args = new stdClass();
 				$args->module_srl = $module_srl;
 				$args->name = $name;
 				$args->group_srl = trim($group_srl);
@@ -791,7 +836,8 @@ class moduleController extends module {
 	/**
 	 * @brief Remove permission from the module
 	 **/
-	function deleteModuleGrants($module_srl) {
+	function deleteModuleGrants($module_srl){
+		$args = new stdClass();
 		$args->module_srl = $module_srl;
 		return executeQuery('module.deleteModuleGrants', $args);
 	}
@@ -799,8 +845,8 @@ class moduleController extends module {
 	/**
 	 * @brief Change user-defined language
 	 **/
-	function replaceDefinedLangCode(&$output, $isReplaceLangCode = true) {
-		if($isReplaceLangCode) {
+	function replaceDefinedLangCode(&$output, $isReplaceLangCode = true){
+		if($isReplaceLangCode){
 			$output = preg_replace_callback('!\$user_lang->([a-z0-9\_]+)!is', array($this, '_replaceLangCode'), $output);
 		}
 	}
@@ -808,7 +854,7 @@ class moduleController extends module {
 	function _replaceLangCode($matches){
 		static $lang = false;
 
-		$oCacheHandler = CacheHandler::getInstance('object', null, true);
+		$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
 		if($lang === false && $oCacheHandler->isSupport()){
 			$site_module_info = Context::get('site_module_info');
 			if(!$site_module_info){
@@ -836,7 +882,7 @@ class moduleController extends module {
 	/**
 	 * @brief Add and update a file into the file box
 	 **/
-	function procModuleFileBoxAdd() {
+	function procModuleFileBoxAdd(){
 		$ajax = Context::get('ajax');
 		if($ajax) Context::setRequestMethod('JSON');
 		
@@ -845,7 +891,7 @@ class moduleController extends module {
 		
 		$vars = Context::gets('addfile', 'filter');
 		$attributes = Context::getRequestVars();
-		foreach($attributes as $key => $value) {
+		foreach($attributes as $key => $value){
 			if(!(strpos($key, 'attribute_name') === false)) $vars->comment = $vars->comment . ';' . $value;
 			if(!(strpos($key, 'attribute_value') === false)) $vars->comment = $vars->comment . ':' . $value;
 		}
@@ -861,12 +907,13 @@ class moduleController extends module {
 		$vars->member_srl = $logged_info->member_srl;
 		
 		// update
-		if($module_filebox_srl > 0) {
+		if($module_filebox_srl > 0){
 			$vars->module_filebox_srl = $module_filebox_srl;
 			$output = $this->updateModuleFileBox($vars);
 			
 			// insert
-		} else {
+		}
+		else{
 			if(!Context::isUploaded()) return new BaseObject(-1, 'msg_error_occured');
 			$addfile = Context::get('addfile');
 			if(!is_uploaded_file($addfile['tmp_name'])) return new BaseObject(-1, 'msg_error_occured');
@@ -876,11 +923,12 @@ class moduleController extends module {
 		
 		$this->setTemplatePath($this->module_path . 'tpl');
 		
-		if(!$ajax) {
+		if(!$ajax){
 			$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispModuleAdminFileBox');
 			$this->setRedirectUrl($returnUrl);
 			return;
-		} else {
+		}
+		else{
 			if($output) $this->add('save_filename', $output->get('save_filename'));
 			else $this->add('save_filename', '');
 		}
@@ -890,11 +938,11 @@ class moduleController extends module {
 	/**
 	 * @brief Update a file into the file box
 	 **/
-	function updateModuleFileBox($vars) {
-		
+	function updateModuleFileBox($vars){
+		$args = new stdClass();
 		// have file
-		if($vars->addfile['tmp_name'] && is_uploaded_file($vars->addfile['tmp_name'])) {
-			$oModuleModel = &getModel('module');
+		if($vars->addfile['tmp_name'] && is_uploaded_file($vars->addfile['tmp_name'])){
+			$oModuleModel = getModel('module');
 			$output = $oModuleModel->getModuleFileBox($vars->module_filebox_srl);
 			FileHandler::removeFile($output->data->filename);
 			
@@ -907,7 +955,7 @@ class moduleController extends module {
 			// Check uploaded file
 			if(!checkUploadedFile($tmp)) return false;
 			
-			if(!@move_uploaded_file($tmp, $save_filename)) {
+			if(!@move_uploaded_file($tmp, $save_filename)){
 				return false;
 			}
 			
@@ -927,12 +975,12 @@ class moduleController extends module {
 	/**
 	 * @brief Add a file into the file box
 	 **/
-	function insertModuleFileBox($vars) {
+	function insertModuleFileBox($vars){
 		// set module_filebox_srl
 		$vars->module_filebox_srl = getNextSequence();
 		
 		// get file path
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$path = $oModuleModel->getModuleFileBoxPath($vars->module_filebox_srl);
 		FileHandler::makeDir($path);
 		$save_filename = sprintf('%s%s.%s', $path, $vars->module_filebox_srl, $vars->ext);
@@ -942,12 +990,13 @@ class moduleController extends module {
 		if(!checkUploadedFile($tmp)) return false;
 		
 		// upload
-		if(!@move_uploaded_file($tmp, $save_filename)) {
+		if(!@move_uploaded_file($tmp, $save_filename)){
 			return false;
 		}
 		
 		
 		// insert
+		$args = new stdClass();
 		$args->module_filebox_srl = $vars->module_filebox_srl;
 		$args->member_srl = $vars->member_srl;
 		$args->comment = $vars->comment;
@@ -965,24 +1014,27 @@ class moduleController extends module {
 	 * @brief Delete a file from the file box
 	 **/
 	
-	function procModuleFileBoxDelete() {
+	function procModuleFileBoxDelete(){
 		$logged_info = Context::get('logged_info');
 		if($logged_info->is_admin != 'Y' && !$logged_info->is_site_admin) return new BaseObject(-1, 'msg_not_permitted');
 		
 		$module_filebox_srl = Context::get('module_filebox_srl');
 		if(!$module_filebox_srl) return new BaseObject(-1, 'msg_invalid_request');
+		
+		$vars = new stdClass();
 		$vars->module_filebox_srl = $module_filebox_srl;
 		$output = $this->deleteModuleFileBox($vars);
 		if(!$output->toBool()) return $output;
 	}
 	
-	function deleteModuleFileBox($vars) {
+	function deleteModuleFileBox($vars){
 		
 		// delete real file
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$output = $oModuleModel->getModuleFileBox($vars->module_filebox_srl);
 		FileHandler::removeFile($output->data->filename);
 		
+		$args = new stdClass();
 		$args->module_filebox_srl = $vars->module_filebox_srl;
 		return executeQuery('module.deleteModuleFileBox', $args);
 	}
@@ -990,32 +1042,35 @@ class moduleController extends module {
 	/**
 	 * @brief function of locking (timeout is in seconds)
 	 */
-	function lock($lock_name, $timeout, $member_srl = null) {
+	function lock($lock_name, $timeout, $member_srl = null){
 		$this->unlockTimeoutPassed();
+		$args = new stdClass();
 		$args->lock_name = $lock_name;
 		if(!$timeout) $timeout = 60;
 		$args->deadline = date("YmdHis", time() + $timeout);
 		if($member_srl) $args->member_srl = $member_srl;
 		$output = executeQuery('module.insertLock', $args);
-		if($output->toBool()) {
+		if($output->toBool()){
 			$output->add('lock_name', $lock_name);
 			$output->add('deadline', $args->deadline);
 		}
 		return $output;
 	}
 	
-	function unlockTimeoutPassed() {
+	function unlockTimeoutPassed(){
 		executeQuery('module.deleteLocksTimeoutPassed');
 	}
 	
-	function unlock($lock_name, $deadline) {
+	function unlock($lock_name, $deadline){
+		$args = new stdClass();
 		$args->lock_name = $lock_name;
 		$args->deadline = $deadline;
 		$output = executeQuery('module.deleteLock', $args);
 		return $output;
 	}
 	
-	function updateModuleInSites($site_srls, $args) {
+	function updateModuleInSites($site_srls, $args){
+		$args = new stdClass();
 		$args->site_srls = $site_srls;
 		$output = executeQuery('module.updateModuleInSites', $args);
 		return $output;

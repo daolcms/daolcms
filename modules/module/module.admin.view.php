@@ -10,7 +10,7 @@ class moduleAdminView extends module {
 	/**
 	 * @brief Initialization
 	 **/
-	function init() {
+	function init(){
 		// Set the template path
 		$this->setTemplatePath($this->module_path . 'tpl');
 	}
@@ -18,22 +18,22 @@ class moduleAdminView extends module {
 	/**
 	 * @brief Module admin page
 	 **/
-	function dispModuleAdminContent() {
+	function dispModuleAdminContent(){
 		$this->dispModuleAdminList();
 	}
 	
 	/**
 	 * @brief Display a lost of modules
 	 **/
-	function dispModuleAdminList() {
+	function dispModuleAdminList(){
 		// Obtain a list of modules
-		$oAdminModel = &getAdminModel('admin');
-		$oModuleModel = &getModel('module');
-		$oAutoinstallModel = &getModel('autoinstall');
+		$oAdminModel = getAdminModel('admin');
+		$oModuleModel = getModel('module');
+		$oAutoinstallModel = getModel('autoinstall');
 		
 		$module_list = $oModuleModel->getModuleList();
-		if(is_array($module_list)) {
-			foreach($module_list as $key => $val) {
+		if(is_array($module_list)){
+			foreach($module_list as $key => $val){
 				$module_list[$key]->delete_url = $oAutoinstallModel->getRemoveUrlByPath($val->path);
 				
 				// get easyinstall need update
@@ -42,7 +42,7 @@ class moduleAdminView extends module {
 				$module_list[$key]->need_autoinstall_update = $package[$packageSrl]->need_update;
 				
 				// get easyinstall update url
-				if($module_list[$key]->need_autoinstall_update == 'Y') {
+				if($module_list[$key]->need_autoinstall_update == 'Y'){
 					$module_list[$key]->update_url = $oAutoinstallModel->getUpdateUrlByPackageSrl($packageSrl);
 				}
 			}
@@ -52,8 +52,8 @@ class moduleAdminView extends module {
 		
 		$favoriteList = $output->get('favoriteList');
 		$favoriteModuleList = array();
-		if($favoriteList) {
-			foreach($favoriteList as $favorite => $favorite_info) {
+		if($favoriteList){
+			foreach($favoriteList as $favorite => $favorite_info){
 				$favoriteModuleList[] = $favorite_info->module;
 			}
 		}
@@ -72,9 +72,9 @@ class moduleAdminView extends module {
 	/**
 	 * @brief Pop-up details of the module (conf/info.xml)
 	 **/
-	function dispModuleAdminInfo() {
+	function dispModuleAdminInfo(){
 		// Obtain a list of modules
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$module_info = $oModuleModel->getModuleInfoXml(Context::get('selected_module'));
 		Context::set('module_info', $module_info);
 		
@@ -91,16 +91,16 @@ class moduleAdminView extends module {
 	/**
 	 * @brief Module Categories
 	 **/
-	function dispModuleAdminCategory() {
+	function dispModuleAdminCategory(){
 		$module_category_srl = Context::get('module_category_srl');
 		
 		// Obtain a list of modules
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		// Display the category page if a category is selected
 		//Security
 		$security = new Security();
 		
-		if($module_category_srl) {
+		if($module_category_srl){
 			$selected_category = $oModuleModel->getModuleCategory($module_category_srl);
 			Context::set('selected_category', $selected_category);
 			
@@ -110,7 +110,8 @@ class moduleAdminView extends module {
 			// Set a template file
 			$this->setTemplateFile('category_update_form');
 			// If not selected, display a list of categories
-		} else {
+		}
+		else{
 			$category_list = $oModuleModel->getModuleCategories();
 			Context::set('category_list', $category_list);
 			
@@ -125,14 +126,17 @@ class moduleAdminView extends module {
 	/**
 	 * @brief Feature to copy module
 	 **/
-	function dispModuleAdminCopyModule() {
+	function dispModuleAdminCopyModule(){
 		// Get a target module to copy
 		$module_srl = Context::get('module_srl');
 		// Get information of the module
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$columnList = array('module_srl', 'module', 'mid', 'browser_title');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl, $columnList);
 		Context::set('module_info', $module_info);
+		
+		$oSecurity = new Security();
+		$oSecurity->encodeHTML('module_info.');
 		// Set the layout to be pop-up
 		$this->setLayoutPath('./common/tpl');
 		$this->setLayoutFile('popup_layout');
@@ -143,20 +147,20 @@ class moduleAdminView extends module {
 	/**
 	 * @brief Applying the default settings to all modules
 	 **/
-	function dispModuleAdminModuleSetup() {
+	function dispModuleAdminModuleSetup(){
 		$module_srls = Context::get('module_srls');
 		
 		$modules = explode(',', $module_srls);
 		if(!count($modules)) if(!$module_srls) return new BaseObject(-1, 'msg_invalid_request');
 		
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$columnList = array('module_srl', 'module');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($modules[0], $columnList);
 		// Get a skin list of the module
-		$skin_list = $oModuleModel->getSkins('./modules/' . $module_info->module);
+		$skin_list = $oModuleModel->getSkins(_DAOL_PATH_ . 'modules/' . $module_info->module);
 		Context::set('skin_list', $skin_list);
 		// Get a layout list
-		$oLayoutMode = &getModel('layout');
+		$oLayoutMode = getModel('layout');
 		$layout_list = $oLayoutMode->getLayoutList();
 		Context::set('layout_list', $layout_list);
 		// Get a list of module categories
@@ -178,7 +182,7 @@ class moduleAdminView extends module {
 	/**
 	 * @brief Apply module addition settings to all modules
 	 **/
-	function dispModuleAdminModuleAdditionSetup() {
+	function dispModuleAdminModuleAdditionSetup(){
 		$module_srls = Context::get('module_srls');
 		
 		$modules = explode(',', $module_srls);
@@ -200,32 +204,36 @@ class moduleAdminView extends module {
 	/**
 	 * @brief Applying module permission settings to all modules
 	 **/
-	function dispModuleAdminModuleGrantSetup() {
+	function dispModuleAdminModuleGrantSetup(){
 		$module_srls = Context::get('module_srls');
 		
 		$modules = explode(',', $module_srls);
 		if(!count($modules)) if(!$module_srls) return new BaseObject(-1, 'msg_invalid_request');
 		
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$columnList = array('module_srl', 'module', 'site_srl');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($modules[0], $columnList);
 		$xml_info = $oModuleModel->getModuleActionXml($module_info->module);
 		$source_grant_list = $xml_info->grant;
+		
+		$grant_list = new stdClass();
 		// Grant virtual permissions for access and manager
+		$grantList->access = new stdClass();
 		$grant_list->access->title = Context::getLang('grant_access');
 		$grant_list->access->default = 'guest';
-		if(count($source_grant_list)) {
-			foreach($source_grant_list as $key => $val) {
+		if(count($source_grant_list)){
+			foreach($source_grant_list as $key => $val){
 				if(!$val->default) $val->default = 'guest';
 				if($val->default == 'root') $val->default = 'manager';
 				$grant_list->{$key} = $val;
 			}
 		}
+		$grant_list->manager = new stdClass();
 		$grant_list->manager->title = Context::getLang('grant_manager');
 		$grant_list->manager->default = 'manager';
 		Context::set('grant_list', $grant_list);
 		// Get a list of groups
-		$oMemberModel = &getModel('member');
+		$oMemberModel = getModel('member');
 		$group_list = $oMemberModel->getGroups($module_info->site_srl);
 		Context::set('group_list', $group_list);
 		$security = new Security();
@@ -242,9 +250,10 @@ class moduleAdminView extends module {
 	/**
 	 * @brief Language codes
 	 **/
-	function dispModuleAdminLangcode() {
+	function dispModuleAdminLangcode(){
 		// Get the language file of the current site
 		$site_module_info = Context::get('site_module_info');
+		$args = new stdClass();
 		$args->site_srl = (int)$site_module_info->site_srl;
 		$args->langCode = Context::get('lang_type');
 		$args->page = Context::get('page'); // /< Page
@@ -255,7 +264,7 @@ class moduleAdminView extends module {
 		$args->search_target = Context::get('search_target'); // /< search (title, contents ...)
 		$args->search_keyword = Context::get('search_keyword'); // /< keyword to search
 		
-		$oModuleAdminModel = &getAdminModel('module');
+		$oModuleAdminModel = getAdminModel('module');
 		$output = $oModuleAdminModel->getLangListByLangcode($args);
 		
 		Context::set('total_count', $output->total_count);
@@ -264,7 +273,7 @@ class moduleAdminView extends module {
 		Context::set('lang_code_list', $output->data);
 		Context::set('page_navigation', $output->page_navigation);
 		
-		if(Context::get('module') != 'admin') {
+		if(Context::get('module') != 'admin'){
 			$this->setLayoutPath('./common/tpl');
 			$this->setLayoutFile('popup_layout');
 		}
@@ -272,14 +281,17 @@ class moduleAdminView extends module {
 		$this->setTemplateFile('module_langcode');
 	}
 	
-	function dispModuleAdminFileBox() {
-		$oModuleModel = &getModel('module');
+	function dispModuleAdminFileBox(){
+		$oModuleModel = getModel('module');
 		$output = $oModuleModel->getModuleFileBoxList();
 		$page = Context::get('page');
 		$page = $page ? $page : 1;
 		Context::set('filebox_list', $output->data);
 		Context::set('page_navigation', $output->page_navigation);
 		Context::set('page', $page);
+		
+		$oSecurity = new Security();
+		$oSecurity->encodeHTML('filebox_list..comment', 'filebox_list..attributes.');
 		$this->setTemplateFile('adminFileBox');
 	}
 }
