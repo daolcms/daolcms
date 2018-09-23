@@ -82,7 +82,6 @@ class moduleController extends module {
 		}
 		
 		return $output;
-		
 	}
 	
 	/**
@@ -240,7 +239,6 @@ class moduleController extends module {
 			$oCacheHandler->invalidateGroupKey('site_and_module');
 		}
 		
-		
 		return $output;
 	}
 	
@@ -295,18 +293,13 @@ class moduleController extends module {
 		//clear cache for default mid
 		if($args->site_srl == 0) $vid = '';
 		else $vid = $args->domain;
-		
+
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($args->index_module_srl);
 		$mid = $module_info->mid;
-		
-		$oCacheHandler = CacheHandler::getInstance('object');
+
+		$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
 		if($oCacheHandler->isSupport()){
-			if($args->site_srl == 0){
-				$cache_key = 'object_default_mid:_';
-				$oCacheHandler->delete($cache_key);
-			}
-			$cache_key = 'object_default_mid:' . $vid . '_' . $mid;
-			$oCacheHandler->delete($cache_key);
+			$oCacheHandler->invalidateGroupKey('site_and_module');
 		}
 		return $output;
 	}
@@ -386,7 +379,7 @@ class moduleController extends module {
 		$oDB->commit();
 		
 		//remove from cache
-		$oCacheHandler = CacheHandler::getInstance('object', null, true);
+		$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
 		if($oCacheHandler->isSupport()){
 			$oCacheHandler->invalidateGroupKey('site_and_module');
 		}
@@ -994,7 +987,6 @@ class moduleController extends module {
 			return false;
 		}
 		
-		
 		// insert
 		$args = new stdClass();
 		$args->module_filebox_srl = $vars->module_filebox_srl;
@@ -1028,7 +1020,6 @@ class moduleController extends module {
 	}
 	
 	function deleteModuleFileBox($vars){
-		
 		// delete real file
 		$oModuleModel = getModel('module');
 		$output = $oModuleModel->getModuleFileBox($vars->module_filebox_srl);
