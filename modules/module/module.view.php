@@ -11,7 +11,7 @@ class moduleView extends module {
 	/**
 	 * @brief Initialization
 	 **/
-	function init() {
+	function init(){
 		// Set the template path
 		$this->setTemplatePath($this->module_path . 'tpl');
 	}
@@ -19,7 +19,7 @@ class moduleView extends module {
 	/**
 	 * @brief Display skin information
 	 **/
-	function dispModuleSkinInfo() {
+	function dispModuleSkinInfo(){
 		$selected_module = Context::get('selected_module');
 		$skin = Context::get('skin');
 		// Get modules/skin information
@@ -29,7 +29,7 @@ class moduleView extends module {
 		$skin_info_xml = sprintf("%sskins/%s/skin.xml", $module_path, $skin);
 		if(!file_exists($skin_info_xml)) $this->stop("msg_invalid_request");
 		
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$skin_info = $oModuleModel->loadSkinInfo($module_path, $skin);
 		Context::set('skin_info', $skin_info);
 		
@@ -40,10 +40,10 @@ class moduleView extends module {
 	/**
 	 * @brief Select a module
 	 **/
-	function dispModuleSelectList() {
+	function dispModuleSelectList(){
 		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_permitted');
 		
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		// Extract the number of virtual sites
 		$logged_info = Context::get('logged_info');
 		$selected_module = Context::get('selected_module');
@@ -53,15 +53,17 @@ class moduleView extends module {
 		$output = executeQuery('module.getSiteCount');
 		$site_count = $output->data->count;
 		Context::set('site_count', $site_count);
+		
 		$args = new stdClass();
 		$module_category_exists = false;
-		if($logged_info->is_admin == 'Y' && $site_keyword) {
+		if($logged_info->is_admin == 'Y' && $site_keyword){
 			$args->site_keyword = $site_keyword;
-		} else {
+		}
+		else{
 			$args->site_srl = (int)$site_module_info->site_srl;
 			Context::set('site_keyword', null);
 		}
-		if($logged_info->is_admin == 'Y') {
+		if($logged_info->is_admin == 'Y'){
 			$module_category_exists = true;
 		}
 		
@@ -70,7 +72,7 @@ class moduleView extends module {
 		$output = executeQueryArray('module.getSiteModules', $args);
 		if(!$output->data) $output->data = array();
 		
-		foreach($output->data as $key => $val) {
+		foreach($output->data as $key => $val){
 			$module = trim($val->module);
 			if(!$module) continue;
 			
@@ -81,15 +83,15 @@ class moduleView extends module {
 			$obj->browser_title = $val->browser_title;
 			$mid_list[$module]->list[$category][$val->mid] = $obj;
 			if(!$selected_module) $selected_module = $module;
-			if(!$mid_list[$module]->title) {
+			if(!$mid_list[$module]->title){
 				$xml_info = $oModuleModel->getModuleInfoXml($module);
 				$mid_list[$module]->title = $xml_info->title;
 			}
 		}
 		
 		$selected_module = Context::get('selected_module');
-		if(count($mid_list)) {
-			foreach($mid_list as $module => $val) {
+		if(count($mid_list)){
+			foreach($mid_list as $module => $val){
 				if(!$selected_module) $selected_module = $module;
 				$xml_info = $oModuleModel->getModuleInfoXml($module);
 				$mid_list[$module]->title = $xml_info->title;
@@ -111,12 +113,12 @@ class moduleView extends module {
 	}
 	
 	// See the file box
-	function dispModuleFileBox() {
+	function dispModuleFileBox(){
 		$logged_info = Context::get('logged_info');
 		if($logged_info->is_admin != 'Y' && !$logged_info->is_site_admin) return new BaseObject(-1, 'msg_not_permitted');
 		
 		$input_name = Context::get('input');
-		if(!preg_match('/^[a-z0-9_]+$/i', $input_name)) {
+		if(!preg_match('/^[a-z0-9_]+$/i', $input_name)){
 			return new BaseObject(-1, 'msg_invalid_request');
 		}
 		
@@ -128,7 +130,7 @@ class moduleView extends module {
 						  //]]></script>', $input_name);
 		Context::addHtmlHeader($addscript);
 		
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$output = $oModuleModel->getModuleFileBoxList();
 		Context::set('filebox_list', $output->data);
 		
@@ -141,7 +143,7 @@ class moduleView extends module {
 	}
 	
 	// Screen to add a file box
-	function dispModuleFileBoxAdd() {
+	function dispModuleFileBoxAdd(){
 		$logged_info = Context::get('logged_info');
 		if($logged_info->is_admin != 'Y' && !$logged_info->is_site_admin) return new BaseObject(-1, 'msg_not_permitted');
 		
