@@ -4,7 +4,6 @@ matrix:
   - php: 7.0
   - php: 7.1
   - php: 7.2
-  - php: hhvm
   include:
   - php: 5.3
     dist: precise
@@ -19,8 +18,6 @@ matrix:
   - php: 7.1
     dist: trusty
   - php: 7.2
-    dist: trusty
-  - php: hhvm
     dist: trusty
 sudo: false
 before_script:
