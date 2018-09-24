@@ -12,13 +12,13 @@ class pageController extends page {
 	/**
 	 * @brief Initialization
 	 **/
-	function init() {
+	function init(){
 	}
 	
 	/**
 	 * @brief Extract a title
 	 **/
-	function getTitle($content) {
+	function getTitle($content){
 		preg_match('!<title([^>]*)>(.*?)<\/title>!is', $content, $buff);
 		return trim($buff[2]);
 	}
@@ -26,21 +26,21 @@ class pageController extends page {
 	/**
 	 * @brief Extract header script
 	 **/
-	function getHeadScript($content) {
+	function getHeadScript($content){
 		// remove the title tag
 		$content = preg_replace('!<title([^>]*)>(.*?)<\/title>!is', '', $content);
 		// Remove meta tags
 		$content = preg_replace('!<(\/){0,1}meta([^>]*)>!is', '', $content);
 		// Extract information such as <link, <style, <script and so on
 		preg_match_all('!<link([^>]*)>!is', $content, $link_buff);
-		for($i = 0; $i < count($link_buff[0]); $i++) {
+		for($i = 0; $i < count($link_buff[0]); $i++){
 			$tmp_str = trim($link_buff[0][$i]);
 			if(!$tmp_str) continue;
 			$header_script .= $tmp_str . "\n";
 		}
 		
 		preg_match_all('!<(style|script)(.*?)<\/(style|script)>!is', $content, $script_buff);
-		for($i = 0; $i < count($script_buff[0]); $i++) {
+		for($i = 0; $i < count($script_buff[0]); $i++){
 			$tmp_str = trim($script_buff[0][$i]);
 			if(!$tmp_str) continue;
 			$header_script .= $tmp_str . "\n";
@@ -52,7 +52,7 @@ class pageController extends page {
 	/**
 	 * @brief Extract the contents of the body
 	 **/
-	function getBodyScript($content) {
+	function getBodyScript($content){
 		// Extract content
 		preg_match('!<body([^>]*)>(.*?)<\/body>!is', $content, $body_buff);
 		$body_script = $body_buff[2];
@@ -65,7 +65,7 @@ class pageController extends page {
 	/**
 	 * @brief Change the value of src, href in the content
 	 **/
-	function replaceSrc($content, $path) {
+	function replaceSrc($content, $path){
 		$url_info = parse_url($path);
 		$host = sprintf("%s://%s%s", $url_info['scheme'], $url_info['host'], $url_info['port'] ? ':' . $url_info['port'] : '');
 		$this->host = $host . '/';
@@ -73,7 +73,7 @@ class pageController extends page {
 		if(substr($path, -1) == '/') $path = substr($path, -1);
 		$t = explode('/', $path);
 		$_t = array();
-		for($i = 0, $c = count($t) - 1; $i < $c; $i++) {
+		for($i = 0, $c = count($t) - 1; $i < $c; $i++){
 			$v = trim($t[$i]);
 			if(!$v) continue;
 			$_t[] = $v;
@@ -86,12 +86,12 @@ class pageController extends page {
 		return $content;
 	}
 	
-	function _replacePath($matches) {
+	function _replacePath($matches){
 		$val = trim($matches[3]);
 		if(preg_match('/^(http|https|ftp|telnet|mms|mailto)/i', $val)) return $matches[0];
-		if(substr($val, 0, 2) == './') {
+		if(substr($val, 0, 2) == './'){
 			$path = $this->path . substr($val, 2);
-		} elseif(substr($val, 0, 1) == '/') {
+		} elseif(substr($val, 0, 1) == '/'){
 			$path = $this->host . substr($val, 1);
 		} else {
 			$path = $this->path . $val;
