@@ -10,12 +10,12 @@ class widget extends ModuleObject {
 	/**
 	 * @brief Implement if additional tasks are necessary when installing
 	 **/
-	function moduleInstall() {
+	function moduleInstall(){
 		// Create cache directory used by widget
 		FileHandler::makeDir('./files/cache/widget');
 		FileHandler::makeDir('./files/cache/widget_cache');
 		// Add this widget compile the trigger for the display.after
-		$oModuleController = &getController('module');
+		$oModuleController = getController('module');
 		$oModuleController->insertTrigger('display', 'widget', 'controller', 'triggerWidgetCompile', 'before');
 		
 		return new BaseObject();
@@ -24,8 +24,8 @@ class widget extends ModuleObject {
 	/**
 	 * @brief a method to check if successfully installed
 	 **/
-	function checkUpdate() {
-		$oModuleModel = &getModel('module');
+	function checkUpdate(){
+		$oModuleModel = getModel('module');
 		// widget compile display.after trigger for further (04/14/2009)
 		if(!$oModuleModel->getTrigger('display', 'widget', 'controller', 'triggerWidgetCompile', 'before')) return true;
 		
@@ -35,11 +35,11 @@ class widget extends ModuleObject {
 	/**
 	 * @brief Execute update
 	 **/
-	function moduleUpdate() {
-		$oModuleModel = &getModel('module');
-		$oModuleController = &getController('module');
+	function moduleUpdate(){
+		$oModuleModel = getModel('module');
+		$oModuleController = getController('module');
 		// widget compile display.after trigger for further (04/14/2009)
-		if(!$oModuleModel->getTrigger('display', 'widget', 'controller', 'triggerWidgetCompile', 'before')) {
+		if(!$oModuleModel->getTrigger('display', 'widget', 'controller', 'triggerWidgetCompile', 'before')){
 			$oModuleController->insertTrigger('display', 'widget', 'controller', 'triggerWidgetCompile', 'before');
 		}
 		
@@ -49,7 +49,6 @@ class widget extends ModuleObject {
 	/**
 	 * @brief Re-generate the cache file
 	 **/
-	function recompileCache() {
+	function recompileCache(){
 	}
-	
 }
