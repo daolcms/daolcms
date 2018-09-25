@@ -20,7 +20,7 @@ class rssView extends rss {
 	 * When trying to directly print out the RSS, the results variable can be directly specified through
 	 * $oRssView->rss($document_list)
 	 *
-	 * @param BaseObject $document_list Document list 
+	 * @param BaseObject $document_list Document list
 	 * @param string $rss_title Rss title
 	 * @param string $add_description Add description
 	 **/
@@ -125,7 +125,7 @@ class rssView extends rss {
 		}
 		if($add_description) $info->description .= "\r\n" . $add_description;
 		
-		if($total_config->image) $info->image = Context::getRequestUri().str_replace('\'', '&apos;', htmlspecialchars($total_config->image, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
+		if($total_config->image) $info->image = Context::getRequestUri() . str_replace('\'', '&apos;', htmlspecialchars($total_config->image, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
 		switch(Context::get('format')){
 			case 'atom':
 				$info->date = date('Y-m-d\TH:i:sP');
@@ -157,7 +157,7 @@ class rssView extends rss {
 			$info->id = $proctcl . $_SERVER['HTTP_HOST'] . $info->id;
 		}
 		
-		$info->language = Context::getLangType();
+		$info->language = str_replace('jp','ja',Context::getLangType());
 		// Set the variables used in the RSS output
 		Context::set('info', $info);
 		Context::set('feed_config', $config);
