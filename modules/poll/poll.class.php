@@ -10,11 +10,13 @@ class poll extends ModuleObject {
 	/**
 	 * @brief Additional tasks required to accomplish during the installation
 	 **/
-	function moduleInstall() {
+	function moduleInstall(){
 		// Register in the action forward (to use in administrator mode)
-		$oModuleController = &getController('module');
+		$oModuleController = getController('module');
 		// Set the default skin
-		$oModuleController = &getController('module');
+		$oModuleController = getController('module');
+		
+		$config = new stdClass();
 		$config->skin = 'default';
 		$config->colorset = 'normal';
 		$oModuleController->insertModuleConfig('poll', $config);
@@ -32,8 +34,8 @@ class poll extends ModuleObject {
 	/**
 	 * @brief A method to check if the installation has been successful
 	 **/
-	function checkUpdate() {
-		$oModuleModel = &getModel('module');
+	function checkUpdate(){
+		$oModuleModel = getModel('module');
 		// 2007.10.17 When deleting posts/comments delete the poll as well
 		if(!$oModuleModel->getTrigger('document.insertDocument', 'poll', 'controller', 'triggerInsertDocumentPoll', 'after')) return true;
 		if(!$oModuleModel->getTrigger('comment.insertComment', 'poll', 'controller', 'triggerInsertCommentPoll', 'after')) return true;
@@ -48,9 +50,9 @@ class poll extends ModuleObject {
 	/**
 	 * @brief Execute update
 	 **/
-	function moduleUpdate() {
-		$oModuleModel = &getModel('module');
-		$oModuleController = &getController('module');
+	function moduleUpdate(){
+		$oModuleModel = getModel('module');
+		$oModuleController = getController('module');
 		// 2007.10.17 When deleting posts/comments delete the poll as well
 		if(!$oModuleModel->getTrigger('document.deleteDocument', 'poll', 'controller', 'triggerDeleteDocumentPoll', 'after'))
 			$oModuleController->insertTrigger('document.deleteDocument', 'poll', 'controller', 'triggerDeleteDocumentPoll', 'after');
@@ -72,6 +74,6 @@ class poll extends ModuleObject {
 	/**
 	 * @brief Re-generate the cache file
 	 **/
-	function recompileCache() {
+	function recompileCache(){
 	}
 }
