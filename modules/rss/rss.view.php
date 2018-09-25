@@ -12,7 +12,7 @@ class rssView extends rss {
 	 *
 	 * @return void
 	 **/
-	function init() {
+	function init(){
 	}
 	
 	/**
@@ -20,16 +20,16 @@ class rssView extends rss {
 	 * When trying to directly print out the RSS, the results variable can be directly specified through
 	 * $oRssView->rss($document_list)
 	 *
-	 * @param BaseObject $document_list   Document list
-	 * @param string $rss_title       Rss title
+	 * @param BaseObject $document_list Document list 
+	 * @param string $rss_title Rss title
 	 * @param string $add_description Add description
 	 **/
-	function rss($document_list = null, $rss_title = null, $add_description = null) {
+	function rss($document_list = null, $rss_title = null, $add_description = null){
 		$oDocumentModel = getModel('document');
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		// Get the content and information for the current requested module if the method is not called from another module
-		if(!$document_list) {
+		if(!$document_list){
 			$site_module_info = Context::get('site_module_info');
 			$site_srl = $site_module_info->site_srl;
 			$mid = Context::getRequestVars()->mid; // The target module id, if absent, then all
@@ -41,20 +41,21 @@ class rssView extends rss {
 			$total_config = '';
 			$total_config = $oModuleModel->getModuleConfig('rss');
 			// If one is specified, extract only for this mid
-			if($mid) {
+			if($mid){
 				$module_srl = $this->module_info->module_srl;
 				$config = $oModuleModel->getModulePartConfig('rss', $module_srl);
-				if($config->open_rss && $config->open_rss != 'N') {
+				if($config->open_rss && $config->open_rss != 'N'){
 					$module_srls[] = $module_srl;
 					$open_rss_config[$module_srl] = $config->open_rss;
 				}
 				// If mid is not selected, then get all
-			} else {
-				if($total_config->use_total_feed != 'N') {
+			}
+			else{
+				if($total_config->use_total_feed != 'N'){
 					$rss_config = $oModuleModel->getModulePartConfigs('rss', $site_srl);
-					if($rss_config) {
-						foreach($rss_config as $module_srl => $config) {
-							if($config && $config->open_rss != 'N' && $config->open_total_feed != 'T_N') {
+					if($rss_config){
+						foreach($rss_config as $module_srl => $config){
+							if($config && $config->open_rss != 'N' && $config->open_total_feed != 'T_N'){
 								$module_srls[] = $module_srl;
 								$open_rss_config[$module_srl] = $config->open_rss;
 							}
@@ -65,10 +66,10 @@ class rssView extends rss {
 			
 			if(!count($module_srls) && !$add_description) return $this->dispError();
 			
-			$info = new stdClass;
-			$args = new stdClass;
+			$info = new stdClass();
+			$args = new stdClass();
 			
-			if($module_srls) {
+			if($module_srls){
 				$args->module_srl = implode(',', $module_srls);
 				//$module_list = $oModuleModel->getMidList($args);	//perhaps module_list varialbles not use
 				
@@ -88,48 +89,50 @@ class rssView extends rss {
 				$output = $oDocumentModel->getDocumentList($args);
 				$document_list = $output->data;
 				// Extract the feed title and information with Context::getBrowserTitle
-				if($mid) {
+				if($mid){
 					$info->title = Context::getBrowserTitle();
 					$oModuleController->replaceDefinedLangCode($info->title);
 					
 					$info->title = str_replace('\'', '&apos;', $info->title);
-					if($config->feed_description) {
-						$info->description = str_replace('\'', '&apos;', htmlspecialchars($config->feed_description));
-					} else {
-						$info->description = str_replace('\'', '&apos;', htmlspecialchars($this->module_info->description));
+					if($config->feed_description){
+						$info->description = str_replace('\'', '&apos;', htmlspecialchars($config->feed_description, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
+					}
+					else{
+						$info->description = str_replace('\'', '&apos;', htmlspecialchars($this->module_info->description, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
 					}
 					$info->link = getUrl('', 'mid', $mid);
-					$info->feed_copyright = str_replace('\'', '&apos;', htmlspecialchars($feed_config->feed_copyright));
-					if(!$info->feed_copyright) {
-						$info->feed_copyright = str_replace('\'', '&apos;', htmlspecialchars($total_config->feed_copyright));
+						$info->feed_copyright = str_replace('\'', '&apos;', htmlspecialchars($feed_config->feed_copyright, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
+					if(!$info->feed_copyright){
+						$info->feed_copyright = str_replace('\'', '&apos;', htmlspecialchars($total_config->feed_copyright, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
 					}
 				}
 			}
 		}
 		
-		if(!$info->title) {
+		if(!$info->title){
 			if($rss_title) $info->title = $rss_title;
 			else if($total_config->feed_title) $info->title = $total_config->feed_title;
-			else {
+			else{
 				$site_module_info = Context::get('site_module_info');
 				$info->title = $site_module_info->browser_title;
 			}
 			
 			$oModuleController->replaceDefinedLangCode($info->title);
-			$info->title = str_replace('\'', '&apos;', htmlspecialchars($info->title));
-			$info->description = str_replace('\'', '&apos;', htmlspecialchars($total_config->feed_description));
+			$info->title = str_replace('\'', '&apos;', htmlspecialchars($info->title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
+			$info->description = str_replace('\'', '&apos;', htmlspecialchars($total_config->feed_description, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
 			$info->link = Context::getRequestUri();
-			$info->feed_copyright = str_replace('\'', '&apos;', htmlspecialchars($total_config->feed_copyright));
+			$info->feed_copyright = str_replace('\'', '&apos;', htmlspecialchars($total_config->feed_copyright, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
 		}
 		if($add_description) $info->description .= "\r\n" . $add_description;
 		
-		if($total_config->image) $info->image = Context::getRequestUri() . str_replace('\'', '&apos;', htmlspecialchars($total_config->image));
-		switch(Context::get('format')) {
+		if($total_config->image) $info->image = Context::getRequestUri().str_replace('\'', '&apos;', htmlspecialchars($total_config->image, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
+		switch(Context::get('format')){
 			case 'atom':
 				$info->date = date('Y-m-d\TH:i:sP');
-				if($mid) {
+				if($mid){
 					$info->id = getUrl('', 'mid', $mid, 'act', 'atom', 'page', Context::get('page'), 'start_date', Context::get('start_date'), 'end_date', Context::get('end_date'));
-				} else {
+				}
+				else{
 					$info->id = getUrl('', 'module', 'rss', 'act', 'atom', 'page', Context::get('page'), 'start_date', Context::get('start_date'), 'end_date', Context::get('end_date'));
 				}
 				break;
@@ -145,12 +148,12 @@ class rssView extends rss {
 		else $proctcl = 'http://';
 		
 		$temp_link = explode('/', $info->link);
-		if($temp_link[0] == '' && $info->link) {
+		if($temp_link[0] == '' && $info->link){
 			$info->link = $proctcl . $_SERVER['HTTP_HOST'] . $info->link;
 		}
 		
 		$temp_id = explode('/', $info->id);
-		if($temp_id[0] == '' && $info->id) {
+		if($temp_id[0] == '' && $info->id){
 			$info->id = $proctcl . $_SERVER['HTTP_HOST'] . $info->id;
 		}
 		
@@ -166,7 +169,7 @@ class rssView extends rss {
 		$path = $this->module_path . 'tpl/';
 		//if($args->start_date || $args->end_date) $file = 'xe_rss';
 		//else $file = 'rss20';
-		switch(Context::get('format')) {
+		switch(Context::get('format')){
 			case 'xe':
 				$file = 'xe_rss';
 				break;
@@ -195,7 +198,7 @@ class rssView extends rss {
 	 *
 	 * @return BaseObject
 	 **/
-	function atom() {
+	function atom(){
 		Context::set('format', 'atom');
 		$this->rss();
 	}
@@ -205,7 +208,7 @@ class rssView extends rss {
 	 *
 	 * @return BaseObject
 	 **/
-	function dispError() {
+	function dispError(){
 		// Prepare the output message
 		$this->rss(null, null, Context::getLang('msg_rss_is_disabled'));
 	}
@@ -217,11 +220,11 @@ class rssView extends rss {
 	 * @param string $obj Will be inserted content in template
 	 * @return BaseObject
 	 **/
-	function triggerDispRssAdditionSetup(&$obj) {
+	function triggerDispRssAdditionSetup(&$obj){
 		$current_module_srl = Context::get('module_srl');
 		$current_module_srls = Context::get('module_srls');
 		
-		if(!$current_module_srl && !$current_module_srls) {
+		if(!$current_module_srl && !$current_module_srls){
 			// Get information of the selected module
 			$current_module_info = Context::get('current_module_info');
 			$current_module_srl = $current_module_info->module_srl;

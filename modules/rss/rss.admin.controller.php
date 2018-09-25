@@ -12,7 +12,7 @@ class rssAdminController extends rss {
 	 *
 	 * @return void
 	 **/
-	function init() {
+	function init(){
 	}
 	
 	/**
@@ -20,42 +20,41 @@ class rssAdminController extends rss {
 	 *
 	 * @return void
 	 **/
-	function procRssAdminInsertConfig() {
+	function procRssAdminInsertConfig(){
 		$oModuleModel = getModel('module');
 		$total_config = $oModuleModel->getModuleConfig('rss');
 		
 		$config_vars = Context::getRequestVars();
-		
 		$config_vars->feed_document_count = (int)$config_vars->feed_document_count;
 		
 		if(!$config_vars->use_total_feed) $alt_message = 'msg_invalid_request';
 		if(!in_array($config_vars->use_total_feed, array('Y', 'N'))) $config_vars->open_rss = 'Y';
 		
-		if($config_vars->image || $config_vars->del_image) {
+		if($config_vars->image || $config_vars->del_image){
 			$image_obj = $config_vars->image;
 			$config_vars->image = $total_config->image;
 			// Get a variable for the delete request
-			if($config_vars->del_image == 'Y' || $image_obj) {
+			if($config_vars->del_image == 'Y' || $image_obj){
 				FileHandler::removeFile($config_vars->image);
 				$config_vars->image = '';
 				$total_config->image = '';
 			}
 			// Ignore if the file is not the one which has been successfully uploaded
-			if($image_obj['tmp_name'] && is_uploaded_file($image_obj['tmp_name']) && checkUploadedFile($image_obj['tmp_name'])) {
+			if($image_obj['tmp_name'] && is_uploaded_file($image_obj['tmp_name']) && checkUploadedFile($image_obj['tmp_name'])){
 				// Ignore if the file is not an image
 				$image_obj['name'] = Context::convertEncodingStr($image_obj['name']);
 				
 				if(!preg_match("/\.(jpg|jpeg|gif|png)$/i", $image_obj['name'])) $alt_message = 'msg_rss_invalid_image_format';
-				else {
+				else{
 					// Upload the file to a path
 					$path = './files/attach/images/rss/';
 					// Create a directory
 					if(!FileHandler::makeDir($path)) $alt_message = 'msg_error_occured';
-					else {
+					else{
 						$filename = $path . $image_obj['name'];
 						// Move the file
 						if(!move_uploaded_file($image_obj['tmp_name'], $filename)) $alt_message = 'msg_error_occured';
-						else {
+						else{
 							$config_vars->image = $filename;
 						}
 					}
@@ -86,7 +85,7 @@ class rssAdminController extends rss {
 	 *
 	 * @return void
 	 **/
-	function procRssAdminInsertModuleConfig() {
+	function procRssAdminInsertModuleConfig(){
 		// Get the object
 		$module_srl = Context::get('target_module_srl');
 		// In case of batch configuration of several modules
@@ -105,7 +104,7 @@ class rssAdminController extends rss {
 		
 		if(!in_array($open_rss, array('Y', 'H', 'N'))) $open_rss = 'N';
 		// Save configurations
-		for($i = 0; $i < count($module_srl); $i++) {
+		for($i = 0; $i < count($module_srl); $i++){
 			$srl = trim($module_srl[$i]);
 			if(!$srl) continue;
 			$output = $this->setRssModuleConfig($srl, $open_rss, $open_total_feed, $feed_description, $feed_copyright);
@@ -124,16 +123,17 @@ class rssAdminController extends rss {
 	 *
 	 * @return BaseObject
 	 **/
-	function procRssAdminToggleActivate() {
+	function procRssAdminToggleActivate(){
 		$oRssModel = getModel('rss');
 		// Get mid value
 		$module_srl = Context::get('module_srl');
-		if($module_srl) {
+		if($module_srl){
 			$config = $oRssModel->getRssModuleConfig($module_srl);
-			if($config->open_total_feed == 'T_N') {
+			if($config->open_total_feed == 'T_N'){
 				$this->setRssModuleConfig($module_srl, $config->open_rss, 'T_Y', $config->feed_description, $config->feed_copyright);
 				$this->add("open_total_feed", 'T_Y');
-			} else {
+			}
+			else{
 				$this->setRssModuleConfig($module_srl, $config->open_rss, 'T_N', $config->feed_description, $config->feed_copyright);
 				$this->add("open_total_feed", 'T_N');
 			}
@@ -149,7 +149,7 @@ class rssAdminController extends rss {
 	 * @param BaseObject $config RSS all feeds config list
 	 * @return BaseObject
 	 **/
-	function setFeedConfig($config) {
+	function setFeedConfig($config){
 		$oModuleController = getController('module');
 		$oModuleController->insertModuleConfig('rss', $config);
 		return new BaseObject();
@@ -166,15 +166,15 @@ class rssAdminController extends rss {
 	 * @param string  $feed_copyright   Default value is 'N'
 	 * @return BaseObject
 	 **/
-	function setRssModuleConfig($module_srl, $open_rss, $open_total_feed = 'N', $feed_description = 'N', $feed_copyright = 'N') {
+	function setRssModuleConfig($module_srl, $open_rss, $open_total_feed = 'N', $feed_description = 'N', $feed_copyright = 'N'){
 		$oModuleController = getController('module');
-		$config = new stdClass;
+		$config = new stdClass();
 		$config->open_rss = $open_rss;
 		$config->open_total_feed = $open_total_feed;
-		if($feed_description != 'N') {
+		if($feed_description != 'N'){
 			$config->feed_description = $feed_description;
 		}
-		if($feed_copyright != 'N') {
+		if($feed_copyright != 'N'){
 			$config->feed_copyright = $feed_copyright;
 		}
 		$oModuleController->insertModulePartConfig('rss', $module_srl, $config);

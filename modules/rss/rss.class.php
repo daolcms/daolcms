@@ -13,7 +13,7 @@ class rss extends ModuleObject {
 	 *
 	 * @return BaseObject
 	 **/
-	function moduleInstall() {
+	function moduleInstall(){
 		// Register in action forward
 		$oModuleController = getController('module');
 		
@@ -31,7 +31,7 @@ class rss extends ModuleObject {
 	 * A method to check if the installation has been successful
 	 * @return bool
 	 **/
-	function checkUpdate() {
+	function checkUpdate(){
 		$oModuleModel = getModel('module');
 		// Add the Action forward for atom
 		if(!$oModuleModel->getActionForward('atom')) return true;
@@ -53,7 +53,7 @@ class rss extends ModuleObject {
 	 *
 	 * @return BaseObject
 	 **/
-	function moduleUpdate() {
+	function moduleUpdate(){
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		// Add atom act
@@ -69,7 +69,7 @@ class rss extends ModuleObject {
 			$oModuleController->deleteTrigger('display', 'rss', 'controller', 'triggerRssUrlInsert', 'before');
 		
 		// 2012. 08. 29 Add a trigger to copy additional setting when the module is copied 
-		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'rss', 'controller', 'triggerCopyModule', 'after')) {
+		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'rss', 'controller', 'triggerCopyModule', 'after')){
 			$oModuleController->insertTrigger('module.procModuleAdminCopyModule', 'rss', 'controller', 'triggerCopyModule', 'after');
 		}
 		
@@ -81,7 +81,7 @@ class rss extends ModuleObject {
 	 *
 	 * @return void
 	 **/
-	function recompileCache() {
+	function recompileCache(){
 	}
 	
 }
