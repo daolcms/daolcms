@@ -10,9 +10,9 @@ class pointAdminView extends point {
 	/**
 	 * @brief Initialization
 	 **/
-	function init() {
+	function init(){
 		// Get teh configuration information
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('point');
 		// Set the configuration variable
 		Context::set('config', $config);
@@ -29,16 +29,16 @@ class pointAdminView extends point {
 	/**
 	 * @brief Default configurations
 	 **/
-	function dispPointAdminConfig() {
+	function dispPointAdminConfig(){
 		// Get the list of level icons
 		$level_icon_list = FileHandler::readDir("./modules/point/icons");
 		Context::set('level_icon_list', $level_icon_list);
 		// Get the list of groups
-		$oMemberModel = &getModel('member');
+		$oMemberModel = getModel('member');
 		$group_list = $oMemberModel->getGroups();
 		$selected_group_list = array();
-		if(count($group_list)) {
-			foreach($group_list as $key => $val) {
+		if(count($group_list)){
+			foreach($group_list as $key => $val){
 				$selected_group_list[$key] = $val;
 			}
 		}
@@ -54,9 +54,9 @@ class pointAdminView extends point {
 	/**
 	 * @brief Set per-module scores
 	 **/
-	function dispPointAdminModuleConfig() {
+	function dispPointAdminModuleConfig(){
 		// Get a list of mid
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$columnList = array('module_srl', 'mid', 'browser_title', 'module');
 		$mid_list = $oModuleModel->getMidList(null, $columnList);
 		
@@ -80,7 +80,7 @@ class pointAdminView extends point {
 	/**
 	 * @brief Configure the functional act
 	 **/
-	function dispPointAdminActConfig() {
+	function dispPointAdminActConfig(){
 		// Set the template
 		$this->setTemplateFile('action_config');
 	}
@@ -88,13 +88,14 @@ class pointAdminView extends point {
 	/**
 	 * @brief Get a list of member points
 	 **/
-	function dispPointAdminPointList() {
-		$oPointModel = &getModel('point');
+	function dispPointAdminPointList(){
+		$oPointModel = getModel('point');
 		
+		$args = new stdClass();
 		$args->list_count = 20;
 		$args->page = Context::get('page');
 		
-		$oMemberModel = &getModel('member');
+		$oMemberModel = getModel('member');
 		$memberConfig = $oMemberModel->getMemberConfig();
 		
 		Context::set('identifier', $memberConfig->identifier);
@@ -108,7 +109,7 @@ class pointAdminView extends point {
 		Context::set('member_list', $output->data);
 		Context::set('page_navigation', $output->page_navigation);
 		// Create a member model object
-		$oMemberModel = &getModel('member');
+		$oMemberModel = getModel('member');
 		// Get a list of groups
 		$this->group_list = $oMemberModel->getGroups();
 		Context::set('group_list', $this->group_list);

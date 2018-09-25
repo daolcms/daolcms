@@ -11,22 +11,23 @@ class pointAdminController extends point {
 	/**
 	 * @brief Initialization
 	 **/
-	function init() {
+	function init(){
 	}
 	
 	/**
 	 * @brief Save the default configurations
 	 **/
-	function procPointAdminInsertConfig() {
+	function procPointAdminInsertConfig(){
 		// Get the configuration information
 		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('point');
 		// Arrange variables
 		$args = Context::getRequestVars();
+		
 		//if module IO config is off
-		if($args->able_module == 'Y') {
+		if($args->able_module == 'Y'){
 			// Re-install triggers, if it was disabled.
-			if($config->able_module == 'N') {
+			if($config->able_module == 'N'){
 				$this->moduleUpdate();
 			}
 			//module IO config is on
@@ -56,36 +57,39 @@ class pointAdminController extends point {
 			// Check if reading a document is not allowed
 			if($args->disable_read_document == 'Y') $config->disable_read_document = 'Y';
 			else $config->disable_read_document = 'N';
+			
 			$oMemberModel = getModel('member');
 			$group_list = $oMemberModel->getGroups();
 			$config->point_group = array();
+			
 			// Per-level group configurations
-			foreach($group_list as $group) {
+			foreach($group_list as $group){
 				// Admin group should not be connected to point.
 				if($group->is_admin == 'Y' || $group->is_default == 'Y') continue;
 				$group_srl = $group->group_srl;
 				//if group level is higher than max level, change to max level
-				if($args->{'point_group_' . $group_srl} > $args->max_level) {
+				if($args->{'point_group_' . $group_srl} > $args->max_level){
 					$args->{'point_group_' . $group_srl} = $args->max_level;
 				}
 				//if group level is lower than 1, change to 1
-				if($args->{'point_group_' . $group_srl} < 1) {
+				if($args->{'point_group_' . $group_srl} < 1){
 					$args->{'point_group_' . $group_srl} = 1;
 				}
-				if($args->{'point_group_' . $group_srl}) {
+				if($args->{'point_group_' . $group_srl}){
 					$config->point_group[$group_srl] = $args->{'point_group_' . $group_srl};
 				}
 			}
 			$config->group_reset = $args->group_reset;
 			// Per-level point configurations
 			unset($config->level_step);
-			for($i = 1; $i <= $config->max_level; $i++) {
+			for($i = 1; $i <= $config->max_level; $i++){
 				$key = "level_step_" . $i;
 				$config->level_step[$i] = (int)$args->{$key};
 			}
 			// A function to calculate per-level points
 			$config->expression = $args->expression;
-		} else {
+		}
+		else{
 			//module IO config is OFF, Other settings will not be modified.
 			$config->able_module = 'N';
 			// Delete Triggers
@@ -105,10 +109,10 @@ class pointAdminController extends point {
 	/**
 	 * @brief Save per-module configurations
 	 **/
-	function procPointAdminInsertModuleConfig() {
+	function procPointAdminInsertModuleConfig(){
 		$args = Context::getRequestVars();
 		
-		foreach($args as $key => $val) {
+		foreach($args as $key => $val){
 			preg_match("/^(insert_document|insert_comment|upload_file|download_file|read_document|voted|blamed)_([0-9]+)$/", $key, $matches);
 			if(!$matches[1]) continue;
 			$name = $matches[1];
@@ -116,15 +120,15 @@ class pointAdminController extends point {
 			if(strlen($val) > 0) $module_config[$module_srl][$name] = (int)$val;
 		}
 		
-		$oModuleController = &getController('module');
-		if(count($module_config)) {
-			foreach($module_config as $module_srl => $config) {
+		$oModuleController = getController('module');
+		if(count($module_config)){
+			foreach($module_config as $module_srl => $config){
 				$oModuleController->insertModulePartConfig('point', $module_srl, $config);
 			}
 		}
 		
 		$this->setMessage('success_updated');
-		if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))) {
+		if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))){
 			$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispPointAdminModuleConfig');
 			header('location:' . $returnUrl);
 			return;
@@ -134,15 +138,15 @@ class pointAdminController extends point {
 	/**
 	 * @brief Save individual points per module
 	 **/
-	function procPointAdminInsertPointModuleConfig() {
+	function procPointAdminInsertPointModuleConfig(){
 		$module_srl = Context::get('target_module_srl');
 		if(!$module_srl) return new BaseObject(-1, 'msg_invalid_request');
 		// In case of batch configuration of several modules
 		if(preg_match('/^([0-9,]+)$/', $module_srl)) $module_srl = explode(',', $module_srl);
 		else $module_srl = array($module_srl);
 		// Save configurations
-		$oModuleController = &getController('module');
-		for($i = 0; $i < count($module_srl); $i++) {
+		$oModuleController = getController('module');
+		for($i = 0; $i < count($module_srl); $i++){
 			$srl = trim($module_srl[$i]);
 			if(!$srl) continue;
 			unset($config);
@@ -166,14 +170,14 @@ class pointAdminController extends point {
 	/**
 	 * @brief Change members points
 	 **/
-	function procPointAdminUpdatePoint() {
+	function procPointAdminUpdatePoint(){
 		$member_srl = Context::get('member_srl');
 		$point = Context::get('point');
 		
 		preg_match('/^(\+|-)?([1-9][0-9]*)$/', $point, $m);
 		
 		$action = '';
-		switch($m[1]) {
+		switch($m[1]){
 			case '+':
 				$action = 'add';
 				break;
@@ -188,7 +192,7 @@ class pointAdminController extends point {
 		}
 		$point = $m[2];
 		
-		$oPointController = &getController('point');
+		$oPointController = getController('point');
 		$output = $oPointController->setPoint($member_srl, (int)$point, $action);
 		
 		$this->setError(-1);
@@ -202,10 +206,10 @@ class pointAdminController extends point {
 	 * @brief Recalculate points based on the list/comment/attachment and registration information. Granted only once a
 	 *        first-time login score.
 	 **/
-	function procPointAdminReCal() {
-		set_time_limit(0);
+	function procPointAdminReCal(){
+		@set_time_limit(0);
 		// Get per-module points information
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('point');
 		
 		$module_config = $oModuleModel->getModulePartConfigs('point');
@@ -216,8 +220,8 @@ class pointAdminController extends point {
 		$output = executeQueryArray('point.getMemberCount');
 		if(!$output->toBool()) return $output;
 		
-		if($output->data) {
-			foreach($output->data as $key => $val) {
+		if($output->data){
+			foreach($output->data as $key => $val){
 				if(!$val->member_srl) continue;
 				$member[$val->member_srl] = 0;
 			}
@@ -227,8 +231,8 @@ class pointAdminController extends point {
 		$output = executeQueryArray('point.getDocumentPoint');
 		if(!$output->toBool()) return $output;
 		
-		if($output->data) {
-			foreach($output->data as $key => $val) {
+		if($output->data){
+			foreach($output->data as $key => $val){
 				if($module_config[$val->module_srl]['insert_document']) $insert_point = $module_config[$val->module_srl]['insert_document'];
 				else $insert_point = $config->insert_document;
 				
@@ -243,8 +247,8 @@ class pointAdminController extends point {
 		$output = executeQueryArray('point.getCommentPoint');
 		if(!$output->toBool()) return $output;
 		
-		if($output->data) {
-			foreach($output->data as $key => $val) {
+		if($output->data){
+			foreach($output->data as $key => $val){
 				if($module_config[$val->module_srl]['insert_comment']) $insert_point = $module_config[$val->module_srl]['insert_comment'];
 				else $insert_point = $config->insert_comment;
 				
@@ -253,13 +257,14 @@ class pointAdminController extends point {
 				$member[$val->member_srl] += $point;
 			}
 		}
+		
 		$output = null;
 		// Get the attached files' information
 		$output = executeQueryArray('point.getFilePoint');
 		if(!$output->toBool()) return $output;
 		
-		if($output->data) {
-			foreach($output->data as $key => $val) {
+		if($output->data){
+			foreach($output->data as $key => $val){
 				if($module_config[$val->module_srl]['upload_file']) $insert_point = $module_config[$val->module_srl]['upload_file'];
 				else $insert_point = $config->upload_file;
 				
@@ -289,7 +294,7 @@ class pointAdminController extends point {
 	/**
 	 * @brief Apply member points saved by file to units of 5,000 people
 	 **/
-	function procPointAdminApplyPoint() {
+	function procPointAdminApplyPoint(){
 		$position = (int)Context::get('position');
 		$total = (int)Context::get('total');
 		
@@ -297,13 +302,13 @@ class pointAdminController extends point {
 		
 		$idx = 0;
 		$f = fopen("./files/cache/pointRecal.txt", "r");
-		while(!feof($f)) {
+		while(!feof($f)){
 			$str = trim(fgets($f, 1024));
 			$idx++;
-			if($idx > $position) {
+			if($idx > $position){
 				list($member_srl, $point) = explode(',', $str);
 				
-				$args = null;
+				$args = new stdClass();
 				$args->member_srl = $member_srl;
 				$args->point = $point;
 				$output = executeQuery('point.insertPoint', $args);
@@ -311,7 +316,7 @@ class pointAdminController extends point {
 			}
 		}
 		
-		if(feof($f)) {
+		if(feof($f)){
 			FileHandler::removeFile('./files/cache/pointRecal.txt');
 			$idx = $total;
 			
@@ -330,18 +335,18 @@ class pointAdminController extends point {
 	/**
 	 * @brief Reset points for each module
 	 **/
-	function procPointAdminReset() {
+	function procPointAdminReset(){
 		$module_srl = Context::get('module_srls');
 		if(!$module_srl) return new BaseObject(-1, 'msg_invalid_request');
 		// In case of batch configuration of several modules
 		if(preg_match('/^([0-9,]+)$/', $module_srl)) $module_srl = explode(',', $module_srl);
 		else $module_srl = array($module_srl);
 		// Save configurations
-		$oModuleController = &getController('module');
-		for($i = 0; $i < count($module_srl); $i++) {
+		$oModuleController = getController('module');
+		for($i = 0; $i < count($module_srl); $i++){
 			$srl = trim($module_srl[$i]);
 			if(!$srl) continue;
-			unset($args);
+			$args = new stdClass();
 			$args->module = 'point';
 			$args->module_srl = $srl;
 			executeQuery('module.deleteModulePartConfig', $args);
@@ -354,7 +359,7 @@ class pointAdminController extends point {
 	 * @brief Save the cache files
 	 * @deprecated
 	 **/
-	function cacheActList() {
+	function cacheActList(){
 		return;
 	}
 	
