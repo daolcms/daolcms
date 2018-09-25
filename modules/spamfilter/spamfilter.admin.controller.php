@@ -12,10 +12,10 @@ class spamfilterAdminController extends spamfilter {
 	/**
 	 * @brief Initialization
 	 */
-	function init() {
+	function init(){
 	}
 	
-	function procSpamfilterAdminInsertConfig() {
+	function procSpamfilterAdminInsertConfig(){
 		// Get the default information
 		$argsConfig = Context::gets('limits', 'check_trackback');
 		$flag = Context::get('flag');
@@ -31,11 +31,11 @@ class spamfilterAdminController extends spamfilter {
 		$this->setRedirectUrl($returnUrl);
 	}
 	
-	function procSpamfilterAdminInsertDeniedIP() {
+	function procSpamfilterAdminInsertDeniedIP(){
 		//스팸IP  추가
 		$ipaddress_list = Context::get('ipaddress_list');
 		$oSpamfilterController = getController('spamfilter');
-		if($ipaddress_list) {
+		if($ipaddress_list){
 			$output = $oSpamfilterController->insertIP($ipaddress_list);
 			if(!$output->toBool() && !$output->get('fail_list')) return $output;
 			
@@ -48,10 +48,10 @@ class spamfilterAdminController extends spamfilter {
 		$this->setRedirectUrl($returnUrl);
 	}
 	
-	function procSpamfilterAdminInsertDeniedWord() {
+	function procSpamfilterAdminInsertDeniedWord(){
 		//스팸 키워드 추가
 		$word_list = Context::get('word_list');
-		if($word_list) {
+		if($word_list){
 			$output = $this->insertWord($word_list);
 			if(!$output->toBool() && !$output->get('fail_list')) return $output;
 			
@@ -66,7 +66,7 @@ class spamfilterAdminController extends spamfilter {
 	/**
 	 * @brief Delete the banned IP
 	 */
-	function procSpamfilterAdminDeleteDeniedIP() {
+	function procSpamfilterAdminDeleteDeniedIP(){
 		$ipAddressList = Context::get('ipaddress');
 		if($ipAddressList) $this->deleteIP($ipAddressList);
 		
@@ -79,7 +79,7 @@ class spamfilterAdminController extends spamfilter {
 	/**
 	 * @brief Delete the prohibited Word
 	 */
-	function procSpamfilterAdminDeleteDeniedWord() {
+	function procSpamfilterAdminDeleteDeniedWord(){
 		$wordList = Context::get('word');
 		$this->deleteWord($wordList);
 		
@@ -93,10 +93,10 @@ class spamfilterAdminController extends spamfilter {
 	 * @brief Delete IP
 	 * Remove the IP address which was previously registered as a spammers
 	 */
-	function deleteIP($ipaddress) {
+	function deleteIP($ipaddress){
 		if(!$ipaddress) return;
 		
-		$args = new stdClass;
+		$args = new stdClass();
 		$args->ipaddress = $ipaddress;
 		return executeQuery('spamfilter.deleteDeniedIP', $args);
 	}
@@ -105,20 +105,20 @@ class spamfilterAdminController extends spamfilter {
 	 * @brief Register the spam word
 	 * The post, which contains the newly registered spam word, should be considered as a spam
 	 */
-	function insertWord($word_list) {
+	function insertWord($word_list){
 		
 		$word_list = str_replace("\r", "", $word_list);
 		$word_list = explode("\n", $word_list);
 		
-		foreach($word_list as $word) {
-			if(!preg_match("/^(.{2,40}[\r\n]+)*.{2,40}$/", $word)) {
+		foreach($word_list as $word){
+			if(!preg_match("/^(.{2,40}[\r\n]+)*.{2,40}$/", $word)){
 				return new BaseObject(-1, 'msg_invalid');
 			}
 		}
 		
 		$fail_word = '';
-		foreach($word_list as $word) {
-			$args = new stdClass;
+		foreach($word_list as $word){
+			$args = new stdClass();
 			if(trim($word)) $args->word = $word;
 			$output = executeQuery('spamfilter.insertDeniedWord', $args);
 			if(!$output->toBool()) $fail_word .= $word . '<br />';
@@ -131,9 +131,9 @@ class spamfilterAdminController extends spamfilter {
 	 * @brief Remove the spam word
 	 * Remove the word which was previously registered as a spam word
 	 */
-	function deleteWord($word) {
+	function deleteWord($word){
 		if(!$word) return;
-		$args = new stdClass;
+		$args = new stdClass();
 		$args->word = $word;
 		return executeQuery('spamfilter.deleteDeniedWord', $args);
 	}
