@@ -490,16 +490,15 @@ class pointController extends point {
 		$config = $oModuleModel->getModuleConfig('point');
 		
 		// Get the default configuration information
-		$prev_point = $oPointModel->getPoint($member_srl, true);
-		$prev_level = $oPointModel->getLevel($prev_point, $config->level_step);
+		$current_point = $oPointModel->getPoint($member_srl, true);
+		$current_level = $oPointModel->getLevel($current_point, $config->level_step);
 		
 		// Change points
 		$args = new stdClass();
 		$args->member_srl = $member_srl;
-		$args->point = $prev_point;
+		$args->point = $current_point;
 		
 		switch($mode){
-			
 			case 'add' :
 				$args->point += $point;
 				break;
@@ -507,8 +506,6 @@ class pointController extends point {
 				$args->point -= $point;
 				break;
 			case 'update' :
-				$args->point = $point;
-				break;
 			case 'signup' :
 				$args->point = $point;
 				break;
@@ -516,14 +513,32 @@ class pointController extends point {
 		if($args->point < 0) $args->point = 0;
 		$point = $args->point;
 		
+		// Call a trigger (before)
+		$trigger_obj = new stdClass();
+		$trigger_obj->member_srl = $args->member_srl;
+		$trigger_obj->mode = $mode;
+		$trigger_obj->current_point = $current_point;
+		$trigger_obj->current_level = $current_level;
+		$trigger_obj->set_point = $point;
+		$trigger_output = ModuleHandler::triggerCall('point.setPoint', 'before', $trigger_obj);
+		if(!$trigger_output->toBool()){
+			return $trigger_output;
+		}
+		
+		// begin transaction
+		$oDB = &DB::getInstance();
+		$oDB->begin();
+		
 		// If there are points, update, if no, insert
 		$oPointModel = getModel('point');
 		if($oPointModel->isExistsPoint($member_srl)) executeQuery("point.updatePoint", $args);
 		else executeQuery("point.insertPoint", $args);
+		
 		// Get a new level
 		$level = $oPointModel->getLevel($point, $config->level_step);
+		
 		// If existing level and a new one are different attempt to set a point group
-		if($level != $prev_level){
+		if($level != $current_level){
 			// Check if the level, for which the current points are prepared, is calculate and set the correct group
 			$point_group = $config->point_group;
 			// If the point group exists
@@ -532,7 +547,7 @@ class pointController extends point {
 				$default_group = $oMemberModel->getDefaultGroup();
 				// Get the removed group and the newly granted group
 				$del_group_list = array();
-				$new_group_srls = array();
+				$new_group_list = array();
 				
 				asort($point_group);
 				// Reset group after initialization
@@ -542,21 +557,21 @@ class pointController extends point {
 						// Delete all groups except the one which the current level belongs to
 						foreach($point_group as $group_srl => $target_level){
 							$del_group_list[] = $group_srl;
-							if($target_level == $level) $new_group_srls[] = $group_srl;
+							if($target_level == $level) $new_group_list[] = $group_srl;
 						}
-					} // Otherwise, in case the level is reduced, add the recent group
+					}
+					// Otherwise, in case the level is reduced, add the recent group
 					else{
 						$i = $level;
 						while($i > 0){
 							if(in_array($i, $point_group)){
 								foreach($point_group as $group_srl => $target_level){
 									if($target_level == $i){
-										$new_group_srls[] = $group_srl;
+										$new_group_list[] = $group_srl;
 									}
 								}
 								$i = 0;
 							}
-							
 							$i--;
 						}
 					}
@@ -565,16 +580,17 @@ class pointController extends point {
 						if($target_level > $level) $del_group_list[] = $group_srl;
 					}
 					$del_group_list[] = $default_group->group_srl;
-				} // Grant a new group
+				}
+				// Grant a new group
 				else{
 					// Check until the current level by rotating setting the configurations of the point groups
 					foreach($point_group as $group_srl => $target_level){
 						$del_group_list[] = $group_srl;
-						if($target_level <= $level) $new_group_srls[] = $group_srl;
+						if($target_level <= $level) $new_group_list[] = $group_srl;
 					}
 				}
 				// If there is no a new group, granted the default group
-				if(!$new_group_srls[0]) $new_group_srls[0] = $default_group->group_srl;
+				if(!$new_group_list[0]) $new_group_list[0] = $default_group->group_srl;
 				// Remove linkage group
 				if($del_group_list && count($del_group_list)){
 					$del_group_args = new stdClass();
@@ -583,7 +599,7 @@ class pointController extends point {
 					$del_group_output = executeQuery('point.deleteMemberGroup', $del_group_args);
 				}
 				// Grant a new group
-				foreach($new_group_srls as $group_srl){
+				foreach($new_group_list as $group_srl){
 					$new_group_args = new stdClass();
 					$new_group_args->member_srl = $member_srl;
 					$new_group_args->group_srl = $group_srl;
@@ -592,6 +608,18 @@ class pointController extends point {
 			}
 		}
 		
+		// Call a trigger (after)
+		$trigger_obj->new_group_list = $new_group_list;
+		$trigger_obj->del_group_list = $del_group_list;
+		$trigger_obj->new_level = $level;
+		$trigger_output = ModuleHandler::triggerCall('point.setPoint', 'after', $trigger_obj);
+		if(!$trigger_output->toBool()){
+			$oDB->rollback();
+			return $trigger_output;
+		}
+		
+		$oDB->commit();
+		
 		// Cache Settings
 		$cache_path = sprintf('./files/member_extra_info/point/%s/', getNumberingPath($member_srl));
 		FileHandler::makedir($cache_path);
@@ -599,14 +627,18 @@ class pointController extends point {
 		$cache_filename = sprintf('%s%d.cache.txt', $cache_path, $member_srl);
 		FileHandler::writeFile($cache_filename, $point);
 		
-		$oCacheHandler = &CacheHandler::getInstance('object');
-		if($oCacheHandler->isSupport()){
-			$cache_key = 'object:' . $member_srl;
-			$GLOBALS['__member_info__'][$member_srl] = null;
+		$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+		if($new_group_list && $del_group_list && $oCacheHandler->isSupport()){
+			$object_key = 'member_groups:' . getNumberingPath($member_srl) . $member_srl . '_0';
+			$cache_key = $oCacheHandler->getGroupKey('member', $object_key);
 			$oCacheHandler->delete($cache_key);
-			
-			$gcache_key = 'object_member_groups:' . $member_srl . '_0';
-			$oCacheHandler->delete($gcache_key);
+		}
+		
+		$oCacheHandler = CacheHandler::getInstance('object');
+		if($new_group_list && $del_group_list && $oCacheHandler->isSupport()){
+			$object_key = 'member_info:' . getNumberingPath($member_srl) . $member_srl;
+			$cache_key = $oCacheHandler->getGroupKey('member', $object_key);
+			$oCacheHandler->delete($cache_key);
 		}
 		
 		return $output;
