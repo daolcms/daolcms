@@ -1485,53 +1485,74 @@ class Context {
 	 * @param string $domain Domain
 	 * @retrun string converted URL
 	 */
-	function getRequestUri($ssl_mode = FOLLOW_REQUEST_SSL, $domain = null) {
+	function getRequestUri($ssl_mode = FOLLOW_REQUEST_SSL, $domain = null){
 		static $url = array();
 		
-		// HTTP Request가 아니면 패스
-		if(!isset($_SERVER['SERVER_PROTOCOL'])) return;
-		if(self::get('_use_ssl') == 'always') $ssl_mode = ENFORCE_SSL;
+		// Check HTTP Request
+		if(!isset($_SERVER['SERVER_PROTOCOL'])){
+			return;
+		}
 		
-		if($domain) $domain_key = md5($domain);
-		else $domain_key = 'default';
+		if(self::get('_use_ssl') == 'always'){
+			$ssl_mode = ENFORCE_SSL;
+		}
 		
-		if(isset($url[$ssl_mode][$domain_key])) return $url[$ssl_mode][$domain_key];
+		if($domain){
+			$domain_key = md5($domain);
+		}
+		else{
+			$domain_key = 'default';
+		}
 		
-		$current_use_ssl = $_SERVER['HTTPS'] == 'on' ? true : false;
+		if(isset($url[$ssl_mode][$domain_key])){
+			return $url[$ssl_mode][$domain_key];
+		}
 		
-		switch($ssl_mode) {
-			case FOLLOW_REQUEST_SSL:
-				$use_ssl = $current_use_ssl;
+		$current_use_ssl = ($_SERVER['HTTPS'] == 'on');
+		
+		switch($ssl_mode){
+			case FOLLOW_REQUEST_SSL: $use_ssl = $current_use_ssl;
 				break;
-			case ENFORCE_SSL:
-				$use_ssl = true;
+			case ENFORCE_SSL: $use_ssl = TRUE;
 				break;
-			case RELEASE_SSL:
-				$use_ssl = false;
+			case RELEASE_SSL: $use_ssl = FALSE;
 				break;
 		}
 		
-		if($domain) {
+		if($domain){
 			$target_url = trim($domain);
-			if(substr($target_url, -1) != '/') $target_url .= '/';
-		} else {
+			if(substr_compare($target_url, '/', -1) !== 0)
+			{
+				$target_url.= '/';
+			}
+		}
+		else{
 			$target_url = $_SERVER['HTTP_HOST'] . getScriptPath();
 		}
 		
 		$url_info = parse_url('http://' . $target_url);
 		
-		if($current_use_ssl != $use_ssl) {
+		if($current_use_ssl != $use_ssl){
 			unset($url_info['port']);
 		}
 		
-		if($use_ssl) {
+		if($use_ssl){
 			$port = self::get('_https_port');
-			if($port && $port != 443) $url_info['port'] = $port;
-			elseif($url_info['port'] == 443) unset($url_info['port']);
-		} else {
+			if($port && $port != 443){
+				$url_info['port'] = $port;
+			}
+			elseif($url_info['port'] == 443){
+				unset($url_info['port']);
+			}
+		}
+		else{
 			$port = self::get('_http_port');
-			if($port && $port != 80) $url_info['port'] = $port;
-			elseif($url_info['port'] == 80) unset($url_info['port']);
+			if($port && $port != 80){
+				$url_info['port'] = $port;
+			}
+			elseif($url_info['port'] == 80){
+				unset($url_info['port']);
+			}
 		}
 		
 		$url[$ssl_mode][$domain_key] = sprintf('%s://%s%s%s', $use_ssl ? 'https' : $url_info['scheme'], $url_info['host'], $url_info['port'] && $url_info['port'] != 80 ? ':' . $url_info['port'] : '', $url_info['path']);
@@ -1608,7 +1629,6 @@ class Context {
 		if($self->get_vars) return clone($self->get_vars);
 		return new stdClass;
 	}
-	
 	
 	/**
 	 * Register if actions is to be encrypted by SSL. Those actions are sent to https in common/js/xml_handler.js
