@@ -20,14 +20,15 @@ class sessionModel extends session {
 	function read($session_key){
 		if(!$session_key || !$this->session_started) return;
 		
-		$oCacheHandler = CacheHandler::getInstance('object');
-		if($oCacheHandler->isSupport()){
-			$cache_key = 'object:' . $session_key;
-			$output->data = $oCacheHandler->get($cache_key);
-		}
+		$args = new stdClass();
+		$args->session_key = $session_key;
+		$columnList = array('session_key', 'cur_mid', 'val');
+		$output = executeQuery('session.getSession', $args, $columnList);
+		
 		if(!$output->data){
 			return '';
 		}
+		
 		return $output->data->val;
 	}
 	

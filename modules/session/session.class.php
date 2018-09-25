@@ -45,11 +45,15 @@ class session extends ModuleObject {
 		$oDB = &DB::getInstance();
 		$oModuleModel = getModel('module');
 		
-		if(!$oDB->isTableExists('session')) $oDB->createTableByXmlFile($this->module_path . 'schemas/session.xml');
-		
-		if(!$oDB->isColumnExists("session", "cur_mid")) $oDB->addColumn('session', "cur_mid", "varchar", 128);
-		
-		if(!$oDB->isIndexExists("session", "idx_session_update_mid")) $oDB->addIndex("session", "idx_session_update_mid", array("member_srl", "last_update", "cur_mid"));
+		if(!$oDB->isTableExists('session')){
+			$oDB->createTableByXmlFile($this->module_path . 'schemas/session.xml');
+		}
+		if(!$oDB->isColumnExists("session", "cur_mid")){
+			$oDB->addColumn('session', "cur_mid", "varchar", 128);
+		}
+		if(!$oDB->isIndexExists("session", "idx_session_update_mid")){
+			$oDB->addIndex("session", "idx_session_update_mid", array("member_srl", "last_update", "cur_mid"));
+		}
 	}
 	
 	/**
