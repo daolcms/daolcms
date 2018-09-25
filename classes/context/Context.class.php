@@ -1411,7 +1411,7 @@ class Context {
 					'act.document_srl.key.vid' => ($act == 'trackback') ? "$vid/$srl/$key/$act" : '',
 					'act.document_srl.key.mid.vid' => ($act == 'trackback') ? "$vid/$mid/$srl/$key/$act" : ''
 				);
-
+				
 				$query = $target_map[$target];
 			}
 			
