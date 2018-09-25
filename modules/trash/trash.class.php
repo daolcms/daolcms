@@ -15,7 +15,7 @@ class trash extends ModuleObject {
 	 * Implement if additional tasks are necessary when installing
 	 * @return BaseObject
 	 */
-	function moduleInstall() {
+	function moduleInstall(){
 		return new BaseObject();
 	}
 	
@@ -23,9 +23,9 @@ class trash extends ModuleObject {
 	 * A method to check if successfully installed
 	 * @return bool
 	 */
-	function checkUpdate() {
+	function checkUpdate(){
 		//$oDB = &DB::getInstance();
-		//$oModuleModel = &getModel('module');
+		//$oModuleModel = getModel('module');
 		
 		return false;
 	}
@@ -34,11 +34,10 @@ class trash extends ModuleObject {
 	 * Execute update
 	 * @return BaseObject
 	 */
-	function moduleUpdate() {
+	function moduleUpdate(){
 		//$oDB = &DB::getInstance();
-		//$oModuleModel = &getModel('module');
+		//$oModuleModel = getModel('module');
 		
 		return new BaseObject(0, 'success_updated');
-		
 	}
 }

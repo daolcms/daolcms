@@ -13,6 +13,6 @@ class trashView extends trash {
 	 * Initialization
 	 * @return void
 	 */
-	function init() {
+	function init(){
 	}
 }

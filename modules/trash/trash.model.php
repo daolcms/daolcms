@@ -16,10 +16,11 @@ class trashModel extends trash {
 	 * @pram array $columnList
 	 * @return TrashVO
 	 */
-	function getTrash($trashSrl, $columnList = array()) {
+	function getTrash($trashSrl, $columnList = array()){
 		$oTrashVO = new TrashVO();
 		if(!$trashSrl) return $oTrashVO;
 		
+		$args = new stdClass();
 		$args->trashSrl = $trashSrl;
 		$output = executeQuery('trash.getTrash', $args, $columnList);
 		
@@ -35,11 +36,11 @@ class trashModel extends trash {
 	 * @param array  $columnList
 	 * @return object
 	 */
-	function getTrashList($args, $columnList = array()) {
+	function getTrashList($args, $columnList = array()){
 		$output = executeQueryArray('trash.getTrashList', $args, $columnList);
 		
-		if(is_array($output->data)) {
-			foreach($output->data AS $key => $value) {
+		if(is_array($output->data)){
+			foreach($output->data as $key => $value){
 				$oTrashVO = new TrashVO();
 				$this->_setTrashObject($oTrashVO, $value);
 				$output->data[$key] = $oTrashVO;
@@ -54,7 +55,7 @@ class trashModel extends trash {
 	 * @param object  $stdObject
 	 * @return void
 	 */
-	function _setTrashObject(&$oTrashVO, $stdObject) {
+	function _setTrashObject(&$oTrashVO, $stdObject){
 		$oTrashVO->setTrashSrl($stdObject->trash_srl);
 		$oTrashVO->setTitle($stdObject->title);
 		$oTrashVO->setOriginModule($stdObject->origin_module);
@@ -68,4 +69,3 @@ class trashModel extends trash {
 		$oTrashVO->setRegdate($stdObject->regdate);
 	}
 }
-

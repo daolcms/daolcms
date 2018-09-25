@@ -14,23 +14,24 @@ class trashAdminController extends trash {
 	 * @param TrashVO $obj
 	 * @return BaseObject
 	 */
-	function insertTrash($obj) {
-		if(Context::get('is_logged')) {
-			$logged_info = Context::get('logged_info');
-			
-			$oTrashVO = new TrashVO();
-			$oTrashVO = &$obj;
-			
-			if(!$oTrashVO->getTrashSrl()) $oTrashVO->setTrashSrl(getNextSequence());
-			if(!is_string($oTrashVO->getSerializedObject())) $oTrashVO->setSerializedObject(serialize($oTrashVO->getSerializedObject()));
-			$oTrashVO->setIpaddress($_SERVER['REMOTE_ADDR']);
-			$oTrashVO->setRemoverSrl($logged_info->member_srl);
-			$oTrashVO->setRegdate(date('YmdHis'));
-			
-			$output = executeQuery('trash.insertTrash', $oTrashVO);
-			return $output;
+	function insertTrash($obj){
+		if(!Context::get('is_logged')){
+			return new BaseObject(-1, 'msg_not_permitted');
 		}
-		return new BaseObject(-1, 'msg_not_permitted');
+		
+		$logged_info = Context::get('logged_info');
+		
+		$oTrashVO = new TrashVO();
+		$oTrashVO = &$obj;
+		
+		if(!$oTrashVO->getTrashSrl()) $oTrashVO->setTrashSrl(getNextSequence());
+		if(!is_string($oTrashVO->getSerializedObject())) $oTrashVO->setSerializedObject(serialize($oTrashVO->getSerializedObject()));
+		$oTrashVO->setIpaddress($_SERVER['REMOTE_ADDR']);
+		$oTrashVO->setRemoverSrl($logged_info->member_srl);
+		$oTrashVO->setRegdate(date('YmdHis'));
+		
+		$output = executeQuery('trash.insertTrash', $oTrashVO);
+		return $output;
 	}
 	
 	/**
@@ -38,13 +39,17 @@ class trashAdminController extends trash {
 	 * @param array trashSrls
 	 * @return BaseObject
 	 */
-	function procTrashAdminEmptyTrash() {
+	function procTrashAdminEmptyTrash(){
 		global $lang;
 		$isAll = Context::get('is_all');
 		$originModule = Context::get('origin_module');
 		$tmpTrashSrls = Context::get('cart');
-		if(is_array($tmpTrashSrls)) $trashSrls = $tmpTrashSrls;
-		else $trashSrls = explode('|@|', $tmpTrashSrls);
+		
+		$trashSrls = array();
+		if($isAll != 'true'){
+			if(is_array($tmpTrashSrls)) $trashSrls = $tmpTrashSrls;
+			else $trashSrls = explode('|@|', $tmpTrashSrls);
+		}
 		
 		//module relation data delete...
 		$output = $this->_relationDataDelete($isAll, $trashSrls);
@@ -64,15 +69,31 @@ class trashAdminController extends trash {
 	 * @param        array trashSrls
 	 * @return BaseObject
 	 */
-	function _relationDataDelete($isAll, &$trashSrls) {
-		if($isAll == 'true') $trashSrls = array();
-		$oTrashModel = &getModel('trash');
-		if(count($trashSrls) > 0) $args->trashSrl = $trashSrls;
-		$output = $oTrashModel->getTrashList($args);
-		if(!$output->toBool()) return new BaseObject(-1, $output->message);
+	function _relationDataDelete($isAll, &$trashSrls){
+		$oTrashModel = getModel('trash');
+		if($isAll == 'true'){
+			$output = $oTrashModel->getTrashAllList(array());
+			if(!$output->toBool()){
+				return new BaseObject(-1, $output->message);
+			}
+
+			if(is_array($output->data)){
+				foreach($output->data as $value){
+					$trashSrls[] = $value->getTrashSrl();
+				}
+			}
+		}
+		else{
+			$args = new stdClass();
+			$args->trashSrl = $trashSrls;
+			$output = $oTrashModel->getTrashList($args);
+			if(!$output->toBool()){
+				return new BaseObject(-1, $output->message);
+			}
+		}
 		
-		if(is_array($output->data)) {
-			foreach($output->data AS $key => $oTrashVO) {
+		if(is_array($output->data)){
+			foreach($output->data AS $key => $oTrashVO){
 				if($isAll == 'true') array_push($trashSrls, $oTrashVO->getTrashSrl());
 				
 				//class file check
@@ -83,7 +104,7 @@ class trashAdminController extends trash {
 				$classFile = FileHandler::getRealPath($classFile);
 				if(!file_exists($classFile)) return new BaseObject(-1, 'not exist restore module class file');
 				
-				$oAdminController = &getAdminController($oTrashVO->getOriginModule());
+				$oAdminController = getAdminController($oTrashVO->getOriginModule());
 				if(!method_exists($oAdminController, 'emptyTrash')) return new BaseObject(-1, 'not exist restore method in module class file');
 				
 				$output = $oAdminController->emptyTrash($oTrashVO->getSerializedObject());
@@ -97,17 +118,17 @@ class trashAdminController extends trash {
 	 * Restore content object
 	 * @return void|Object
 	 */
-	function procTrashAdminRestore() {
+	function procTrashAdminRestore(){
 		global $lang;
 		$trashSrlList = Context::get('cart');
 		
-		if(is_array($trashSrlList)) {
+		if(is_array($trashSrlList)){
 			// begin transaction
 			$oDB = &DB::getInstance();
 			$oDB->begin();
 			// eache restore method call in each classfile
-			foreach($trashSrlList AS $key => $value) {
-				$oTrashModel = &getModel('trash');
+			foreach($trashSrlList as $key => $value){
+				$oTrashModel = getModel('trash');
 				$output = $oTrashModel->getTrash($value);
 				if(!$output->toBool()) return new BaseObject(-1, $output->message);
 				
@@ -119,20 +140,20 @@ class trashAdminController extends trash {
 				$classFile = FileHandler::getRealPath($classFile);
 				if(!file_exists($classFile)) return new BaseObject(-1, 'not exist restore module class file');
 				
-				$oAdminController = &getAdminController($output->data->getOriginModule());
+				$oAdminController = getAdminController($output->data->getOriginModule());
 				if(!method_exists($oAdminController, 'restoreTrash')) return new BaseObject(-1, 'not exist restore method in module class file');
 				
 				$originObject = unserialize($output->data->getSerializedObject());
 				$output = $oAdminController->restoreTrash($originObject);
 				
-				if(!$output->toBool()) {
+				if(!$output->toBool()){
 					$oDB->rollback();
 					return new BaseObject(-1, $output->message);
 				}
 			}
 			
 			// restore object delete in trash box
-			if(!$this->_emptyTrash($trashSrlList)) {
+			if(!$this->_emptyTrash($trashSrlList)){
 				$oDB->rollback();
 				return new BaseObject(-1, $lang->fail_empty);
 			}
@@ -149,17 +170,19 @@ class trashAdminController extends trash {
 	 * Set trash list to Context
 	 * @return void|Object
 	 */
-	function procTrashAdminGetList() {
+	function procTrashAdminGetList(){
 		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_permitted');
 		$trashSrls = Context::get('trash_srls');
 		if($trashSrls) $trashSrlList = explode(',', $trashSrls);
 		
-		if(count($trashSrlList) > 0) {
-			$oTrashModel = &getModel('trash');
+		if(count($trashSrlList) > 0){
+			$oTrashModel = getModel('trash');
+			$args = new stdClass();
 			$args->trashSrl = $trashSrlList;
 			$output = $oTrashModel->getTrashList($args);
 			$trashList = $output->data;
-		} else {
+		}
+		else{
 			global $lang;
 			$trashList = array();
 			$this->setMessage($lang->no_documents);
@@ -175,8 +198,9 @@ class trashAdminController extends trash {
 	 * @param array trashSrls
 	 * @return bool
 	 */
-	function _emptyTrash($trashSrls) {
+	function _emptyTrash($trashSrls){
 		if(!is_array($trashSrls)) return false;
+		$args = new stdClass();
 		$args->trashSrls = $trashSrls;
 		$output = executeQuery('trash.deleteTrash', $args);
 		if(!$output->toBool()) return false;

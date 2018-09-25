@@ -13,7 +13,7 @@ class trashAdminView extends trash {
 	 * Initialization
 	 * @return void
 	 */
-	function init() {
+	function init(){
 		// 템플릿 경로 지정 (board의 경우 tpl에 관리자용 템플릿 모아놓음)
 		$template_path = sprintf("%stpl/", $this->module_path);
 		$this->setTemplatePath($template_path);
@@ -23,7 +23,8 @@ class trashAdminView extends trash {
 	 * Trash list
 	 * @return void
 	 */
-	function dispTrashAdminList() {
+	function dispTrashAdminList(){
+		$args = new stdClass();
 		$args->page = Context::get('page'); // /< Page
 		$args->list_count = 30; // /< the number of posts to display on a single page
 		$args->page_count = 5; // /< the number of pages that appear in the page navigation
@@ -35,8 +36,8 @@ class trashAdminView extends trash {
 		$output = $oTrashModel->getTrashList($args);
 		
 		// for no text comment language and for document manange language
-		$oCommentModel = &getModel('comment');
-		$oDocumentModel = &getModel('document');
+		$oCommentModel = getModel('comment');
+		$oDocumentModel = getModel('document');
 		
 		Context::set('trash_list', $output->data);
 		Context::set('total_count', $output->total_count);
