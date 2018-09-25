@@ -10,8 +10,8 @@ class tag extends ModuleObject {
 	/**
 	 * @brief Implement if additional tasks are necessary when installing
 	 **/
-	function moduleInstall() {
-		$oModuleController = &getController('module');
+	function moduleInstall(){
+		$oModuleController = getController('module');
 		$oDB = &DB::getInstance();
 		
 		$oDB->addIndex("tags", "idx_tag", array("document_srl", "tag"));
@@ -30,8 +30,8 @@ class tag extends ModuleObject {
 	/**
 	 * @brief a method to check if successfully installed
 	 **/
-	function checkUpdate() {
-		$oModuleModel = &getModel('module');
+	function checkUpdate(){
+		$oModuleModel = getModel('module');
 		$oDB = &DB::getInstance();
 		// 2007. 10. 17 trigger registration, if registered upset
 		if(!$oModuleModel->getTrigger('document.insertDocument', 'tag', 'controller', 'triggerArrangeTag', 'before')) return true;
@@ -50,9 +50,9 @@ class tag extends ModuleObject {
 	/**
 	 * @brief Execute update
 	 **/
-	function moduleUpdate() {
-		$oModuleModel = &getModel('module');
-		$oModuleController = &getController('module');
+	function moduleUpdate(){
+		$oModuleModel = getModel('module');
+		$oModuleController = getController('module');
 		$oDB = &DB::getInstance();
 		// 2007. 10. 17 document.insertDocument, updateDocument, deleteDocument trigger property for
 		if(!$oModuleModel->getTrigger('document.insertDocument', 'tag', 'controller', 'triggerArrangeTag', 'before'))
@@ -82,6 +82,6 @@ class tag extends ModuleObject {
 	/**
 	 * @brief Re-generate the cache file
 	 **/
-	function recompileCache() {
+	function recompileCache(){
 	}
 }
