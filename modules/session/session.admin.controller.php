@@ -10,14 +10,14 @@ class sessionAdminController extends session {
 	/**
 	 * @brief Initialization
 	 **/
-	function init() {
+	function init(){
 	}
 	
 	/**
 	 * @brief The action to clean up the Derby session
 	 **/
-	function procSessionAdminClear() {
-		$oSessionController = &getController('session');
+	function procSessionAdminClear(){
+		$oSessionController = getController('session');
 		$oSessionController->gc(0);
 		
 		$this->add('result', Context::getLang('session_cleared'));
