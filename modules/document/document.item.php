@@ -708,11 +708,12 @@ class documentItem extends BaseObject {
 		$thumbnail_url = Context::getRequestUri() . $thumbnail_file;
 		
 		// Return false if thumbnail file exists and its size is 0. Otherwise, return its path
-		if(file_exists($thumbnail_file) || file_exists($thumbnail_lockfile)) {
-			if(filesize($thumbnail_file) < 1) {
+		if(file_exists($thumbnail_file) || file_exists($thumbnail_lockfile)){
+			if(filesize($thumbnail_file) < 1){
 				return FALSE;
-			} else {
-				return $thumbnail_url;
+			}
+			else{
+				return $thumbnail_url . '?' . date('YmdHis', filemtime($thumbnail_file));
 			}
 		}
 		
@@ -798,15 +799,12 @@ class documentItem extends BaseObject {
 		// Remove lockfile
 		FileHandler::removeFile($thumbnail_lockfile);
 		
-		// Return the thumbnail path if it was successfully generated
-		if($source_file) {
-			return $thumbnail_url;
-		} // Create an empty file if thumbnail generation failed
-		else {
+		// Create an empty file if thumbnail generation failed
+		if(!$output_file){
 			FileHandler::writeFile($thumbnail_file, '', 'w');
 		}
 		
-		return;
+		return $thumbnail_url . '?' . date('YmdHis', filemtime($thumbnail_file));
 	}
 	
 	/**
