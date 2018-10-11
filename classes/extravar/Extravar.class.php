@@ -369,6 +369,7 @@ class ExtraItem {
 					'        };' . "\n" .
 					'        $.extend(option,$.datepicker.regional[\'' . Context::getLangType() . '\']);' . "\n" .
 					'        $("#date_' . $column_name . '").datepicker(option);' . "\n" .
+					'        $("#date_' . $column_name . '").datepicker("option", "dateFormat", "yy-mm-dd");' . "\n" .
 					'		$("#dateRemover_' . $column_name . '").click(function(){' . "\n" .
 					'			$(this).siblings("input").val("");' . "\n" .
 					'			return false;' . "\n" .
