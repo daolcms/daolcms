@@ -21,6 +21,13 @@
 		<value xml:lang="zh-CN"><![CDATA[其他]]></value>
 		<value xml:lang="tr"><![CDATA[Diğer]]></value>
 	</item>
+	<item name="subtitle_security">
+		<value xml:lang="ko"><![CDATA[보안]]></value>
+		<value xml:lang="en"><![CDATA[Security]]></value>
+		<value xml:lang="jp"><![CDATA[セキュリティ]]></value>
+		<value xml:lang="zh-CN"><![CDATA[安全]]></value>
+		<value xml:lang="tr"><![CDATA[Güvenlik]]></value>
+	</item>
 	<item name="current_state">
 		<value xml:lang="ko"><![CDATA[현황]]></value>
 		<value xml:lang="en"><![CDATA[Current state]]></value>
@@ -320,13 +327,6 @@
 			 <value xml:lang="jp"><![CDATA[設定]]></value>
 			 <value xml:lang="zh-CN"><![CDATA[设置]]></value>
 			 <value xml:lang="tr"><![CDATA[Ayarlar]]></value>
-		</item>
-		<item name="security_configuration">
-			 <value xml:lang="ko"><![CDATA[보안 설정]]></value>
-			 <value xml:lang="en"><![CDATA[Security Settings]]></value>
-			 <value xml:lang="jp"><![CDATA[セキュリティ設定]]></value>
-			 <value xml:lang="zh-CN"><![CDATA[安全设定]]></value>
-			 <value xml:lang="tr"><![CDATA[Güvenlik Ayarlar]]></value>
 		</item>
 	</item>
 	<item name="newest_news">
