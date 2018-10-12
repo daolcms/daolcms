@@ -1023,7 +1023,7 @@ class Context {
 		foreach($_REQUEST as $key => $val) {
 			if($val === '' || self::get($key)) continue;
 			$key = htmlentities($key);
-			$val = $this->_filterRequestVar($key, $val);
+			$val = $this->_filterRequestVar($key, $val, false, ($requestMethod == 'GET'));
 			
 			if($this->getRequestMethod() == 'GET' && isset($_GET[$key])) $set_to_vars = true;
 			elseif($this->getRequestMethod() == 'POST' && isset($_POST[$key])) $set_to_vars = true;
@@ -1143,25 +1143,32 @@ class Context {
 	 * @param string $do_stripslashes Whether to strip slashes
 	 * @return mixed filtered value. Type are string or array
 	 */
-	function _filterRequestVar($key, $val, $do_stripslashes = 1){
+	function _filterRequestVar($key, $val, $do_stripslashes = true, $remove_hack = false){
 		if(!($isArray = is_array($val))){
 			$val = array($val);
 		}
 
 		$result = array();
 		foreach($val as $k => $v){
+			if($remove_hack && !is_array($v)){
+				if(stripos($v, '<script') || stripos($v, 'lt;script') || stripos($v, '%3Cscript')){
+					$result[$k] = escape($v);
+					continue;
+				}
+			}
+			
 			$k = htmlentities($k);
 			if($key === 'page' || $key === 'cpage' || substr_compare($key, 'srl', -3) === 0){
 				$result[$k] = !preg_match('/^[0-9,]+$/', $v) ? (int) $v : $v;
 			}
 			elseif($key === 'mid' || $key === 'search_keyword'){
-				$result[$k] = htmlspecialchars($v, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
+				$result[$k] = escape($v, false);
 			}
 			elseif($key === 'vid'){
 				$result[$k] = urlencode($v);
 			}
 			elseif($key === 'xe_validator_id'){
-				$result[$k] = htmlspecialchars($v, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
+				$result[$k] = escape($v, false);
 			}
 			elseif(stripos($key, 'XE_VALIDATOR', 0) === 0){
 				unset($result[$k]);
@@ -1183,6 +1190,10 @@ class Context {
 				}
 				else{
 					$result[$k] = trim($result[$k]);
+				}
+				
+				if($remove_hack){
+					$result[$k] = escape($result[$k], false);
 				}
 			}
 		}
