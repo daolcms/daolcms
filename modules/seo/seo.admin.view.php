@@ -1,16 +1,15 @@
 <?php
-
 class seoAdminView extends seo {
-	function init() {
+	function init(){
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile(str_replace('dispSeo', '', $this->act));
 	}
 	
-	function dispSeoAdminDashboard() {
+	function dispSeoAdminDashboard(){
 		$oModuleModel = getModel('module');
 	}
 	
-	function dispSeoAdminSetting() {
+	function dispSeoAdminSetting(){
 		$vars = Context::getRequestVars();
 		if(!$vars->setting_section) Context::set('setting_section', 'general');
 		

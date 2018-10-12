@@ -1,0 +1,20 @@
+<h3 class="h3">SEO</h3>
+
+<form action="./" method="post" class="form">
+	<input type="hidden" name="module" value="seo" />
+	<input type="hidden" name="act" value="procSeoAdminInsertModuleConfig" />
+	<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
+	<input type="hidden" name="target_module_srl" value="{$module_info->module_srl}" />
+	
+	<table cellspacing="0" class="rowTable">
+		<tr>
+			<th scope="row"><div>{$lang->description}</div></th>
+			<td>
+				<input type="text" id="meta_description" name="meta_description" value="{htmlspecialchars($seo_module_part_config->meta_description, ENT_COMPAT | ENT_HTML401, 'UTF-8', false)}" />
+			</td>
+		</tr>
+	</table>
+	<div class="btnArea">
+		<span class="btn"><input type="submit" value="{$lang->cmd_save}" /></span>
+	</div>
+</form>
