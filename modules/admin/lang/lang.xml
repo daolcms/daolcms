@@ -685,6 +685,13 @@
 		<value xml:lang="zh-CN"><![CDATA[是否使用SSL安全连接?]]></value>
 		<value xml:lang="tr"><![CDATA[SSL(Secure Sockets Layer)'i kullanmak istiyor musunuz?]]></value>
 	</item>
+	<item name="use_nofollow">
+		<value xml:lang="ko"><![CDATA[Nofollow(rel="nofollow") 속성을 사용하시겠습니까?]]></value>
+		<value xml:lang="en"><![CDATA[Do you want to use the Nofollow(rel="nofollow") attribute?]]></value>
+		<value xml:lang="jp"><![CDATA[Nofollow(rel="nofollow")属性を使用しますか？]]></value>
+		<value xml:lang="zh-CN"><![CDATA[你想使用Nofollow(rel="nofollow")属性吗？]]></value>
+		<value xml:lang="tr"><![CDATA[Nofollow(rel="nofollow") özelliğini kullanmak istiyor musunuz?]]></value>
+	</item>
 	<item name="ssl_options" type="array">
 		<item name="none">
 			 <value xml:lang="ko"><![CDATA[사용 안함]]></value>

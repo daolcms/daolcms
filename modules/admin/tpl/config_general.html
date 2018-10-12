@@ -190,6 +190,16 @@ jQuery(function($){
 					<!--@endforeach-->
 				</p>
 			</li>
+			<li>
+				<p class="q"><label>{$lang->use_nofollow}</label><!--[<a href="#helpUseNofollow" class="tgAnchor">?</a>]</p>
+				<div class="tgContent layer" id="helpUsessl">
+					<p>{$lang->about_use_nofollow}</p>
+				</div-->
+				<p class="a">
+					<input type="radio" name="use_nofollow" id="use_nofollow_y" value="Y" <!--@if($use_nofollow=='Y')-->checked="checked" <!--@end-->/> <label for="use_nofollow_y">{$lang->cmd_yes}</label>
+					<input type="radio" name="use_nofollow" id="use_nofollow_n" value="N" <!--@if($use_nofollow!='Y')-->checked="checked" <!--@end-->/> <label for="use_nofollow_n">{$lang->cmd_no}</label>
+				</p>
+			</li>
 		</ul>
 	</fieldset>
 	<fieldset class="section">

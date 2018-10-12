@@ -907,6 +907,14 @@ function url_decode($str){
 function purifierHtml(&$content){
 	require_once(_DAOL_PATH_ . 'classes/security/Purifier.class.php');
 	$oPurifier = Purifier::getInstance();
+	
+	// @see https://github.com/xpressengine/xe-core/issues/2278
+	$logged_info = Context::get('logged_info');
+	$db_info = Context::getDBInfo();
+	if($logged_info->is_admin !== 'Y' && $db_info->use_nofollow == 'Y'){
+		$oPurifier->setConfig('HTML.Nofollow', true);
+	}
+	
 	$oPurifier->purify($content);
 }
 

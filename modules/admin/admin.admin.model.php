@@ -140,6 +140,7 @@ class adminAdminModel extends admin {
 		$info['use_rewrite'] = $db_info->use_rewrite;
 		$info['use_db_session'] = $db_info->use_db_session == 'Y' ? 'Y' : 'N';
 		$info['use_ssl'] = $db_info->use_ssl;
+		$info['use_nofollow'] = $db_info->use_nofollow;
 		
 		$info['phpext'] = '';
 		foreach(get_loaded_extensions() as $ext) {

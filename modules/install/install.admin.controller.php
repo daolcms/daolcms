@@ -83,6 +83,9 @@ class installAdminController extends install {
 		$use_ssl = Context::get('use_ssl');
 		if(!$use_ssl) $use_ssl = 'none';
 		
+		$use_nofollow = Context::get('use_nofollow');
+		if($use_nofollow != 'Y') $use_nofollow = 'N';
+		
 		$http_port = Context::get('http_port');
 		$https_port = Context::get('https_port');
 		
@@ -107,6 +110,7 @@ class installAdminController extends install {
 		$db_info->use_rewrite = $use_rewrite;
 		$db_info->use_sso = $use_sso;
 		$db_info->use_ssl = $use_ssl;
+		$db_info->use_nofollow = $use_nofollow;
 		$db_info->use_html5 = $use_html5;
 		$db_info->use_mobile_view = $use_mobile_view;
 		$db_info->admin_ip_list = $admin_ip_list;
