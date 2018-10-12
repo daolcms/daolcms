@@ -5,8 +5,8 @@
 		<permission action="dispLayoutPreview" target="manager" />
 	</permissions>
 	<actions>
-		<action name="dispLayoutInfo" type="view" standalone="true" />
-		<action name="dispLayoutPreview" type="view" />
+		<action name="dispLayoutInfo" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispLayoutPreview" type="view" meta-noindex="true" />
 
 		<!-- admin -->
 		<action name="dispLayoutAdminContent" type="view" standalone="true" />

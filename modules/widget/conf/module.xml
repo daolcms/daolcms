@@ -15,10 +15,10 @@
 		<permission action="procWidgetStyleExtraImageUpload" target="manager" />
 	</permissions>
 	<actions>
-		<action name="dispWidgetInfo" type="view" standalone="true" />
-		<action name="dispWidgetGenerateCode" type="view" standalone="true" />
-		<action name="dispWidgetGenerateCodeInPage" type="view" standalone="true" />
-		<action name="dispWidgetStyleGenerateCodeInPage" type="view" standalone="true" />
+		<action name="dispWidgetInfo" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispWidgetGenerateCode" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispWidgetGenerateCodeInPage" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispWidgetStyleGenerateCodeInPage" type="view" standalone="true" meta-noindex="true" />
 
 		<action name="procWidgetGenerateCode" type="controller" standalone="true" />
 		<action name="procWidgetStyleExtraImageUpload" type="controller" standalone="true" />

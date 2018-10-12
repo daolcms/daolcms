@@ -360,7 +360,13 @@ class ModuleHandler extends Handler {
 		// get type, kind
 		$type = $xml_info->action->{$this->act}->type;
 		$ruleset = $xml_info->action->{$this->act}->ruleset;
+		$meta_noindex = $xml_info->action->{$this->act}->meta_noindex;
 		$kind = strpos(strtolower($this->act), 'admin') !== false ? 'admin' : '';
+		
+		if($meta_noindex === 'true'){
+			Context::addMetaTag('robots', 'noindex');
+		}
+		
 		if(!$kind && $this->module == 'admin') $kind = 'admin';
 		if($this->module_info->use_mobile != "Y") Mobile::setMobile(false);
 		
@@ -443,15 +449,17 @@ class ModuleHandler extends Handler {
 				return $oMessageObject;
 			}
 			
-			$forward = null;
+			$forward = NULL;
 			// 1. Look for the module with action name
 			if(preg_match('/^([a-z]+)([A-Z])([a-z0-9\_]+)(.*)$/', $this->act, $matches)) {
 				$module = strtolower($matches[2] . $matches[3]);
 				$xml_info = $oModuleModel->getModuleActionXml($module);
-				if($xml_info->action->{$this->act}) {
+				if($xml_info->action->{$this->act}){
+					$forward = new stdClass();
 					$forward->module = $module;
 					$forward->type = $xml_info->action->{$this->act}->type;
 					$forward->ruleset = $xml_info->action->{$this->act}->ruleset;
+					$forward->meta_noindex = $xml_info->action->{$this->act}->meta_noindex;
 					$forward->act = $this->act;
 				}
 			}
@@ -466,6 +474,10 @@ class ModuleHandler extends Handler {
 				$ruleset = $forward->ruleset;
 				$tpl_path = $oModule->getTemplatePath();
 				$orig_module = $oModule;
+				
+				if($forward->meta_noindex === 'true'){
+					Context::addMetaTag('robots', 'noindex');
+				}
 				
 				$xml_info = $oModuleModel->getModuleActionXml($forward->module);
 				
@@ -626,6 +638,9 @@ class ModuleHandler extends Handler {
 			}
 		}
 		
+		if ($kind === 'admin'){
+			Context::addMetaTag('robots', 'noindex');
+		}
 		
 		// if failed message exists in session, set context
 		$this->_setInputErrorToContext();

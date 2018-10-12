@@ -72,14 +72,14 @@
 		<action name="dispBoardContentFileList" type="view" />
 
 		<action name="dispBoardTagList" type="view" />
-		<action name="dispBoardWrite" type="view" />
-		<action name="dispBoardDelete" type="view" />
-		<action name="dispBoardWriteComment" type="view" />
-		<action name="dispBoardReplyComment" type="view" />
-		<action name="dispBoardModifyComment" type="view" />
-		<action name="dispBoardDeleteComment" type="view" />
-		<action name="dispBoardDeleteTrackback" type="view" />
-		<action name="dispBoardMessage" type="view" />
+		<action name="dispBoardWrite" type="view" meta-noindex="true" />
+		<action name="dispBoardDelete" type="view" meta-noindex="true" />
+		<action name="dispBoardWriteComment" type="view" meta-noindex="true" />
+		<action name="dispBoardReplyComment" type="view" meta-noindex="true" />
+		<action name="dispBoardModifyComment" type="view" meta-noindex="true" />
+		<action name="dispBoardDeleteComment" type="view" meta-noindex="true" />
+		<action name="dispBoardDeleteTrackback" type="view" meta-noindex="true" />
+		<action name="dispBoardMessage" type="view" meta-noindex="true" />
 
 		<action name="procBoardInsertDocument" type="controller" ruleset="insertDocument" />
 		<action name="procBoardDeleteDocument" type="controller" />

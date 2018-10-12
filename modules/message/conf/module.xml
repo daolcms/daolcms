@@ -3,7 +3,7 @@
 	<grants />
 	<permissions />
 	<actions>
-		<action name="dispMessage" type="view" standalone="true" index="true" />
+		<action name="dispMessage" type="view" standalone="true" index="true" meta-noindex="true" />
 
 		<!-- admin -->
 		<action name="dispMessageAdminConfig" type="view" standalone="true" admin_index="true" />

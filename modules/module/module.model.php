@@ -662,6 +662,7 @@ class moduleModel extends module {
 					$ruleset = $action->attrs->ruleset ? $action->attrs->ruleset : '';
 					$method = $action->attrs->method ? $action->attrs->method : '';
 					$check_csrf = $action->attrs->check_csrf == 'false' ? 'false' : 'true';
+					$meta_noindex = $action->attrs->{'meta-noindex'} === 'true' ? 'true' : 'false';
 					
 					$index = $action->attrs->index;
 					$admin_index = $action->attrs->admin_index;
@@ -676,6 +677,7 @@ class moduleModel extends module {
 					$info->action->{$name}->ruleset = $ruleset;
 					$info->action->{$name}->method = $method;
 					$info->action->{$name}->check_csrf = $check_csrf;
+					$info->action->{$name}->meta_noindex = $meta_noindex;
 					if($action->attrs->menu_name){
 						if($menu_index == 'true'){
 							$info->menu->{$action->attrs->menu_name}->index = $name;
@@ -697,6 +699,7 @@ class moduleModel extends module {
 					$buff[] = sprintf('$info->action->%s->ruleset=\'%s\';', $name, $ruleset);
 					$buff[] = sprintf('$info->action->%s->method=\'%s\';', $name, $method);
 					$buff[] = sprintf('$info->action->%s->check_csrf=\'%s\';', $name, $check_csrf);
+					$buff[] = sprintf('$info->action->%s->meta_noindex=\'%s\';', $name, $meta_noindex);
 					
 					if($index == 'true'){
 						$default_index_act = $name;
