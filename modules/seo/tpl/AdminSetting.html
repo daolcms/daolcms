@@ -28,7 +28,6 @@
 				</p>
 			</li>
 		</ul>
-		<br />
 		
 		<h2 class="h2">{$lang->document_title_optimization}</h2>
 		<ul>
@@ -40,7 +39,6 @@
 				<p class="a">
 					<label><input type="checkbox" name="use_optimize_title" id="use_optimize_title" value="Y" checked="checked"|cond="$config->use_optimize_title == 'Y'" /> {$lang->use_document_title_optimization}</label>
 				</p>
-				<br>
 			</li>
 			<li>
 				<p class="q">{$lang->site_name}</p>
@@ -61,12 +59,13 @@
 				</p>
 			</li>
 		</ul>
-		<br />
 
 		<h2 class="h2">{$lang->default_meta_tag}</h2>
 		<ul>
 			<li>
 				<p>{$lang->default_meta_tag_help}</p>
+			</li>
+			<li>
 				<p class="q">{$lang->site_keyword}</p>
 				<p class="a multiLangEdit">
 					<input type="hidden" name="site_keywords" id="site_keywords" value="<!--@if(strpos($config->site_keywords, '$user_lang->') === false)-->{$config->site_keywords}<!--@else-->{htmlspecialchars($config->site_keywords)}<!--@end-->" class="vLang" />
@@ -111,7 +110,6 @@
 			</li>
 
 		</ul>
-		<br />
 		
 		<h2 class="h2">NAVER</h2>
 		<ul>		
@@ -140,8 +138,10 @@
 	<block cond="$setting_section == 'miscellaneous'">
 		<h2 class="h2">Facebook</h2>
 		<ul>
-			<li class="section <!--@if(false && !$config->fb_app_id && !$config->fb_admins)-->collapsed<!--@endif-->">	
+			<li>
 				<p>{$lang->facebook_help}</p>
+			</li>
+			<li class="section <!--@if(false && !$config->fb_app_id && !$config->fb_admins)-->collapsed<!--@endif-->">
 				<p class="q">Facebook App ID</p>
 				<p class="a">
 					<input type="text" name="fb_app_id" id="fb_app_id" value="{$config->fb_app_id}" />
