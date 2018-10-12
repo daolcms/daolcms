@@ -9,7 +9,7 @@
 	<!--// general -->
 	<block cond="$setting_section == 'general'">
 		{@ $use_multilang = true}
-		<h2>{$lang->default_setting}</h2>
+		<h2 class="h2">{$lang->default_setting}</h2>
 		<ul>
 			<li>
 				<p class="q">{$lang->use_seo}</p>
@@ -30,7 +30,7 @@
 		</ul>
 		<br />
 		
-		<h2>{$lang->document_title_optimization}</h2>
+		<h2 class="h2">{$lang->document_title_optimization}</h2>
 		<ul>
 			<li>
 				<p>{$lang->document_title_optimization_help}</p>
@@ -63,7 +63,7 @@
 		</ul>
 		<br />
 
-		<h2>{$lang->default_meta_tag}</h2>
+		<h2 class="h2">{$lang->default_meta_tag}</h2>
 		<ul>
 			<li>
 				<p>{$lang->default_meta_tag_help}</p>
@@ -89,7 +89,7 @@
 
 	<!--// analytics -->
 	<block cond="$setting_section == 'analytics'">
-		<h2>Google</h2>
+		<h2 class="h2">Google</h2>
 		<ul>
 			<li>
 				<p>
@@ -113,7 +113,7 @@
 		</ul>
 		<br />
 		
-		<h2>NAVER</h2>
+		<h2 class="h2">NAVER</h2>
 		<ul>		
 			<li>
 				<p>
@@ -138,7 +138,7 @@
 
 	<!--// analytics -->
 	<block cond="$setting_section == 'miscellaneous'">
-		<h2>Facebook</h2>
+		<h2 class="h2">Facebook</h2>
 		<ul>
 			<li class="section <!--@if(false && !$config->fb_app_id && !$config->fb_admins)-->collapsed<!--@endif-->">	
 				<p>{$lang->facebook_help}</p>
