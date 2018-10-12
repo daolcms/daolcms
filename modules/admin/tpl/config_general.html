@@ -89,6 +89,21 @@ jQuery(function($){
 				</div>
 			</li>
 			<li>
+				<p class="q"><label for="default_url">{$lang->default_url}</label>[<a href="#helpDefaulturl" class="tgAnchor">?</a>]</p>
+				<div class="tgContent layer" id="helpDefaulturl">
+					<p>{$lang->about_default_url}</p>
+				</div>
+				<p class="a"><input type="text" name="default_url" id="default_url" value="{$default_url}"/></p>
+			</li>
+			<li>
+				<p class="q"><label>{$lang->server_ports}</label></p>
+				<p class="a">
+					<label for="http_port">HTTP:</label> <input type="text" name="http_port" id="http_port" size="5" value="{$http_port}" style="width:40px" />
+					&nbsp;&nbsp;
+					<label for="https_port">HTTPS:</label> <input type="text" name="https_port" id="https_port" size="5" value="{$https_port}" style="width:40px" />
+				</p>
+			</li>
+			<li>
 				<p class="q">{$lang->about_lang_select}</p>
 				<p class="a">
 					<!--@foreach($langs as $key => $val)-->
@@ -124,31 +139,6 @@ jQuery(function($){
 				</p>
 			</li>
 			<li>
-				<p class="q">{$lang->about_question_mobile_view}</p>
-				<p class="a">
-					<input type="radio" name="use_mobile_view" id="use_mobile_view_y" value="Y" <!--@if($use_mobile_view == 'Y')-->checked="checked" <!--@end-->/> <label for="use_mobile_view_y">{$lang->cmd_yes}</label>
-					<input type="radio" name="use_mobile_view" id="use_mobile_view_n" value="N" <!--@if($use_mobile_view != 'Y')-->checked="checked" <!--@end-->/> <label for="use_mobile_view_n">{$lang->cmd_no}</label>
-				</p>
-			</li>
-			<li>
-				<p class="q">{$lang->about_thumbnail_type}</p>
-				<p class="a">
-					<input type="radio" name="thumbnail_type" id="thumbnail_type_crop" value="corp" <!--@if($thumbnail_type != 'ratio')-->checked="checked" <!--@end-->/>
-					<label for="thumbnail_type_crop">{$lang->corp}</label>
-					<input type="radio" name="thumbnail_type" id="thumbnail_type_ratio" value="ratio" <!--@if($thumbnail_type == 'ratio')-->checked="checked" <!--@end-->/>
-					<label for="thumbnail_type_ratio">{$lang->ratio}</label>
-				</p>
-			</li>
-			<li>
-				<p class="q"><label for="htmlFooter">{$lang->input_footer_script}</label>[<a href="#helpFooter" class="tgAnchor">?</a>]<p>
-				<div class="tgContent layer" id="helpFooter">
-					<p>{$lang->detail_input_footer_script}</p>
-				</div>	
-				<p class="a">
-					<textarea name="htmlFooter" id="htmlFooter" rows="8" cols="42">{$htmlFooter}</textarea>
-				</p>
-			</li>
-			<li>
 				<p class="q">{$lang->allow_use_favicon}</p>
 				<p class="a faviconPreview">
 					<img src="{$favicon_url}" alt="favicon" width="16" height="16" class="fn1">
@@ -165,6 +155,15 @@ jQuery(function($){
 					<a href="javascript:deleteIcon('mobicon\.png');">{$lang->cmd_delete}</a>
 				</p>
 				<p class="a"><input type="file" name="mobicon" id="mobicon" title="Mobile Home Icon"/> <span class="desc">{$lang->detail_use_mobile_icon}</span></p>
+			</li>
+			<li>
+				<p class="q"><label for="htmlFooter">{$lang->input_footer_script}</label>[<a href="#helpFooter" class="tgAnchor">?</a>]<p>
+				<div class="tgContent layer" id="helpFooter">
+					<p>{$lang->detail_input_footer_script}</p>
+				</div>	
+				<p class="a">
+					<textarea name="htmlFooter" id="htmlFooter" rows="8" cols="42">{$htmlFooter}</textarea>
+				</p>
 			</li>
 		</ul>
 	</fieldset>
@@ -197,25 +196,26 @@ jQuery(function($){
 		<h2 class="h2">{$lang->subtitle_advanced}</h2>
 		<ul>
 			<li>
-				<p class="q"><label for="default_url">{$lang->default_url}</label>[<a href="#helpDefaulturl" class="tgAnchor">?</a>]</p>
-				<div class="tgContent layer" id="helpDefaulturl">
-					<p>{$lang->about_default_url}</p>
-				</div>
-				<p class="a"><input type="text" name="default_url" id="default_url" value="{$default_url}"/></p>
-			</li>
-			<li>
-				<p class="q"><label>{$lang->server_ports}</label></p>
-				<p class="a">
-					<label for="http_port">HTTP:</label> <input type="text" name="http_port" id="http_port" size="5" value="{$http_port}" style="width:40px" />
-					&nbsp;&nbsp;
-					<label for="https_port">HTTPS:</label> <input type="text" name="https_port" id="https_port" size="5" value="{$https_port}" style="width:40px" />
-				</p>
-			</li>
-			<li>
 				<p class="q"><label>{$lang->about_use_rewrite}</label></p>
 				<p class="a">
 					<input type="radio" name="use_rewrite" id="use_rewrite_y" value="Y" <!--@if($use_rewrite == 'Y')-->checked="checked" <!--@end-->/> <label for="use_rewrite_y">{$lang->cmd_yes}</label>
 					<input type="radio" name="use_rewrite" id="use_rewrite_n" value="N" <!--@if($use_rewrite != 'Y')-->checked="checked" <!--@end-->/> <label for="use_rewrite_n">{$lang->cmd_no}</label>
+				</p>
+			</li>
+			<li>
+				<p class="q">{$lang->about_question_mobile_view}</p>
+				<p class="a">
+					<input type="radio" name="use_mobile_view" id="use_mobile_view_y" value="Y" <!--@if($use_mobile_view == 'Y')-->checked="checked" <!--@end-->/> <label for="use_mobile_view_y">{$lang->cmd_yes}</label>
+					<input type="radio" name="use_mobile_view" id="use_mobile_view_n" value="N" <!--@if($use_mobile_view != 'Y')-->checked="checked" <!--@end-->/> <label for="use_mobile_view_n">{$lang->cmd_no}</label>
+				</p>
+			</li>
+			<li>
+				<p class="q">{$lang->about_thumbnail_type}</p>
+				<p class="a">
+					<input type="radio" name="thumbnail_type" id="thumbnail_type_crop" value="corp" <!--@if($thumbnail_type != 'ratio')-->checked="checked" <!--@end-->/>
+					<label for="thumbnail_type_crop">{$lang->corp}</label>
+					<input type="radio" name="thumbnail_type" id="thumbnail_type_ratio" value="ratio" <!--@if($thumbnail_type == 'ratio')-->checked="checked" <!--@end-->/>
+					<label for="thumbnail_type_ratio">{$lang->ratio}</label>
 				</p>
 			</li>
 			<li>
