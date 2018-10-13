@@ -1161,14 +1161,11 @@ class Context {
 			if($key === 'page' || $key === 'cpage' || substr_compare($key, 'srl', -3) === 0){
 				$result[$k] = !preg_match('/^[0-9,]+$/', $v) ? (int) $v : $v;
 			}
-			elseif($key === 'mid' || $key === 'search_keyword'){
+			elseif(in_array($key, array('mid','search_keyword','search_target','xe_validator_id'))){
 				$result[$k] = escape($v, false);
 			}
 			elseif($key === 'vid'){
 				$result[$k] = urlencode($v);
-			}
-			elseif($key === 'xe_validator_id'){
-				$result[$k] = escape($v, false);
 			}
 			elseif(stripos($key, 'XE_VALIDATOR', 0) === 0){
 				unset($result[$k]);
@@ -1223,7 +1220,7 @@ class Context {
 		foreach($_FILES as $key => $val){
 			$tmp_name = $val['tmp_name'];
 			if(!is_array($tmp_name)){
-				if(!$tmp_name || !is_uploaded_file($tmp_name)){
+				if(!UploadFileFilter::check($tmp_name, $val['name'])){
 					continue;
 				}
 				$val['name'] = htmlspecialchars($val['name'], ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
@@ -1232,19 +1229,23 @@ class Context {
 			}
 			else{
 				$files = array();
-				$count_files = count($tmp_name);
-				for($i = 0; $i < $count_files; $i++){
-					if($val['size'][$i] > 0){
-						$file = array();
-						$file['name'] = $val['name'][$i];
-						$file['type'] = $val['type'][$i];
-						$file['tmp_name'] = $val['tmp_name'][$i];
-						$file['error'] = $val['error'][$i];
-						$file['size'] = $val['size'][$i];
-						$files[] = $file;
+				foreach ($tmp_name as $i => $j){
+					if(!UploadFileFilter::check($val['tmp_name'][$i], $val['name'][$i])){
+						$files = array();
+						unset($_FILES[$key]);
+						break;
 					}
+					$file = array();
+					$file['name'] = $val['name'][$i];
+					$file['type'] = $val['type'][$i];
+					$file['tmp_name'] = $val['tmp_name'][$i];
+					$file['error'] = $val['error'][$i];
+					$file['size'] = $val['size'][$i];
+					$files[] = $file;
 				}
-				if($files) $this->set($key, $files, TRUE);
+				if(count($files)){
+					self::set($key, $files, true);
+				}
 			}
 		}
 	}

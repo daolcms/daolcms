@@ -272,7 +272,7 @@ class adminAdminController extends admin {
 	 */
 	function procAdminUpdateConfig() {
 		$adminTitle = Context::get('adminTitle');
-		$file = $_FILES['adminLogo'];
+		$file = Context::get('adminLogo');
 
 		$oModuleModel = &getModel('module');
 		$oAdminConfig = $oModuleModel->getModuleConfig('admin');
