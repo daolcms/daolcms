@@ -29,8 +29,8 @@ class MssqlTableWithHint extends Table {
 	 * @param string $index_hints_list
 	 * @return void
 	 */
-	function MssqlTableWithHint($name, $alias = NULL, $index_hints_list) {
-		parent::Table($name, $alias);
+	function __construct($name, $alias = NULL, $index_hints_list) {
+		parent::__construct($name, $alias);
 		$this->index_hints_list = $index_hints_list;
 	}
 	

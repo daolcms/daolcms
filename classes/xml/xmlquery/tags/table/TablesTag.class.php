@@ -30,7 +30,7 @@ class TablesTag {
 	 * @param object $xml_index_hints_tag
 	 * @return void
 	 */
-	function TablesTag($xml_tables_tag, $xml_index_hints_tag = NULL) {
+	function __construct($xml_tables_tag, $xml_index_hints_tag = NULL) {
 		$this->tables = array();
 		
 		$xml_tables = $xml_tables_tag->table;

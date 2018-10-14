@@ -51,7 +51,7 @@ class ConditionTag {
 	 * @param object $condition
 	 * @return void
 	 */
-	function ConditionTag($condition) {
+	function __construct($condition) {
 		$this->operation = $condition->attrs->operation;
 		$this->pipe = $condition->attrs->pipe;
 		$dbParser = DB::getParser();

@@ -21,8 +21,8 @@ class DeleteExpression extends Expression {
 	 * @param mixed  $value
 	 * @return void
 	 */
-	function DeleteExpression($column_name, $value) {
-		parent::Expression($column_name);
+	function __construct($column_name, $value) {
+		parent::__construct($column_name);
 		$this->value = $value;
 	}
 	

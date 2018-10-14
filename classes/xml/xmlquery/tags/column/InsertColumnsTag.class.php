@@ -21,7 +21,7 @@ class InsertColumnsTag {
 	 * @param array|string $xml_columns
 	 * @return void
 	 */
-	function InsertColumnsTag($xml_columns) {
+	function __construct($xml_columns) {
 		$this->columns = array();
 		
 		if(!$xml_columns)

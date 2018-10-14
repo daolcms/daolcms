@@ -39,7 +39,7 @@ class IndexTag {
 	 * @param object $index
 	 * @return void
 	 */
-	function IndexTag($index) {
+	function __construct($index) {
 		$this->argument_name = $index->attrs->var;
 		
 		// Sort index - column by which to sort

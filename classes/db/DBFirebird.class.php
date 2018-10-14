@@ -38,7 +38,7 @@ class DBFireBird extends DB {
 	/**
 	 * @brief constructor
 	 **/
-	function DBFireBird(){
+	function __construct(){
 		$this->_setDBInfo();
 		$this->_connect();
 	}

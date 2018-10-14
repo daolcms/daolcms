@@ -32,7 +32,7 @@ class ModuleHandler extends Handler {
 	 * @param int    $module_srl
 	 * @return void
 	 **/
-	function ModuleHandler($module = '', $act = '', $mid = '', $document_srl = '', $module_srl = '') {
+	function __construct($module = '', $act = '', $mid = '', $document_srl = '', $module_srl = '') {
 		// If XE has not installed yet, set module as install
 		if(!Context::isInstalled()) {
 			$this->module = 'install';

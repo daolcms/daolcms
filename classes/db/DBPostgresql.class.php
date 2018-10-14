@@ -41,7 +41,7 @@ class DBPostgresql extends DB {
 	/**
 	 * @brief constructor
 	 **/
-	function DBPostgresql(){
+	function __construct(){
 		$this->_setDBInfo();
 		$this->_connect();
 	}

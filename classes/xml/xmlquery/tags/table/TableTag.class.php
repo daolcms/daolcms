@@ -58,7 +58,7 @@ class TableTag {
 	 * @param object $table XML <table> tag
 	 * @return void
 	 */
-	function TableTag($table) {
+	function __construct($table) {
 		$dbParser = DB::getParser();
 		
 		$this->unescaped_name = $table->attrs->name;

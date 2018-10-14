@@ -33,7 +33,7 @@ class CacheWincache extends CacheBase {
 	 *
 	 * @return void
 	 */
-	function CacheWincache() {
+	function __construct() {
 	}
 	
 	/**

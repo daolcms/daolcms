@@ -20,8 +20,8 @@ class UpdateExpression extends Expression {
 	 * @param object $argument
 	 * @return void
 	 */
-	function UpdateExpression($column_name, $argument) {
-		parent::Expression($column_name);
+	function __construct($column_name, $argument) {
+		parent::__construct($column_name);
 		$this->argument = $argument;
 	}
 	

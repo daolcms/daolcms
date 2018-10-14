@@ -28,9 +28,9 @@ class SelectColumnTag extends ColumnTag {
 	 * @param string|object $column
 	 * @return void
 	 */
-	function SelectColumnTag($column) {
+	function __construct($column) {
 		if($column == "*" || $column->attrs->name == '*') {
-			parent::ColumnTag(NULL);
+			parent::__construct(NULL);
 			$this->name = "*";
 		} else {
 			parent::ColumnTag($column->attrs->name);

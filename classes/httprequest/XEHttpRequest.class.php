@@ -37,7 +37,7 @@ class XEHttpRequest {
 	 * constructor
 	 * @return void
 	 */
-	function XEHttpRequest($host, $port, $scheme = '') {
+	function __construct($host, $port, $scheme = '') {
 		$this->m_host = $host;
 		$this->m_port = $port;
 		$this->m_scheme = $scheme;

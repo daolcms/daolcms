@@ -49,7 +49,7 @@ class QueryArgument {
 	 * @param bool   $ignore_value
 	 * @return void
 	 */
-	function QueryArgument($tag, $ignore_value = false) {
+	function __construct($tag, $ignore_value = false) {
 		static $number_of_arguments = 0;
 		
 		$this->argument_name = $tag->attrs->var;

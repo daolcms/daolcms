@@ -28,8 +28,8 @@ class JoinTable extends Table {
 	 * @param array  $conditions
 	 * @return void
 	 */
-	function JoinTable($name, $alias, $join_type, $conditions) {
-		parent::Table($name, $alias);
+	function __construct($name, $alias, $join_type, $conditions) {
+		parent::__construct($name, $alias);
 		$this->join_type = $join_type;
 		$this->conditions = $conditions;
 	}

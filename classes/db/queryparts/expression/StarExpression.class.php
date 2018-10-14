@@ -13,8 +13,8 @@ class StarExpression extends SelectExpression {
 	 * constructor, set the column to asterisk
 	 * @return void
 	 */
-	function StarExpression() {
-		parent::SelectExpression("*");
+	function __construct() {
+		parent::__construct("*");
 	}
 	
 	function getArgument() {

@@ -20,7 +20,7 @@ class Security {
 	 * @param mixed $var Target context
 	 * @return void
 	 */
-	function Security($var = null) {
+	function __construct($var = null) {
 		$this->_targetVar = $var;
 	}
 	

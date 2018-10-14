@@ -44,7 +44,7 @@ class DBSqlite3_pdo extends DB {
 	/**
 	 * @brief constructor
 	 **/
-	function DBSqlite3_pdo(){
+	function __construct(){
 		$this->_setDBInfo();
 		$this->_connect();
 	}

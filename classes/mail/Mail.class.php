@@ -127,7 +127,7 @@ class Mail extends PHPMailer {
 	 *
 	 * @return void
 	 */
-	function Mail() {
+	function __construct() {
 		$smtp_info = Context::getSMTPInfo();
 		Context::set('smtp_info', $smtp_info);
 		

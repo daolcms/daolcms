@@ -22,8 +22,8 @@ class HintTableTag extends TableTag {
 	 * @param array  $index
 	 * @return void
 	 */
-	function HintTableTag($table, $index) {
-		parent::TableTag($table);
+	function __construct($table, $index) {
+		parent::__construct($table);
 		$this->index = $index;
 	}
 	

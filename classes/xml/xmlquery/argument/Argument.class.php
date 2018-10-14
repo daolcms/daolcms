@@ -53,7 +53,7 @@ class Argument {
 	 * @param mixed  $value
 	 * @return void
 	 */
-	function Argument($name, $value) {
+	function __construct($name, $value) {
 		$this->value = $value;
 		$this->name = $name;
 		$this->isValid = true;
