@@ -598,7 +598,7 @@ class mcontentItem extends BaseObject {
 	var $contents_link = null;
 	var $domain = null;
 	
-	function mcontentItem($browser_title = '') {
+	function __construct($browser_title = '') {
 		$this->browser_title = $browser_title;
 	}
 	
