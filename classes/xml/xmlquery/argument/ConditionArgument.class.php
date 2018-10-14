@@ -28,7 +28,7 @@ class ConditionArgument extends Argument {
 			$value = str_replace('\'', '', $value);
 			$value = explode(',', $value);
 		}
-		parent::Argument($name, $value);
+		parent::__construct($name, $value);
 		$this->operation = $operation;
 	}
 	

@@ -33,7 +33,7 @@ class SelectColumnTag extends ColumnTag {
 			parent::__construct(NULL);
 			$this->name = "*";
 		} else {
-			parent::ColumnTag($column->attrs->name);
+			parent::__construct($column->attrs->name);
 			$dbParser = new DB();
 			$dbParser = &$dbParser->getParser();
 			$this->name = $dbParser->parseExpression($this->name);
