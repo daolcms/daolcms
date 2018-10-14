@@ -27,8 +27,8 @@ class SelectExpression extends Expression {
 	 * @param string $alias
 	 * @return void
 	 */
-	function SelectExpression($column_name, $alias = NULL) {
-		parent::Expression($column_name);
+	function __construct($column_name, $alias = NULL) {
+		parent::__construct($column_name);
 		$this->column_alias = $alias;
 	}
 	
