@@ -53,7 +53,7 @@ class autoinstall extends ModuleObject {
 	 *
 	 * @return void
 	 */
-	function autoinstall() {
+	function __construct() {
 		$oModuleModel = &getModel('module');
 		$config = $oModuleModel->getModuleConfig('autoinstall');
 		if($config->downloadServer != _XE_DOWNLOAD_SERVER_) {
