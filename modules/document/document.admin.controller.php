@@ -97,6 +97,12 @@ class documentAdminController extends document {
 						$file_info['tmp_name'] = $val->uploaded_filename;
 						$file_info['name'] = $val->source_filename;
 						$inserted_file = $oFileController->insertFile($file_info, $module_srl, $obj->document_srl, $val->download_count, true);
+
+						if(!$inserted_file->toBool()){
+							$oDB->rollback();
+							return $inserted_file;
+						}
+
 						if($inserted_file && $inserted_file->toBool()) {
 							// for image/video files
 							if($val->direct_download == 'Y') {
@@ -260,6 +266,12 @@ class documentAdminController extends document {
 					$file_info['name'] = $val->source_filename;
 					$oFileController = &getController('file');
 					$inserted_file = $oFileController->insertFile($file_info, $module_srl, $obj->document_srl, 0, true);
+
+					if(!$inserted_file->toBool()) {
+						$oDB->rollback();
+						return $inserted_file;
+					}
+
 					// if image/video files
 					if($val->direct_download == 'Y') {
 						$source_filename = substr($val->uploaded_filename, 2);
