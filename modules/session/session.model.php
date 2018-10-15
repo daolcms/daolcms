@@ -6,32 +6,32 @@
  * @brief  The Model class of the session module
  **/
 class sessionModel extends session {
-	
+
 	/**
 	 * @brief Initialization
 	 **/
 	function init(){
 	}
-	
+
 	function getLifeTime(){
 		return $this->lifetime;
 	}
-	
+
 	function read($session_key){
 		if(!$session_key || !$this->session_started) return;
-		
+
 		$args = new stdClass();
 		$args->session_key = $session_key;
 		$columnList = array('session_key', 'cur_mid', 'val');
 		$output = executeQuery('session.getSession', $args, $columnList);
-		
+
 		if(!$output->data){
 			return '';
 		}
-		
+
 		return $output->data->val;
 	}
-	
+
 	/**
 	 * @brief Get a list of currently connected users
 	 * Requires "object" argument because multiple arguments are expected
@@ -49,10 +49,10 @@ class sessionModel extends session {
 		if(!$args->page) $args->page = 1;
 		if(!$args->period_time) $args->period_time = 3;
 		$args->last_update = date("YmdHis", time() - $args->period_time * 60);
-		
+
 		$output = executeQueryArray('session.getLoggedMembers', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$member_srls = array();
 		$member_keys = array();
 		if(count($output->data)){
@@ -61,7 +61,7 @@ class sessionModel extends session {
 				$member_keys[$val->member_srl] = $key;
 			}
 		}
-		
+
 		if(Context::get('is_logged')){
 			$logged_info = Context::get('logged_info');
 			if(!in_array($logged_info->member_srl, $member_srls)){
@@ -69,9 +69,9 @@ class sessionModel extends session {
 				$member_keys[$logged_info->member_srl] = 0;
 			}
 		}
-		
+
 		if(!count($member_srls)) return $output;
-		
+
 		$member_args->member_srl = implode(',', $member_srls);
 		$member_output = executeQueryArray('member.getMembers', $member_args);
 		if($member_output->data){
@@ -79,7 +79,7 @@ class sessionModel extends session {
 				$output->data[$member_keys[$val->member_srl]] = $val;
 			}
 		}
-		
+
 		return $output;
 	}
 }

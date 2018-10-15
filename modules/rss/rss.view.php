@@ -6,7 +6,7 @@
  * @author NAVER (developers@xpressengine.com)
  **/
 class rssView extends rss {
-	
+
 	/**
 	 * Initialization
 	 *
@@ -14,7 +14,7 @@ class rssView extends rss {
 	 **/
 	function init(){
 	}
-	
+
 	/**
 	 * Feed output.
 	 * When trying to directly print out the RSS, the results variable can be directly specified through
@@ -35,7 +35,7 @@ class rssView extends rss {
 			$mid = Context::getRequestVars()->mid; // The target module id, if absent, then all
 			$start_date = (int)Context::get('start_date');
 			$end_date = (int)Context::get('end_date');
-			
+
 			$module_srls = array();
 			$rss_config = array();
 			$total_config = '';
@@ -63,16 +63,16 @@ class rssView extends rss {
 					}
 				}
 			}
-			
+
 			if(!count($module_srls) && !$add_description) return $this->dispError();
-			
+
 			$info = new stdClass();
 			$args = new stdClass();
-			
+
 			if($module_srls){
 				$args->module_srl = implode(',', $module_srls);
 				//$module_list = $oModuleModel->getMidList($args);	//perhaps module_list varialbles not use
-				
+
 				$args->search_target = 'is_secret';
 				$args->search_keyword = 'N';
 				$args->page = (int)Context::get('page');
@@ -83,7 +83,7 @@ class rssView extends rss {
 				if($end_date || $end_date != 0) $args->end_date = $end_date;
 				if($start_date == 0) unset($start_date);
 				if($end_date == 0) unset($end_date);
-				
+
 				$args->sort_index = 'list_order';
 				$args->order_type = 'asc';
 				$output = $oDocumentModel->getDocumentList($args);
@@ -92,7 +92,7 @@ class rssView extends rss {
 				if($mid){
 					$info->title = Context::getBrowserTitle();
 					$oModuleController->replaceDefinedLangCode($info->title);
-					
+
 					$info->title = str_replace('\'', '&apos;', $info->title);
 					if($config->feed_description){
 						$info->description = str_replace('\'', '&apos;', htmlspecialchars($config->feed_description, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
@@ -108,7 +108,7 @@ class rssView extends rss {
 				}
 			}
 		}
-		
+
 		if(!$info->title){
 			if($rss_title) $info->title = $rss_title;
 			else if($total_config->feed_title) $info->title = $total_config->feed_title;
@@ -116,7 +116,7 @@ class rssView extends rss {
 				$site_module_info = Context::get('site_module_info');
 				$info->title = $site_module_info->browser_title;
 			}
-			
+
 			$oModuleController->replaceDefinedLangCode($info->title);
 			$info->title = str_replace('\'', '&apos;', htmlspecialchars($info->title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
 			$info->description = str_replace('\'', '&apos;', htmlspecialchars($total_config->feed_description, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
@@ -124,7 +124,7 @@ class rssView extends rss {
 			$info->feed_copyright = str_replace('\'', '&apos;', htmlspecialchars($total_config->feed_copyright, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
 		}
 		if($add_description) $info->description .= "\r\n" . $add_description;
-		
+
 		if($total_config->image) $info->image = Context::getRequestUri() . str_replace('\'', '&apos;', htmlspecialchars($total_config->image, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
 		switch(Context::get('format')){
 			case 'atom':
@@ -143,20 +143,20 @@ class rssView extends rss {
 				$info->date = date("D, d M Y H:i:s") . ' ' . $GLOBALS['_time_zone'];
 				break;
 		}
-		
+
 		if($_SERVER['HTTPS'] == 'on') $proctcl = 'https://';
 		else $proctcl = 'http://';
-		
+
 		$temp_link = explode('/', $info->link);
 		if($temp_link[0] == '' && $info->link){
 			$info->link = $proctcl . $_SERVER['HTTP_HOST'] . $info->link;
 		}
-		
+
 		$temp_id = explode('/', $info->id);
 		if($temp_id[0] == '' && $info->id){
 			$info->id = $proctcl . $_SERVER['HTTP_HOST'] . $info->id;
 		}
-		
+
 		$info->language = str_replace('jp','ja',Context::getLangType());
 		// Set the variables used in the RSS output
 		Context::set('info', $info);
@@ -183,16 +183,16 @@ class rssView extends rss {
 				$file = 'rss20';
 				break;
 		}
-		
+
 		$oTemplate = new TemplateHandler();
-		
+
 		$content = $oTemplate->compile($path, $file);
 		Context::set('content', $content);
 		// Set the template file
 		$this->setTemplatePath($path);
 		$this->setTemplateFile('display');
 	}
-	
+
 	/**
 	 * ATOM output
 	 *
@@ -202,7 +202,7 @@ class rssView extends rss {
 		Context::set('format', 'atom');
 		$this->rss();
 	}
-	
+
 	/**
 	 * Error output
 	 *
@@ -212,7 +212,7 @@ class rssView extends rss {
 		// Prepare the output message
 		$this->rss(null, null, Context::getLang('msg_rss_is_disabled'));
 	}
-	
+
 	/**
 	 * Additional configurations for a service module
 	 * Receive the form for the form used by rss
@@ -223,7 +223,7 @@ class rssView extends rss {
 	function triggerDispRssAdditionSetup(&$obj){
 		$current_module_srl = Context::get('module_srl');
 		$current_module_srls = Context::get('module_srls');
-		
+
 		if(!$current_module_srl && !$current_module_srls){
 			// Get information of the selected module
 			$current_module_info = Context::get('current_module_info');
@@ -238,7 +238,7 @@ class rssView extends rss {
 		$oTemplate = &TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($this->module_path . 'tpl', 'rss_module_config');
 		$obj .= $tpl;
-		
+
 		return new BaseObject();
 	}
 }

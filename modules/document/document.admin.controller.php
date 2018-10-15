@@ -16,7 +16,7 @@ class documentAdminController extends document {
 	 */
 	function init() {
 	}
-	
+
 	/**
 	 * Remove the selected docs from admin page
 	 * @return void
@@ -33,13 +33,13 @@ class documentAdminController extends document {
 		for($i = 0; $i < $document_count; $i++) {
 			$document_srl = trim($document_srl_list[$i]);
 			if(!$document_srl) continue;
-			
+
 			$oDocumentController->deleteDocument($document_srl, true);
 		}
-		
+
 		$this->setMessage(sprintf(Context::getLang('msg_checked_document_is_deleted'), $document_count));
 	}
-	
+
 	/**
 	 * Change the module to move a specific article
 	 * @param array $document_srl_list
@@ -49,47 +49,47 @@ class documentAdminController extends document {
 	 */
 	function moveDocumentModule($document_srl_list, $module_srl, $category_srl) {
 		if(!count($document_srl_list)) return;
-		
+
 		$oDocumentModel = getModel('document');
 		$oDocumentController = getController('document');
-		
+
 		$oDB = &DB::getInstance();
 		$oDB->begin();
-		
+
 		$triggerObj = new stdClass();
 		$triggerObj->document_srls = implode(',', $document_srl_list);
 		$triggerObj->module_srl = $module_srl;
 		$triggerObj->source_module_srl = array();
 		$triggerObj->category_srl = $category_srl;
-		
+
 		// Call a trigger (before)
 		$output = ModuleHandler::triggerCall('document.moveDocumentModule', 'before', $triggerObj);
 		if(!$output->toBool()) {
 			$oDB->rollback();
 			return $output;
 		}
-		
+
 		for($i = count($document_srl_list) - 1; $i >= 0; $i--) {
 			$document_srl = $document_srl_list[$i];
 			$oDocument = $oDocumentModel->getDocument($document_srl);
 			if(!$oDocument->isExists()) continue;
-			
+
 			$triggerObj->source_module_srl[$document_srl] = $oDocument->get('module_srl');
-			
+
 			$source_category_srl = $oDocument->get('category_srl');
-			
+
 			unset($obj);
 			$obj = $oDocument->getObjectVars();
-			
+
 			// Fix multiple languages problems when moving the article
 			$args_doc_origin->document_srl = $document_srl;
 			$output_ori = executeQuery('document.getDocument', $args_doc_origin, array('content'));
 			$obj->content = $output_ori->data->content;
-			
+
 			// Move the attached file if the target module is different
 			if($module_srl != $obj->module_srl && $oDocument->hasUploadedFiles()) {
 				$oFileController = &getController('file');
-				
+
 				$files = $oDocument->getUploadedFiles();
 				if(is_array($files)) {
 					foreach($files as $key => $val) {
@@ -116,7 +116,7 @@ class documentAdminController extends document {
 				// Set the all files to be valid
 				$oFileController->setFilesValid($obj->document_srl);
 			}
-			
+
 			if($module_srl != $obj->module_srl) {
 				$oDocumentController->deleteDocumentAliasByDocument($obj->document_srl);
 			}
@@ -133,9 +133,9 @@ class documentAdminController extends document {
 				if($source_category_srl) $oDocumentController->updateCategoryCount($oDocument->get('module_srl'), $source_category_srl);
 				if($category_srl) $oDocumentController->updateCategoryCount($module_srl, $category_srl);
 			}
-			
+
 		}
-		
+
 		$args = new stdClass();
 		$args->document_srls = implode(',', $document_srl_list);
 		$args->module_srl = $module_srl;
@@ -145,7 +145,7 @@ class documentAdminController extends document {
 			$oDB->rollback();
 			return $output;
 		}
-		
+
 		$output = executeQuery('comment.updateCommentListModule', $args);
 		if(!$output->toBool()) {
 			$oDB->rollback();
@@ -159,7 +159,7 @@ class documentAdminController extends document {
 				return $output;
 			}
 		}
-		
+
 		// Tags
 		$output = executeQuery('tag.updateTagModule', $args);
 		if(!$output->toBool()) {
@@ -172,7 +172,7 @@ class documentAdminController extends document {
 			$oDB->rollback();
 			return $output;
 		}
-		
+
 		$oDB->commit();
 		//remove from cache
 		$oCacheHandler = &CacheHandler::getInstance('object');
@@ -187,7 +187,7 @@ class documentAdminController extends document {
 		}
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * Copy the post
 	 * @param array $document_srl_list
@@ -197,15 +197,15 @@ class documentAdminController extends document {
 	 */
 	function copyDocumentModule($document_srl_list, $module_srl, $category_srl) {
 		if(!count($document_srl_list)) return;
-		
+
 		$oDocumentModel = &getModel('document');
 		$oDocumentController = &getController('document');
-		
+
 		$oFileModel = &getModel('file');
-		
+
 		$oDB = &DB::getInstance();
 		$oDB->begin();
-		
+
 		$triggerObj = new stdClass();
 		$triggerObj->document_srls = implode(',', $document_srl_list);
 		$triggerObj->module_srl = $module_srl;
@@ -216,7 +216,7 @@ class documentAdminController extends document {
 			$oDB->rollback();
 			return $output;
 		}
-		
+
 		$extraVarsList = $oDocumentModel->getDocumentExtraVarsFromDB($document_srl_list);
 		$extraVarsListByDocumentSrl = array();
 		if(is_array($extraVarsList->data)) {
@@ -224,19 +224,19 @@ class documentAdminController extends document {
 				if(!isset($extraVarsListByDocumentSrl[$value->document_srl])) {
 					$extraVarsListByDocumentSrl[$value->document_srl] = array();
 				}
-				
+
 				array_push($extraVarsListByDocumentSrl[$value->document_srl], $value);
 			}
 		}
-		
+
 		for($i = count($document_srl_list) - 1; $i >= 0; $i--) {
 			$document_srl = $document_srl_list[$i];
 			$oDocument = $oDocumentModel->getDocument($document_srl);
 			if(!$oDocument->isExists()) continue;
-			
+
 			$obj = null;
 			$obj = $oDocument->getObjectVars();
-			
+
 			$extraVars = $extraVarsListByDocumentSrl[$document_srl];
 			if($module_srl == $obj->module_srl) {
 				if(is_array($extraVars)) {
@@ -272,27 +272,27 @@ class documentAdminController extends document {
 					}
 				}
 			}
-			
+
 			// Write a post
 			$output = $oDocumentController->insertDocument($obj, true, true);
 			if(!$output->toBool()) {
 				$oDB->rollback();
 				return $output;
 			}
-			
+
 			// copy multi language contents
 			if(is_array($extraVars)) {
 				foreach($extraVars AS $key => $value) {
 					if($value->idx >= 0 && $value->lang_code == Context::getLangType()) {
 						continue;
 					}
-					
+
 					if($value->var_idx < 0 || ($module_srl == $value->module_srl && $value->var_idx >= 0)) {
 						$oDocumentController->insertDocumentExtraVar($value->module_srl, $obj->document_srl, $value->var_idx, $value->value, $value->eid, $value->lang_code);
 					}
 				}
 			}
-			
+
 			// Move the comments
 			if($oDocument->getCommentCount()) {
 				$oCommentModel = &getModel('comment');
@@ -305,7 +305,7 @@ class documentAdminController extends document {
 					foreach($comments as $comment_obj) {
 						$comment_srl = getNextSequence();
 						$p_comment_srl[$comment_obj->comment_srl] = $comment_srl;
-						
+
 						// Pre-register the attachment
 						if($comment_obj->uploaded_count) {
 							$files = $oFileModel->getFiles($comment_obj->comment_srl, true);
@@ -327,20 +327,20 @@ class documentAdminController extends document {
 								}
 							}
 						}
-						
+
 						$comment_obj->module_srl = $obj->module_srl;
 						$comment_obj->document_srl = $obj->document_srl;
 						$comment_obj->comment_srl = $comment_srl;
-						
+
 						if($comment_obj->parent_srl) $comment_obj->parent_srl = $p_comment_srl[$comment_obj->parent_srl];
-						
+
 						$output = $oCommentController->insertComment($comment_obj, true);
 						if($output->toBool()) $success_count++;
 					}
 					$oDocumentController->updateCommentCount($obj->document_srl, $success_count, $comment_obj->nick_name, true);
-					
+
 				}
-				
+
 			}
 			// Move the trackbacks
 			$oTrackbackModel = &getModel('trackback');
@@ -359,10 +359,10 @@ class documentAdminController extends document {
 					$oDocumentController->updateTrackbackCount($obj->document_srl, $success_count);
 				}
 			}
-			
+
 			$copied_srls[$document_srl] = $obj->document_srl;
 		}
-		
+
 		// Call a trigger (before)
 		$triggerObj->copied_srls = $copied_srls;
 		$output = ModuleHandler::triggerCall('document.copyDocumentModule', 'after', $triggerObj);
@@ -370,14 +370,14 @@ class documentAdminController extends document {
 			$oDB->rollback();
 			return $output;
 		}
-		
+
 		$oDB->commit();
-		
+
 		$output = new BaseObject();
 		$output->add('copied_srls', $copied_srls);
 		return $output;
 	}
-	
+
 	/**
 	 * Delete all documents of the module
 	 * @param int $module_srl
@@ -410,14 +410,14 @@ class documentAdminController extends document {
 		}
 		return $output;
 	}
-	
+
 	/**
 	 * Save the default settings of the document module
 	 * @return object
 	 */
 	function procDocumentAdminInsertConfig() {
 		$oModuleController = getController('module');
-		
+
 		$config = getModel('document')->getDocumentConfig();
 		$config->icons = Context::get('icons');
 		$config->micons = Context::get('micons');
@@ -426,25 +426,25 @@ class documentAdminController extends document {
 			return $output;
 		}
 		$this->setMessage('success_updated');
-		
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispDocumentAdminConfig');
 		$this->setRedirectUrl($returnUrl, $output);
 	}
-	
+
 	/**
 	 * Revoke declaration of the blacklisted posts
 	 * @return object
 	 */
 	function procDocumentAdminCancelDeclare() {
 		$document_srl = trim(Context::get('document_srl'));
-		
+
 		if($document_srl) {
 			$args->document_srl = $document_srl;
 			$output = executeQuery('document.deleteDeclaredDocuments', $args);
 			if(!$output->toBool()) return $output;
 		}
 	}
-	
+
 	/**
 	 * Delete all thumbnails
 	 * @return void
@@ -453,12 +453,12 @@ class documentAdminController extends document {
 		$temp_cache_dir = './files/thumbnails_' . $_SERVER['REQUEST_TIME'];
 		FileHandler::rename('./files/thumbnails', $temp_cache_dir);
 		FileHandler::makeDir('./files/thumbnails');
-		
+
 		FileHandler::removeDir($temp_cache_dir);
-		
+
 		$this->setMessage('success_deleted');
 	}
-	
+
 	/**
 	 * Delete thumbnails with subdirectory
 	 * @return void
@@ -477,7 +477,7 @@ class documentAdminController extends document {
 		}
 		$directory->close();
 	}
-	
+
 	/**
 	 * Add or modify extra variables of the module
 	 * @return void|object
@@ -493,7 +493,7 @@ class documentAdminController extends document {
 		$search = Context::get('search');
 		$eid = Context::get('eid');
 		$obj = new stdClass();
-		
+
 		if(!$module_srl || !$name || !$eid) return new BaseObject(-1, 'msg_invalid_request');
 		// set the max value if idx is not specified
 		if(!$var_idx) {
@@ -501,7 +501,7 @@ class documentAdminController extends document {
 			$output = executeQuery('document.getDocumentMaxExtraKeyIdx', $obj);
 			$var_idx = $output->data->var_idx + 1;
 		}
-		
+
 		// Check if the module name already exists
 		$obj->module_srl = $module_srl;
 		$obj->var_idx = $var_idx;
@@ -510,18 +510,18 @@ class documentAdminController extends document {
 		if(!$output->toBool() || $output->data->count) {
 			return new BaseObject(-1, 'msg_extra_name_exists');
 		}
-		
+
 		// insert or update
 		$oDocumentController = &getController('document');
 		$output = $oDocumentController->insertDocumentExtraKey($module_srl, $var_idx, $name, $type, $is_required, $search, $default, $desc, $eid);
 		if(!$output->toBool()) return $output;
-		
+
 		$this->setMessage('success_registed');
-		
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispDocumentAdminAlias', 'document_srl', $args->document_srl);
 		$this->setRedirectUrl($returnUrl);
 	}
-	
+
 	/**
 	 * Delete extra variables of the module
 	 * @return void|object
@@ -530,14 +530,14 @@ class documentAdminController extends document {
 		$module_srl = Context::get('module_srl');
 		$var_idx = Context::get('var_idx');
 		if(!$module_srl || !$var_idx) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		$oDocumentController = &getController('document');
 		$output = $oDocumentController->deleteDocumentExtraKeys($module_srl, $var_idx);
 		if(!$output->toBool()) return $output;
-		
+
 		$this->setMessage('success_deleted');
 	}
-	
+
 	/**
 	 * Control the order of extra variables
 	 * @return void|object
@@ -546,21 +546,21 @@ class documentAdminController extends document {
 		$type = Context::get('type');
 		$module_srl = Context::get('module_srl');
 		$var_idx = Context::get('var_idx');
-		
+
 		if(!$type || !$module_srl || !$var_idx) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		$oModuleModel = &getModel('module');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
 		if(!$module_info->module_srl) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		$oDocumentModel = &getModel('document');
 		$extra_keys = $oDocumentModel->getExtraKeys($module_srl);
 		if(!$extra_keys[$var_idx]) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		if($type == 'up') $new_idx = $var_idx - 1;
 		else $new_idx = $var_idx + 1;
 		if($new_idx < 1) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		$args = new stdClass();
 		$args->module_srl = $module_srl;
 		$args->var_idx = $new_idx;
@@ -568,7 +568,7 @@ class documentAdminController extends document {
 		if(!$output->toBool()) return $output;
 		if(!$output->data) return new BaseObject(-1, 'msg_invalid_request');
 		unset($args);
-		
+
 		// update immediately if there is no idx to change
 		if(!$extra_keys[$new_idx]) {
 			$args = new stdClass();
@@ -589,14 +589,14 @@ class documentAdminController extends document {
 			if(!$output->toBool()) return $output;
 			$output = executeQuery('document.updateDocumentExtraVarIdx', $args);
 			if(!$output->toBool()) return $output;
-			
+
 			$args->var_idx = $var_idx;
 			$args->new_idx = $new_idx;
 			$output = executeQuery('document.updateDocumentExtraKeyIdx', $args);
 			if(!$output->toBool()) return $output;
 			$output = executeQuery('document.updateDocumentExtraVarIdx', $args);
 			if(!$output->toBool()) return $output;
-			
+
 			$args->var_idx = -10000;
 			$args->new_idx = $var_idx;
 			$output = executeQuery('document.updateDocumentExtraKeyIdx', $args);
@@ -605,7 +605,7 @@ class documentAdminController extends document {
 			if(!$output->toBool()) return $output;
 		}
 	}
-	
+
 	/**
 	 * Insert alias for document
 	 * @return void|object
@@ -621,11 +621,11 @@ class documentAdminController extends document {
 			$query = "document.updateAlias";
 		}
 		$output = executeQuery($query, $args);
-		
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispDocumentAdminAlias', 'document_srl', $args->document_srl);
 		return $this->setRedirectUrl($returnUrl, $output);
 	}
-	
+
 	/**
 	 * Delete alias for document
 	 * @return void|object
@@ -635,11 +635,11 @@ class documentAdminController extends document {
 		$alias_srl = Context::get('target_srl');
 		$args->alias_srl = $alias_srl;
 		$output = executeQuery("document.deleteAlias", $args);
-		
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispDocumentAdminAlias', 'document_srl', $document_srl);
 		return $this->setRedirectUrl($returnUrl, $output);
 	}
-	
+
 	/**
 	 * Restor document from trash
 	 * @return void|object
@@ -648,7 +648,7 @@ class documentAdminController extends document {
 		$trash_srl = Context::get('trash_srl');
 		$this->restoreTrash($trash_srl);
 	}
-	
+
 	/*function restoreTrash($trash_srl){
 		$oDB = &DB::getInstance();
 		$oDocumentModel = &getModel('document');
@@ -701,7 +701,7 @@ class documentAdminController extends document {
 		$oDB->commit();
 		return $output;
 	}*/
-	
+
 	/**
 	 * Restore document from trash module, called by trash module
 	 * This method is passived
@@ -710,17 +710,17 @@ class documentAdminController extends document {
 	 */
 	function restoreTrash($originObject) {
 		if(is_array($originObject)) $originObject = (object)$originObject;
-		
+
 		$oDocumentController = &getController('document');
 		$oDocumentModel = &getModel('document');
-		
+
 		$oDB = &DB::getInstance();
 		$oDB->begin();
-		
+
 		//DB restore
 		$output = $oDocumentController->insertDocument($originObject, false, true, false);
 		if(!$output->toBool()) return new BaseObject(-1, $output->getMessage());
-		
+
 		//FILE restore
 		$oDocument = $oDocumentModel->getDocument($originObject->document_srl);
 		// If the post was not temorarily saved, set the attachment's status to be valid
@@ -730,7 +730,7 @@ class documentAdminController extends document {
 			$args->isvalid = 'Y';
 			$output = executeQuery('file.updateFileValid', $args);
 		}
-		
+
 		// call a trigger (after)
 		if($output->toBool()) {
 			$trigger_output = ModuleHandler::triggerCall('document.restoreTrash', 'after', $originObject);
@@ -739,12 +739,12 @@ class documentAdminController extends document {
 				return $trigger_output;
 			}
 		}
-		
+
 		// commit
 		$oDB->commit();
 		return new BaseObject(0, 'success');
 	}
-	
+
 	/**
 	 * Empty document in trash, called by trash module
 	 * This method is passived
@@ -754,10 +754,10 @@ class documentAdminController extends document {
 	function emptyTrash($originObject) {
 		$originObject = unserialize($originObject);
 		if(is_array($originObject)) $originObject = (object)$originObject;
-		
+
 		$oDocument = new documentItem();
 		$oDocument->setAttribute($originObject);
-		
+
 		$oDocumentController = &getController('document');
 		$output = $oDocumentController->deleteDocument($oDocument->get('document_srl'), true, true, $oDocument);
 		return $output;

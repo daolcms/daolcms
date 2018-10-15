@@ -6,14 +6,14 @@
  * @Adaptor DAOL Project (developer@daolcms.org)
  **/
 class fileAdminView extends file {
-	
+
 	/**
 	 * Initialization
 	 * @return void
 	 **/
 	function init() {
 	}
-	
+
 	/**
 	 * Display output list (for administrator)
 	 *
@@ -25,7 +25,7 @@ class fileAdminView extends file {
 		$args->page = Context::get('page'); // /< Page
 		$args->list_count = 30; // /< Number of documents that appear on a single page
 		$args->page_count = 10; // /< Number of pages that appear in the page navigation
-		
+
 		$args->sort_index = 'file_srl'; // /< Sorting values
 		$args->isvalid = Context::get('isvalid');
 		$args->module_srl = Context::get('module_srl');
@@ -39,16 +39,16 @@ class fileAdminView extends file {
 			$oCommentModel = &getModel('comment');
 			$oDocumentModel = &getModel('document');
 			$oModuleModel = &getModel('module');
-			
+
 			$file_list = array();
 			$document_list = array();
 			$comment_list = array();
 			$module_list = array();
-			
+
 			$doc_srls = array();
 			$com_srls = array();
 			$mod_srls = array();
-			
+
 			foreach($output->data as $file) {
 				$file_srl = $file->file_srl;
 				$target_srl = $file->upload_target_srl;
@@ -106,13 +106,13 @@ class fileAdminView extends file {
 						if($module_list[$mod_srls[$i]]) delete($mod_srls[$i]);
 					}
 				}
-				
+
 				if($file->upload_target_type) {
 					if(!in_array($file->upload_target_srl, ${$file->upload_target_type . '_srls'})) {
 						${$file->upload_target_type . '_srls'}[] = $target_srl;
 					}
 				}
-				
+
 				$file_list[$file_srl] = $file;
 				$mod_srls[] = $file->module_srl;
 			}
@@ -150,14 +150,14 @@ class fileAdminView extends file {
 					}
 				}
 			}
-			
+
 			foreach($file_list as $srl => $file) {
 				if($file->upload_target_type == 'com') {
 					$file_list[$srl]->target_document_srl = $comment_list[$file->upload_target_srl]->document_srl;
 				}
 			}
 		}
-		
+
 		Context::set('file_list', $file_list);
 		Context::set('document_list', $document_list);
 		Context::set('comment_list', $comment_list);
@@ -171,12 +171,12 @@ class fileAdminView extends file {
 		$security->encodeHTML('file_list..');
 		$security->encodeHTML('module_list..');
 		$security->encodeHTML('search_target', 'search_keyword');
-		
+
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile('file_list');
-		
+
 	}
-	
+
 	/**
 	 * Set attachment information (for administrator)
 	 *
@@ -194,5 +194,5 @@ class fileAdminView extends file {
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile('adminConfig');
 	}
-	
+
 }

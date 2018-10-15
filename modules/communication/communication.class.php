@@ -6,7 +6,7 @@
  * communication module of the high class
  **/
 class communication extends ModuleObject {
-	
+
 	/**
 	 * Implement if additional tasks are necessary when installing
 	 * @return BaseObject
@@ -16,17 +16,17 @@ class communication extends ModuleObject {
 		FileHandler::makeDir('./files/member_extra_info/new_message_flags');
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * method to check if successfully installed.
 	 * @return boolean true : need to update false : don't need to update
 	 **/
 	function checkUpdate() {
 		if(!is_dir("./files/member_extra_info/new_message_flags")) return true;
-		
+
 		$oModuleModel = &getModel('module');
 		$config = $oModuleModel->getModuleConfig('message');
-		
+
 		if($config->skin) {
 			$config_parse = explode('.', $config->skin);
 			if(count($config_parse) > 1) {
@@ -36,7 +36,7 @@ class communication extends ModuleObject {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Update
 	 * @return BaseObject
@@ -44,10 +44,10 @@ class communication extends ModuleObject {
 	function moduleUpdate() {
 		if(!is_dir("./files/member_extra_info/new_message_flags"))
 			FileHandler::makeDir('./files/member_extra_info/new_message_flags');
-		
+
 		$oModuleModel = &getModel('module');
 		$config = $oModuleModel->getModuleConfig('message');
-		
+
 		if($config->skin) {
 			$config_parse = explode('.', $config->skin);
 			if(count($config_parse) > 1) {
@@ -61,7 +61,7 @@ class communication extends ModuleObject {
 		}
 		return new BaseObject(0, 'success_updated');
 	}
-	
+
 	/**
 	 * Re-generate the cache file
 	 * @return void

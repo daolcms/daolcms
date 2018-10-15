@@ -14,7 +14,7 @@ $.fn.toolbar = function(settings) {
 		show    : function(){},
 		hide    : function(){}
 	}, settings);
-	
+
 	this.find(settings.items)
 		.mouseover(function(){
 			var $ul = $(this).next('ul');
@@ -34,7 +34,7 @@ $.fn.toolbar = function(settings) {
 
 					// radio button
 					selectItem(data);
-					
+
 					// callback
 					settings.click(data);
 				})
@@ -45,7 +45,7 @@ $.fn.toolbar = function(settings) {
 				var $ul = $(this).find('>ul:visible');
 				if($ul.length) hideMenu($ul,settings);
 			});
-	
+
 	return this;
 }
 
@@ -53,9 +53,9 @@ function hideMenu(menu, settings) {
 	menu[settings.fade?'fadeOut':'hide'](settings.fade)
 		.removeClass('tb-menu-active')
 		.find('> li').removeClass('tb-menu-item-hover');
-	
+
 	menu.prev().removeClass('tb-btn-active');
-	
+
 	// hidemenu event
 	settings.hide(menu);
 }
@@ -64,26 +64,26 @@ function showMenu(menu, settings) {
 	menu[settings.fade?'fadeIn':'show'](settings.fade)
 		.addClass('tb-menu-active')
 		.css({position:'absolute',left:0,top:0});
-	
+
 	menu.prev().addClass('tb-btn-active');
 
 	// positioning
 	var btn = menu.prev();
 	var btn_pos = btn.offset();
 	var mnu_pos = menu.offset();
-	
+
 	menu.css({
 		left : btn_pos.left - mnu_pos.left,
 		top  : btn_pos.top  - mnu_pos.top + btn.height()
 	})
-	
+
 	// showmenu event
 	settings.show(menu);
 }
 
 function selectItem(data) {
 	var item = data.element;
-	
+
 	switch(data.type){
 		case 'radio':
 			item.parent().find('> li').removeClass('tb-menu-item-selected');

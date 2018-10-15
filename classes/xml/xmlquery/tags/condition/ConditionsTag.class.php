@@ -13,7 +13,7 @@ class ConditionsTag {
 	 * @var array value is ConditionGroupTag object
 	 */
 	var $condition_groups;
-	
+
 	/**
 	 * constructor
 	 * @param object $xml_conditions
@@ -23,11 +23,11 @@ class ConditionsTag {
 		$this->condition_groups = array();
 		if(!$xml_conditions)
 			return;
-		
+
 		$xml_condition_list = array();
 		if($xml_conditions->condition)
 			$xml_condition_list = $xml_conditions->condition;
-		
+
 		if($xml_conditions->query) {
 			if(!is_array($xml_condition_list)) $xml_condition_list = array($xml_condition_list);
 			if(!is_array($xml_conditions->query)) $xml_conditions->query = array($xml_conditions->query);
@@ -36,7 +36,7 @@ class ConditionsTag {
 		if($xml_condition_list) {
 			$this->condition_groups[] = new ConditionGroupTag($xml_condition_list);
 		}
-		
+
 		$xml_groups = $xml_conditions->group;
 		if($xml_groups) {
 			if(!is_array($xml_groups)) $xml_groups = array($xml_groups);
@@ -45,7 +45,7 @@ class ConditionsTag {
 			}
 		}
 	}
-	
+
 	/**
 	 * ConditionGroupTag object to string
 	 * @return string
@@ -59,7 +59,7 @@ class ConditionsTag {
 		$output_conditions .= ')';
 		return $output_conditions;
 	}
-	
+
 	function getArguments() {
 		$arguments = array();
 		foreach($this->condition_groups as $condition) {

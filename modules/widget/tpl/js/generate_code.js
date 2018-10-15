@@ -112,7 +112,7 @@ function doFillWidgetVars() {
 	for(var j=0;j<obj_list.length;j++) {
 		/*jshint -W004*/
 		var node = obj_list[j];
-		
+
 		if(node.name.indexOf('_')==0) continue;
 		if(node.name == 'widgetstyle') continue;
 		if(node.type == 'button') continue;
@@ -195,7 +195,7 @@ function doFillWidgetVars() {
 		.each(function(){
 			var $this = jQuery(this);
 			var src = $this.siblings('input').eq(0).val().split(',');
-			
+
 			if (src) $this.trigger('filebox.selected', [src]);
 		});
 }
@@ -248,7 +248,7 @@ jQuery(document).ready(function($){
 		}
 		$(this).before(htmlCode);
 
-		
+
 
 		$('.filebox_del').bind('click', function(){
 			var filename = $(this).prev('img').attr("src");

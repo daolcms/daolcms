@@ -6,7 +6,7 @@
  * @author NAVER (developers@xpressengine.com)
  **/
 class counterAdminView extends counter {
-	
+
 	/**
 	 * Initialization
 	 *
@@ -16,7 +16,7 @@ class counterAdminView extends counter {
 		// set the template path
 		$this->setTemplatePath($this->module_path . 'tpl');
 	}
-	
+
 	/**
 	 * Admin page
 	 *
@@ -42,9 +42,9 @@ class counterAdminView extends counter {
 		}
 		$detail_status = $oCounterModel->getHourlyStatus($type, $selected_date, $site_module_info->site_srl);
 		Context::set('detail_status', $detail_status);
-		
+
 		// display
 		$this->setTemplateFile('index');
 	}
-	
+
 }

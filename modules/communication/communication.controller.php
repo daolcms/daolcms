@@ -7,33 +7,33 @@
  * communication module of the Controller class
  **/
 class communicationController extends communication {
-	
+
 	/**
 	 * Initialization
 	 **/
 	function init() {
 	}
-	
+
 	/**
 	 * change the settings of message box
 	 * @return void|Object (success : void, fail : Object)
 	 **/
 	function procCommunicationUpdateAllowMessage() {
 		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
-		
+
 		$args = new stdClass();
 		$args->allow_message = Context::get('allow_message');
 		if(!in_array($args->allow_message, array('Y', 'N', 'F'))) $args->allow_message = 'Y';
-		
+
 		$logged_info = Context::get('logged_info');
 		$args->member_srl = $logged_info->member_srl;
-		
+
 		$output = executeQuery('communication.updateAllowMessage', $args);
-		
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', 'dispCommunicationMessages', 'message_type', Context::get('message_type'));
 		return $this->setRedirectUrl($returnUrl, $output);
 	}
-	
+
 	/**
 	 * Send a message
 	 * @return BaseObject
@@ -45,13 +45,13 @@ class communicationController extends communication {
 		// Check variables
 		$receiver_srl = Context::get('receiver_srl');
 		if(!$receiver_srl) return new BaseObject(-1, 'msg_not_exists_member');
-		
+
 		$title = trim(Context::get('title'));
 		if(!$title) return new BaseObject(-1, 'msg_title_is_null');
-		
+
 		$content = trim(Context::get('content'));
 		if(!$content) return new BaseObject(-1, 'msg_content_is_null');
-		
+
 		$send_mail = Context::get('send_mail');
 		if($send_mail != 'Y') $send_mail = 'N';
 		// Check if there is a member to receive a message
@@ -84,7 +84,7 @@ class communicationController extends communication {
 			$oMail->setReceiptor($receiver_member_info->nick_name, $receiver_member_info->email_address);
 			$oMail->send();
 		}
-		
+
 		if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))) {
 			if(Context::get('is_popup') != 'Y') {
 				global $lang;
@@ -102,7 +102,7 @@ class communicationController extends communication {
 		}
 		return $output;
 	}
-	
+
 	/**
 	 * Send a message (DB control)
 	 * @param int     $sender_srl   member_srl of sender
@@ -115,7 +115,7 @@ class communicationController extends communication {
 	function sendMessage($sender_srl, $receiver_srl, $title, $content, $sender_log = true) {
 		$content = removeHackTag($content);
 		$title = htmlspecialchars($title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
-		
+
 		$message_srl = getNextSequence();
 		$related_srl = getNextSequence();
 		// messages to save in the sendor's message box
@@ -156,10 +156,10 @@ class communicationController extends communication {
 		if(!$triggerOutput->toBool()) {
 			return $triggerOutput;
 		}
-		
+
 		$oDB = &DB::getInstance();
 		$oDB->begin();
-		
+
 		// messages to save in the sendor's message box
 		if($sender_srl && $sender_log) {
 			$output = executeQuery('communication.sendMessage', $sender_args);
@@ -186,12 +186,12 @@ class communicationController extends communication {
 		$flag_file = sprintf('%s%s', $flag_path, $receiver_srl);
 		$flag_count = FileHandler::readFile($flag_file);
 		FileHandler::writeFile($flag_file, ++$flag_count);
-		
+
 		$oDB->commit();
-		
+
 		return new BaseObject(0, 'success_sended');
 	}
-	
+
 	/**
 	 * store a specific message into the archive
 	 * @return void|Object (success : void, fail : Object)
@@ -207,16 +207,16 @@ class communicationController extends communication {
 		$oCommunicationModel = &getModel('communication');
 		$message = $oCommunicationModel->getSelectedMessage($message_srl);
 		if(!$message || $message->message_type != 'R') return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		$args = new stdClass();
 		$args->message_srl = $message_srl;
 		$args->receiver_srl = $logged_info->member_srl;
 		$output = executeQuery('communication.setMessageStored', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$this->setMessage('success_registed');
 	}
-	
+
 	/**
 	 * Delete a message
 	 * @return void|Object (success : void, fail : Object)
@@ -247,10 +247,10 @@ class communicationController extends communication {
 		$args->message_srl = $message_srl;
 		$output = executeQuery('communication.deleteMessage', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$this->setMessage('success_deleted');
 	}
-	
+
 	/**
 	 * Delete the multiple messages
 	 * @return void|Object (success : void, fail : Object)
@@ -262,14 +262,14 @@ class communicationController extends communication {
 		$member_srl = $logged_info->member_srl;
 		// check variables
 		if(!Context::get('message_srl_list')) return new BaseObject(-1, 'msg_cart_is_null');
-		
+
 		$message_srl_list = Context::get('message_srl_list');
 		if(!is_array($message_srl_list)) $message_srl_list = explode('|@|', trim($message_srl_list));
 		if(!count($message_srl_list)) return new BaseObject(-1, 'msg_cart_is_null');
-		
+
 		$message_type = Context::get('message_type');
 		if(!$message_type || !in_array($message_type, array('R', 'S', 'T'))) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		$message_count = count($message_srl_list);
 		$target = array();
 		for($i = 0; $i < $message_count; $i++) {
@@ -282,19 +282,19 @@ class communicationController extends communication {
 		$args = new stdClass();
 		$args->message_srls = implode(',', $target);
 		$args->message_type = $message_type;
-		
+
 		if($message_type == 'S') $args->sender_srl = $member_srl;
 		else $args->receiver_srl = $member_srl;
-		
+
 		$output = executeQuery('communication.deleteMessages', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$this->setMessage('success_deleted');
-		
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', 'dispCommunicationMessages', 'message_type', Context::get('message_type'));
 		$this->setRedirectUrl($returnUrl);
 	}
-	
+
 	/**
 	 * Add a friend
 	 * @return void|Object (success : void, fail : Object)
@@ -303,7 +303,7 @@ class communicationController extends communication {
 		// Check login information
 		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_logged');
 		$logged_info = Context::get('logged_info');
-		
+
 		$target_srl = (int)trim(Context::get('target_srl'));
 		if(!$target_srl) return new BaseObject(-1, 'msg_invalid_request');
 		// Variable
@@ -315,10 +315,10 @@ class communicationController extends communication {
 		$args->target_srl = $target_srl;
 		$output = executeQuery('communication.addFriend', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$this->add('member_srl', $target_srl);
 		$this->setMessage('success_registed');
-		
+
 		if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))) {
 			global $lang;
 			htmlHeader();
@@ -329,7 +329,7 @@ class communicationController extends communication {
 			exit;
 		}
 	}
-	
+
 	/**
 	 * Move a group of the friend
 	 * @return void|Object (success : void, fail : Object)
@@ -339,20 +339,20 @@ class communicationController extends communication {
 		if(!Context::get('is_logged')) {
 			return new BaseObject(-1, 'msg_not_logged');
 		}
-		
+
 		$logged_info = Context::get('logged_info');
 		// Check variables
 		$friend_srl_list = Context::get('friend_srl_list');
 		if(!$friend_srl_list) {
 			return new BaseObject(-1, 'msg_cart_is_null');
 		}
-		
+
 		if(!is_array($friend_srl_list)) {
 			$friend_srl_list = explode('|@|', $friend_srl_list);
 		}
-		
+
 		if(!count($friend_srl_list)) return new BaseObject(-1, 'msg_cart_is_null');
-		
+
 		$friend_count = count($friend_srl_list);
 		$target = array();
 		for($i = 0; $i < $friend_count; $i++) {
@@ -366,16 +366,16 @@ class communicationController extends communication {
 		$args->friend_srls = implode(',', $target);
 		$args->member_srl = $logged_info->member_srl;
 		$args->friend_group_srl = Context::get('target_friend_group_srl');
-		
+
 		$output = executeQuery('communication.moveFriend', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$this->setMessage('success_moved');
-		
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', 'dispCommunicationFriend');
 		$this->setRedirectUrl($returnUrl);
 	}
-	
+
 	/**
 	 * Delete a friend
 	 * @return void|Object (success : void, fail : Object)
@@ -387,12 +387,12 @@ class communicationController extends communication {
 		$member_srl = $logged_info->member_srl;
 		// Check variables
 		$friend_srl_list = Context::get('friend_srl_list');
-		
+
 		if(!is_array($friend_srl_list)) {
 			$friend_srl_list = explode('|@|', $friend_srl_list);
 		}
 		if(!count($friend_srl_list)) return new BaseObject(-1, 'msg_cart_is_null');
-		
+
 		$friend_count = count($friend_srl_list);
 		$target = array();
 		for($i = 0; $i < $friend_count; $i++) {
@@ -407,13 +407,13 @@ class communicationController extends communication {
 		$args->member_srl = $logged_info->member_srl;
 		$output = executeQuery('communication.deleteFriend', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$this->setMessage('success_deleted');
-		
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', 'dispCommunicationFriend');
 		$this->setRedirectUrl($returnUrl);
 	}
-	
+
 	/**
 	 * Add a group of friends
 	 * @return void|Object (success : void, fail : Object)
@@ -438,7 +438,7 @@ class communicationController extends communication {
 			$output = executeQuery('communication.addFriendGroup', $args);
 			$msg_code = 'success_registed';
 		}
-		
+
 		if(!$output->toBool()) {
 			if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))) {
 				global $lang;
@@ -462,7 +462,7 @@ class communicationController extends communication {
 			} else $this->setMessage($msg_code);
 		}
 	}
-	
+
 	/**
 	 * change a name of friend group
 	 * @return void|Object (success : void, fail : Object)
@@ -478,13 +478,13 @@ class communicationController extends communication {
 		$args->title = Context::get('title');
 		$args->title = htmlspecialchars($args->title);
 		if(!$args->title) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		$output = executeQuery('communication.renameFriendGroup', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$this->setMessage('success_updated');
 	}
-	
+
 	/**
 	 * Delete a group of friends
 	 * @return void|Object (success : void, fail : Object)
@@ -499,10 +499,10 @@ class communicationController extends communication {
 		$args->member_srl = $logged_info->member_srl;
 		$output = executeQuery('communication.deleteFriendGroup', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$this->setMessage('success_deleted');
 	}
-	
+
 	/**
 	 * set a message status to be 'already read'
 	 * @param int $message_srl
@@ -514,5 +514,5 @@ class communicationController extends communication {
 		$args->related_srl = $message_srl;
 		return executeQuery('communication.setMessageReaded', $args);
 	}
-	
+
 }

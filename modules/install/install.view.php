@@ -6,9 +6,9 @@
  * @brief  View class of install module
  **/
 class installView extends install {
-	
+
 	var $install_enable = false;
-	
+
 	/**
 	 * @brief Initialization
 	 **/
@@ -25,7 +25,7 @@ class installView extends install {
 		// If the environment is installable, execute installController::makeDefaultDirectory()
 		if($this->install_enable) $oInstallController->makeDefaultDirectory();
 	}
-	
+
 	/**
 	 * @brief Display license messages
 	 **/
@@ -69,28 +69,28 @@ class installView extends install {
 				exit;
 			}
 		}
-		
+
 		Context::set('l', Context::getLangType());
 		$this->setTemplateFile('introduce');
 	}
-	
+
 	/**
 	 * @brief Display messages about installation environment
 	 **/
 	function dispInstallLicenseAgreement() {
 		$this->setTemplateFile('license_agreement');
-		
+
 		$lang_type = Context::getLangType();
 		Context::set('lang_type', $lang_type);
 	}
-	
+
 	/**
 	 * @brief Display messages about installation environment
 	 **/
 	function dispInstallCheckEnv() {
 		$this->setTemplateFile('check_env');
 	}
-	
+
 	/**
 	 * @brief Choose a DB
 	 **/
@@ -106,7 +106,7 @@ class installView extends install {
 			$this->setTemplateFile('select_db');
 		}
 	}
-	
+
 	/**
 	 * @brief Display a screen to enter DB and administrator's information
 	 **/
@@ -115,26 +115,26 @@ class installView extends install {
 		if(!$this->install_enable) return $this->dispInstallCheckEnv();
 		// Return to the start-up screen if db_type is not specified
 		if(!Context::get('db_type')) return $this->dispInstallSelectDB();
-		
+
 		// Output the file, disp_db_info_form.html
 		$tpl_filename = sprintf('form.%s', Context::get('db_type'));
 		$this->setTemplateFile($tpl_filename);
 	}
-	
+
 	/**
 	 * @brief Display a screen to enter DB and administrator's information
 	 **/
 	function dispInstallConfigForm() {
 		// Display check_env if not installable
 		if(!$this->install_enable) return $this->dispInstallCheckEnv();
-		
+
 		include _DAOL_PATH_ . 'files/config/tmpDB.config.php';
-		
+
 		Context::set('time_zone', $GLOBALS['time_zone']);
 		Context::set('db_type', $db_info->db_type);
 		$this->setTemplateFile('config_form');
 	}
-	
+
 	/**
 	 * @brief Display a screen to enter DB and administrator's information
 	 **/
@@ -143,12 +143,12 @@ class installView extends install {
 		if(!$this->install_enable) {
 			return $this->dispInstallCheckEnv();
 		}
-		
+
 		Context::loadLang('modules/member/lang');
 		$message = Context::getLang('about_password_strength');
-		
+
 		Context::setLang('msg_password_strength', $message['high']);
-		
+
 		$this->setTemplateFile('admin_form');
 	}
 }

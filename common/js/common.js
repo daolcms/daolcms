@@ -69,7 +69,7 @@ if(typeof window.XE == "undefined") {
 				} else {
 					obj = $('input[name="'+itemName+'"]:checkbox');
 				}
-				
+
 				if(options.checked == 'toggle') {
 					obj.each(function() {
 						$(this).attr('checked', ($(this).attr('checked')) ? false : true);
@@ -145,31 +145,31 @@ if(typeof window.XE == "undefined") {
 
 			isSameHost: function(url) {
 				if(typeof url != "string") return false;
-				
+
 				var target_url = global.XE.URI(url).normalizeHostname().normalizePort().normalizePathname();
 				if(target_url.is('urn')) return false;
-				
+
 				var port = [Number(global.http_port) || 80, Number(global.https_port) || 443]; 
-	
+
 				if(!target_url.hostname()) {
 					target_url = target_url.absoluteTo(global.request_uri);
 				}
-	
+
 				var target_port = target_url.port();
 				if(!target_port) {
 					target_port = (target_url.protocol() == 'http') ? 80 : 443;
 				}
-				
+
 				if(jQuery.inArray(Number(target_port), port) === -1) {
 					return false;
 				}
-				
+
 				if(!base_url) {
 					base_url = global.XE.URI(global.request_uri).normalizeHostname().normalizePort().normalizePathname();
 					base_url = base_url.hostname() + base_url.directory();
 				}
 				target_url = target_url.hostname() + target_url.directory();
-	
+
 				return target_url.indexOf(base_url) === 0;
 			}
 		};
@@ -183,7 +183,7 @@ if(typeof window.XE == "undefined") {
 				var $this = $(this);
 				var href = String($this.attr('href')).trim();
 				var target = String($this.attr('target')).trim();
-				
+
 				if(!target || !href) return;
 				if(!href.match(/^(https?:\/\/)/)) return;
 
@@ -191,7 +191,7 @@ if(typeof window.XE == "undefined") {
 					$this.data('noopener', false);
 					return;
 				}
-		
+
 				if(!global.XE.isSameHost(href)) {
 					var rel = $this.attr('rel');
 					$this.data('noopener', true);
@@ -203,14 +203,14 @@ if(typeof window.XE == "undefined") {
 					}
 				}
 			});
-		
+
 			$('body').on('click', 'a[target]', function(e) {
 				var $this = $(this);
 				var href = String($this.attr('href')).trim();
-				
+
 				if(!href) return;
 				if(!href.match(/^(https?:\/\/)/)) return;
-		
+
 				if($this.data('noopener') !== false && !window.XE.isSameHost(href)) {
 					var rel = $this.attr('rel');
 
@@ -274,16 +274,16 @@ if(typeof window.XE == "undefined") {
 					$(this).hide().prev('button').show().parent().next(fold_container).hide();
 				});
 			}
-			
+
 			jQuery('input[type="submit"],button[type="submit"]').click(function(ev){
 				var $el = jQuery(ev.currentTarget);
-				
+
 				setTimeout(function(){
 					return function(){
 						$el.attr('disabled', 'disabled');
 					};
 				}(), 0);
-				
+
 				setTimeout(function(){
 					return function(){
 						$el.removeAttr('disabled');
@@ -300,7 +300,7 @@ if(typeof window.XE == "undefined") {
 		String.prototype.getQuery = function(key) {
 			var url = global.XE.URI(this);
 			var queries = url.search(true);
-			
+
 			if(typeof queries[key] == 'undefined') {
 				return '';
 			}
@@ -321,7 +321,7 @@ if(typeof window.XE == "undefined") {
 					uri.setSearch(key, String(val));
 				}
 			}
-			
+
 			return normailzeUri(uri).toString();
 		};
 
@@ -333,23 +333,23 @@ if(typeof window.XE == "undefined") {
 				return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
 			};
 		}
-		
+
 		function normailzeUri(uri) {
 			var query = uri.search(true);
 			var filename = uri.filename() || 'index.php';
 			var protocol = (global.enforce_ssl === true) ? 'https' : 'http';
 			var port = 80;
-			
+
 			if(global.XE.isSameHost(uri.toString())) {
 				if(jQuery.isEmptyObject(query)) filename = '';
 			}
-			
+
 			if(protocol !== 'https' && query.act && jQuery.inArray(query.act, global.ssl_actions) !== -1) {
 				protocol = 'https';
 			}
-			
+
 			port = (protocol === 'http') ? global.http_port : global.https_port;
-			
+
 			return uri.protocol(protocol)
 			.port(port || null)
 			.filename(filename)
@@ -655,7 +655,7 @@ if(typeof window.XE == "undefined") {
 			window.close();
 			return;
 		}
-		
+
 		if(module==underfined) {
 			module = 'document';
 		}
@@ -665,7 +665,7 @@ if(typeof window.XE == "undefined") {
 			case 'page' :
 				var url = opener.current_url;
 				url = url.setQuery('document_srl', document_srl);
-				
+
 				if(url.getQuery('act') === 'dispPageAdminMobileContentModify') {
 					url = url.setQuery('act', 'dispPageAdminMobileContentModify');
 				}

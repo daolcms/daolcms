@@ -21,7 +21,7 @@ class MssqlTableWithHint extends Table {
 	 * @var array
 	 */
 	var $index_hints_list;
-	
+
 	/**
 	 * constructor
 	 * @param string $name
@@ -33,10 +33,10 @@ class MssqlTableWithHint extends Table {
 		parent::__construct($name, $alias);
 		$this->index_hints_list = $index_hints_list;
 	}
-	
+
 	function toString() {
 		$result = parent::toString();
-		
+
 		$index_hint_string = '';
 		$indexTypeList = array('USE' => 1, 'FORCE' => 1);
 		foreach($this->index_hints_list as $index_hint) {

@@ -2,7 +2,7 @@
 
 class installModel extends install {
 	var $pwd;
-	
+
 	function getSFTPList() {
 		$ftp_info = Context::getRequestVars();
 		if(!$ftp_info->ftp_host) {
@@ -12,7 +12,7 @@ class installModel extends install {
 		if(!ssh2_auth_password($connection, $ftp_info->ftp_user, $ftp_info->ftp_password)) {
 			return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 		}
-		
+
 		$sftp = ssh2_sftp($connection);
 		$curpwd = "ssh2.sftp://$sftp" . $this->pwd;
 		$dh = @opendir($curpwd);
@@ -29,7 +29,7 @@ class installModel extends install {
 		closedir($dh);
 		$this->add('list', $list);
 	}
-	
+
 	function getInstallFTPList() {
 		$ftp_info = Context::getRequestVars();
 		if(!$ftp_info->ftp_user || !$ftp_info->ftp_password) {
@@ -39,11 +39,11 @@ class installModel extends install {
 		if(!$ftp_info->ftp_host) {
 			$ftp_info->ftp_host = "127.0.0.1";
 		}
-		
+
 		if($ftp_info->sftp == 'Y') {
 			return $this->getSFTPList();
 		}
-		
+
 		if(function_exists(ftp_connect)) {
 			$connection = ftp_connect($ftp_info->ftp_host, $ftp_info->ftp_port);
 			if(!$connection) return new BaseObject(-1, sprintf(Context::getLang('msg_ftp_not_connected'), $ftp_info->ftp_host));
@@ -52,11 +52,11 @@ class installModel extends install {
 				ftp_close($connection);
 				return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 			}
-			
+
 			if($ftp_info->ftp_pasv != "N") {
 				ftp_pasv($connection, true);
 			}
-			
+
 			$_list = ftp_rawlist($connection, $this->pwd);
 			ftp_close($connection);
 		} else {
@@ -73,7 +73,7 @@ class installModel extends install {
 			}
 		}
 		$list = array();
-		
+
 		if($_list) {
 			foreach($_list as $k => $v) {
 				$src = new stdClass();

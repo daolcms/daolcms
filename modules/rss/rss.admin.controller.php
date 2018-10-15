@@ -6,7 +6,7 @@
  * @author NAVER (developers@xpressengine.com)
  **/
 class rssAdminController extends rss {
-	
+
 	/**
 	 * Initialization
 	 *
@@ -14,7 +14,7 @@ class rssAdminController extends rss {
 	 **/
 	function init(){
 	}
-	
+
 	/**
 	 * All RSS feeds configurations
 	 *
@@ -23,13 +23,13 @@ class rssAdminController extends rss {
 	function procRssAdminInsertConfig(){
 		$oModuleModel = getModel('module');
 		$total_config = $oModuleModel->getModuleConfig('rss');
-		
+
 		$config_vars = Context::getRequestVars();
 		$config_vars->feed_document_count = (int)$config_vars->feed_document_count;
-		
+
 		if(!$config_vars->use_total_feed) $alt_message = 'msg_invalid_request';
 		if(!in_array($config_vars->use_total_feed, array('Y', 'N'))) $config_vars->open_rss = 'Y';
-		
+
 		if($config_vars->image || $config_vars->del_image){
 			$image_obj = $config_vars->image;
 			$config_vars->image = $total_config->image;
@@ -43,7 +43,7 @@ class rssAdminController extends rss {
 			if($image_obj['tmp_name'] && is_uploaded_file($image_obj['tmp_name']) && checkUploadedFile($image_obj['tmp_name'])){
 				// Ignore if the file is not an image
 				$image_obj['name'] = Context::convertEncodingStr($image_obj['name']);
-				
+
 				if(!preg_match("/\.(jpg|jpeg|gif|png)$/i", $image_obj['name'])) $alt_message = 'msg_rss_invalid_image_format';
 				else{
 					// Upload the file to a path
@@ -62,24 +62,24 @@ class rssAdminController extends rss {
 			}
 		}
 		if(!$config_vars->image && $config_vars->del_image != 'Y') $config_vars->image = $total_config->image;
-		
+
 		$output = $this->setFeedConfig($config_vars);
-		
+
 		if(!$alt_message) $alt_message = 'success_updated';
-		
+
 		$alt_message = Context::getLang($alt_message);
 		Context::set('msg', $alt_message);
-		
+
 		//$this->setLayoutPath('./common/tpl');
 		//$this->setLayoutFile('default_layout.html');
 		//$this->setTemplatePath($this->module_path.'tpl');
 		//$this->setTemplateFile("top_refresh.html");
-		
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispRssAdminIndex');
 		$this->setRedirectUrl($returnUrl);
 	}
-	
-	
+
+
 	/**
 	 * RSS Module configurations
 	 *
@@ -92,16 +92,16 @@ class rssAdminController extends rss {
 		if(preg_match('/^([0-9,]+)$/', $module_srl)) $module_srl = explode(',', $module_srl);
 		else $module_srl = array($module_srl);
 		if(!is_array($module_srl)) $module_srl[0] = $module_srl;
-		
+
 		$config_vars = Context::getRequestVars();
-		
+
 		$open_rss = $config_vars->open_rss;
 		$open_total_feed = $config_vars->open_total_feed;
 		$feed_description = trim($config_vars->feed_description);
 		$feed_copyright = trim($config_vars->feed_copyright);
-		
+
 		if(!$module_srl || !$open_rss) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		if(!in_array($open_rss, array('Y', 'H', 'N'))) $open_rss = 'N';
 		// Save configurations
 		for($i = 0; $i < count($module_srl); $i++){
@@ -109,15 +109,15 @@ class rssAdminController extends rss {
 			if(!$srl) continue;
 			$output = $this->setRssModuleConfig($srl, $open_rss, $open_total_feed, $feed_description, $feed_copyright);
 		}
-		
+
 		//$this->setError(0);
 		$this->setMessage('success_updated', 'info');
-		
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispBoardAdminContent');
 		$this->setRedirectUrl($returnUrl);
 	}
-	
-	
+
+
 	/**
 	 * All Feeds with or without change
 	 *
@@ -138,11 +138,11 @@ class rssAdminController extends rss {
 				$this->add("open_total_feed", 'T_N');
 			}
 		}
-		
+
 		$this->add("module_srl", $module_srl);
 	}
-	
-	
+
+
 	/**
 	 * A funciton to configure all Feeds of the RSS module
 	 *
@@ -154,8 +154,8 @@ class rssAdminController extends rss {
 		$oModuleController->insertModuleConfig('rss', $config);
 		return new BaseObject();
 	}
-	
-	
+
+
 	/**
 	 * A function t configure the RSS module
 	 *

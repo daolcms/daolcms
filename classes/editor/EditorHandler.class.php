@@ -8,7 +8,7 @@
  * @author NAVER (developers@xpressengine.com)
  **/
 class EditorHandler extends BaseObject {
-	
+
 	/**
 	 * set the xml and other information of the component
 	 * @param object $info editor information
@@ -16,12 +16,12 @@ class EditorHandler extends BaseObject {
 	 **/
 	function setInfo($info) {
 		Context::set('component_info', $info);
-		
+
 		if(!$info->extra_vars) return;
-		
+
 		foreach($info->extra_vars as $key => $val) {
 			$this->{$key} = trim($val->value);
 		}
 	}
-	
+
 }

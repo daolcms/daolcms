@@ -51,7 +51,7 @@ class syndicationAdminView extends syndication {
 			}
 		}
 		Context::set('except_module', $except_module_list);
-		
+
 
 		//Security
 		$security = new Security();

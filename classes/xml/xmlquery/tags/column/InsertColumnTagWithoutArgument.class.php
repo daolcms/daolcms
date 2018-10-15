@@ -19,7 +19,7 @@ class InsertColumnTagWithoutArgument extends ColumnTag {
 		$dbParser = DB::getParser();
 		$this->name = $dbParser->parseColumnName($this->name);
 	}
-	
+
 	/**
 	 * Returns the string to be output in the cache file
 	 *
@@ -28,7 +28,7 @@ class InsertColumnTagWithoutArgument extends ColumnTag {
 	function getExpressionString() {
 		return sprintf('new Expression(\'%s\')', $this->name);
 	}
-	
+
 	/**
 	 * Returns the QueryArgument object associated with this INSERT statement
 	 *
@@ -37,7 +37,7 @@ class InsertColumnTagWithoutArgument extends ColumnTag {
 	function getArgument() {
 		return NULL;
 	}
-	
+
 }
 
 ?>

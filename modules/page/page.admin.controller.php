@@ -7,13 +7,13 @@
  * @brief   page of the module admin controller class
  **/
 class pageAdminController extends page {
-	
+
 	/**
 	 * @brief Initialization
 	 **/
 	function init(){
 	}
-	
+
 	/**
 	 * @brief Add a Page
 	 **/
@@ -28,7 +28,7 @@ class pageAdminController extends page {
 		$args->path = (!$args->path) ? '' : $args->path;
 		$args->mpath = (!$args->mpath) ? '' : $args->mpath;
 		unset($args->page_name);
-		
+
 		if($args->use_mobile != 'Y') $args->use_mobile = '';
 		// Check if an original module exists by using module_srl
 		if($args->module_srl){
@@ -44,7 +44,7 @@ class pageAdminController extends page {
 				$args = $module_info;
 			}
 		}
-		
+
 		switch($args->page_type){
 			case 'WIDGET' : {
 				unset($args->skin);
@@ -74,24 +74,24 @@ class pageAdminController extends page {
 			$output = $oModuleController->updateModule($args);
 			$msg_code = 'success_updated';
 		}
-		
+
 		if(!$output->toBool()) return $output;
-		
+
 		$this->add("page", Context::get('page'));
 		$this->add('module_srl', $output->get('module_srl'));
 		$this->setMessage($msg_code);
-		
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'module_srl', $output->get('module_srl'), 'act', 'dispPageAdminInfo');
 		$this->setRedirectUrl($returnUrl);
 	}
-	
+
 	/**
 	 * @brief Page Modify
 	 **/
 	function procPageAdminUpdate(){
 		$this->procPageAdminInsert();
 	}
-	
+
 	function putDocumentsInPageToArray($target, &$array){
 		if(!$target) return;
 		preg_match_all('!<img hasContent="true" ([^>]+)!is', $target, $matches);
@@ -104,7 +104,7 @@ class pageAdminController extends page {
 			}
 		}
 	}
-	
+
 	/**
 	 * @brief Save page edits
 	 **/
@@ -125,11 +125,11 @@ class pageAdminController extends page {
 			if(!isset($content)) $content = '';
 			$module_info->content = $content;
 		}
-		
+
 		$document_srls = array();
 		$this->putDocumentsInPageToArray($module_info->content, $document_srls);
 		$this->putDocumentsInPageToArray($module_info->mcontent, $document_srls);
-		
+
 		$oDocumentModel = getModel('document');
 		$oDocumentController = getController('document');
 		$obj = new stdClass();
@@ -152,13 +152,13 @@ class pageAdminController extends page {
 		$oFileController->setFilesValid($module_info->module_srl);
 		// Create cache file
 		//$this->procPageAdminRemoveWidgetCache();
-		
+
 		$this->add("module_srl", $module_info->module_srl);
 		$this->add("page", Context::get('page'));
 		$this->add("mid", $module_info->mid);
 		$this->setMessage($msg_code);
 	}
-	
+
 	/**
 	 * @brief Delete page
 	 **/
@@ -168,15 +168,15 @@ class pageAdminController extends page {
 		$oModuleController = getController('module');
 		$output = $oModuleController->deleteModule($module_srl);
 		if(!$output->toBool()) return $output;
-		
+
 		$this->add('module', 'page');
 		$this->add('page', Context::get('page'));
 		$this->setMessage('success_deleted');
-		
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'module_srl', $output->get('module_srl'), 'act', 'dispPageAdminInfo');
 		$this->setRedirectUrl($returnUrl);
 	}
-	
+
 	/**
 	 * @brief Additional pages of basic information
 	 **/
@@ -188,7 +188,7 @@ class pageAdminController extends page {
 		$output = $oModuleController->insertModuleConfig('page', $args);
 		return $output;
 	}
-	
+
 	/**
 	 * @brief Upload attachments
 	 **/
@@ -202,7 +202,7 @@ class pageAdminController extends page {
 		// Attachment to the output of the list, java script
 		$oFileController->printUploadedFileList($upload_target_srl);
 	}
-	
+
 	/**
 	 * @brief Delete the attachment
 	 * Delete individual files in the editor using
@@ -218,29 +218,29 @@ class pageAdminController extends page {
 		// Attachment to the output of the list, java script
 		$oFileController->printUploadedFileList($upload_target_srl);
 	}
-	
+
 	/**
 	 * @brief Clear widget cache files of the specified page
 	 **/
 	function procPageAdminRemoveWidgetCache(){
 		$module_srl = Context::get('module_srl');
-		
+
 		$oModuleModel = getModel('module');
 		$columnList = array('module_srl', 'content');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl, $columnList);
-		
+
 		$content = $module_info->content;
 		// widget controller re-run of the cache files
 		$oWidgetController = getController('widget');
 		$oWidgetController->recompileWidget($content);
-		
+
 		if($module_info->page_type == 'WIDGET'){
 			$cache_file = sprintf("%sfiles/cache/page/%d.%s.%s.cache.php", _DAOL_PATH_, $module_info->module_srl, Context::getLangType(), Context::getSslStatus());
 			$mcacheFile = sprintf("%sfiles/cache/page/%d.%s.%s.m.cache.php", _DAOL_PATH_, $module_info->module_srl, Context::getLangType(), Context::getSslStatus());
 		}
 		else if($module_info->page_type == 'OUTSIDE'){
 			$cache_file = sprintf("%sfiles/cache/opage/%d.cache.php", _DAOL_PATH_, $module_info->module_srl);
-			
+
 			if($module_info->mpath){
 				$mcacheFile = sprintf("%sfiles/cache/opage/%d.m.cache.php", _DAOL_PATH_, $module_info->module_srl);
 			}
@@ -248,37 +248,37 @@ class pageAdminController extends page {
 		if(file_exists($cache_file)) FileHandler::removeFile($cache_file);
 		if(file_exists($mcacheFile)) FileHandler::removeFile($mcacheFile);
 	}
-	
+
 	function procPageAdminArticleDocumentInsert(){
 		$oDocumentModel = getModel('document');
 		$oDocumentController = getController('document');
-		
+
 		$logged_info = Context::get('logged_info');
-		
+
 		$oModuleModel = getModel('module');
 		$grant = $oModuleModel->getGrant($this->module_info, $logged_info);
-		
+
 		if(!$grant->manager){
 			return new BaseObject(-1, 'msg_not_permitted');
 		}
-		
+
 		$obj = Context::getRequestVars();
 		$obj->module_srl = $this->module_info->module_srl;
 		$obj->is_notice = 'N';
-		
+
 		settype($obj->title, "string");
 		if($obj->title == '') $obj->title = cut_str(strip_tags($obj->content), 20, '...');
 		//그래도 없으면 Untitled
 		if($obj->title == '') $obj->title = 'Untitled';
-		
+
 		$document_srl = $obj->document_srl;
-		
+
 		// 이미 존재하는 글인지 체크
 		$oDocument = $oDocumentModel->getDocument($obj->document_srl, true);
-		
+
 		$bAnonymous = false;
 		$target = ($obj->ismobile == 'Y') ? 'mdocument_srl' : 'document_srl';
-		
+
 		// 이미 존재하는 경우 수정
 		if($oDocument->isExists() && $oDocument->document_srl == $obj->document_srl){
 			$output = $oDocumentController->updateDocument($oDocument, $obj);
@@ -290,24 +290,24 @@ class pageAdminController extends page {
 			$msg_code = 'success_registed';
 			$document_srl = $output->get('document_srl');
 		}
-		
+
 		if(!isset($this->module_info->{$target}) || (isset($this->module_info->{$target}) && $this->module_info->{$target} !== $document_srl)){
 			$oModuleController = getController('module');
 			$this->module_info->{$target} = $document_srl;
 			$oModuleController->updateModule($this->module_info);
 		}
-		
+
 		// 오류 발생시 멈춤
 		if(!$output->toBool()) return $output;
-		
+
 		// 결과를 리턴
 		$this->add('mid', Context::get('mid'));
 		$this->add('document_srl', $output->get('document_srl'));
 		$this->add('is_mobile', $obj->ismobile);
-		
+
 		// 성공 메세지 등록
 		$this->setMessage($msg_code);
 	}
-	
-	
+
+
 }

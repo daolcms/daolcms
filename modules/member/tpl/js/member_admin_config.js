@@ -76,7 +76,7 @@ jQuery(function($){
 							   		.end()
 							   .next('td')
 							   .find(':input[value=Y]').removeAttr('disabled').attr('checked', 'checked');
-				
+
 			} else {
 				$i.parent('td').next('td')
 							   .find(':radio, :text').attr('disabled','disabled').removeAttr('checked')
@@ -106,7 +106,7 @@ jQuery(function($){
 		);
 
 	});
-	
+
 	$('a._extendFormDelete').click(function(event){
 		event.preventDefault();
 		if (!confirm(xe.lang.msg_delete_extend_form)) return;
@@ -132,7 +132,7 @@ jQuery(function($){
 			$('#prohibited_id').focus();
 			return;
 		}
-		
+
 
 		ids = ids.replace(/\n/g, ',');
 
@@ -161,7 +161,7 @@ jQuery(function($){
 			$('#prohibited_nick_name').focus();
 			return;
 		}
-		
+
 
 		ids = ids.replace(/\n/g, ',');
 

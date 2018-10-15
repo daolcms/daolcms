@@ -16,10 +16,10 @@ class menu extends ModuleObject {
 	function moduleInstall(){
 		// Create a directory to use menu
 		FileHandler::makeDir('./files/cache/menu');
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * A method to check if successfully installed
 	 * @return bool
@@ -28,12 +28,12 @@ class menu extends ModuleObject {
 		$oDB = &DB::getInstance();
 		// 2009. 02. 11 menu added to the table site_srl
 		if(!$oDB->isColumnExists('menu', 'site_srl')) return true;
-		
+
 		// 2012. 02. 01 title index check
 		if(!$oDB->isIndexExists("menu", "idx_title")) return true;
 		return false;
 	}
-	
+
 	/**
 	 * Execute update
 	 * @return BaseObject
@@ -44,15 +44,15 @@ class menu extends ModuleObject {
 		if(!$oDB->isColumnExists('menu', 'site_srl')){
 			$oDB->addColumn('menu', 'site_srl', 'number', 11, 0, true);
 		}
-		
+
 		// 2012. 02. 01 title index check
 		if(!$oDB->isIndexExists("menu", "idx_title")){
 			$oDB->addIndex('menu', 'idx_title', array('title'));
 		}
-		
+
 		return new BaseObject(0, 'success_updated');
 	}
-	
+
 	/**
 	 * Re-generate the cache file
 	 * @return void

@@ -6,13 +6,13 @@
 include _DAOL_PATH_ . 'classes/security/phphtmlparser/src/htmlparser.inc';
 
 class EmbedFilter {
-	
+
 	/**
 	 * allow script access list
 	 * @var array
 	 */
 	var $allowscriptaccessList = array();
-	
+
 	/**
 	 * allow script access key
 	 * @var int
@@ -256,19 +256,19 @@ class EmbedFilter {
 		'fvt' => 1, 'mxu' => 1, 'm4u' => 1, 'pyv' => 1, 'uvu' => 1, 'uvvu' => 1, 'viv' => 1, 'webm' => 1, 'f4v' => 1, 'fli' => 1, 'flv' => 1, 'm4v' => 1, 'mkv' => 1, 'mk3d' => 1, 'mks' => 1, 'mng' => 1, 'asf' => 1, 'asx' => 1,
 		'vob' => 1, 'wm' => 1, 'wmv' => 1, 'wmx' => 1, 'wvx' => 1, 'avi' => 1, 'movie' => 1, 'smv' => 1, 'ice' => 1,
 	);
-	
+
 	/**
 	 * @constructor
 	 * @return void
 	 */
 	function __construct() {
 		$this->_makeWhiteDomainList();
-		
+
 		include FileHandler::getRealPath($this->whiteUrlCacheFile);
 		$this->whiteUrlList = $whiteUrlList;
 		$this->whiteIframeUrlList = $whiteIframeUrlList;
 	}
-	
+
 	/**
 	 * Return EmbedFilter object
 	 * This method for singleton
@@ -280,15 +280,15 @@ class EmbedFilter {
 		}
 		return $GLOBALS['__EMBEDFILTER_INSTANCE__'];
 	}
-	
+
 	public function getWhiteUrlList() {
 		return $this->whiteUrlList;
 	}
-	
+
 	public function getWhiteIframeUrlList() {
 		return $this->whiteIframeUrlList;
 	}
-	
+
 	/**
 	 * Check the content.
 	 * @return void
@@ -296,13 +296,13 @@ class EmbedFilter {
 	function check(&$content) {
 		$content = preg_replace_callback('/<(object|param|embed)[^>]*/is', array($this, '_checkAllowScriptAccess'), $content);
 		$content = preg_replace_callback('/<object[^>]*>/is', array($this, '_addAllowScriptAccess'), $content);
-		
+
 		$this->checkObjectTag($content);
 		$this->checkEmbedTag($content);
 		$this->checkIframeTag($content);
 		$this->checkParamTag($content);
 	}
-	
+
 	/**
 	 * Check object tag in the content.
 	 * @return void
@@ -316,7 +316,7 @@ class EmbedFilter {
 				$isWhiteMimetype = true;
 				$isWhiteExt = true;
 				$ext = '';
-				
+
 				$parser = new HtmlParser($objectTag);
 				while($parser->parse()) {
 					if(is_array($parser->iNodeAttributes)) {
@@ -326,7 +326,7 @@ class EmbedFilter {
 								$ext = strtolower(substr(strrchr($attrValue, "."), 1));
 								$isWhiteDomain = $this->isWhiteDomain($attrValue);
 							}
-							
+
 							// mime type check
 							if(strtolower($attrName) == 'type' && $attrValue) {
 								$isWhiteMimetype = $this->isWhiteMimetype($attrValue);
@@ -334,14 +334,14 @@ class EmbedFilter {
 						}
 					}
 				}
-				
+
 				if(!$isWhiteDomain || !$isWhiteMimetype) {
 					$content = str_replace($objectTag, htmlspecialchars($objectTag, ENT_COMPAT | ENT_HTML401, 'UTF-8', false), $content);
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Check embed tag in the content.
 	 * @return void
@@ -355,7 +355,7 @@ class EmbedFilter {
 				$isWhiteMimetype = TRUE;
 				$isWhiteExt = TRUE;
 				$ext = '';
-				
+
 				$parser = new HtmlParser($embedTag);
 				while($parser->parse()) {
 					if(is_array($parser->iNodeAttributes)) {
@@ -365,7 +365,7 @@ class EmbedFilter {
 								$ext = strtolower(substr(strrchr($attrValue, "."), 1));
 								$isWhiteDomain = $this->isWhiteDomain($attrValue);
 							}
-							
+
 							// mime type check
 							if(strtolower($attrName) == 'type' && $attrValue) {
 								$isWhiteMimetype = $this->isWhiteMimetype($attrValue);
@@ -373,14 +373,14 @@ class EmbedFilter {
 						}
 					}
 				}
-				
+
 				if(!$isWhiteDomain || !$isWhiteMimetype) {
 					$content = str_replace($embedTag, htmlspecialchars($embedTag, ENT_COMPAT | ENT_HTML401, 'UTF-8', false), $content);
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Check iframe tag in the content.
 	 * @return void
@@ -388,14 +388,14 @@ class EmbedFilter {
 	function checkIframeTag(&$content) {
 		// check in Purifier class
 		return;
-		
+
 		preg_match_all('/<\s*iframe\s*[^>]+(?:\/?>?)/is', $content, $m);
 		$iframeTagList = $m[0];
 		if($iframeTagList) {
 			foreach($iframeTagList AS $key => $iframeTag) {
 				$isWhiteDomain = TRUE;
 				$ext = '';
-				
+
 				$parser = new HtmlParser($iframeTag);
 				while($parser->parse()) {
 					if(is_array($parser->iNodeAttributes)) {
@@ -408,14 +408,14 @@ class EmbedFilter {
 						}
 					}
 				}
-				
+
 				if(!$isWhiteDomain) {
 					$content = str_replace($iframeTag, htmlspecialchars($iframeTag, ENT_COMPAT | ENT_HTML401, 'UTF-8', false), $content);
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Check param tag in the content.
 	 * @return void
@@ -428,7 +428,7 @@ class EmbedFilter {
 				$isWhiteDomain = TRUE;
 				$isWhiteExt = TRUE;
 				$ext = '';
-				
+
 				$parser = new HtmlParser($paramTag);
 				while($parser->parse()) {
 					if($parser->iNodeAttributes['name'] && $parser->iNodeAttributes['value']) {
@@ -436,7 +436,7 @@ class EmbedFilter {
 						if($name == 'movie' || $name == 'src' || $name == 'href' || $name == 'url' || $name == 'source') {
 							$ext = strtolower(substr(strrchr($parser->iNodeAttributes['value'], "."), 1));
 							$isWhiteDomain = $this->isWhiteDomain($parser->iNodeAttributes['value']);
-							
+
 							if(!$isWhiteDomain) {
 								$content = str_replace($paramTag, htmlspecialchars($paramTag, ENT_COMPAT | ENT_HTML401, 'UTF-8', false), $content);
 							}
@@ -446,7 +446,7 @@ class EmbedFilter {
 			}
 		}
 	}
-	
+
 	/**
 	 * Check white domain in object data attribute or embed src attribute.
 	 * @return string
@@ -461,7 +461,7 @@ class EmbedFilter {
 		}
 		return FALSE;
 	}
-	
+
 	/**
 	 * Check white domain in iframe src attribute.
 	 * @return string
@@ -476,7 +476,7 @@ class EmbedFilter {
 		}
 		return FALSE;
 	}
-	
+
 	/**
 	 * Check white mime type in object type attribute or embed type attribute.
 	 * @return string
@@ -487,19 +487,19 @@ class EmbedFilter {
 		}
 		return FALSE;
 	}
-	
+
 	function isWhiteExt($ext) {
 		if(isset($this->extList[$ext])) {
 			return TRUE;
 		}
 		return FALSE;
 	}
-	
+
 	function _checkAllowScriptAccess($m) {
 		if($m[1] == 'object') {
 			$this->allowscriptaccessList[] = 1;
 		}
-		
+
 		if($m[1] == 'param') {
 			if(stripos($m[0], 'allowscriptaccess')) {
 				$m[0] = '<param name="allowscriptaccess" value="never"';
@@ -517,7 +517,7 @@ class EmbedFilter {
 		}
 		return $m[0];
 	}
-	
+
 	function _addAllowScriptAccess($m) {
 		if($this->allowscriptaccessList[$this->allowscriptaccessKey] == 1) {
 			$m[0] = $m[0] . '<param name="allowscriptaccess" value="never"></param>';
@@ -525,7 +525,7 @@ class EmbedFilter {
 		$this->allowscriptaccessKey++;
 		return $m[0];
 	}
-	
+
 	/**
 	 * Make white domain list cache file from xml config file.
 	 * @param $whitelist array
@@ -534,7 +534,7 @@ class EmbedFilter {
 	function _makeWhiteDomainList($whitelist = NULL) {
 		$whiteUrlXmlFile = FileHandler::getRealPath($this->whiteUrlXmlFile);
 		$whiteUrlCacheFile = FileHandler::getRealPath($this->whiteUrlCacheFile);
-		
+
 		$isMake = FALSE;
 		if(!file_exists($whiteUrlCacheFile)) {
 			$isMake = TRUE;
@@ -542,32 +542,32 @@ class EmbedFilter {
 		if(file_exists($whiteUrlCacheFile) && filemtime($whiteUrlCacheFile) < filemtime($whiteUrlXmlFile)) {
 			$isMake = TRUE;
 		}
-		
+
 		if(gettype($whitelist) == 'array' && gettype($whitelist['object']) == 'array' && gettype($whitelist['iframe']) == 'array') {
 			$isMake = FALSE;
 		}
-		
+
 		if(isset($whitelist) && gettype($whitelist) == 'object') {
 			$isMake = TRUE;
 		}
-		
+
 		if($isMake) {
 			$whiteUrlList = array();
 			$whiteIframeUrlList = array();
-			
+
 			if(gettype($whitelist->object) == 'array' && gettype($whitelist->iframe) == 'array') {
 				$whiteUrlList = $whitelist->object;
 				$whiteIframeUrlList = $whitelist->iframe;
 			} else {
 				$xmlBuff = FileHandler::readFile($this->whiteUrlXmlFile);
-				
+
 				$xmlParser = new XmlParser();
 				$domainListObj = $xmlParser->parse($xmlBuff);
 				$embedDomainList = $domainListObj->whiteurl->embed->domain;
 				$iframeDomainList = $domainListObj->whiteurl->iframe->domain;
 				if(!is_array($embedDomainList)) $embedDomainList = array();
 				if(!is_array($iframeDomainList)) $iframeDomainList = array();
-				
+
 				foreach($embedDomainList AS $key => $value) {
 					$patternList = $value->pattern;
 					if(is_array($patternList)) {
@@ -578,7 +578,7 @@ class EmbedFilter {
 						$whiteUrlList[] = $patternList->body;
 					}
 				}
-				
+
 				foreach($iframeDomainList AS $key => $value) {
 					$patternList = $value->pattern;
 					if(is_array($patternList)) {
@@ -590,12 +590,12 @@ class EmbedFilter {
 					}
 				}
 			}
-			
+
 			$buff .= '?>';
 			FileHandler::writeFile($this->whiteUrlCacheFile, implode(PHP_EOL, $buff));
 		}
 	}
-	
+
 }
 /* End of file : EmbedFilter.class.php */
 /* Location: ./classes/security/EmbedFilter.class.php */

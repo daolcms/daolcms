@@ -9,7 +9,7 @@ class poll_maker extends EditorHandler {
 	// editor_sequence from the editor must attend mandatory wearing ....
 	var $editor_sequence = 0;
 	var $component_path = '';
-	
+
 	/**
 	 * @brief editor_sequence and components out of the path
 	 **/
@@ -17,7 +17,7 @@ class poll_maker extends EditorHandler {
 		$this->editor_sequence = $editor_sequence;
 		$this->component_path = $component_path;
 	}
-	
+
 	/**
 	 * @brief popup window to display in popup window request is to add content
 	 **/
@@ -29,11 +29,11 @@ class poll_maker extends EditorHandler {
 		// Pre-compiled source code to compile template return to
 		$tpl_path = $this->component_path . 'tpl';
 		$tpl_file = 'popup.html';
-		
+
 		$oTemplate = &TemplateHandler::getInstance();
 		return $oTemplate->compile($tpl_path, $tpl_file);
 	}
-	
+
 	/**
 	 * @brief Editor of the components separately if you use a unique code to the html code for a method to change
 	 *
@@ -45,7 +45,7 @@ class poll_maker extends EditorHandler {
 		$poll_srl = $xml_obj->attrs->poll_srl;
 		$skin = $xml_obj->attrs->skin;
 		if(!$skin) $skin = 'default';
-		
+
 		preg_match('/width([^[:digit:]]+)([0-9]+)/i', $xml_obj->attrs->style, $matches);
 		$width = $matches[2];
 		if(!$width) $width = 400;

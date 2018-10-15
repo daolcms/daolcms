@@ -16,7 +16,7 @@ class IndexHint {
 	 * @var string
 	 */
 	var $index_hint_type;
-	
+
 	/**
 	 * constructor
 	 * @param string $index_name
@@ -27,11 +27,11 @@ class IndexHint {
 		$this->index_name = $index_name;
 		$this->index_hint_type = $index_hint_type;
 	}
-	
+
 	function getIndexName() {
 		return $this->index_name;
 	}
-	
+
 	function getIndexHintType() {
 		return $this->index_hint_type;
 	}

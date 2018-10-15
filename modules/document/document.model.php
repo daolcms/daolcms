@@ -11,14 +11,14 @@
  */
 class documentModel extends document {
 	private $documentConfig = NULL;
-	
+
 	/**
 	 * Initialization
 	 * @return void
 	 */
 	function init() {
 	}
-	
+
 	/**
 	 * document checked the permissions on the session values
 	 * @param int $document_srl
@@ -27,7 +27,7 @@ class documentModel extends document {
 	function isGranted($document_srl) {
 		return $_SESSION['own_document'][$document_srl];
 	}
-	
+
 	/**
 	 * Return document extra information from database
 	 * @param array $documentSrls
@@ -37,13 +37,13 @@ class documentModel extends document {
 		if(!is_array($documentSrls) || count($documentSrls) == 0) {
 			return new BaseObject(-1, 'msg_invalid_request');
 		}
-		
+
 		$args = new stdClass();
 		$args->document_srl = $documentSrls;
 		$output = executeQueryArray('document.getDocumentExtraVars', $args);
 		return $output;
 	}
-	
+
 	/**
 	 * Extra variables for each article will not be processed bulk select and apply the macro city
 	 * @return void
@@ -71,14 +71,14 @@ class documentModel extends document {
 				$extra_vars[$val->document_srl][$val->var_idx][$val->lang_code] = trim($val->value);
 			}
 		}
-		
+
 		$user_lang_code = Context::getLangType();
 		for($i = 0, $c = count($document_srls); $i < $c; $i++) {
 			$document_srl = $document_srls[$i];
 			unset($vars);
-			
+
 			if(!$GLOBALS['XE_DOCUMENT_LIST'][$document_srl] || !is_object($GLOBALS['XE_DOCUMENT_LIST'][$document_srl]) || !$GLOBALS['XE_DOCUMENT_LIST'][$document_srl]->isExists()) continue;
-			
+
 			$module_srl = $GLOBALS['XE_DOCUMENT_LIST'][$document_srl]->get('module_srl');
 			$extra_keys = $this->getExtraKeys($module_srl);
 			$vars = $extra_vars[$document_srl];
@@ -95,7 +95,7 @@ class documentModel extends document {
 					$extra_keys[$idx]->value = $v;
 				}
 			}
-			
+
 			unset($evars);
 			$evars = new ExtraVar($module_srl);
 			$evars->setExtraVarKeys($extra_keys);
@@ -103,18 +103,18 @@ class documentModel extends document {
 			if($vars[-1][$user_lang_code]) $GLOBALS['XE_DOCUMENT_LIST'][$document_srl]->add('title', $vars[-1][$user_lang_code]);
 			// Information processing
 			if($vars[-2][$user_lang_code]) $GLOBALS['XE_DOCUMENT_LIST'][$document_srl]->add('content', $vars[-2][$user_lang_code]);
-			
+
 			// static 데이터를 갱신해주기 위해 들어간 코드같으나 어차피 언어 변경 자체는 페이지 전환이 일어나면서 발생하는게 대부분이라 효용이 없음. 또한 예기치않게 권한이 없는 다국어 문서 내용을 보여주는 부효과가 일어남
 			/*
 			if($vars[-1][$user_lang_code] || $vars[-2][$user_lang_code]) {
 				unset($checked_documents[$document_srl]);
 			}
 			*/
-			
+
 			$GLOBALS['XE_EXTRA_VARS'][$document_srl] = $evars->getExtraVars();
 		}
 	}
-	
+
 	/**
 	 * Import Document
 	 * @param int   $document_srl
@@ -125,7 +125,7 @@ class documentModel extends document {
 	 */
 	function getDocument($document_srl = 0, $is_admin = false, $load_extra_vars = true, $columnList = array()) {
 		if(!$document_srl) return new documentItem();
-		
+
 		if(!isset($GLOBALS['XE_DOCUMENT_LIST'][$document_srl]) || $GLOBALS['XE_DOCUMENT_LIST'][$document_srl]->columnListKey != serialize($columnList)) {
 			$oDocument = new documentItem($document_srl, $load_extra_vars, $columnList);
 			if(!$oDocument->isExists()){
@@ -136,10 +136,10 @@ class documentModel extends document {
 			$GLOBALS['XE_DOCUMENT_LIST'][$document_srl]->columnListKey = serialize($columnList);
 		}
 		if($is_admin) $GLOBALS['XE_DOCUMENT_LIST'][$document_srl]->setGrant();
-		
+
 		return $GLOBALS['XE_DOCUMENT_LIST'][$document_srl];
 	}
-	
+
 	/**
 	 * Bringing multiple documents (or paging)
 	 * @param array|string $document_srls
@@ -159,17 +159,17 @@ class documentModel extends document {
 		$args->document_srls = $document_srls;
 		$args->list_count = $list_count;
 		$args->order_type = 'asc';
-		
+
 		$output = executeQuery('document.getDocuments', $args, $columnList);
 		$document_list = $output->data;
 		if(!$document_list) return;
 		if(!is_array($document_list)) $document_list = array($document_list);
-		
+
 		$document_count = count($document_list);
 		foreach($document_list as $key => $attribute) {
 			$document_srl = $attribute->document_srl;
 			if(!$document_srl) continue;
-			
+
 			if(!$GLOBALS['XE_DOCUMENT_LIST'][$document_srl]) {
 				$oDocument = null;
 				$oDocument = new documentItem();
@@ -177,22 +177,22 @@ class documentModel extends document {
 				if($is_admin) $oDocument->setGrant();
 				$GLOBALS['XE_DOCUMENT_LIST'][$document_srl] = $oDocument;
 			}
-			
+
 			$result[$attribute->document_srl] = $GLOBALS['XE_DOCUMENT_LIST'][$document_srl];
 		}
-		
+
 		if($load_extra_vars) $this->setToAllDocumentExtraVars();
-		
+
 		$output = null;
 		if(count($result)) {
 			foreach($result as $document_srl => $val) {
 				$output[$document_srl] = $GLOBALS['XE_DOCUMENT_LIST'][$document_srl];
 			}
 		}
-		
+
 		return $output;
 	}
-	
+
 	/**
 	 * Module_srl value, bringing the list of documents
 	 * @param object $obj
@@ -205,20 +205,20 @@ class documentModel extends document {
 		$sort_check = $this->_setSortIndex($obj, $load_extra_vars);
 		$obj->sort_index = $sort_check->sort_index;
 		unset($obj->use_alternate_output);
-		
+
 		// Call trigger (before)
 		// This trigger can be used to set an alternative output using a different search method
 		$output = ModuleHandler::triggerCall('document.getDocumentList', 'before', $obj);
 		if($output instanceof Object && !$output->toBool()) {
 			return $output;
 		}
-		
+
 		// If an alternate output is set, use it instead of running the default queries
 		$use_alternate_otuput = (isset($obj->use_alternate_output) && $obj->use_alternate_output instanceof Object);
 		if(!$use_alternate_otuput) {
 			$this->_setSearchOption($obj, $args, $query_id, $use_division);
 		}
-		
+
 		if($use_alternate_otuput) {
 			$output = $obj->use_alternate_output;
 			unset($obj->use_alternate_output);
@@ -237,15 +237,15 @@ class documentModel extends document {
 				$group_args->sort_index = 'documents.' . $args->sort_index;
 				$output = executeQueryArray($query_id, $group_args);
 				if(!$output->toBool() || !count($output->data)) return $output;
-				
+
 				foreach($output->data as $key => $val) {
 					if($val->document_srl) $target_srls[] = $val->document_srl;
 				}
-				
+
 				$page_navigation = $output->page_navigation;
 				$keys = array_keys($output->data);
 				$virtual_number = $keys[0];
-				
+
 				$traget_args = new stdClass();
 				$target_args->document_srls = implode(',', $target_srls);
 				$target_args->list_order = $args->sort_index;
@@ -266,18 +266,18 @@ class documentModel extends document {
 		$idx = 0;
 		$data = $output->data;
 		unset($output->data);
-		
+
 		if(!isset($virtual_number)) {
 			$keys = array_keys($data);
 			$virtual_number = $keys[0];
 		}
-		
+
 		if($except_notice) {
 			foreach($data as $key => $attribute) {
 				if($attribute->is_notice == 'Y') $virtual_number--;
 			}
 		}
-		
+
 		foreach($data as $key => $attribute) {
 			if($except_notice && $attribute->is_notice == 'Y') continue;
 			$document_srl = $attribute->document_srl;
@@ -288,26 +288,26 @@ class documentModel extends document {
 				if($is_admin) $oDocument->setGrant();
 				$GLOBALS['XE_DOCUMENT_LIST'][$document_srl] = $oDocument;
 			}
-			
+
 			$output->data[$virtual_number] = $GLOBALS['XE_DOCUMENT_LIST'][$document_srl];
 			$virtual_number--;
-			
+
 		}
-		
+
 		if($load_extra_vars) $this->setToAllDocumentExtraVars();
-		
+
 		if(count($output->data)) {
 			foreach($output->data as $number => $document) {
 				$output->data[$number] = $GLOBALS['XE_DOCUMENT_LIST'][$document->document_srl];
 			}
 		}
-		
+
 		// Call trigger (after)
 		// This trigger can be used to modify search results
 		ModuleHandler::triggerCall('document.getDocumentList', 'after', $output);
 		return $output;
 	}
-	
+
 	/**
 	 * Module_srl value, bringing the document's gongjisa Port
 	 * @param object $obj
@@ -320,11 +320,11 @@ class documentModel extends document {
 		$args->category_srl = $obj->category_srl;
 		$output = executeQueryArray('document.getNoticeList', $args, $columnList);
 		if(!$output->toBool() || !$output->data) return;
-		
+
 		foreach($output->data as $key => $val) {
 			$document_srl = $val->document_srl;
 			if(!$document_srl) continue;
-			
+
 			if(!$GLOBALS['XE_DOCUMENT_LIST'][$document_srl]) {
 				$oDocument = null;
 				$oDocument = new documentItem();
@@ -334,14 +334,14 @@ class documentModel extends document {
 			$result->data[$document_srl] = $GLOBALS['XE_DOCUMENT_LIST'][$document_srl];
 		}
 		$this->setToAllDocumentExtraVars();
-		
+
 		foreach($result->data as $document_srl => $val) {
 			$result->data[$document_srl] = $GLOBALS['XE_DOCUMENT_LIST'][$document_srl];
 		}
-		
+
 		return $result;
 	}
-	
+
 	/**
 	 * Function to retrieve the key values of the extended variable document
 	 * $Form_include: writing articles whether to add the necessary extensions of the variable input form
@@ -356,7 +356,7 @@ class documentModel extends document {
 			$obj->sort_index = 'var_idx';
 			$obj->order = 'asc';
 			$output = executeQueryArray('document.getDocumentExtraKeys', $obj);
-			
+
 			// correcting index order
 			$isFixed = FALSE;
 			if(is_array($output->data)) {
@@ -374,7 +374,7 @@ class documentModel extends document {
 						$isFixed = TRUE;
 						continue;
 					}
-					
+
 					// case others
 					if($prevIdx > 0 && $prevIdx + 1 != $value->idx) {
 						$args = new stdClass();
@@ -387,24 +387,24 @@ class documentModel extends document {
 						$isFixed = TRUE;
 						continue;
 					}
-					
+
 					$prevIdx = $value->idx;
 				}
 			}
-			
+
 			if($isFixed) {
 				$output = executeQueryArray('document.getDocumentExtraKeys', $obj);
 			}
-			
+
 			$oExtraVar->setExtraVarKeys($output->data);
 			$keys = $oExtraVar->getExtraVars();
 			if(!$keys) $keys = array();
 			$GLOBALS['XE_EXTRA_KEYS'][$module_srl] = $keys;
 		}
-		
+
 		return $GLOBALS['XE_EXTRA_KEYS'][$module_srl];
 	}
-	
+
 	/**
 	 * A particular document to get the value of the extra variable function
 	 * @param int $module_srl
@@ -421,7 +421,7 @@ class documentModel extends document {
 		if(is_array($GLOBALS['XE_EXTRA_VARS'][$document_srl])) ksort($GLOBALS['XE_EXTRA_VARS'][$document_srl]);
 		return $GLOBALS['XE_EXTRA_VARS'][$document_srl];
 	}
-	
+
 	/**
 	 * Show pop-up menu of the selected posts
 	 * Printing, scrap, recommendations and negative, reported the Add Features
@@ -437,18 +437,18 @@ class documentModel extends document {
 		$menu_list = array();
 		// call trigger
 		ModuleHandler::triggerCall('document.getDocumentMenu', 'before', $menu_list);
-		
+
 		$oDocumentController = &getController('document');
 		// Members must be a possible feature
 		if($logged_info->member_srl) {
-			
+
 			$oDocumentModel = &getModel('document');
 			$columnList = array('document_srl', 'module_srl', 'member_srl', 'ipaddress');
 			$oDocument = $oDocumentModel->getDocument($document_srl, false, false, $columnList);
 			$module_srl = $oDocument->get('module_srl');
 			$member_srl = $oDocument->get('member_srl');
 			if(!$module_srl) return new BaseObject(-1, 'msg_invalid_request');
-			
+
 			$oModuleModel = &getModel('module');
 			$document_config = $oModuleModel->getModulePartConfig('document', $module_srl);
 			if($document_config->use_vote_up != 'N' && $member_srl != $logged_info->member_srl) {
@@ -456,17 +456,17 @@ class documentModel extends document {
 				$url = sprintf("doCallModuleAction('document','procDocumentVoteUp','%s')", $document_srl);
 				$oDocumentController->addDocumentPopupMenu($url, 'cmd_vote', '', 'javascript');
 			}
-			
+
 			if($document_config->use_vote_down != 'N' && $member_srl != $logged_info->member_srl) {
 				// Add button to negative
 				$url = sprintf("doCallModuleAction('document','procDocumentVoteDown','%s')", $document_srl);
 				$oDocumentController->addDocumentPopupMenu($url, 'cmd_vote_down', '', 'javascript');
 			}
-			
+
 			// Adding Report
 			$url = sprintf("doCallModuleAction('document','procDocumentDeclare','%s')", $document_srl);
 			$oDocumentController->addDocumentPopupMenu($url, 'cmd_declare', '', 'javascript');
-			
+
 			// Add Bookmark button
 			$url = sprintf("doCallModuleAction('member','procMemberScrapDocument','%s')", $document_srl);
 			$oDocumentController->addDocumentPopupMenu($url, 'cmd_scrap', '', 'javascript');
@@ -480,12 +480,12 @@ class documentModel extends document {
 		if($logged_info->is_admin == 'Y') {
 			$oDocumentModel = &getModel('document');
 			$oDocument = $oDocumentModel->getDocument($document_srl);    //before setting document recycle
-			
+
 			if($oDocument->isExists()) {
 				// Find a post equivalent to ip address
 				$url = getUrl('', 'module', 'admin', 'act', 'dispDocumentAdminList', 'search_target', 'ipaddress', 'search_keyword', $oDocument->getIpAddress());
 				$oDocumentController->addDocumentPopupMenu($url, 'cmd_search_by_ipaddress', $icon_path, 'TraceByIpaddress');
-				
+
 				$url = sprintf("var params = new Array(); params['ipaddress_list']='%s'; exec_xml('spamfilter', 'procSpamfilterAdminInsertDeniedIP', params, completeCallModuleAction)", $oDocument->getIpAddress());
 				$oDocumentController->addDocumentPopupMenu($url, 'cmd_add_ip_to_spamfilter', '', 'javascript');
 			}
@@ -499,7 +499,7 @@ class documentModel extends document {
 		// Wanted to finally clean pop-up menu list
 		$this->add('menus', $menus);
 	}
-	
+
 	/**
 	 * The total number of documents that are bringing
 	 * @param int    $module_srl
@@ -509,13 +509,13 @@ class documentModel extends document {
 	function getDocumentCount($module_srl, $search_obj = NULL) {
 		if(is_null($search_obj)) $search_obj = new stdClass();
 		$search_obj->module_srl = $module_srl;
-		
+
 		$output = executeQuery('document.getDocumentCount', $search_obj);
 		// Return total number of
 		$total_count = $output->data->count;
 		return (int)$total_count;
 	}
-	
+
 	/**
 	 * the total number of documents that are bringing
 	 * @param object $search_obj
@@ -524,25 +524,25 @@ class documentModel extends document {
 	function getDocumentCountByGroupStatus($search_obj = NULL) {
 		$output = executeQuery('document.getDocumentCountByGroupStatus', $search_obj);
 		if(!$output->toBool()) return array();
-		
+
 		return $output->data;
 	}
-	
+
 	function getDocumentExtraVarsCount($module_srl, $search_obj = NULL) {
 		// Additional search options
 		$args->module_srl = $module_srl;
-		
+
 		$args->category_srl = $search_obj->category_srl;
 		$args->var_idx = $search_obj->s_var_idx;
 		$args->var_eid = $search_obj->s_var_eid;
 		$args->var_value = $search_obj->s_var_value;
-		
+
 		$output = executeQuery('document.getDocumentExtraVarsCount', $args);
 		// Return total number of
 		$total_count = $output->data->count;
 		return (int)$total_count;
 	}
-	
+
 	/**
 	 * Import page of the document, module_srl Without throughout ..
 	 * @param documentItem $oDocument
@@ -552,7 +552,7 @@ class documentModel extends document {
 	function getDocumentPage($oDocument, $opt) {
 		$this->_setSearchOption($opt, $args, $query_id, $use_division);
 		$sort_check = $this->_setSortIndex($args, TRUE);
-		
+
 		if($sort_check->isExtraVars) {
 			return 1;
 		} else {
@@ -572,14 +572,14 @@ class documentModel extends document {
 				return 1;
 			}
 		}
-		
+
 		// Guhanhu total number of the article search page
 		$output = executeQuery($query_id . 'Page', $args);
 		$count = $output->data->count;
 		$page = (int)(($count - 1) / $opt->list_count) + 1;
 		return $page;
 	}
-	
+
 	/**
 	 * Imported Category of information
 	 * @param int   $category_srl
@@ -590,10 +590,10 @@ class documentModel extends document {
 		$args = new stdClass();
 		$args->category_srl = $category_srl;
 		$output = executeQuery('document.getCategory', $args, $columnList);
-		
+
 		$node = $output->data;
 		if(!$node) return;
-		
+
 		if($node->group_srls) {
 			$group_srls = explode(',', $node->group_srls);
 			unset($node->group_srls);
@@ -604,7 +604,7 @@ class documentModel extends document {
 		}
 		return $node;
 	}
-	
+
 	/**
 	 * Check whether the child has a specific category
 	 * @param int $category_srl
@@ -617,7 +617,7 @@ class documentModel extends document {
 		if($output->data->count > 0) return true;
 		return false;
 	}
-	
+
 	/**
 	 * Bringing the Categories list the specific module
 	 * Speed and variety of categories, considering the situation created by the php script to include a list of the
@@ -634,14 +634,14 @@ class documentModel extends document {
 			$oDocumentController = &getController('document');
 			if(!$oDocumentController->makeCategoryFile($module_srl)) return array();
 		}
-		
+
 		@include($filename);
 		// Cleanup of category
 		$document_category = array();
 		$this->_arrangeCategory($document_category, $menu->list, 0);
 		return $document_category;
 	}
-	
+
 	/**
 	 * Category within a primary method to change the array type
 	 * @param array $document_category
@@ -668,39 +668,39 @@ class documentModel extends document {
 			$obj->child_count = 0;
 			$obj->childs = array();
 			$obj->grant = $val['grant'];
-			
+
 			if(Context::get('mid') == $obj->mid && Context::get('category') == $obj->category_srl) $selected = true;
 			else $selected = false;
-			
+
 			$obj->selected = $selected;
-			
+
 			$list_order[$idx++] = $obj->category_srl;
 			// If you have a parent category of child nodes apply data
 			if($obj->parent_srl) {
-				
+
 				$parent_srl = $obj->parent_srl;
 				$document_count = $obj->document_count;
 				$expand = $obj->expand;
 				if($selected) $expand = true;
-				
+
 				while($parent_srl) {
 					$document_category[$parent_srl]->document_count += $document_count;
 					$document_category[$parent_srl]->childs[] = $obj->category_srl;
 					$document_category[$parent_srl]->child_count = count($document_category[$parent_srl]->childs);
 					if($expand) $document_category[$parent_srl]->expand = $expand;
-					
+
 					$parent_srl = $document_category[$parent_srl]->parent_srl;
 				}
 			}
-			
+
 			$document_category[$key] = $obj;
-			
+
 			if(count($val['list'])) $this->_arrangeCategory($document_category, $val['list'], $depth + 1);
 		}
 		$document_category[$list_order[0]]->first = true;
 		$document_category[$list_order[count($list_order) - 1]]->last = true;
 	}
-	
+
 	/**
 	 * Wanted number of documents belonging to category
 	 * @param int $module_srl
@@ -713,7 +713,7 @@ class documentModel extends document {
 		$output = executeQuery('document.getCategoryDocumentCount', $args);
 		return (int)$output->data->count;
 	}
-	
+
 	/**
 	 * Xml cache file of the document category return information
 	 * @param int $module_srl
@@ -727,7 +727,7 @@ class documentModel extends document {
 		}
 		return $xml_file;
 	}
-	
+
 	/**
 	 * Php cache files in the document category return information
 	 * @param int $module_srl
@@ -741,7 +741,7 @@ class documentModel extends document {
 		}
 		return $php_file;
 	}
-	
+
 	/**
 	 * Imported post monthly archive status
 	 * @param object $obj
@@ -756,15 +756,15 @@ class documentModel extends document {
 		// Module_srl passed the array may be a check whether the array
 		if(is_array($obj->module_srl)) $args->module_srl = implode(',', $obj->module_srl);
 		else $args->module_srl = $obj->module_srl;
-		
+
 		$output = executeQuery('document.getMonthlyArchivedList', $args);
 		if(!$output->toBool() || !$output->data) return $output;
-		
+
 		if(!is_array($output->data)) $output->data = array($output->data);
-		
+
 		return $output;
 	}
-	
+
 	/**
 	 * Bringing a month on the status of the daily posts
 	 * @param object $obj
@@ -780,15 +780,15 @@ class documentModel extends document {
 		if(is_array($obj->module_srl)) $args->module_srl = implode(',', $obj->module_srl);
 		else $args->module_srl = $obj->module_srl;
 		$args->regdate = $obj->regdate;
-		
+
 		$output = executeQuery('document.getDailyArchivedList', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		if(!is_array($output->data)) $output->data = array($output->data);
-		
+
 		return $output;
 	}
-	
+
 	/**
 	 * Get a list for a particular module
 	 * @return void|Object
@@ -807,7 +807,7 @@ class documentModel extends document {
 		}
 		$this->add('categories', $output);
 	}
-	
+
 	/**
 	 * Wanted to set document information
 	 * @return object
@@ -816,16 +816,16 @@ class documentModel extends document {
 		if($this->documentConfig === NULL){
 			$oModuleModel = getModel('module');
 			$config = $oModuleModel->getModuleConfig('document');
-			
+
 			if (!$config){
 				$config = new stdClass();
 			}
 			$this->documentConfig = $config;
-			
+
 		}
 		return $this->documentConfig;
 	}
-	
+
 	/**
 	 * get to the document extra image path.
 	 * @return string
@@ -839,10 +839,10 @@ class documentModel extends document {
 			$iconSkin = $documentConfig->icons;
 		}
 		$path = sprintf('%s%s',getUrl(), "modules/document/tpl/icons/$iconSkin/");
-		
+
 		return $path;
 	}
-	
+
 	/**
 	 * Common:: Module extensions of variable management
 	 * Expansion parameter management module in the document module instance, when using all the modules available
@@ -855,12 +855,12 @@ class documentModel extends document {
 		Context::set('extra_keys', $extra_keys);
 		$security = new Security();
 		$security->encodeHTML('extra_keys..', 'selected_var_idx');
-		
+
 		// Get information of module_grants
 		$oTemplate = &TemplateHandler::getInstance();
 		return $oTemplate->compile($this->module_path . 'tpl', 'extra_keys');
 	}
-	
+
 	/**
 	 * Common:: Category parameter management module
 	 * @param int $module_srl
@@ -868,15 +868,15 @@ class documentModel extends document {
 	 */
 	function getCategoryHTML($module_srl) {
 		$category_xml_file = $this->getCategoryXmlFile($module_srl);
-		
+
 		Context::set('category_xml_file', $category_xml_file);
-		
+
 		Context::loadJavascriptPlugin('ui.tree');
 		// Get information of module_grants
 		$oTemplate = &TemplateHandler::getInstance();
 		return $oTemplate->compile($this->module_path . 'tpl', 'category_list');
 	}
-	
+
 	/**
 	 * Certain categories of information, return the template guhanhu
 	 * Manager on the page to add information about a particular menu from the server after compiling tpl compiled a
@@ -892,7 +892,7 @@ class documentModel extends document {
 		// Check permissions
 		$grant = $oModuleModel->getGrant($module_info, Context::get('logged_info'));
 		if(!$grant->manager) return new BaseObject(-1, 'msg_not_permitted');
-		
+
 		$category_srl = Context::get('category_srl');
 		$parent_srl = Context::get('parent_srl');
 		// Get a list of member groups
@@ -911,14 +911,14 @@ class documentModel extends document {
 			// If category_srl the menu brings the information
 			if($category_srl) $category_info = $this->getCategory($category_srl);
 		}
-		
-		
+
+
 		$category_info->title = htmlspecialchars($category_info->title);
 		Context::set('category_info', $category_info);
-		
+
 		$security = new Security();
 		$security->encodeHTML('group_list..title');
-		
+
 		// tpl template file directly compile and will return a variable and puts it on.
 		$oTemplate = &TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile('./modules/document/tpl', 'category_info');
@@ -928,7 +928,7 @@ class documentModel extends document {
 		// set of variables to return
 		$this->add('tpl', $tpl);
 	}
-	
+
 	/**
 	 * Return docuent data by alias
 	 * @param string $mid
@@ -945,7 +945,7 @@ class documentModel extends document {
 		if(!$output->data) return null;
 		else return $output->data->document_srl;
 	}
-	
+
 	/**
 	 * Return docuent number by document title
 	 * @param int    $module_srl
@@ -963,7 +963,7 @@ class documentModel extends document {
 			return $output->data->document_srl;
 		}
 	}
-	
+
 	/**
 	 * Return docuent's alias
 	 * @param int $document_srl
@@ -973,11 +973,11 @@ class documentModel extends document {
 		if(!$document_srl) return null;
 		$args->document_srl = $document_srl;
 		$output = executeQueryArray('document.getAliases', $args);
-		
+
 		if(!$output->data) return null;
 		else return $output->data[0]->alias_title;
 	}
-	
+
 	/**
 	 * Return document's history list
 	 * @param int $document_srl
@@ -992,7 +992,7 @@ class documentModel extends document {
 		$output = executeQueryArray('document.getHistories', $args);
 		return $output;
 	}
-	
+
 	/**
 	 * Return document's history
 	 * @param int $history_srl
@@ -1003,7 +1003,7 @@ class documentModel extends document {
 		$output = executeQuery('document.getHistory', $args);
 		return $output->data;
 	}
-	
+
 	/**
 	 * Module_srl value, bringing the list of documents
 	 * @param object $obj
@@ -1067,8 +1067,8 @@ class documentModel extends document {
 					break;
 			}
 		}
-		
-		
+
+
 		$output = executeQueryArray('document.getTrashList', $args);
 		if($output->data) {
 			foreach($output->data as $key => $attribute) {
@@ -1080,7 +1080,7 @@ class documentModel extends document {
 		}
 		return $output;
 	}
-	
+
 	/**
 	 * vote up, vote down member list in Document View page
 	 * @return void|Object
@@ -1088,16 +1088,16 @@ class documentModel extends document {
 	function getDocumentVotedMemberList() {
 		$document_srl = Context::get('document_srl');
 		if(!$document_srl) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		$point = Context::get('point');
 		if($point != -1) $point = 1;
-		
+
 		$oDocumentModel = &getModel('document');
 		$columnList = array('document_srl', 'module_srl');
 		$oDocument = $oDocumentModel->getDocument($document_srl, false, false, $columnList);
 		$module_srl = $oDocument->get('module_srl');
 		if(!$module_srl) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		$oModuleModel = &getModel('module');
 		$document_config = $oModuleModel->getModulePartConfig('document', $module_srl);
 		if($point == -1) {
@@ -1107,12 +1107,12 @@ class documentModel extends document {
 			if($document_config->use_vote_up != 'S') return new BaseObject(-1, 'msg_invalid_request');
 			$args->more_point = 0;
 		}
-		
+
 		$args->document_srl = $document_srl;
-		
+
 		$output = executeQueryArray('document.getVotedMemberList', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$oMemberModel = &getModel('member');
 		if($output->data) {
 			foreach($output->data as $k => $d) {
@@ -1120,10 +1120,10 @@ class documentModel extends document {
 				$output->data[$k]->src = $profile_image->src;
 			}
 		}
-		
+
 		$this->add('voted_member_list', $output->data);
 	}
-	
+
 	/**
 	 * Return status name list
 	 * @return array
@@ -1134,7 +1134,7 @@ class documentModel extends document {
 			return array_flip($this->getStatusList());
 		else return $lang->status_name_list;
 	}
-	
+
 	/**
 	 * Setting sort index
 	 * @param object $obj
@@ -1166,10 +1166,10 @@ class documentModel extends document {
 		$returnObj = new stdClass();
 		$returnObj->sort_index = $sortIndex;
 		$returnObj->isExtraVars = $isExtraVars;
-		
+
 		return $returnObj;
 	}
-	
+
 	/**
 	 * 게시물 목록의 검색 옵션을 Setting함(2011.03.08 - cherryfilter)
 	 * page변수가 없는 상태에서 page 값을 알아오는 method(getDocumentPage)는 검색하지 않은 값을 return해서 검색한 값을 가져오도록 검색옵션이 추가 됨.
@@ -1192,32 +1192,32 @@ class documentModel extends document {
 		$args->end_date = $searchOpt->end_date ? $searchOpt->end_date : null;
 		$args->member_srl = $searchOpt->member_srl;
 		$args->member_srls = $searchOpt->member_srls;
-		
+
 		$logged_info = Context::get('logged_info');
 		$sort_check = $this->_setSortIndex($searchOpt, $load_extra_vars);
-		
+
 		$args->sort_index = $sort_check->sort_index;
-		
+
 		// Check the target and sequence alignment
 		$orderType = array('desc' => 1, 'asc' => 1);
 		if(!isset($orderType[$args->order_type])) $args->order_type = 'asc';
-		
+
 		// If that came across mid module_srl instead of a direct module_srl guhaejum
 		if($searchOpt->mid) {
 			$oModuleModel = &getModel('module');
 			$args->module_srl = $oModuleModel->getModuleSrlByMid($obj->mid);
 			unset($searchOpt->mid);
 		}
-		
+
 		// Module_srl passed the array may be a check whether the array
 		if(is_array($searchOpt->module_srl)) $args->module_srl = implode(',', $searchOpt->module_srl);
 		else $args->module_srl = $searchOpt->module_srl;
-		
+
 		// Except for the test module_srl
 		if(is_array($searchOpt->exclude_module_srl)) $args->exclude_module_srl = implode(',', $searchOpt->exclude_module_srl);
 		else $args->exclude_module_srl = $searchOpt->exclude_module_srl;
-		
-		
+
+
 		// only admin document list, temp document showing
 		if($searchOpt->statusList) $args->statusList = $searchOpt->statusList;
 		else {
@@ -1226,7 +1226,7 @@ class documentModel extends document {
 			else
 				$args->statusList = array($this->getConfigStatus('secret'), $this->getConfigStatus('public'));
 		}
-		
+
 		// Category is selected, further sub-categories until all conditions
 		if($args->category_srl) {
 			$category_list = $this->getCategoryList($args->module_srl);
@@ -1234,17 +1234,17 @@ class documentModel extends document {
 			$category_info->childs[] = $args->category_srl;
 			$args->category_srl = implode(',', $category_info->childs);
 		}
-		
+
 		// Used to specify the default query id (based on several search options to query id modified)
 		$query_id = 'document.getDocumentList';
-		
+
 		// If the search by specifying the document division naeyonggeomsaekil processed for
 		$use_division = false;
-		
+
 		// Search options
 		$search_target = $searchOpt->search_target;
 		$search_keyword = $searchOpt->search_keyword;
-		
+
 		if($search_target && $search_keyword) {
 			switch($search_target) {
 				case 'title' :
@@ -1331,7 +1331,7 @@ class documentModel extends document {
 					break;
 			}
 		}
-		
+
 		if($sort_check->isExtraVars) {
 			$query_id = 'document.getDocumentListExtraSort';
 		} else {
@@ -1339,14 +1339,14 @@ class documentModel extends document {
 			 * list_order asc sort of division that can be used only when
 			 */
 			if($args->sort_index != 'list_order' || $args->order_type != 'asc') $use_division = false;
-			
+
 			/**
 			 * If it is true, use_division changed to use the document division
 			 */
 			if($use_division) {
 				// Division begins
 				$division = (int)Context::get('division');
-				
+
 				// order by list_order and (module_srl===0 or module_srl may count), therefore case table full scan
 				if($args->sort_index == 'list_order' && ($args->exclude_module_srl === '0' || count(explode(',', $args->module_srl)) > 5)) {
 					$listSqlID = 'document.getDocumentListUseIndex';
@@ -1355,7 +1355,7 @@ class documentModel extends document {
 					$listSqlID = 'document.getDocumentList';
 					$divisionSqlID = 'document.getDocumentDivision';
 				}
-				
+
 				// If you do not value the best division top
 				if(!$division) {
 					$division_args = new stdClass();
@@ -1365,7 +1365,7 @@ class documentModel extends document {
 					$division_args->sort_index = $args->sort_index;
 					$division_args->order_type = $args->order_type;
 					$division_args->statusList = $args->statusList;
-					
+
 					$output = executeQuery($divisionSqlID, $division_args, array('list_order'));
 					if($output->data) {
 						$item = array_pop($output->data);
@@ -1373,10 +1373,10 @@ class documentModel extends document {
 					}
 					$division_args = null;
 				}
-				
+
 				// The last division
 				$last_division = (int)Context::get('last_division');
-				
+
 				// Division after division from the 5000 value of the specified Wanted
 				if(!$last_division) {
 					$last_division_args = new stdClass();
@@ -1387,14 +1387,14 @@ class documentModel extends document {
 					$last_division_args->order_type = $args->order_type;
 					$last_division_args->list_order = $division;
 					$last_division_args->page = 5001;
-					
+
 					$output = executeQuery($divisionSqlID, $last_division_args, array('list_order'));
 					if($output->data) {
 						$item = array_pop($output->data);
 						$last_division = $item->list_order;
 					}
 				}
-				
+
 				// Make sure that after last_division article
 				if($last_division) {
 					$last_division_args = new stdClass();
@@ -1404,7 +1404,7 @@ class documentModel extends document {
 					$output = executeQuery('document.getDocumentDivisionCount', $last_division_args);
 					if($output->data->count < 1) $last_division = null;
 				}
-				
+
 				$args->division = $division;
 				$args->last_division = $last_division;
 				Context::set('division', $division);

@@ -22,7 +22,7 @@ class ConditionWithoutArgument extends Condition {
 			$this->_value = '(' . $argument . ')';
 		} else
 			$this->_value = $argument;
-		
+
 	}
 }
 

@@ -6,14 +6,14 @@
  * @brief  View class of the widget modules
  **/
 class widgetView extends widget {
-	
+
 	/**
 	 * @brief Initialization
 	 **/
 	function init(){
 		$this->setTemplatePath($this->module_path . 'tpl');
 	}
-	
+
 	/**
 	 * @brief Details of the widget (conf/info.xml) a pop-out
 	 **/
@@ -29,42 +29,42 @@ class widgetView extends widget {
 		// Set a template file
 		$this->setTemplateFile('widget_detail_info');
 	}
-	
+
 	/**
 	 * @brief Widget details of the skin (skin.xml) a pop-out
 	 **/
 	function dispWidgetSkinInfo(){
 		$widget = Context::get('selected_widget');
 		$skin = Context::get('skin');
-		
+
 		$path = sprintf('./widgets/%s/', $widget);
 		// Wanted widget is selected information
 		$oModuleModel = getModel('module');
 		$skin_info = $oModuleModel->loadSkinInfo($path, $skin);
-		
+
 		Context::set('skin_info', $skin_info);
 		// Specifies the widget to pop up
 		$this->setLayoutFile('popup_layout');
 		// Set a template file
 		$this->setTemplateFile('skin_info');
 	}
-	
+
 	/**
 	 * @brief Widget's code generator
 	 **/
 	function dispWidgetGenerateCode(){
 		// Wanted widget is selected information
 		$oWidgetModel = getModel('widget');
-		
+
 		$widget_list = $oWidgetModel->getDownloadedWidgetList();
 		$selected_widget = Context::get('selected_widget');
 		if(!$selected_widget) $selected_widget = $widget_list[0]->widget;
-		
+
 		$widget_info = $oWidgetModel->getWidgetInfo($selected_widget);
 		Context::set('widget_info', $widget_info);
 		Context::set('widget_list', $widget_list);
 		Context::set('selected_widget', $selected_widget);
-		
+
 		$oModuleModel = getModel('module');
 		// Get a list of module categories
 		$module_categories = $oModuleModel->getModuleCategories();
@@ -74,7 +74,7 @@ class widgetView extends widget {
 		$args->site_srl = $site_module_info->site_srl;
 		$columnList = array('module_srl', 'module_category_srl', 'browser_title', 'mid');
 		$mid_list = $oModuleModel->getMidList($args, $columnList);
-		
+
 		// Get a list of groups
 		$oMemberModel = getModel('member');
 		$group_list = $oMemberModel->getGroups($site_module_info->site_srl);
@@ -89,7 +89,7 @@ class widgetView extends widget {
 			$module_categories[0] = new stdClass();
 			$module_categories[0]->list = $mid_list;
 		}
-		
+
 		Context::set('mid_list', $module_categories);
 		// Menu Get a list
 		$output = executeQueryArray('menu.getMenus');
@@ -102,7 +102,7 @@ class widgetView extends widget {
 		// Set a template file
 		$this->setTemplateFile('widget_generate_code');
 	}
-	
+
 	/**
 	 * @brief Managing pop-up pages used in the generated code
 	 **/
@@ -112,12 +112,12 @@ class widgetView extends widget {
 		Context::set('widget_list', $widget_list);
 		// When there is no widget is selected in the first widget
 		if(!Context::get('selected_widget')) Context::set('selected_widget', $widget_list[0]->widget);
-		
+
 		$this->dispWidgetGenerateCode();
 		$this->setLayoutFile('default_layout');
 		$this->setTemplateFile('widget_generate_code_in_page');
 	}
-	
+
 	/**
 	 * @brief Create widget style code page used in the pop-up management
 	 **/
@@ -132,7 +132,7 @@ class widgetView extends widget {
 		if($widgetstyle && $widgetstyle_info){
 			Context::set('widgetstyle_info', $widgetstyle_info);
 		}
-		
+
 		$this->dispWidgetGenerateCode();
 		$this->setLayoutFile('default_layout');
 		$this->setTemplateFile('widget_style_generate_code_in_page');

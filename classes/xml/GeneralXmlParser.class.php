@@ -13,7 +13,7 @@ class GeneralXmlParser {
 	 * @var array
 	 */
 	var $output = array();
-	
+
 	/**
 	 * Parse a given input to product a object containing parse values.
 	 * @param string $input data to be parsed
@@ -24,16 +24,16 @@ class GeneralXmlParser {
 		xml_set_object($oParser, $this);
 		xml_set_element_handler($oParser, "_tagOpen", "_tagClosed");
 		xml_set_character_data_handler($oParser, "_tagBody");
-		
+
 		xml_parse($oParser, $input);
 		xml_parser_free($oParser);
-		
+
 		if(!count($this->output)) return;
 		$this->output = array_shift($this->output);
-		
+
 		return $this->output;
 	}
-	
+
 	/**
 	 * Start element handler
 	 * @param resource $parser    an instance of parser
@@ -45,10 +45,10 @@ class GeneralXmlParser {
 		$obj->node_name = strtolower($node_name);
 		$obj->attrs = $attrs;
 		$obj->childNodes = array();
-		
+
 		array_push($this->output, $obj);
 	}
-	
+
 	/**
 	 * Character data handler
 	 * Variable in the last element of this->output
@@ -60,8 +60,8 @@ class GeneralXmlParser {
 		//if(!trim($body)) return;
 		$this->output[count($this->output) - 1]->body .= $body;
 	}
-	
-	
+
+
 	/**
 	 * End element handler
 	 * @param resource $parse     an instance of parser
@@ -72,7 +72,7 @@ class GeneralXmlParser {
 		$node_name = strtolower($node_name);
 		$cur_obj = array_pop($this->output);
 		$parent_obj = &$this->output[count($this->output) - 1];
-		
+
 		if($parent_obj->childNodes[$node_name]) {
 			$tmp_obj = $parent_obj->childNodes[$node_name];
 			if(is_array($tmp_obj)) {
@@ -86,5 +86,5 @@ class GeneralXmlParser {
 			$parent_obj->childNodes[$node_name] = $cur_obj;
 		}
 	}
-	
+
 }

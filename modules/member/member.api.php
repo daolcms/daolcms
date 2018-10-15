@@ -6,7 +6,7 @@
  * API Processing of View Action in the member module
  **/
 class memberAPI extends member {
-	
+
 	/**
 	 * Content List
 	 *
@@ -19,7 +19,7 @@ class memberAPI extends member {
 		$oModule->add('document_list', $document_list);
 		$oModule->add('page_navigation', Context::get('page_navigation'));
 	}
-	
+
 	/**
 	 * Arrange Contents
 	 *
@@ -34,7 +34,7 @@ class memberAPI extends member {
 		}
 		return $output;
 	}
-	
+
 	/**
 	 * Arrange Contents
 	 *

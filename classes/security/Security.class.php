@@ -14,7 +14,7 @@ class Security {
 	 * @var mixed
 	 **/
 	var $_targetVar = null;
-	
+
 	/**
 	 * @constructor
 	 * @param mixed $var Target context
@@ -23,7 +23,7 @@ class Security {
 	function __construct($var = null) {
 		$this->_targetVar = $var;
 	}
-	
+
 	/**
 	 * - Convert special characters to HTML entities for the target variables.
 	 * - The results of conversion are equivalent to the results of htmlspecialchars() which is a native function of
@@ -36,14 +36,14 @@ class Security {
 	function encodeHTML(/*, $varName1, $varName2, ... */) {
 		$varNames = func_get_args();
 		if(count($varNames) < 0) return false;
-		
+
 		$use_context = is_null($this->_targetVar);
 		if(!$use_context) {
 			if(!count($varNames) || (!is_object($this->_targetVar) && !is_array($this->_targetVar))) return $this->_encodeHTML($this->_targetVar);
-			
+
 			$is_object = is_object($this->_targetVar);
 		}
-		
+
 		foreach($varNames as $varName) {
 			$varName = explode('.', $varName);
 			$varName0 = array_shift($varName);
@@ -55,9 +55,9 @@ class Security {
 				$var = $this->_targetVar;
 			}
 			$var = $this->_encodeHTML($var, $varName);
-			
+
 			if($var === false) continue;
-			
+
 			if($use_context) {
 				Context::set($varName0, $var);
 			} elseif($varName0) {
@@ -67,10 +67,10 @@ class Security {
 				$this->_targetVar = $var;
 			}
 		}
-		
+
 		if(!$use_context) return $this->_targetVar;
 	}
-	
+
 	/**
 	 * Convert special characters to HTML entities for the target variables.
 	 * @param mixed $var
@@ -82,38 +82,38 @@ class Security {
 			if(!preg_match('/^\$user_lang->/', $var)) $var = htmlspecialchars($var);
 			return $var;
 		}
-		
+
 		if(!count($name) || (!is_array($var) && !is_object($var))) return false;
-		
+
 		$is_object = is_object($var);
 		$name0 = array_shift($name);
-		
+
 		if(strlen($name0)) {
 			$target = $is_object ? $var->{$name0} : $var[$name0];
 			$target = $this->_encodeHTML($target, $name);
-			
+
 			if($target === false) return $var;
-			
+
 			if($is_object) $var->{$name0} = $target;
 			else $var[$name0] = $target;
-			
+
 			return $var;
 		}
-		
+
 		foreach($var as $key => $target) {
 			$cloned_name = array_slice($name, 0);
 			$target = $this->_encodeHTML($target, $name);
 			$name = $cloned_name;
-			
+
 			if($target === false) continue;
-			
+
 			if($is_object) $var->{$key} = $target;
 			else $var[$key] = $target;
 		}
-		
+
 		return $var;
 	}
-	
+
 	/**
 	 * @brief check XML External Entity
 	 *
@@ -124,37 +124,37 @@ class Security {
 	 */
 	static function detectingXEE($xml) {
 		if(!$xml) return FALSE;
-		
+
 		if(strpos($xml, '<!ENTITY') !== FALSE) {
 			return TRUE;
 		}
-		
+
 		// Strip XML declaration.
 		$header = preg_replace('/<\?xml.*?\?' . '>/s', '', substr($xml, 0, 100), 1);
 		$xml = trim(substr_replace($xml, $header, 0, 100));
 		if($xml == '') {
 			return TRUE;
 		}
-		
+
 		// Strip DTD.
 		$header = preg_replace('/^<!DOCTYPE[^>]*+>/i', '', substr($xml, 0, 200), 1);
 		$xml = trim(substr_replace($xml, $header, 0, 200));
 		if($xml == '') {
 			return TRUE;
 		}
-		
+
 		// Confirm the XML now starts with a valid root tag. A root tag can end in [> \t\r\n]
 		$root_tag = substr($xml, 0, strcspn(substr($xml, 0, 20), "> \t\r\n"));
-		
+
 		// Reject a second DTD.
 		if(strtoupper($root_tag) == '<!DOCTYPE') {
 			return TRUE;
 		}
-		
+
 		if(!in_array($root_tag, array('<methodCall', '<methodResponse', '<fault'))) {
 			return TRUE;
 		}
-		
+
 		return FALSE;
 	}
 }

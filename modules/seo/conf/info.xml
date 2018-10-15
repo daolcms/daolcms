@@ -17,7 +17,7 @@
 	<version>1.9.0</version>
 	<date>2017-11-30</date>
 	<license>MIT</license>
-	
+
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org/">
 		<name xml:lang="ko">DAOL</name>
 		<name xml:lang="en">DAOL</name>
@@ -32,7 +32,7 @@
 		<name xml:lang="vi">DAOL</name>
 		<name xml:lang="mm">DAOL</name>
 	</author>
-	
+
 	<author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
 		<name xml:lang="ko">NAVER</name>
 		<name xml:lang="en">NAVER</name>

@@ -11,18 +11,18 @@
  *          If there is no act on the found module, excute an action referencing action_forward.
  **/
 class ModuleHandler extends Handler {
-	
+
 	var $module = NULL; ///< Module
 	var $act = NULL; ///< action
 	var $mid = NULL; ///< Module ID
 	var $document_srl = NULL; ///< Document Number
 	var $module_srl = NULL; ///< Module Number
-	
+
 	var $module_info = NULL; ///< Module Info. Object
-	
+
 	var $error = NULL; ///< an error code.
 	var $httpStatusCode = NULL; ///< http status code.
-	
+
 	/**
 	 * prepares variables to use in moduleHandler
 	 * @param string $module name of module
@@ -39,7 +39,7 @@ class ModuleHandler extends Handler {
 			$this->act = Context::get('act');
 			return;
 		}
-		
+
 		$oContext = Context::getInstance();
 		if($oContext->isSuccessInit == false) {
 			$logged_info = Context::get('logged_info');
@@ -48,7 +48,7 @@ class ModuleHandler extends Handler {
 				return;
 			}
 		}
-		
+
 		// Set variables from request arguments
 		$this->module = $module ? $module : Context::get('module');
 		$this->act = $act ? $act : Context::get('act');
@@ -58,7 +58,7 @@ class ModuleHandler extends Handler {
 		if($entry = Context::get('entry')) {
 			$this->entry = Context::convertEncodingStr($entry);
 		}
-		
+
 		// Validate variables to prevent XSS
 		$isInvalid = null;
 		if($this->module && !preg_match("/^([a-z0-9\_\-]+)$/i", $this->module)) $isInvalid = true;
@@ -71,7 +71,7 @@ class ModuleHandler extends Handler {
 			Context::close();
 			exit;
 		}
-		
+
 		if(isset($this->act) && substr($this->act, 0, 4) == 'disp') {
 			if(Context::get('_use_ssl') == 'optional' && Context::isExistsSSLAction($this->act) && $_SERVER['HTTPS'] != 'on') {
 				if(Context::get('_https_port') != null) {
@@ -82,7 +82,7 @@ class ModuleHandler extends Handler {
 				return;
 			}
 		}
-		
+
 		// call a trigger before moduleHandler init
 		ModuleHandler::triggerCall('moduleHandler.init', 'before', $this);
 		if(__ERROR_LOG__ == 1 && __DEBUG_OUTPUT__ == 0) {
@@ -91,27 +91,27 @@ class ModuleHandler extends Handler {
 				register_shutdown_function(array($this, 'shutdownHandler'));
 			}
 		}
-		
+
 		// execute addon (before module initialization)
 		$called_position = 'before_module_init';
 		$oAddonController = getController('addon');
 		$addon_file = $oAddonController->getCacheFilePath(Mobile::isFromMobilePhone() ? 'mobile' : 'pc');
 		if(is_readable($addon_file)) include($addon_file);
 	}
-	
+
 	public static function daolErrorLog($errnumber, $errormassage, $errorfile, $errorline, $errorcontext) {
 		if(($errnumber & 3) == 0 || error_reporting() == 0) {
 			return false;
 		}
-		
+
 		set_error_handler(function () {
 		}, ~0);
-		
+
 		$debug_file = _DAOL_PATH_ . 'files/_debug_message.php';
 		if(!file_exists($debug_file)) {
 			$print[] = '<?php exit() ?>';
 		}
-		
+
 		$errorname = self::getErrorType($errnumber);
 		$print[] = '[' . date('Y-m-d H:i:s') . '] ' . $errorname . ' : ' . $errormassage;
 		$backtrace_args = defined('DEBUG_BACKTRACE_IGNORE_ARGS') ? \DEBUG_BACKTRACE_IGNORE_ARGS : 0;
@@ -119,7 +119,7 @@ class ModuleHandler extends Handler {
 		if(count($backtrace) > 1 && $backtrace[1]['function'] === 'daolErrorLog' && !$backtrace[1]['class']) {
 			array_shift($backtrace);
 		}
-		
+
 		foreach($backtrace as $key => $value) {
 			$message = '    - ' . $value['file'] . ' : ' . $value['line'];
 			$print[] = $message;
@@ -127,38 +127,38 @@ class ModuleHandler extends Handler {
 		$print[] = PHP_EOL;
 		@file_put_contents($debug_file, implode(PHP_EOL, $print), FILE_APPEND | LOCK_EX);
 		restore_error_handler();
-		
+
 		return true;
 	}
-	
+
 	function shutdownHandler() {
 		$errinfo = error_get_last();
 		if($errinfo === null || ($errinfo['type'] != 1 && $errinfo['type'] != 4)) {
 			return false;
 		}
-		
+
 		set_error_handler(function () {
 		}, ~0);
-		
+
 		$debug_file = _DAOL_PATH_ . 'files/_debug_message.php';
 		if(!file_exists($debug_file)) {
 			$print[] = '<?php exit() ?>';
 		}
-		
+
 		$errorname = self::getErrorType($errinfo['type']);
 		$print[] = '[' . date('Y-m-d H:i:s') . ']';
 		$print[] = $errorname . ' : ' . $errinfo['message'];
-		
+
 		$message = '    - ' . $errinfo['file'] . ' : ' . $errinfo['line'];
 		$print[] = $message;
-		
+
 		$print[] = PHP_EOL;
 		@file_put_contents($debug_file, implode(PHP_EOL, $print), FILE_APPEND | LOCK_EX);
 		set_error_handler(array($this, 'dummyHandler'), ~0);
-		
+
 		return true;
 	}
-	
+
 	public static function getErrorType($errno) {
 		switch($errno) {
 			case E_ERROR:
@@ -195,7 +195,7 @@ class ModuleHandler extends Handler {
 				return 'Error';
 		}
 	}
-	
+
 	/**
 	 * Initialization. It finds the target module based on module, mid, document_srl, and prepares to execute an action
 	 * @return boolean true: OK, false: redirected
@@ -203,17 +203,17 @@ class ModuleHandler extends Handler {
 	function init() {
 		$oModuleModel = &getModel('module');
 		$site_module_info = Context::get('site_module_info');
-		
+
 		if(!$this->document_srl && $this->mid && $this->entry) {
 			$oDocumentModel = &getModel('document');
 			$this->document_srl = $oDocumentModel->getDocumentSrlByAlias($this->mid, $this->entry);
 			if($this->document_srl) Context::set('document_srl', $this->document_srl);
 		}
-		
+
 		// Get module's information based on document_srl, if it's specified
 		if($this->document_srl && !$this->module) {
 			$module_info = $oModuleModel->getModuleInfoByDocumentSrl($this->document_srl);
-			
+
 			// If the document does not exist, remove document_srl
 			if(!$module_info) {
 				unset($this->document_srl);
@@ -230,25 +230,25 @@ class ModuleHandler extends Handler {
 			// if requested module is different from one of the document, remove the module information retrieved based on the document number
 			if($this->module && $module_info->module != $this->module) unset($module_info);
 		}
-		
+
 		// If module_info is not set yet, and there exists mid information, get module information based on the mid
 		if(!$module_info && $this->mid) {
 			$module_info = $oModuleModel->getModuleInfoByMid($this->mid, $site_module_info->site_srl);
 			//if($this->module && $module_info->module != $this->module) unset($module_info);
 		}
-		
+
 		// redirect, if module_site_srl and site_srl are different
 		if(!$this->module && !$module_info && $site_module_info->site_srl == 0 && $site_module_info->module_site_srl > 0) {
 			$site_info = $oModuleModel->getSiteInfo($site_module_info->module_site_srl);
 			header("location:" . getNotEncodedSiteUrl($site_info->domain, 'mid', $site_module_info->mid));
 			return false;
 		}
-		
+
 		// If module_info is not set still, and $module does not exist, find the default module
 		if(!$module_info && !$this->module && !$this->mid) $module_info = $site_module_info;
-		
+
 		if(!$module_info && !$this->module && $site_module_info->module_site_srl) $module_info = $site_module_info;
-		
+
 		// redirect, if site_srl of module_info is different from one of site's module_info
 		if($module_info && $module_info->site_srl != $site_module_info->site_srl && !isCrawler()) {
 			// If the module is of virtual site
@@ -264,53 +264,53 @@ class ModuleHandler extends Handler {
 			header("location:" . $redirect_url);
 			return false;
 		}
-		
+
 		// If module info was set, retrieve variables from the module information
 		if($module_info) {
 			$this->module = $module_info->module;
 			$this->mid = $module_info->mid;
 			$this->module_info = $module_info;
 			Context::setBrowserTitle($module_info->browser_title);
-			
+
 			if($module_info->use_mobile && Mobile::isFromMobilePhone()) {
 				$layoutSrl = $module_info->mlayout_srl;
 			} else {
 				$layoutSrl = $module_info->layout_srl;
 			}
-			
+
 			$part_config = $oModuleModel->getModulePartConfig('layout', $layoutSrl);
 			Context::addHtmlHeader($part_config->header_script);
 		}
-		
+
 		// Set module and mid into module_info
 		$this->module_info->module = $this->module;
 		$this->module_info->mid = $this->mid;
-		
+
 		// Set site_srl add 2011 08 09
 		$this->module_info->site_srl = $site_module_info->site_srl;
-		
+
 		// Still no module? it's an error
 		if(!$this->module) {
 			$this->error = 'msg_module_is_not_exists';
 			$this->httpStatusCode = '404';
 		}
-		
+
 		// If mid exists, set mid into context
 		if($this->mid) Context::set('mid', $this->mid, true);
-		
+
 		// Call a trigger after moduleHandler init
 		$output = ModuleHandler::triggerCall('moduleHandler.init', 'after', $this->module_info);
 		if(!$output->toBool()) {
 			$this->error = $output->getMessage();
 			return false;
 		}
-		
+
 		// Set current module info into context
 		Context::set('current_module_info', $this->module_info);
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * get a module instance and execute an action
 	 * @return ModuleObject executed module instance
@@ -318,7 +318,7 @@ class ModuleHandler extends Handler {
 	function procModule() {
 		$oModuleModel = &getModel('module');
 		$display_mode = Mobile::isFromMobilePhone() ? 'mobile' : 'view';
-		
+
 		// If error occurred while preparation, return a message instance
 		if($this->error) {
 			$oMessageObject = &ModuleHandler::getModuleInstance('message', $display_mode);
@@ -330,23 +330,23 @@ class ModuleHandler extends Handler {
 			}
 			return $oMessageObject;
 		}
-		
+
 		// Get action information with conf/module.xml
 		$xml_info = $oModuleModel->getModuleActionXml($this->module);
-		
+
 		// If not installed yet, modify act
 		if($this->module == "install") {
 			if(!$this->act || !$xml_info->action->{$this->act}) $this->act = $xml_info->default_index_act;
 		}
-		
+
 		// if act exists, find type of the action, if not use default index act
 		if(!$this->act) $this->act = $xml_info->default_index_act;
-		
+
 		// still no act means error
 		if(!$this->act) {
 			$this->error = 'msg_module_is_not_exists';
 			$this->httpStatusCode = '404';
-			
+
 			$oMessageObject = &ModuleHandler::getModuleInstance('message', $display_mode);
 			$oMessageObject->setError(-1);
 			$oMessageObject->setMessage($this->error);
@@ -356,25 +356,25 @@ class ModuleHandler extends Handler {
 			}
 			return $oMessageObject;
 		}
-		
+
 		// get type, kind
 		$type = $xml_info->action->{$this->act}->type;
 		$ruleset = $xml_info->action->{$this->act}->ruleset;
 		$meta_noindex = $xml_info->action->{$this->act}->meta_noindex;
 		$kind = strpos(strtolower($this->act), 'admin') !== false ? 'admin' : '';
-		
+
 		if($meta_noindex === 'true'){
 			Context::addMetaTag('robots', 'noindex');
 		}
-		
+
 		if(!$kind && $this->module == 'admin') $kind = 'admin';
 		if($this->module_info->use_mobile != "Y") Mobile::setMobile(false);
-		
+
 		// admin menu check
 		if(Context::isInstalled()) {
 			$oMenuAdminModel = &getAdminModel('menu');
 			$output = $oMenuAdminModel->getMenuByTitle('__XE_ADMIN__');
-			
+
 			if(!$output->menu_srl) {
 				$oAdminClass = &getClass('admin');
 				$oAdminClass->createXeAdminMenu();
@@ -383,9 +383,9 @@ class ModuleHandler extends Handler {
 				$oMenuAdminController->makeXmlFile($output->menu_srl);
 			}
 		}
-		
+
 		$logged_info = Context::get('logged_info');
-		
+
 		// check CSRF for non-GET actions
 		$use_check_csrf = !isset($xml_info->action->{$this->act}) || $xml_info->action->{$this->act}->check_csrf !== 'false';
 		if($use_check_csrf && $_SERVER['REQUEST_METHOD'] !== 'GET' && Context::isInstalled() && !checkCSRF()){
@@ -396,7 +396,7 @@ class ModuleHandler extends Handler {
 			$oMessageObject->dispMessage();
 			return $oMessageObject;
 		}
-		
+
 		// Admin ip
 		if($kind == 'admin' && $_SESSION['denied_admin'] == 'Y') {
 			$this->error = "msg_not_permitted_act";
@@ -406,7 +406,7 @@ class ModuleHandler extends Handler {
 			$oMessageObject->dispMessage();
 			return $oMessageObject;
 		}
-		
+
 		// if(type == view, and case for using mobilephone)
 		if($type == "view" && Mobile::isFromMobilePhone() && Context::isInstalled()) {
 			$orig_type = "view";
@@ -422,7 +422,7 @@ class ModuleHandler extends Handler {
 			// create a module instance
 			$oModule = &$this->getModuleInstance($this->module, $type, $kind);
 		}
-		
+
 		if(!is_object($oModule)) {
 			$oMessageObject = &ModuleHandler::getModuleInstance('message', $display_mode);
 			$oMessageObject->setError(-1);
@@ -433,10 +433,10 @@ class ModuleHandler extends Handler {
 			}
 			return $oMessageObject;
 		}
-		
+
 		// If there is no such action in the module object
 		if(!isset($xml_info->action->{$this->act}) || !method_exists($oModule, $this->act)) {
-			
+
 			if(!Context::isInstalled()) {
 				$this->error = 'msg_invalid_request';
 				$oMessageObject = &ModuleHandler::getModuleInstance('message', $type);
@@ -448,7 +448,7 @@ class ModuleHandler extends Handler {
 				}
 				return $oMessageObject;
 			}
-			
+
 			$forward = NULL;
 			// 1. Look for the module with action name
 			if(preg_match('/^([a-z]+)([A-Z])([a-z0-9\_]+)(.*)$/', $this->act, $matches)) {
@@ -463,35 +463,35 @@ class ModuleHandler extends Handler {
 					$forward->act = $this->act;
 				}
 			}
-			
+
 			if(!$forward) {
 				$forward = $oModuleModel->getActionForward($this->act);
 			}
-			
+
 			if($forward->module && $forward->type && $forward->act && $forward->act == $this->act) {
 				$kind = strpos(strtolower($forward->act), 'admin') !== false ? 'admin' : '';
 				$type = $forward->type;
 				$ruleset = $forward->ruleset;
 				$tpl_path = $oModule->getTemplatePath();
 				$orig_module = $oModule;
-				
+
 				if($forward->meta_noindex === 'true'){
 					Context::addMetaTag('robots', 'noindex');
 				}
-				
+
 				$xml_info = $oModuleModel->getModuleActionXml($forward->module);
-				
+
 				// SECISSUE also check foward act method
 				// check REQUEST_METHOD in controller
 				if($type == 'controller') {
 					$allowedMethod = $xml_info->action->{$forward->act}->method;
-					
+
 					if(!$allowedMethod) {
 						$allowedMethodList[0] = 'POST';
 					} else {
 						$allowedMethodList = explode('|', strtoupper($allowedMethod));
 					}
-					
+
 					if(!in_array(strtoupper($_SERVER['REQUEST_METHOD']), $allowedMethodList)) {
 						$this->error = "msg_invalid_request";
 						$oMessageObject = ModuleHandler::getModuleInstance('message', $display_mode);
@@ -501,7 +501,7 @@ class ModuleHandler extends Handler {
 						return $oMessageObject;
 					}
 				}
-				
+
 				if($type == "view" && Mobile::isFromMobilePhone()) {
 					$orig_type = "view";
 					$type = "mobile";
@@ -515,7 +515,7 @@ class ModuleHandler extends Handler {
 				} else {
 					$oModule = &$this->getModuleInstance($forward->module, $type, $kind);
 				}
-				
+
 				if(!is_object($oModule)) {
 					$oMessageObject = &ModuleHandler::getModuleInstance('message', $display_mode);
 					$oMessageObject->setError(-1);
@@ -526,7 +526,7 @@ class ModuleHandler extends Handler {
 					}
 					return $oMessageObject;
 				}
-				
+
 				if($this->module == "admin" && $type == "view") {
 					if($logged_info->is_admin == 'Y') {
 						if($this->act != 'dispLayoutAdminLayoutModify') {
@@ -574,7 +574,7 @@ class ModuleHandler extends Handler {
 				return $oModule;
 			}
 		}
-		
+
 		// ruleset check...
 		if(!empty($ruleset)) {
 			$rulesetModule = $forward->module ? $forward->module : $this->module;
@@ -587,14 +587,14 @@ class ModuleHandler extends Handler {
 					}
 					unset($_SESSION['XE_VALIDATOR_ERROR_LANG']);
 				}
-				
+
 				$Validator = new Validator($rulesetFile);
 				$result = $Validator->validate();
 				if(!$result) {
 					$lastError = $Validator->getLastError();
 					$returnUrl = Context::get('error_return_url');
 					$errorMsg = $lastError['msg'] ? $lastError['msg'] : 'validation error';
-					
+
 					//for xml response
 					$oModule->setError(-1);
 					$oModule->setMessage($errorMsg);
@@ -610,12 +610,12 @@ class ModuleHandler extends Handler {
 				}
 			}
 		}
-		
+
 		$oModule->setAct($this->act);
-		
+
 		$this->module_info->module_type = $type;
 		$oModule->setModuleInfo($this->module_info, $xml_info);
-		
+
 		$db_use_mobile = Mobile::isMobileEnabled();
 		if($type == "view" && $this->module_info->use_mobile == "Y" && Mobile::isMobileCheckByAgent() && !isset($skipAct[Context::get('act')]) && $db_use_mobile === true) {
 			global $lang;
@@ -624,7 +624,7 @@ class ModuleHandler extends Handler {
 			Context::addHtmlHeader($header);
 			Context::addHtmlFooter($footer);
 		}
-		
+
 		if(($type == 'view' || $type == 'mobile') && $kind != 'admin'){
 			$module_config = $oModuleModel->getModuleConfig('module');
 			if($module_config->htmlFooter) {
@@ -637,49 +637,49 @@ class ModuleHandler extends Handler {
 				}
 			}
 		}
-		
+
 		if ($kind === 'admin'){
 			Context::addMetaTag('robots', 'noindex');
 		}
-		
+
 		// if failed message exists in session, set context
 		$this->_setInputErrorToContext();
-		
+
 		$procResult = $oModule->proc();
-		
+
 		$methodList = array('XMLRPC' => 1, 'JSON' => 1);
 		if(!$oModule->stop_proc && !isset($methodList[Context::getRequestMethod()])) {
 			$error = $oModule->getError();
 			$message = $oModule->getMessage();
 			$messageType = $oModule->getMessageType();
 			$redirectUrl = $oModule->getRedirectUrl();
-			
+
 			if(!$procResult) {
 				$this->error = $message;
 				if(!$redirectUrl && Context::get('error_return_url')) $redirectUrl = Context::get('error_return_url');
 				$this->_setInputValueToSession();
-				
+
 			} else {
 				if(count($_SESSION['INPUT_ERROR'])) {
 					Context::set('INPUT_ERROR', $_SESSION['INPUT_ERROR']);
 					$_SESSION['INPUT_ERROR'] = '';
 				}
 			}
-			
+
 			$_SESSION['XE_VALIDATOR_ERROR'] = $error;
 			$_SESSION['XE_VALIDATOR_ID'] = Context::get('xe_validator_id');
 			if($message != 'success') $_SESSION['XE_VALIDATOR_MESSAGE'] = $message;
 			$_SESSION['XE_VALIDATOR_MESSAGE_TYPE'] = $messageType;
-			
+
 			if(Context::get('xeVirtualRequestMethod') != 'xml') {
 				$_SESSION['XE_VALIDATOR_RETURN_URL'] = $redirectUrl;
 			}
 		}
-		
+
 		unset($logged_info);
 		return $oModule;
 	}
-	
+
 	/**
 	 * set error message to Session.
 	 * @return void
@@ -705,7 +705,7 @@ class ModuleHandler extends Handler {
 		}
 		$this->_clearErrorSession();
 	}
-	
+
 	/**
 	 * clear error message to Session.
 	 * @return void
@@ -718,7 +718,7 @@ class ModuleHandler extends Handler {
 		$_SESSION['XE_VALIDATOR_ID'] = '';
 		$_SESSION['INPUT_ERROR'] = '';
 	}
-	
+
 	/**
 	 * occured error when, set input values to session.
 	 * @return void
@@ -728,7 +728,7 @@ class ModuleHandler extends Handler {
 		unset($requestVars->act, $requestVars->mid, $requestVars->vid, $requestVars->success_return_url, $requestVars->error_return_url);
 		foreach($requestVars AS $key => $value) $_SESSION['INPUT_ERROR'][$key] = $value;
 	}
-	
+
 	/**
 	 * display contents from executed module
 	 * @param ModuleObject $oModule module instance
@@ -740,28 +740,28 @@ class ModuleHandler extends Handler {
 			$this->error = 'msg_module_is_not_exists';
 			$this->httpStatusCode = '404';
 		}
-		
+
 		// If connection to DB has a problem even though it's not install module, set error
 		if($this->module != 'install' && $GLOBALS['__DB__'][Context::getDBType()]->isConnected() == false) {
 			$this->error = 'msg_dbconnect_failed';
 		}
-		
+
 		// Call trigger after moduleHandler proc
 		$output = ModuleHandler::triggerCall('moduleHandler.proc', 'after', $oModule);
 		if(!$output->toBool()) $this->error = $output->getMessage();
-		
+
 		// Use message view object, if HTML call
 		$methodList = array('XMLRPC' => 1, 'JSON' => 1);
 		if(!isset($methodList[Context::getRequestMethod()])) {
-			
+
 			if($_SESSION['XE_VALIDATOR_RETURN_URL']) {
 				$display_handler = new DisplayHandler();
 				$display_handler->_debugOutput();
-				
+
 				header('location:' . $_SESSION['XE_VALIDATOR_RETURN_URL']);
 				return;
 			}
-			
+
 			// If error occurred, handle it
 			if($this->error) {
 				// display content with message module instance
@@ -770,12 +770,12 @@ class ModuleHandler extends Handler {
 				$oMessageObject->setError(-1);
 				$oMessageObject->setMessage($this->error);
 				$oMessageObject->dispMessage();
-				
+
 				if($oMessageObject->getHttpStatusCode() && $oMessageObject->getHttpStatusCode() != '200') {
 					$this->_setHttpStatusMessage($oMessageObject->getHttpStatusCode());
 					$oMessageObject->setTemplateFile('http_status_code');
 				}
-				
+
 				// If module was called normally, change the templates of the module into ones of the message view module
 				if($oModule) {
 					$oModule->setTemplatePath($oMessageObject->getTemplatePath());
@@ -784,27 +784,27 @@ class ModuleHandler extends Handler {
 				} else {
 					$oModule = $oMessageObject;
 				}
-				
+
 				$this->_clearErrorSession();
 			}
-			
+
 			// Check if layout_srl exists for the module
 			if(Mobile::isFromMobilePhone()) {
 				$layout_srl = $oModule->module_info->mlayout_srl;
 			} else {
 				$layout_srl = $oModule->module_info->layout_srl;
 			}
-			
+
 			if($layout_srl && !$oModule->getLayoutFile()) {
-				
+
 				// If layout_srl exists, get information of the layout, and set the location of layout_path/ layout_file
 				$oLayoutModel = &getModel('layout');
 				$layout_info = $oLayoutModel->getLayout($layout_srl);
 				if($layout_info) {
-					
+
 					// Input extra_vars into $layout_info
 					if($layout_info->extra_var_count) {
-						
+
 						foreach($layout_info->extra_var as $var_id => $val) {
 							if($val->type == 'image') {
 								if(preg_match('/^\.\/files\/attach\/images\/(.+)/i', $val->value)) $val->value = Context::getRequestUri() . substr($val->value, 2);
@@ -819,25 +819,25 @@ class ModuleHandler extends Handler {
 							Context::set($menu_id, $menu);
 						}
 					}
-					
+
 					// Set layout information into context
 					Context::set('layout_info', $layout_info);
-					
+
 					$oModule->setLayoutPath($layout_info->path);
 					$oModule->setLayoutFile('layout');
-					
+
 					// If layout was modified, use the modified version
 					$edited_layout = $oLayoutModel->getUserLayoutHtml($layout_info->layout_srl);
 					if(file_exists($edited_layout)) $oModule->setEditedLayoutFile($edited_layout);
 				}
 			}
 		}
-		
+
 		// Display contents
 		$oDisplayHandler = new DisplayHandler();
 		$oDisplayHandler->printContent($oModule);
 	}
-	
+
 	/**
 	 * returns module's path
 	 * @param string $module module name
@@ -846,7 +846,7 @@ class ModuleHandler extends Handler {
 	function getModulePath($module) {
 		return sprintf('./modules/%s/', $module);
 	}
-	
+
 	/**
 	 * It creates a module instance
 	 * @param string $module module name
@@ -856,31 +856,31 @@ class ModuleHandler extends Handler {
 	 * @remarks if there exists a module instance created before, returns it.
 	 **/
 	function &getModuleInstance($module, $type = 'view', $kind = '') {
-		
+
 		if(__DEBUG__ == 3) $start_time = getMicroTime();
-		
+
 		$parent_module = $module;
 		$kind = strtolower($kind);
 		$type = strtolower($type);
-		
+
 		$kinds = array('svc' => 1, 'admin' => 1);
 		if(!isset($kinds[$kind])) $kind = 'svc';
-		
+
 		$key = $module . '.' . ($kind != 'admin' ? '' : 'admin') . '.' . $type;
-		
+
 		if(is_array($GLOBALS['__MODULE_EXTEND__']) && array_key_exists($key, $GLOBALS['__MODULE_EXTEND__'])) {
 			$module = $extend_module = $GLOBALS['__MODULE_EXTEND__'][$key];
 		}
-		
+
 		// if there is no instance of the module in global variable, create a new one
 		if(!isset($GLOBALS['_loaded_module'][$module][$type][$kind])) {
 			ModuleHandler::_getModuleFilePath($module, $type, $kind, $class_path, $high_class_file, $class_file, $instance_name);
-			
+
 			if($extend_module && (!is_readable($high_class_file) || !is_readable($class_file))) {
 				$module = $parent_module;
 				ModuleHandler::_getModuleFilePath($module, $type, $kind, $class_path, $high_class_file, $class_file, $instance_name);
 			}
-			
+
 			// Check if the base class and instance class exist
 			if(!class_exists($module, true)){
 				return NULL;
@@ -888,45 +888,45 @@ class ModuleHandler extends Handler {
 			if(!class_exists($instance_name, true)){
 				return NULL;
 			}
-			
+
 			// Create an instance
 			$oModule = new $instance_name();
 			if(!is_object($oModule)){
 				return NULL;
 			}
-			
+
 			// Load language files for the class
 			Context::loadLang($class_path . 'lang');
 			if($extend_module) {
 				Context::loadLang(ModuleHandler::getModulePath($parent_module) . 'lang');
 			}
-			
+
 			// Set variables to the instance
 			$oModule->setModule($module);
 			$oModule->setModulePath($class_path);
-			
+
 			// If the module has a constructor, run it.
 			if(!isset($GLOBALS['_called_constructor'][$instance_name]) && trim($instance_name)) {
 				$GLOBALS['_called_constructor'][$instance_name] = true;
 				if(method_exists($oModule, $instance_name)) $oModule->{$instance_name}();
 			}
-			
+
 			// Store the created instance into GLOBALS variable
 			$GLOBALS['_loaded_module'][$module][$type][$kind] = $oModule;
 		}
-		
+
 		if(__DEBUG__ == 3) $GLOBALS['__elapsed_class_load__'] += getMicroTime() - $start_time;
-		
+
 		// return the instance
 		return $GLOBALS['_loaded_module'][$module][$type][$kind];
 	}
-	
+
 	function _getModuleFilePath($module, $type, $kind, &$classPath, &$highClassFile, &$classFile, &$instanceName) {
 		$classPath = ModuleHandler::getModulePath($module);
-		
+
 		$highClassFile = sprintf('%s%s%s.class.php', _DAOL_PATH_, $classPath, $module);
 		$highClassFile = FileHandler::getRealPath($highClassFile);
-		
+
 		$types = explode(' ', 'view controller model api wap mobile class');
 		if(!in_array($type, $types)) $type = $types[0];
 		if($type == 'class') {
@@ -939,12 +939,12 @@ class ModuleHandler extends Handler {
 			$instanceName = '%s%s';
 			$classFile = '%s%s.%s.php';
 		}
-		
+
 		$instanceName = sprintf($instanceName, $module, ucfirst($type));
 		$classFile = sprintf($classFile, $classPath, $module, $type);
 		$classFile = FileHandler::getRealPath($classFile);
 	}
-	
+
 	/**
 	 * call a trigger
 	 * @param string $trigger_name    trigger's name to call
@@ -955,28 +955,28 @@ class ModuleHandler extends Handler {
 	function triggerCall($trigger_name, $called_position, &$obj) {
 		// skip if not installed
 		if(!Context::isInstalled()) return new BaseObject();
-		
+
 		$oModuleModel = &getModel('module');
 		$triggers = $oModuleModel->getTriggers($trigger_name, $called_position);
 		if(!$triggers || !count($triggers)) return new BaseObject();
-		
+
 		foreach($triggers as $item) {
 			$module = $item->module;
 			$type = $item->type;
 			$called_method = $item->called_method;
-			
+
 			$oModule = null;
 			$oModule = &getModule($module, $type);
 			if(!$oModule || !method_exists($oModule, $called_method)) continue;
-			
+
 			$output = $oModule->{$called_method}($obj);
 			if(is_object($output) && method_exists($output, 'toBool') && !$output->toBool()) return $output;
 			unset($oModule);
 		}
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * get http status message by http status code
 	 * @param string $code
@@ -1052,7 +1052,7 @@ class ModuleHandler extends Handler {
 		);
 		$statusMessage = $statusMessageList[$code];
 		if(!$statusMessage) $statusMessage = 'HTTP ' . $code;
-		
+
 		Context::set('http_status_code', $code);
 		Context::set('http_status_message', $statusMessage);
 	}

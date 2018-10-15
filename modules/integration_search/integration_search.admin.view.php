@@ -7,14 +7,14 @@
  * @Adaptor DAOL Project (developer@daolcms.org)
  **/
 class integration_searchAdminView extends integration_search {
-	
+
 	/**
 	 * Cofiguration of integration serach module
 	 *
 	 * @var object module config
 	 */
 	var $config = null;
-	
+
 	/**
 	 * Initialization
 	 *
@@ -25,10 +25,10 @@ class integration_searchAdminView extends integration_search {
 		$oModuleModel = &getModel('module');
 		$this->config = $oModuleModel->getModuleConfig('integration_search');
 		Context::set('config', $this->config);
-		
+
 		$this->setTemplatePath($this->module_path . "/tpl/");
 	}
-	
+
 	/**
 	 * Module selection and skin set
 	 *
@@ -44,7 +44,7 @@ class integration_searchAdminView extends integration_search {
 		// Generated mid Wanted list
 		$obj = new stdClass();
 		$obj->site_srl = 0;
-		
+
 		// Shown below as obsolete comments - modify by cherryfilter
 		/*$mid_list = $oModuleModel->getMidList($obj);
 		// module_category and module combination
@@ -57,16 +57,16 @@ class integration_searchAdminView extends integration_search {
 		}
 
 		Context::set('mid_list',$module_categories);*/
-		
+
 		$security = new Security();
 		$security->encodeHTML('skin_list..title');
-		
+
 		// Sample Code
 		Context::set('sample_code', htmlspecialchars('<form action="{getUrl()}" method="get"><input type="hidden" name="vid" value="{$vid}" /><input type="hidden" name="mid" value="{$mid}" /><input type="hidden" name="act" value="IS" /><input type="text" name="is_keyword"  value="{$is_keyword}" /><span class="btn"><input type="submit" value="{$lang->cmd_search}" /></span></form>'));
-		
+
 		$this->setTemplateFile("index");
 	}
-	
+
 	/**
 	 * Skin Settings
 	 *
@@ -88,13 +88,13 @@ class integration_searchAdminView extends integration_search {
 		}
 		Context::set('skin_info', $skin_info);
 		Context::set('skin_vars', $skin_vars); //maybe not used
-		
+
 		$config = $oModuleModel->getModuleConfig('integration_search');
 		Context::set('module_info', unserialize($config->skin_vars));
-		
+
 		$security = new Security();
 		$security->encodeHTML('skin_info...');
-		
+
 		$this->setTemplateFile("skin_info");
 	}
 }

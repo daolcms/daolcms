@@ -7,13 +7,13 @@
  * @brief   Model class of module module
  **/
 class moduleModel extends module {
-	
+
 	/**
 	 * @brief Initialization
 	 **/
 	function init(){
 	}
-	
+
 	/**
 	 * @brief Check if mid, vid are available
 	 **/
@@ -38,10 +38,10 @@ class moduleModel extends module {
 			$output = executeQuery('module.isExistsSiteDomain', $site_args);
 			if($output->data->count) return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * @brief Get site information
 	 **/
@@ -51,14 +51,14 @@ class moduleModel extends module {
 		$output = executeQuery('module.getSiteInfo', $args, $columnList);
 		return $output->data;
 	}
-	
+
 	function getSiteInfoByDomain($domain, $columnList = array()){
 		$args = new stdClass();
 		$args->domain = $domain;
 		$output = executeQuery('module.getSiteInfoByDomain', $args, $columnList);
 		return $output->data;
 	}
-	
+
 	/**
 	 * @brief Get module information with document_srl
 	 * In this case, it is unable to use the cache file
@@ -69,22 +69,22 @@ class moduleModel extends module {
 		$output = executeQuery('module.getModuleInfoByDocument', $args);
 		return $this->addModuleExtraVars($output->data);
 	}
-	
+
 	/**
 	 * @brief Get the default mid according to the domain
 	 **/
 	function getDefaultMid(){
 		$default_url = Context::getDefaultUrl();
 		if($default_url && substr_compare($default_url, '/', -1) === 0) $default_url = substr($default_url, 0, -1);
-		
+
 		$request_url = Context::getRequestUri();
 		if($request_url && substr_compare($request_url, '/', -1) === 0) $request_url = substr($request_url, 0, -1);
-		
+
 		$default_url_parse = parse_url($default_url);
 		$request_url_parse = parse_url($request_url);
 		$vid = Context::get('vid');
 		$mid = Context::get('mid');
-		
+
 		// Set up
 		// test.xe.com
 		$domain = '';
@@ -102,7 +102,7 @@ class moduleModel extends module {
 				$domain = $vid;
 			}
 		}
-		
+
 		$oCacheHandler = CacheHandler::getInstance('object');
 		// If domain is set, look for subsite
 		if($domain !== ''){
@@ -145,7 +145,7 @@ class moduleModel extends module {
 					$site_args->index_module_srl = $mid_output->data->module_srl;
 					$site_args->domain = $domain;
 					$site_args->default_language = $db_info->lang_type;
-					
+
 					if($output->data && !$output->data->index_module_srl){
 						$output = executeQuery('module.updateSite', $site_args);
 					}
@@ -163,7 +163,7 @@ class moduleModel extends module {
 		if(is_array($module_info) && $module_info->data[0]) $module_info = $module_info[0];
 		return $this->addModuleExtraVars($module_info);
 	}
-	
+
 	/**
 	 * @brief Get module information by mid
 	 **/
@@ -171,7 +171,7 @@ class moduleModel extends module {
 		if(!$mid){
 			return;
 		}
-		
+
 		$args = new stdClass();
 		$args->mid = $mid;
 		$args->site_srl = (int)$site_srl;
@@ -193,12 +193,12 @@ class moduleModel extends module {
 				$oCacheHandler->put($cache_key, $output);
 			}
 		}
-		
+
 		$module_info = $output->data;
 		if(!$module_info->module_srl && $module_info->data[0]) $module_info = $module_info->data[0];
 		return $this->addModuleExtraVars($module_info);
 	}
-	
+
 	/**
 	 * @brief Get module information corresponding to module_srl
 	 **/
@@ -225,13 +225,13 @@ class moduleModel extends module {
 			}
 		}
 		else $module_info = $output->data;
-		
+
 		$oModuleController = getController('module');
 		if(isset($module_info->browser_title)) $oModuleController->replaceDefinedLangCode($module_info->browser_title);
-		
+
 		return $this->addModuleExtraVars($module_info);
 	}
-	
+
 	/**
 	 * @brief Get module information corresponding to layout_srl
 	 **/
@@ -240,16 +240,16 @@ class moduleModel extends module {
 		$args = new stdClass();
 		$args->layout_srl = $layout_srl;
 		$output = executeQueryArray('module.getModulesByLayout', $args, $columnList);
-		
+
 		$count = count($output->data);
-		
+
 		$modules = array();
 		for($i = 0; $i < $count; $i++){
 			$modules[] = $output->data[$i];
 		}
 		return $this->addModuleExtraVars($modules);
 	}
-	
+
 	/**
 	 * @brief Get module information corresponding to multiple module_srls
 	 **/
@@ -261,7 +261,7 @@ class moduleModel extends module {
 		if(!$output->toBool()) return;
 		return $this->addModuleExtraVars($output->data);
 	}
-	
+
 	/**
 	 * @brief Add extra vars to the module basic information
 	 **/
@@ -279,7 +279,7 @@ class moduleModel extends module {
 		// Extract extra information of the module and skin
 		$extra_vars = $this->getModuleExtraVars($module_srls);
 		if(!count($module_srls) || !count($extra_vars)) return $module_info;
-		
+
 		foreach($target_module_info as $key => $val){
 			if(!$extra_vars[$val->module_srl] || !count($extra_vars[$val->module_srl])) continue;
 			foreach($extra_vars[$val->module_srl] as $k => $v){
@@ -290,64 +290,64 @@ class moduleModel extends module {
 		if(is_array($module_info)) return $target_module_info;
 		return $target_module_info[0];
 	}
-	
+
 	/**
 	 * @brief Get a complete list of mid, which is created in the DB
 	 **/
 	function getMidList($args = null, $columnList = array()){
 		$output = executeQuery('module.getMidList', $args, $columnList);
 		if(!$output->toBool()) return $output;
-		
+
 		$list = $output->data;
 		if(!$list) return;
-		
+
 		if(!is_array($list)) $list = array($list);
-		
+
 		foreach($list as $val){
 			$mid_list[$val->mid] = $val;
 		}
 		return $mid_list;
 	}
-	
+
 	/**
 	 * @brief Get a complete list of module_srl, which is created in the DB
 	 **/
 	function getModuleSrlList($args = null, $columnList = array()){
 		$output = executeQueryArray('module.getMidList', $args, $columnList);
 		if(!$output->toBool()) return $output;
-		
+
 		$list = $output->data;
 		if(!$list) return;
-		
+
 		return $list;
 	}
-	
+
 	/**
 	 * @brief Return an array of module_srl corresponding to a mid list
 	 **/
 	function getModuleSrlByMid($mid){
 		if($mid && !is_array($mid)) $mid = explode(',', $mid);
 		if(is_array($mid)) $mid = "'" . implode("','", $mid) . "'";
-		
+
 		$site_module_info = Context::get('site_module_info');
-		
+
 		$args = new stdClass();
 		$args->mid = $mid;
 		if($site_module_info) $args->site_srl = $site_module_info->site_srl;
 		$output = executeQuery('module.getModuleSrlByMid', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$list = $output->data;
 		if(!$list) return;
 		if(!is_array($list)) $list = array($list);
-		
+
 		foreach($list as $key => $val){
 			$module_srl_list[] = $val->module_srl;
 		}
-		
+
 		return $module_srl_list;
 	}
-	
+
 	/**
 	 * @brief Get forward value by the value of act
 	 **/
@@ -384,7 +384,7 @@ class moduleModel extends module {
 			return new stdClass();
 		}
 	}
-	
+
 	/**
 	 * @brief Get a list of all triggers on the trigger_name
 	 **/
@@ -407,10 +407,10 @@ class moduleModel extends module {
 				$GLOBALS['__triggers__'][$item->trigger_name][$item->called_position][] = $item;
 			}
 		}
-		
+
 		return $GLOBALS['__triggers__'][$trigger_name][$called_position];
 	}
-	
+
 	/**
 	 * @brief Get specific triggers from the trigger_name
 	 **/
@@ -423,33 +423,33 @@ class moduleModel extends module {
 				}
 			}
 		}
-		
+
 		return NULL;
 	}
-	
+
 	/**
 	 * @brief Get module extend
 	 **/
 	function getModuleExtend($parent_module, $type, $kind = ''){
 		$key = $parent_module . '.' . $kind . '.' . $type;
-		
+
 		$module_extend_info = $this->loadModuleExtends();
 		if(array_key_exists($key, $module_extend_info)){
 			return $module_extend_info[$key];
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * @brief Get all the module extend
 	 **/
 	function loadModuleExtends(){
 		$cache_file = './files/config/module_extend.php';
 		$cache_file = FileHandler::getRealPath($cache_file);
-		
+
 		if(!isset($GLOBALS['__MODULE_EXTEND__'])){
-			
+
 			// check pre install
 			if(file_exists(FileHandler::getRealPath('./files')) && !file_exists($cache_file)){
 				$arr = array();
@@ -459,14 +459,14 @@ class moduleModel extends module {
 						$arr[] = sprintf("'%s.%s.%s' => '%s'", $v->parent_module, $v->kind, $v->type, $v->extend_module);
 					}
 				}
-				
+
 				$str = '<?PHP return array(%s); ?>';
 				$str = sprintf($str, join(',', $arr));
-				
+
 				FileHandler::writeFile($cache_file, $str);
 			}
-			
-			
+
+
 			if(file_exists($cache_file)){
 				$GLOBALS['__MODULE_EXTEND__'] = include($cache_file);
 			}
@@ -474,10 +474,10 @@ class moduleModel extends module {
 				$GLOBALS['__MODULE_EXTEND__'] = array();
 			}
 		}
-		
+
 		return $GLOBALS['__MODULE_EXTEND__'];
 	}
-	
+
 	/**
 	 * @brief Get information from conf/info.xml
 	 **/
@@ -488,11 +488,11 @@ class moduleModel extends module {
 		// Read the xml file for module skin information
 		$xml_file = sprintf("%s/conf/info.xml", $module_path);
 		if(!file_exists($xml_file)) return;
-		
+
 		$oXmlParser = new XmlParser();
 		$tmp_xml_obj = $oXmlParser->loadXmlFile($xml_file);
 		$xml_obj = $tmp_xml_obj->module;
-		
+
 		if(!$xml_obj) return;
 		// Module Information
 		$module_info = new stdClass();
@@ -508,10 +508,10 @@ class moduleModel extends module {
 			$module_info->date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$module_info->license = $xml_obj->license->body;
 			$module_info->license_link = $xml_obj->license->attrs->link;
-			
+
 			if(!is_array($xml_obj->author)) $author_list[] = $xml_obj->author;
 			else $author_list = $xml_obj->author;
-			
+
 			foreach($author_list as $author){
 				$author_obj = new stdClass();
 				$author_obj->name = $author->name->body;
@@ -540,10 +540,10 @@ class moduleModel extends module {
 		$module_info->admin_index_act = $action_info->admin_index_act;
 		$module_info->default_index_act = $action_info->default_index_act;
 		$module_info->setup_index_act = $action_info->setup_index_act;
-		
+
 		return $module_info;
 	}
-	
+
 	/**
 	 * @brief Return permisson and action data by conf/module.xml in the module
 	 * Cache it because it takes too long to parse module.xml file
@@ -554,15 +554,15 @@ class moduleModel extends module {
 		// Get a path of the requested module. Return if not exists.
 		$class_path = ModuleHandler::getModulePath($module);
 		if(!$class_path) return;
-		
+
 		// Check if module.xml exists in the path. Return if not exist
 		$xml_file = sprintf("%sconf/module.xml", $class_path);
 		if(!file_exists($xml_file)) return;
-		
+
 		// Check if cached file exists
 		$cache_file = sprintf(_DAOL_PATH_ . "files/cache/module_info/%s.%s.%s.php", $module, Context::getLangType(), __DAOL_VERSION__);
 		debugPrint($cache_file);
-		
+
 		// Update if no cache file exists or it is older than xml file
 		if(!file_exists($cache_file) || filemtime($cache_file) < filemtime($xml_file) || $re_cache){
 			$info = new stdClass();
@@ -573,34 +573,34 @@ class moduleModel extends module {
 			$buff['setup_index_act'] = '$info->setup_index_act=\'%s\';';
 			$buff['simple_setup_index_act'] = '$info->simple_setup_index_act=\'%s\';';
 			$buff['admin_index_act'] = '$info->admin_index_act = \'%s\';';
-			
+
 			$xml_obj = XmlParser::loadXmlFile($xml_file); // /< Read xml file and convert it to xml object
-			
+
 			if(!count($xml_obj->module)) return; // /< Error occurs if module tag doesn't included in the xml
-			
+
 			$grants = $xml_obj->module->grants->grant; // /< Permission information
 			$permissions = $xml_obj->module->permissions->permission; // /<  Acting permission
 			$menus = $xml_obj->module->menus->menu;
 			$actions = $xml_obj->module->actions->action; // /< Action list (required)
-			
+
 			$default_index = $admin_index = '';
-			
+
 			// Arrange permission information
 			if($grants){
 				if(is_array($grants)) $grant_list = $grants;
 				else $grant_list[] = $grants;
-				
+
 				$info->grant = new stdClass();
 				$buff[] = '$info->grant = new stdClass;';
 				foreach($grant_list as $grant){
 					$name = $grant->attrs->name;
 					$default = $grant->attrs->default ? $grant->attrs->default : 'guest';
 					$title = $grant->title->body;
-					
+
 					$info->grant->{$name} = new stdClass();
 					$info->grant->{$name}->title = $title;
 					$info->grant->{$name}->default = $default;
-					
+
 					$buff[] = sprintf('$info->grant->%s = new stdClass;', $name);
 					$buff[] = sprintf('$info->grant->%s->title=\'%s\';', $name, $title);
 					$buff[] = sprintf('$info->grant->%s->default=\'%s\';', $name, $default);
@@ -610,16 +610,16 @@ class moduleModel extends module {
 			if($permissions){
 				if(is_array($permissions)) $permission_list = $permissions;
 				else $permission_list[] = $permissions;
-				
+
 				$buff[] = '$info->permission = new stdClass;';
-				
+
 				$info->permission = new stdClass();
 				foreach($permission_list as $permission){
 					$action = $permission->attrs->action;
 					$target = $permission->attrs->target;
-					
+
 					$info->permission->{$action} = $target;
-					
+
 					$buff[] = sprintf('$info->permission->%s = \'%s\';', $action, $target);
 				}
 			}
@@ -627,35 +627,35 @@ class moduleModel extends module {
 			if($menus){
 				if(is_array($menus)) $menu_list = $menus;
 				else $menu_list[] = $menus;
-				
+
 				$buff[] = '$info->menu = new stdClass;';
 				$info->menu = new stdClass();
 				foreach($menu_list as $menu){
 					$menu_name = $menu->attrs->name;
 					$menu_title = is_array($menu->title) ? $menu->title[0]->body : $menu->title->body;
 					$menu_type = $menu->attrs->type;
-					
+
 					$info->menu->{$menu_name} = new stdClass();
 					$info->menu->{$menu_name}->title = $menu_title;
 					$info->menu->{$menu_name}->acts = array();
 					$info->menu->{$menu_name}->type = $menu_type;
-					
+
 					$buff[] = sprintf('$info->menu->%s = new stdClass;', $menu_name);
 					$buff[] = sprintf('$info->menu->%s->title=\'%s\';', $menu_name, $menu_title);
 					$buff[] = sprintf('$info->menu->%s->type=\'%s\';', $menu_name, $menu_type);
 				}
 			}
-			
+
 			// actions
 			if($actions){
 				if(is_array($actions)) $action_list = $actions;
 				else $action_list[] = $actions;
-				
+
 				$buff[] = '$info->action = new stdClass;';
 				$info->action = new stdClass();
 				foreach($action_list as $action){
 					$name = $action->attrs->name;
-					
+
 					$type = $action->attrs->type;
 					$grant = $action->attrs->grant ? $action->attrs->grant : 'guest';
 					$standalone = $action->attrs->standalone == 'true' ? 'true' : 'false';
@@ -663,13 +663,13 @@ class moduleModel extends module {
 					$method = $action->attrs->method ? $action->attrs->method : '';
 					$check_csrf = $action->attrs->check_csrf == 'false' ? 'false' : 'true';
 					$meta_noindex = $action->attrs->{'meta-noindex'} === 'true' ? 'true' : 'false';
-					
+
 					$index = $action->attrs->index;
 					$admin_index = $action->attrs->admin_index;
 					$setup_index = $action->attrs->setup_index;
 					$simple_setup_index = $action->attrs->simple_setup_index;
 					$menu_index = $action->attrs->menu_index;
-					
+
 					$info->action->{$name} = new stdClass();
 					$info->action->{$name}->type = $type;
 					$info->action->{$name}->grant = $grant;
@@ -687,11 +687,11 @@ class moduleModel extends module {
 							$info->menu->{$action->attrs->menu_name}->acts[] = $name;
 							$currentKey = array_search($name, $info->menu->{$action->attrs->menu_name}->acts);
 						}
-						
+
 						$buff[] = sprintf('$info->menu->%s->acts[%d]=\'%s\';', $action->attrs->menu_name, $currentKey, $name);
 						$i++;
 					}
-					
+
 					$buff[] = sprintf('$info->action->%s = new stdClass;', $name);
 					$buff[] = sprintf('$info->action->%s->type=\'%s\';', $name, $type);
 					$buff[] = sprintf('$info->action->%s->grant=\'%s\';', $name, $grant);
@@ -700,7 +700,7 @@ class moduleModel extends module {
 					$buff[] = sprintf('$info->action->%s->method=\'%s\';', $name, $method);
 					$buff[] = sprintf('$info->action->%s->check_csrf=\'%s\';', $name, $check_csrf);
 					$buff[] = sprintf('$info->action->%s->meta_noindex=\'%s\';', $name, $meta_noindex);
-					
+
 					if($index == 'true'){
 						$default_index_act = $name;
 						$info->default_index_act = $name;
@@ -723,19 +723,19 @@ class moduleModel extends module {
 			$buff['setup_index_act'] = sprintf($buff['setup_index_act'], $setup_index_act);
 			$buff['simple_setup_index_act'] = sprintf($buff['simple_setup_index_act'], $simple_setup_index_act);
 			$buff['admin_index_act'] = sprintf($buff['admin_index_act'], $admin_index_act);
-			
+
 			$buff[] = 'return $info;';
-			
+
 			$buff = implode(PHP_EOL, $buff);
-			
+
 			FileHandler::writeFile($cache_file, $buff);
-			
+
 			return $info;
 		}
-		
+
 		if(file_exists($cache_file)) return include($cache_file);
 	}
-	
+
 	/**
 	 * @brief Get a list of skins for the module
 	 * Return file analysis of skin and skin.xml
@@ -767,7 +767,7 @@ class moduleModel extends module {
 
 		return $skin_list;
 	}
-	
+
 	/**
 	 * @brief Get skin information on a specific location
 	 **/
@@ -795,10 +795,10 @@ class moduleModel extends module {
 			$skin_info->license = $xml_obj->license->body;
 			$skin_info->license_link = $xml_obj->license->attrs->link;
 			$skin_info->description = $xml_obj->description->body;
-			
+
 			if(!is_array($xml_obj->author)) $author_list[] = $xml_obj->author;
 			else $author_list = $xml_obj->author;
-			
+
 			foreach($author_list as $author){
 				$author_obj = new stdClass();
 				$author_obj->name = $author->name->body;
@@ -811,20 +811,20 @@ class moduleModel extends module {
 				$extra_var_groups = $xml_obj->extra_vars->group;
 				if(!$extra_var_groups) $extra_var_groups = $xml_obj->extra_vars;
 				if(!is_array($extra_var_groups)) $extra_var_groups = array($extra_var_groups);
-				
+
 				foreach($extra_var_groups as $group){
 					$extra_vars = $group->var;
 					if(!$extra_vars){
 						continue;
 					}
 					if(!is_array($group->var)) $extra_vars = array($group->var);
-					
+
 					foreach($extra_vars as $key => $val){
 						$obj = new stdClass();
 						if(!$val->attrs->type){
 							$val->attrs->type = 'text';
 						}
-						
+
 						$obj->group = $group->title->body;
 						$obj->name = $val->attrs->name;
 						$obj->title = $val->title->body;
@@ -841,7 +841,7 @@ class moduleModel extends module {
 						// Get an option list from 'select'type
 						if(is_array($val->options)){
 							$option_count = count($val->options);
-							
+
 							for($i = 0; $i < $option_count; $i++){
 								$obj->options[$i]->title = $val->options[$i]->title->body;
 								$obj->options[$i]->value = $val->options[$i]->attrs->value;
@@ -851,7 +851,7 @@ class moduleModel extends module {
 							$obj->options[0]->title = $val->options->title->body;
 							$obj->options[0]->value = $val->options->attrs->value;
 						}
-						
+
 						$skin_info->extra_vars[] = $obj;
 					}
 				}
@@ -860,14 +860,14 @@ class moduleModel extends module {
 		else{
 			// skin format v0.1
 			sscanf($xml_obj->maker->attrs->date, '%d-%d-%d', $date_obj->y, $date_obj->m, $date_obj->d);
-			
+
 			$skin_info->version = $xml_obj->version->body;
 			$skin_info->date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
 			$skin_info->homepage = $xml_obj->link->body;
 			$skin_info->license = $xml_obj->license->body;
 			$skin_info->license_link = $xml_obj->license->attrs->link;
 			$skin_info->description = $xml_obj->maker->description->body;
-			
+
 			$skin_info->author[0] = new stdClass();
 			$skin_info->author[0]->name = $xml_obj->maker->name->body;
 			$skin_info->author[0]->email_address = $xml_obj->maker->attrs->email_address;
@@ -876,16 +876,16 @@ class moduleModel extends module {
 			$extra_var_groups = $xml_obj->extra_vars->group;
 			if(!$extra_var_groups) $extra_var_groups = $xml_obj->extra_vars;
 			if(!is_array($extra_var_groups)) $extra_var_groups = array($extra_var_groups);
-			
+
 			foreach($extra_var_groups as $group){
 				$extra_vars = $group->var;
-				
+
 				if($extra_vars){
 					if(!is_array($extra_vars)) $extra_vars = array($extra_vars);
-					
+
 					foreach($extra_vars as $var){
 						$options = array();
-						
+
 						$group = $group->title->body;
 						$name = $var->attrs->name;
 						$type = $var->attrs->type;
@@ -894,7 +894,7 @@ class moduleModel extends module {
 						// Get an option list from 'select'type.
 						if(is_array($var->default)){
 							$option_count = count($var->default);
-							
+
 							for($i = 0; $i < $option_count; $i++){
 								$options[$i] = new stdClass();
 								$options[$i]->title = $var->default[$i]->body;
@@ -906,10 +906,10 @@ class moduleModel extends module {
 							$options[0]->title = $var->default->body;
 							$options[0]->value = $var->default->body;
 						}
-						
+
 						$width = $var->attrs->width;
 						$height = $var->attrs->height;
-						
+
 						$obj = new stdClass();
 						$obj->group = $group;
 						$obj->title = $title;
@@ -920,18 +920,18 @@ class moduleModel extends module {
 						$obj->width = $width;
 						$obj->height = $height;
 						$obj->default = $options[0]->value;
-						
+
 						$skin_info->extra_vars[] = $obj;
 					}
 				}
 			}
 		}
-		
+
 		// colorset
 		$colorset = $xml_obj->colorset->color;
 		if($colorset){
 			if(!is_array($colorset)) $colorset = array($colorset);
-			
+
 			foreach($colorset as $color){
 				$name = $color->attrs->name;
 				$title = $color->title->body;
@@ -941,7 +941,7 @@ class moduleModel extends module {
 					if(!file_exists($screenshot)) $screenshot = "";
 				}
 				else $screenshot = "";
-				
+
 				$obj = new stdClass();
 				$obj->name = $name;
 				$obj->title = $title;
@@ -953,26 +953,26 @@ class moduleModel extends module {
 		if($xml_obj->menus->menu){
 			$menus = $xml_obj->menus->menu;
 			if(!is_array($menus)) $menus = array($menus);
-			
+
 			$menu_count = count($menus);
 			$skin_info->menu_count = $menu_count;
 			for($i = 0; $i < $menu_count; $i++){
 				unset($obj);
-				
+
 				$obj->name = $menus[$i]->attrs->name;
 				if($menus[$i]->attrs->default == "true") $obj->default = true;
 				$obj->title = $menus[$i]->title->body;
 				$obj->maxdepth = $menus[$i]->maxdepth->body;
-				
+
 				$skin_info->menu->{$obj->name} = $obj;
 			}
 		}
-		
+
 		$thumbnail = sprintf("%s%s/%s/thumbnail.png", $path, $dir, $skin);
 		$skin_info->thumbnail = (file_exists($thumbnail)) ? $thumbnail : null;
 		return $skin_info;
 	}
-	
+
 	/**
 	 * @brief Return the number of modules which are registered on a virtual site
 	 **/
@@ -983,7 +983,7 @@ class moduleModel extends module {
 		$output = executeQuery('module.getModuleCount', $args);
 		return $output->data->count;
 	}
-	
+
 	/**
 	 * @brief Return module configurations
 	 * Global configuration is used to manage board, member and others
@@ -1015,7 +1015,7 @@ class moduleModel extends module {
 		}
 		return $config;
 	}
-	
+
 	/**
 	 * @brief Return the module configuration of mid
 	 * Manage mid configurations which depend on module
@@ -1042,11 +1042,11 @@ class moduleModel extends module {
 			}
 			return $GLOBALS['__ModulePartConfig__'][$module][$module_srl];
 		}
-		
+
 		return $config;
-		
+
 	}
-	
+
 	/**
 	 * @brief Get all of module configurations for each mid
 	 **/
@@ -1056,14 +1056,14 @@ class moduleModel extends module {
 		if($site_srl) $args->site_srl = $site_srl;
 		$output = executeQueryArray('module.getModulePartConfigs', $args);
 		if(!$output->toBool() || !$output->data) return array();
-		
+
 		foreach($output->data as $key => $val){
 			$result[$val->module_srl] = unserialize($val->config);
 		}
 		return $result;
 	}
-	
-	
+
+
 	/**
 	 * @brief Get a list of module category
 	 **/
@@ -1076,13 +1076,13 @@ class moduleModel extends module {
 		$list = $output->data;
 		if(!$list) return;
 		if(!is_array($list)) $list = array($list);
-		
+
 		foreach($list as $val){
 			$category_list[$val->module_category_srl] = $val;
 		}
 		return $category_list;
 	}
-	
+
 	/**
 	 * @brief Get content from the module category
 	 **/
@@ -1094,7 +1094,7 @@ class moduleModel extends module {
 		if(!$output->toBool()) return $output;
 		return $output->data;
 	}
-	
+
 	/**
 	 * @brief Get xml information of the module
 	 **/
@@ -1104,16 +1104,16 @@ class moduleModel extends module {
 		$searched_count = count($searched_list);
 		if(!$searched_count) return;
 		sort($searched_list);
-		
+
 		for($i = 0; $i < $searched_count; $i++){
 			// Module name
 			$module_name = $searched_list[$i];
-			
+
 			$path = ModuleHandler::getModulePath($module_name);
 			// Get information of the module
 			$info = $this->getModuleInfoXml($module_name);
 			unset($obj);
-			
+
 			if(!isset($info)) continue;
 			$info->module = $module_name;
 			$info->created_table_count = $created_table_count;
@@ -1124,11 +1124,11 @@ class moduleModel extends module {
 		}
 		return $list;
 	}
-	
+
 	function checkNeedInstall($module_name){
 		$oDB = &DB::getInstance();
 		$info = null;
-		
+
 		$moduledir = ModuleHandler::getModulePath($module_name);
 		if(file_exists(FileHandler::getRealPath($moduledir . "schemas"))){
 			$tmp_files = FileHandler::readDir($moduledir . "schemas", '/(\.xml)$/');
@@ -1145,7 +1145,7 @@ class moduleModel extends module {
 		}
 		return false;
 	}
-	
+
 	function checkNeedUpdate($module_name){
 		// Check if it is upgraded to module.class.php on each module
 		$oDummy = getModule($module_name, 'class');
@@ -1154,7 +1154,7 @@ class moduleModel extends module {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * @brief Get a type and information of the module
 	 **/
@@ -1164,17 +1164,17 @@ class moduleModel extends module {
 		// Get a list of downloaded and installed modules
 		$searched_list = FileHandler::readDir('./modules', '/^([a-zA-Z0-9_-]+)$/');
 		sort($searched_list);
-		
+
 		$searched_count = count($searched_list);
 		if(!$searched_count) return;
-		
+
 		for($i = 0; $i < $searched_count; $i++){
 			// module name
 			$module_name = $searched_list[$i];
-			
+
 			$path = ModuleHandler::getModulePath($module_name);
 			if(!is_dir(FileHandler::getRealPath($path))) continue;
-			
+
 			// Get the number of xml files to create a table in schemas
 			$tmp_files = FileHandler::readDir($path . 'schemas', '/(\.xml)$/');
 			$table_count = count($tmp_files);
@@ -1187,9 +1187,9 @@ class moduleModel extends module {
 			// Get information of the module
 			$info = NULL;
 			$info = $this->getModuleInfoXml($module_name);
-			
+
 			if(!$info) continue;
-			
+
 			$info->module = $module_name;
 			$info->category = $info->category;
 			$info->created_table_count = $created_table_count;
@@ -1208,12 +1208,12 @@ class moduleModel extends module {
 			else{
 				continue;
 			}
-			
+
 			$list[] = $info;
 		}
 		return $list;
 	}
-	
+
 	/**
 	 * @brief Combine module_srls with domain of sites
 	 * Because XE DBHandler doesn't support left outer join,
@@ -1221,7 +1221,7 @@ class moduleModel extends module {
 	 **/
 	function syncModuleToSite(&$data){
 		if(!$data) return;
-		
+
 		if(is_array($data)){
 			foreach($data as $key => $val){
 				$module_srls[] = $val->module_srl;
@@ -1231,7 +1231,7 @@ class moduleModel extends module {
 		else{
 			$module_srls[] = $data->module_srl;
 		}
-		
+
 		$args = new stdClass();
 		$args->module_srls = implode(',', $module_srls);
 		$output = executeQueryArray('module.getModuleSites', $args);
@@ -1239,7 +1239,7 @@ class moduleModel extends module {
 		foreach($output->data as $key => $val){
 			$modules[$val->module_srl] = $val;
 		}
-		
+
 		if(is_array($data)){
 			foreach($data as $key => $val){
 				$data[$key]->domain = $modules[$val->module_srl]->domain;
@@ -1249,14 +1249,14 @@ class moduleModel extends module {
 			$data->domain = $modules[$data->module_srl]->domain;
 		}
 	}
-	
+
 	/**
 	 * @brief Check if it is an administrator of site_module_info
 	 **/
 	function isSiteAdmin($member_info, $site_srl = null){
 		if(!$member_info->member_srl) return false;
 		if($member_info->is_admin == 'Y') return true;
-		
+
 		$args = new stdClass();
 		if(!isset($site_srl)){
 			$site_module_info = Context::get('site_module_info');
@@ -1266,14 +1266,14 @@ class moduleModel extends module {
 		else{
 			$args->site_srl = $site_srl;
 		}
-		
+
 		$args->member_srl = $member_info->member_srl;
 		$output = executeQuery('module.isSiteAdmin', $args);
 		if($output->data->member_srl == $args->member_srl) return true;
 		return false;
-		
+
 	}
-	
+
 	/**
 	 * @brief Get admin information of the site
 	 **/
@@ -1283,7 +1283,7 @@ class moduleModel extends module {
 		$output = executeQueryArray('module.getSiteAdmin', $args);
 		return $output->data;
 	}
-	
+
 	/**
 	 * @brief Get admin ID of the module
 	 **/
@@ -1292,10 +1292,10 @@ class moduleModel extends module {
 		$obj->module_srl = $module_srl;
 		$output = executeQueryArray('module.getAdminID', $obj);
 		if(!$output->toBool() || !$output->data) return;
-		
+
 		return $output->data;
 	}
-	
+
 	/**
 	 * @brief Get extra vars of the module
 	 * Extra information, not in the modules table
@@ -1328,7 +1328,7 @@ class moduleModel extends module {
 		}
 		return $vars;
 	}
-	
+
 	/**
 	 * @brief Get skin information of the module
 	 **/
@@ -1337,18 +1337,18 @@ class moduleModel extends module {
 		$args->module_srl = $module_srl;
 		$output = executeQueryArray('module.getModuleSkinVars', $args);
 		if(!$output->toBool() || !$output->data) return;
-		
+
 		$skin_vars = array();
 		foreach($output->data as $val) $skin_vars[$val->name] = $val;
 		return $skin_vars;
 	}
-	
+
 	/**
 	 * @brief Combine skin information with module information
 	 **/
 	function syncSkinInfoToModuleInfo(&$module_info){
 		if(!$module_info->module_srl) return;
-		
+
 		if(Mobile::isFromMobilePhone()){
 			$cache_key = 'object_module_mobile_skin_vars:' . $module_info->module_srl;
 			$query = 'module.getModuleMobileSkinVars';
@@ -1357,7 +1357,7 @@ class moduleModel extends module {
 			$cache_key = 'object_module_skin_vars:' . $module_info->module_srl;
 			$query = 'module.getModuleSkinVars';
 		}
-		
+
 		// cache controll
 		$oCacheHandler = CacheHandler::getInstance('object');
 		if($oCacheHandler->isSupport()){
@@ -1371,13 +1371,13 @@ class moduleModel extends module {
 			if($oCacheHandler->isSupport()) $oCacheHandler->put($cache_key, $output);
 		}
 		if(!$output->toBool() || !$output->data) return;
-		
+
 		foreach($output->data as $val){
 			if(isset($module_info->{$val->name})) continue;
 			$module_info->{$val->name} = $val->value;
 		}
 	}
-	
+
 	/**
 	 * Get mobile skin information of the module
 	 * @param $module_srl Sequence of module
@@ -1388,12 +1388,12 @@ class moduleModel extends module {
 		$args->module_srl = $module_srl;
 		$output = executeQueryArray('module.getModuleMobileSkinVars', $args);
 		if(!$output->toBool() || !$output->data) return;
-		
+
 		$skin_vars = array();
 		foreach($output->data as $val) $skin_vars[$val->name] = $val;
 		return $skin_vars;
 	}
-	
+
 	/**
 	 * Combine skin information with module information
 	 * @param $module_info Module information
@@ -1414,19 +1414,19 @@ class moduleModel extends module {
 			if($oCacheHandler->isSupport()) $oCacheHandler->put($cache_key, $output);
 		}
 		if(!$output->toBool() || !$output->data) return;
-		
+
 		foreach($output->data as $val){
 			if(isset($module_info->{$val->name})) continue;
 			$module_info->{$val->name} = $val->value;
 		}
 	}
-	
+
 	/**
 	 * @brief Return permission by using module info, xml info and member info
 	 **/
 	function getGrant($module_info, $member_info, $xml_info = ''){
 		$grant = new stdClass();
-		
+
 		if(!$xml_info){
 			$module = $module_info->module;
 			$xml_info = $this->getModuleActionXml($module);
@@ -1474,9 +1474,9 @@ class moduleModel extends module {
 					$args->module_srl = $module_srl;
 					$output = executeQueryArray('module.getModuleGrants', $args);
 				}
-				
+
 				$grant_exists = $granted = array();
-				
+
 				if($output->data){
 					// Arrange names and groups who has privileges
 					foreach($output->data as $val){
@@ -1555,20 +1555,20 @@ class moduleModel extends module {
 					}
 				}
 			}
-			
+
 		}
 		return $grant;
 	}
-	
+
 	function getModuleFileBox($module_filebox_srl){
 		$args = new stdClass();
 		$args->module_filebox_srl = $module_filebox_srl;
 		return executeQuery('module.getModuleFileBox', $args);
 	}
-	
+
 	function getModuleFileBoxList(){
 		$oModuleModel = getModel('module');
-		
+
 		$args = new stdClass();
 		$args->page = Context::get('page');
 		$args->list_count = 5;
@@ -1577,7 +1577,7 @@ class moduleModel extends module {
 		$output = $oModuleModel->unserializeAttributes($output);
 		return $output;
 	}
-	
+
 	function unserializeAttributes($module_filebox_list){
 		if(is_array($module_filebox_list)){
 			foreach($module_filebox_list->data as $item){
@@ -1597,7 +1597,7 @@ class moduleModel extends module {
 		}
 		return $module_filebox_list;
 	}
-	
+
 	function getFileBoxListHtml(){
 		$logged_info = Context::get('logged_info');
 		if($logged_info->is_admin != 'Y' && !$logged_info->is_site_admin) return new BaseObject(-1, 'msg_not_permitted');
@@ -1610,29 +1610,29 @@ class moduleModel extends module {
 		$oWidgetModel = getModel('widget');
 		if($selected_widget) $widget_info = $oWidgetModel->getWidgetInfo($selected_widget);
 		Context::set('allow_multiple', $widget_info->extra_var->images->allow_multiple);
-		
+
 		$oModuleModel = getModel('module');
 		$output = $oModuleModel->getModuleFileBoxList();
 		Context::set('filebox_list', $output->data);
-		
+
 		$page = Context::get('page');
 		if(!$page) $page = 1;
 		Context::set('page', $page);
 		Context::set('page_navigation', $output->page_navigation);
-		
+
 		$security = new Security();
 		$security->encodeHTML('filebox_list..comment');
-		
+
 		$oTemplate = &TemplateHandler::getInstance();
 		$html = $oTemplate->compile('./modules/module/tpl/', 'filebox_list_html');
-		
+
 		$this->add('html', $html);
 	}
-	
+
 	function getModuleFileBoxPath($module_filebox_srl){
 		return sprintf("./files/attach/filebox/%s", getNumberingPath($module_filebox_srl, 3));
 	}
-	
+
 	/**
 	 * @brief Return ruleset cache file path
 	 * @param module , act
@@ -1652,24 +1652,24 @@ class moduleModel extends module {
 			else{
 				$ruleset = str_replace('#', '', $ruleset);
 			}
-			
+
 		}
 		// Get a path of the requested module. Return if not exists.
 		$class_path = ModuleHandler::getModulePath($module);
 		if(!$class_path) return;
-		
+
 		// Check if module.xml exists in the path. Return if not exist
 		$xml_file = sprintf("%sruleset/%s.xml", $class_path, $ruleset);
 		if(!file_exists($xml_file)) return;
-		
+
 		return $xml_file;
 	}
-	
+
 	function getLangListByLangcodeForAutoComplete(){
 		$keyword = Context::get('search_keyword');
-		
+
 		$requestVars = Context::getRequestVars();
-		
+
 		$args = new stdClass();
 		$args->site_srl = (int)$requestVars->site_srl;
 		$args->page = 1; // /< Page
@@ -1678,11 +1678,11 @@ class moduleModel extends module {
 		$args->sort_index = 'name';
 		$args->order_type = 'asc';
 		$args->search_keyword = Context::get('search_keyword'); // /< keyword to search*/
-		
+
 		$output = executeQueryArray('module.getLangListByLangcode', $args);
-		
+
 		$list = array();
-		
+
 		if($output->toBool()){
 			foreach((array)$output->data as $code_info){
 				unset($codeInfo);
@@ -1692,7 +1692,7 @@ class moduleModel extends module {
 		}
 		$this->add('results', $list);
 	}
-	
+
 	/**
 	 * @brief already instance created module list
 	 **/
@@ -1702,14 +1702,14 @@ class moduleModel extends module {
 		$output = executeQueryArray('module.getModuleListByInstance', $args, $columnList);
 		return $output;
 	}
-	
+
 	function getLangByLangcode(){
 		$langCode = Context::get('langCode');
 		if(!$langCode) return;
-		
+
 		$oModuleController = getController('module');
 		$oModuleController->replaceDefinedLangCode($langCode);
-		
+
 		$this->add('lang', $langCode);
 	}
 }

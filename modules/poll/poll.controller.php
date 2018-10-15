@@ -7,13 +7,13 @@
  * @brief   Controller class for poll module
  **/
 class pollController extends poll {
-	
+
 	/**
 	 * @brief Initialization
 	 **/
 	function init(){
 	}
-	
+
 	/**
 	 * @brief after a qeustion is created in the popup window, register the question during the save time
 	 **/
@@ -22,44 +22,44 @@ class pollController extends poll {
 		if($stop_date < date("Ymd")){
 			$stop_date = date('YmdHis', $_SERVER['REQUEST_TIME'] + 60 * 60 * 24 * 365);
 		}
-		
+
 		$logged_info = Context::get('logged_info');
 		$vars = Context::getRequestVars();
 		$args = new stdClass();
 		$tmp_args = array();
-		
+
 		unset($vars->_filter);
 		unset($vars->error_return_url);
 		unset($vars->stop_date);
-		
+
 		foreach($vars as $key => $val){
 			if(stripos($key, 'tidx')){
 				continue;
 			}
-			
+
 			$tmp_arr = explode('_', $key);
-			
+
 			$poll_index = $tmp_arr[1];
 			if(!$poll_index){
 				continue;
 			}
-			
+
 			if(!trim($val)){
 				continue;
 			}
-			
+
 			if($tmp_args[$poll_index] == NULL){
 				$tmp_args[$poll_index] = new stdClass();
 			}
-			
+
 			if(!is_array($tmp_args[$poll_index]->item)){
 				$tmp_args[$poll_index]->item = array();
 			}
-			
+
 			if($logged_info->is_admin != 'Y'){
 				$val = htmlspecialchars($val, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 			}
-			
+
 			switch($tmp_arr[0]){
 				case 'title':
 					$tmp_args[$poll_index]->title = $val;
@@ -72,7 +72,7 @@ class pollController extends poll {
 					break;
 			}
 		}
-		
+
 		foreach($tmp_args as $key => $val){
 			if(!$val->checkcount){
 				$val->checkcount = 1;
@@ -82,18 +82,18 @@ class pollController extends poll {
 				$args->poll[] = $val;
 			}
 		}
-		
+
 		if(!count($args->poll)) return new BaseObject(-1, 'cmd_null_item');
-		
+
 		$args->stop_date = $stop_date;
-		
+
 		// Configure the variables
 		$poll_srl = getNextSequence();
 		$member_srl = $logged_info->member_srl ? $logged_info->member_srl : 0;
-		
+
 		$oDB = &DB::getInstance();
 		$oDB->begin();
-		
+
 		// Register the poll
 		$poll_args = new stdClass();
 		$poll_args->poll_srl = $poll_srl;
@@ -106,7 +106,7 @@ class pollController extends poll {
 			$oDB->rollback();
 			return $output;
 		}
-		
+
 		// Individual poll registration
 		foreach($args->poll as $key => $val){
 			$title_args = new stdClass();
@@ -138,13 +138,13 @@ class pollController extends poll {
 				}
 			}
 		}
-		
+
 		$oDB->commit();
-		
+
 		$this->add('poll_srl', $poll_srl);
 		$this->setMessage('success_registed');
 	}
-	
+
 	/**
 	 * @brief Accept the poll
 	 **/
@@ -157,16 +157,16 @@ class pollController extends poll {
 			if(!$srl) continue;
 			$item_srls[] = $srl;
 		}
-		
+
 		// If there is no response item, display an error
 		if(!count($item_srls)) return new BaseObject(-1, 'msg_check_poll_item');
 		// Make sure is the poll has already been taken
 		$oPollModel = getModel('poll');
 		if($oPollModel->isPolled($poll_srl)) return new BaseObject(-1, 'msg_already_poll');
-		
+
 		$oDB = &DB::getInstance();
 		$oDB->begin();
-		
+
 		$args = new stdClass();
 		$args->poll_srl = $poll_srl;
 		// Update all poll responses related to the post
@@ -186,10 +186,10 @@ class pollController extends poll {
 		// Log the respondent's information
 		$log_args = new stdClass();
 		$log_args->poll_srl = $poll_srl;
-		
+
 		$logged_info = Context::get('logged_info');
 		$member_srl = $logged_info->member_srl ? $logged_info->member_srl : 0;
-		
+
 		$log_args->member_srl = $member_srl;
 		$log_args->ipaddress = $_SERVER['REMOTE_ADDR'];
 		$output = executeQuery('poll.insertPollLog', $log_args);
@@ -197,38 +197,38 @@ class pollController extends poll {
 			$oDB->rollback();
 			return $output;
 		}
-		
+
 		$oDB->commit();
-		
+
 		$skin = Context::get('skin');
 		if(!$skin || !is_dir(_DAOL_PATH_ . 'modules/poll/skins/' . $skin)) $skin = 'default';
 		// Get tpl
 		$tpl = $oPollModel->getPollHtml($poll_srl, '', $skin);
-		
+
 		$this->add('poll_srl', $poll_srl);
 		$this->add('tpl', $tpl);
 		$this->setMessage('success_poll');
-		
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispPollAdminConfig');
 		$this->setRedirectUrl($returnUrl);
 	}
-	
+
 	/**
 	 * @brief Preview the results
 	 **/
 	function procPollViewResult(){
 		$poll_srl = Context::get('poll_srl');
-		
+
 		$skin = Context::get('skin');
 		if(!$skin || !is_dir(_DAOL_PATH_ . 'modules/poll/skins/' . $skin)) $skin = 'default';
-		
+
 		$oPollModel = getModel('poll');
 		$tpl = $oPollModel->getPollResultHtml($poll_srl, $skin);
-		
+
 		$this->add('poll_srl', $poll_srl);
 		$this->add('tpl', $tpl);
 	}
-	
+
 	/**
 	 * @brief poll list
 	 **/
@@ -236,7 +236,7 @@ class pollController extends poll {
 		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_permitted');
 		$pollSrls = Context::get('poll_srls');
 		if($pollSrls) $pollSrlList = explode(',', $pollSrls);
-		
+
 		global $lang;
 		if(count($pollSrlList) > 0){
 			$oPollAdminModel = getAdminModel('poll');
@@ -244,7 +244,7 @@ class pollController extends poll {
 			$args->pollIndexSrlList = $pollSrlList;
 			$output = $oPollAdminModel->getPollListWithMember($args);
 			$pollList = $output->data;
-			
+
 			if(is_array($pollList)){
 				foreach($pollList AS $key => $value){
 					if($value->checkcount == 1) $value->checkName = $lang->single_check;
@@ -256,10 +256,10 @@ class pollController extends poll {
 			$pollList = array();
 			$this->setMessage($lang->no_documents);
 		}
-		
+
 		$this->add('poll_list', $pollList);
 	}
-	
+
 	/**
 	 * @brief A poll synchronization trigger when a new post is registered
 	 **/
@@ -267,7 +267,7 @@ class pollController extends poll {
 		$this->syncPoll($obj->document_srl, $obj->content);
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief A poll synchronization trigger when a new comment is registered
 	 **/
@@ -275,7 +275,7 @@ class pollController extends poll {
 		$this->syncPoll($obj->comment_srl, $obj->content);
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief A poll synchronization trigger when a post is updated
 	 **/
@@ -283,7 +283,7 @@ class pollController extends poll {
 		$this->syncPoll($obj->document_srl, $obj->content);
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief A poll synchronization trigger when a comment is updated
 	 **/
@@ -291,7 +291,7 @@ class pollController extends poll {
 		$this->syncPoll($obj->comment_srl, $obj->content);
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief A poll deletion trigger when a post is removed
 	 **/
@@ -303,27 +303,27 @@ class pollController extends poll {
 		$args->upload_target_srl = $document_srl;
 		$output = executeQuery('poll.getPollByTargetSrl', $args);
 		if(!$output->data) return new BaseObject();
-		
+
 		$poll_srl = $output->data->poll_srl;
 		if(!$poll_srl) return new BaseObject();
-		
+
 		$args->poll_srl = $poll_srl;
-		
+
 		$output = executeQuery('poll.deletePoll', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$output = executeQuery('poll.deletePollItem', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$output = executeQuery('poll.deletePollTitle', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$output = executeQuery('poll.deletePollLog', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief A poll deletion trigger when a comment is removed
 	 **/
@@ -335,27 +335,27 @@ class pollController extends poll {
 		$args->upload_target_srl = $comment_srl;
 		$output = executeQuery('poll.getPollByTargetSrl', $args);
 		if(!$output->data) return new BaseObject();
-		
+
 		$poll_srl = $output->data->poll_srl;
 		if(!$poll_srl) return new BaseObject();
-		
+
 		$args->poll_srl = $poll_srl;
-		
+
 		$output = executeQuery('poll.deletePoll', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$output = executeQuery('poll.deletePollItem', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$output = executeQuery('poll.deletePollTitle', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$output = executeQuery('poll.deletePollLog', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief As post content's poll is obtained, synchronize the poll using the document number
 	 **/
@@ -363,14 +363,14 @@ class pollController extends poll {
 		$match_cnt = preg_match_all('!<img([^\>]*)poll_srl=(["\']?)([0-9]*)(["\']?)([^\>]*?)\>!is', $content, $matches);
 		for($i = 0; $i < $match_cnt; $i++){
 			$poll_srl = $matches[3][$i];
-			
+
 			$args = new stdClass();
 			$args->poll_srl = $poll_srl;
 			$output = executeQuery('poll.getPoll', $args);
 			$poll = $output->data;
-			
+
 			if($poll->upload_target_srl) continue;
-			
+
 			$args->upload_target_srl = $upload_target_srl;
 			$output = executeQuery('poll.updatePollTarget', $args);
 			$output = executeQuery('poll.updatePollTitleTarget', $args);

@@ -7,14 +7,14 @@
  * @brief   high class of the module module
  **/
 class module extends ModuleObject {
-	
+
 	/**
 	 * @brief Implement if additional tasks are necessary when installing
 	 **/
 	function moduleInstall(){
 		// Register action forward (to use in administrator mode)
 		$oModuleController = getController('module');
-		
+
 		$oDB = &DB::getInstance();
 		$oDB->addIndex("modules", "idx_site_mid", array("site_srl", "mid"), true);
 		$oDB->addIndex('sites', 'unique_domain', array('domain'), true);
@@ -22,7 +22,7 @@ class module extends ModuleObject {
 		FileHandler::makeDir('./files/cache/module_info');
 		FileHandler::makeDir('./files/cache/triggers');
 		FileHandler::makeDir('./files/ruleset');
-		
+
 		// Insert site information into the sites table
 		$args = new stdClass();
 		$args->site_srl = 0;
@@ -32,20 +32,20 @@ class module extends ModuleObject {
 			$domain = Context::getDefaultUrl();
 			$url_info = parse_url($domain);
 			$domain = $url_info['host'] . ((!empty($url_info['port']) && $url_info['port'] != 80) ? ':' . $url_info['port'] : '') . $url_info['path'];
-			
+
 			$site_args = new stdClass();
 			$site_args->site_srl = 0;
 			$site_args->index_module_srl = 0;
 			$site_args->domain = $domain;
 			$site_args->default_language = $db_info->lang_type;
-			
+
 			$output = executeQuery('module.insertSite', $site_args);
 			if(!$output->toBool()) return $output;
 		}
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief a method to check if successfully installed
 	 **/
@@ -70,23 +70,23 @@ class module extends ModuleObject {
 		$args->site_srl = 0;
 		$output = $oDB->executeQuery('module.getSite', $args);
 		if(!$output->data) return true;
-		
+
 		// If domain index is defined on the table, sites
 		if($oDB->isIndexExists('sites', 'idx_domain')) return true;
 		if(!$oDB->isIndexExists('sites', 'unique_domain')) return true;
-		
+
 		if(!$oDB->isColumnExists("modules", "use_mobile")) return true;
 		if(!$oDB->isColumnExists("modules", "mlayout_srl")) return true;
 		if(!$oDB->isColumnExists("modules", "mcontent")) return true;
 		if(!$oDB->isColumnExists("modules", "mskin")) return true;
-		
+
 		// check fix skin
 		if(!$oDB->isColumnExists("modules", "is_skin_fix")) return true;
-		
+
 		if(!$oDB->isColumnExists("module_config", "site_srl")) return true;
-		
+
 		if(!is_dir('./files/ruleset')) return true;
-		
+
 		$args->skin = '.';
 		$output = executeQueryArray('module.getModuleSkinDotList', $args);
 		if($output->data && count($output->data) > 0){
@@ -96,10 +96,10 @@ class module extends ModuleObject {
 				if(is_dir(sprintf(_DAOL_PATH_ . 'themes/%s/modules/%s', $skin_path[0], $skin_path[1]))) return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * @brief Execute update
 	 **/
@@ -114,7 +114,7 @@ class module extends ModuleObject {
 				$module = $module_info->module;
 				if(!in_array($module, array('point', 'trackback', 'layout', 'rss', 'file', 'comment', 'editor'))) continue;
 				$config = $oModuleModel->getModuleConfig($module);
-				
+
 				$module_config = null;
 				switch($module){
 					case 'point' :
@@ -144,11 +144,11 @@ class module extends ModuleObject {
 						}
 						$config = null;
 						break;
-					
+
 				}
-				
+
 				$oModuleController->insertModuleConfig($module, $config);
-				
+
 				if(is_array($module_config) && count($module_config)){
 					foreach($module_config as $module_srl => $module_part_config){
 						$oModuleController->insertModulePartConfig($module, $module_srl, $module_part_config);
@@ -165,7 +165,7 @@ class module extends ModuleObject {
 		}
 		// document extra vars
 		if(!$oDB->isTableExists('document_extra_vars')) $oDB->createTableByXmlFile('./modules/document/schemas/document_extra_vars.xml');
-		
+
 		if(!$oDB->isTableExists('document_extra_keys')) $oDB->createTableByXmlFile('./modules/document/schemas/document_extra_keys.xml');
 		// Move permission, skin info, extection info, admin ID of all modules to the table, grants
 		if($oDB->isColumnExists('modules', 'grants')){
@@ -203,7 +203,7 @@ class module extends ModuleObject {
 						unset($extra_vars->extra_vars);
 					}
 					if($extra_vars) $oModuleController->insertModuleExtraVars($module_srl, $extra_vars);
-					
+
 					/**
 					 * Move document extra vars(it should have conducted in the documents module however extra vars in modules table should be listed up in this module)
 					 **/
@@ -226,7 +226,7 @@ class module extends ModuleObject {
 						// 2009-04-14 Fixed a bug that only 100 extra vars are moved
 						$oDocumentModel = getModel('document');
 						$total_count = $oDocumentModel->getDocumentCount($module_srl);
-						
+
 						if($total_count > 0){
 							$per_page = 100;
 							$total_pages = (int)(($total_count - 1) / $per_page) + 1;
@@ -236,10 +236,10 @@ class module extends ModuleObject {
 							$doc_args->list_count = $per_page;
 							$doc_args->sort_index = 'list_order';
 							$doc_args->order_type = 'asc';
-							
+
 							for($doc_args->page = 1; $doc_args->page <= $total_pages; $doc_args->page++){
 								$output = executeQueryArray('document.getDocumentList', $doc_args);
-								
+
 								if($output->toBool() && $output->data && count($output->data)){
 									foreach($output->data as $document){
 										if(!$document) continue;
@@ -287,17 +287,17 @@ class module extends ModuleObject {
 			$domain = Context::getDefaultUrl();
 			$url_info = parse_url($domain);
 			$domain = $url_info['host'] . ((!empty($url_info['port']) && $url_info['port'] != 80) ? ':' . $url_info['port'] : '') . $url_info['path'];
-			
+
 			$site_args = new stdClass();
 			$site_args->site_srl = 0;
 			$site_args->index_module_srl = $mid_output->data->module_srl;
 			$site_args->domain = $domain;
 			$site_args->default_language = $db_info->lang_type;
-			
+
 			$output = executeQuery('module.insertSite', $site_args);
 			if(!$output->toBool()) return $output;
 		}
-		
+
 		if($oDB->isIndexExists('sites', 'idx_domain')){
 			$oDB->dropIndex('sites', 'idx_domain');
 		}
@@ -305,7 +305,7 @@ class module extends ModuleObject {
 			$this->updateForUniqueSiteDomain();
 			$oDB->addIndex('sites', 'unique_domain', array('domain'), true);
 		}
-		
+
 		if(!$oDB->isColumnExists("modules", "use_mobile")){
 			$oDB->addColumn('modules', 'use_mobile', 'char', 1, 'N');
 		}
@@ -336,7 +336,7 @@ class module extends ModuleObject {
 			$oDB->addColumn('module_config', 'site_srl', 'number', 11, 0, true);
 		}
 		FileHandler::makeDir('./files/ruleset');
-		
+
 		$args->skin = '.';
 		$output = executeQueryArray('module.getModuleSkinDotList', $args);
 		if($output->data && count($output->data) > 0){
@@ -351,14 +351,14 @@ class module extends ModuleObject {
 				}
 			}
 		}
-		
+
 		if(!$oDB->isIndexExists("module_part_config", "unique_module_part_config")){
 			$oDB->addIndex("module_part_config", "unique_module_part_config", array("module", "module_srl"), TRUE);
 		}
-		
+
 		return new BaseObject(0, 'success_updated');
 	}
-	
+
 	function updateForUniqueSiteDomain(){
 		$output = executeQueryArray("module.getNonuniqueDomains");
 		if(!$output->data) return;
@@ -382,7 +382,7 @@ class module extends ModuleObject {
 			}
 		}
 	}
-	
+
 	/**
 	 * @brief Re-generate the cache file
 	 **/

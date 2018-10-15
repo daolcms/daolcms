@@ -65,7 +65,7 @@
 	(function($){
 		$(function(){
 			var option = { changeMonth: true, changeYear: true, gotoCurrent: false,yearRange:'-100:+10', dateFormat:'yy-mm-dd', onSelect:function(){
-	
+
 				$(this).prev('input[type="hidden"]').val(this.value.replace(/-/g,""))}
 			};
 			$.extend(option,$.datepicker.regional['{$lang_type}']);

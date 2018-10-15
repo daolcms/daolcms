@@ -22,7 +22,7 @@ class rssModel extends rss {
 			return getUrl('','vid',$vid, 'mid',$mid, 'act',$format);
 		}
 	}
-	
+
 	/**
 	 * Return the RSS configurations of the specific modules
 	 *

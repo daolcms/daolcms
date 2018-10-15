@@ -18,7 +18,7 @@ class Expression {
 	 * @var string
 	 */
 	var $column_name;
-	
+
 	/**
 	 * constructor
 	 * @param string $column_name
@@ -27,15 +27,15 @@ class Expression {
 	function __construct($column_name) {
 		$this->column_name = $column_name;
 	}
-	
+
 	function getColumnName() {
 		return $this->column_name;
 	}
-	
+
 	function show() {
 		return false;
 	}
-	
+
 	/**
 	 * Return column expression, ex) column as alias
 	 * @return string

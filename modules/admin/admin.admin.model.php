@@ -20,7 +20,7 @@ class adminAdminModel extends admin {
 	 * @var string
 	 */
 	var $gnbLangBuffer;
-	
+
 	/**
 	 * Add file list to Object after sftp connect
 	 * @return void|Object
@@ -34,7 +34,7 @@ class adminAdminModel extends admin {
 		if(!ssh2_auth_password($connection, $ftp_info->ftp_user, $ftp_info->ftp_password)) {
 			return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 		}
-		
+
 		$sftp = ssh2_sftp($connection);
 		$curpwd = "ssh2.sftp://$sftp" . $this->pwd;
 		$dh = @opendir($curpwd);
@@ -51,7 +51,7 @@ class adminAdminModel extends admin {
 		closedir($dh);
 		$this->add('list', $list);
 	}
-	
+
 	/**
 	 * Add file list to Object after ftp connect
 	 * @return void|Object
@@ -64,28 +64,28 @@ class adminAdminModel extends admin {
 		if(!$ftp_info->ftp_user || !$ftp_info->ftp_password) {
 			return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 		}
-		
+
 		$this->pwd = $ftp_info->ftp_root_path;
-		
+
 		if(!$ftp_info->ftp_host) {
 			$ftp_info->ftp_host = "127.0.0.1";
 		}
-		
+
 		if(!$ftp_info->ftp_port || !is_numeric($ftp_info->ftp_port)) {
 			$ftp_info->ftp_port = "21";
 		}
-		
+
 		if($ftp_info->sftp == 'Y') {
 			if(!function_exists('ssh2_sftp')) {
 				return new BaseObject(-1, 'disable_sftp_support');
 			}
 			return $this->getSFTPList();
 		}
-		
+
 		$oFtp = new ftp();
 		$list = array();
 		$_list = array();
-		
+
 		if($oFtp->ftp_connect($ftp_info->ftp_host, $ftp_info->ftp_port)) {
 			if($oFtp->ftp_login($ftp_info->ftp_user, $ftp_info->ftp_password)) {
 				$_list = $oFtp->ftp_rawlist($this->pwd);
@@ -94,8 +94,8 @@ class adminAdminModel extends admin {
 				return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 			}
 		}
-		
-		
+
+
 		if($_list) {
 			foreach($_list as $k => $v) {
 				$src = null;
@@ -109,14 +109,14 @@ class adminAdminModel extends admin {
 		}
 		$this->add('list', $list);
 	}
-	
+
 	/**
 	 * Parameter arrange for send to XE collect server
 	 * @param string $type 'WORKING', 'INSTALL'
 	 * @return string
 	 */
 	function getEnv($type = 'WORKING') {
-		
+
 		$skip = array(
 			'ext' => array('pcre', 'json', 'hash', 'dom', 'session', 'spl', 'standard', 'date', 'ctype', 'tokenizer', 'apache2handler', 'filter', 'posix', 'reflection', 'pdo')
 		, 'module' => array('addon', 'admin', 'autoinstall', 'comment', 'communication', 'counter', 'document', 'editor', 'file', 'importer', 'install', 'integration_search', 'layout', 'member', 'menu', 'message', 'module', 'opage', 'page', 'point', 'poll', 'rss', 'session', 'spamfilter', 'tag', 'trackback', 'trash', 'widget')
@@ -125,7 +125,7 @@ class adminAdminModel extends admin {
 		, 'widget' => array('content', 'language_select', 'login_info', 'mcontent')
 		, 'widgetstyle' => array(),
 		);
-		
+
 		$info = array();
 		$info['type'] = ($type != 'INSTALL' ? 'WORKING' : 'INSTALL');
 		$info['location'] = _DAOL_LOCATION_;
@@ -134,13 +134,13 @@ class adminAdminModel extends admin {
 		$info['app'] = $_SERVER['SERVER_SOFTWARE'];
 		$info['daol_version'] = __DAOL_VERSION__;
 		$info['php'] = phpversion();
-		
+
 		$db_info = Context::getDBInfo();
 		$info['db_type'] = Context::getDBType();
 		$info['use_rewrite'] = $db_info->use_rewrite;
 		$info['use_db_session'] = $db_info->use_db_session == 'Y' ? 'Y' : 'N';
 		$info['use_ssl'] = $db_info->use_ssl;
-		
+
 		$info['phpext'] = '';
 		foreach(get_loaded_extensions() as $ext) {
 			$ext = strtolower($ext);
@@ -148,7 +148,7 @@ class adminAdminModel extends admin {
 			$info['phpext'] .= '|' . $ext;
 		}
 		$info['phpext'] = substr($info['phpext'], 1);
-		
+
 		$info['module'] = '';
 		$oModuleModel = &getModel('module');
 		$module_list = $oModuleModel->getModuleList();
@@ -157,7 +157,7 @@ class adminAdminModel extends admin {
 			$info['module'] .= '|' . $module->module;
 		}
 		$info['module'] = substr($info['module'], 1);
-		
+
 		$info['addon'] = '';
 		$oAddonAdminModel = &getAdminModel('addon');
 		$addon_list = $oAddonAdminModel->getAddonList();
@@ -166,7 +166,7 @@ class adminAdminModel extends admin {
 			$info['addon'] .= '|' . $addon->addon;
 		}
 		$info['addon'] = substr($info['addon'], 1);
-		
+
 		$info['layout'] = "";
 		$oLayoutModel = getModel('layout');
 		$layout_list = $oLayoutModel->getDownloadedLayoutList();
@@ -177,7 +177,7 @@ class adminAdminModel extends admin {
 			$info['layout'] .= '|' . $layout->layout;
 		}
 		$info['layout'] = substr($info['layout'], 1);
-		
+
 		$info['widget'] = "";
 		$oWidgetModel = getModel('widget');
 		$widget_list = $oWidgetModel->getDownloadedWidgetList();
@@ -188,7 +188,7 @@ class adminAdminModel extends admin {
 			$info['widget'] .= '|' . $widget->widget;
 		}
 		$info['widget'] = substr($info['widget'], 1);
-		
+
 		$info['widgetstyle'] = "";
 		$oWidgetModel = getModel('widget');
 		$widgetstyle_list = $oWidgetModel->getDownloadedWidgetStyleList();
@@ -199,16 +199,16 @@ class adminAdminModel extends admin {
 			$info['widgetstyle'] .= '|' . $widgetstyle->widgetStyle;
 		}
 		$info['widgetstyle'] = substr($info['widgetstyle'], 1);
-		
+
 		$param = '';
 		foreach($info as $k => $v) {
 			if($v) $param .= sprintf('&%s=%s', $k, urlencode($v));
 		}
 		$param = substr($param, 1);
-		
+
 		return $param;
 	}
-	
+
 	/**
 	 * Return theme info list by theme directory list
 	 * @return array
@@ -216,17 +216,17 @@ class adminAdminModel extends admin {
 	function getThemeList() {
 		$path = _DAOL_PATH_ . 'themes';
 		$list = FileHandler::readDir($path);
-		
+
 		$theme_info = array();
 		if(count($list) > 0) {
 			foreach($list as $val) {
 				$theme_info[$val] = $this->getThemeInfo($val);
 			}
 		}
-		
+
 		return $theme_info;
 	}
-	
+
 	/**
 	 * Return theme info
 	 * @param string $theme_name
@@ -235,16 +235,16 @@ class adminAdminModel extends admin {
 	 */
 	function getThemeInfo($theme_name, $layout_list = null) {
 		if($GLOBALS['__ThemeInfo__'][$theme_name]) return $GLOBALS['__ThemeInfo__'][$theme_name];
-		
+
 		$info_file = _DAOL_PATH_ . 'themes/' . $theme_name . '/conf/info.xml';
 		if(!file_exists($info_file)) return;
-		
+
 		$oXmlParser = new XmlParser();
 		$_xml_obj = $oXmlParser->loadXmlFile($info_file);
 		if(!$_xml_obj->theme) return;
-		
+
 		$xml_obj = $_xml_obj->theme;
-		
+
 		// 스킨이름
 		$theme_info = new stdClass();
 		$theme_info->name = $theme_name;
@@ -256,10 +256,10 @@ class adminAdminModel extends admin {
 		$theme_info->date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
 		$theme_info->description = $xml_obj->description->body;
 		$theme_info->path = './themes/' . $theme_name . '/';
-		
+
 		if(!is_array($xml_obj->publisher)) $publisher_list[] = $xml_obj->publisher;
 		else $publisher_list = $xml_obj->publisher;
-		
+
 		foreach($publisher_list as $publisher) {
 			$publisher_obj = new stdClass();
 			$publisher_obj->name = $publisher->name->body;
@@ -267,7 +267,7 @@ class adminAdminModel extends admin {
 			$publisher_obj->homepage = $publisher->attrs->link;
 			$theme_info->publisher[] = $publisher_obj;
 		}
-		
+
 		$layout = $xml_obj->layout;
 		$layout_path = $layout->directory->attrs->path;
 		$layout_parse = explode('/', $layout_path);
@@ -284,7 +284,7 @@ class adminAdminModel extends admin {
 		}
 		$layout_info->title = $layout_parse[count($layout_parse) - 1];
 		$layout_info->path = $layout_path;
-		
+
 		$site_info = Context::get('site_module_info');
 		// check layout instance
 		$is_new_layout = true;
@@ -300,7 +300,7 @@ class adminAdminModel extends admin {
 				}
 			}
 		}
-		
+
 		if($is_new_layout) {
 			$site_module_info = Context::get('site_module_info');
 			$args = new stdClass();
@@ -314,13 +314,13 @@ class adminAdminModel extends admin {
 			$output = $oLayoutAdminController->insertLayout($args);
 			$layout_info->layout_srl = $args->layout_srl;
 		}
-		
+
 		$theme_info->layout_info = $layout_info;
-		
+
 		$skin_infos = $xml_obj->skininfos;
 		if(is_array($skin_infos->skininfo)) $skin_list = $skin_infos->skininfo;
 		else $skin_list = array($skin_infos->skininfo);
-		
+
 		$oModuleModel = &getModel('module');
 		$skins = array();
 		foreach($skin_list as $val) {
@@ -343,7 +343,7 @@ class adminAdminModel extends admin {
 			}
 			$skin_info->path = $val->directory->attrs->path;
 			$skins[$module_name] = $skin_info;
-			
+
 			if($is_theme) {
 				if(!$GLOBALS['__ThemeModuleSkin__'][$module_name]) {
 					$GLOBALS['__ThemeModuleSkin__'][$module_name] = array();
@@ -355,11 +355,11 @@ class adminAdminModel extends admin {
 			}
 		}
 		$theme_info->skin_infos = $skins;
-		
+
 		$GLOBALS['__ThemeInfo__'][$theme_name] = $theme_info;
 		return $theme_info;
 	}
-	
+
 	/**
 	 * Return theme module skin list
 	 * @return array
@@ -368,16 +368,16 @@ class adminAdminModel extends admin {
 		if($GLOBALS['__ThemeModuleSkin__']['__IS_PARSE__']) return $GLOBALS['__ThemeModuleSkin__'];
 		$searched_list = FileHandler::readDir('./modules');
 		sort($searched_list);
-		
+
 		$searched_count = count($searched_list);
 		if(!$searched_count) return;
-		
+
 		$exceptionModule = array('editor', 'poll', 'homepage', 'textyle');
-		
+
 		$oModuleModel = &getModel('module');
 		foreach($searched_list as $val) {
 			$skin_list = $oModuleModel->getSkins('./modules/' . $val);
-			
+
 			if(is_array($skin_list) && count($skin_list) > 0 && !in_array($val, $exceptionModule)) {
 				if(!$GLOBALS['__ThemeModuleSkin__'][$val]) {
 					$GLOBALS['__ThemeModuleSkin__'][$val] = array();
@@ -389,27 +389,27 @@ class adminAdminModel extends admin {
 			}
 		}
 		$GLOBALS['__ThemeModuleSkin__']['__IS_PARSE__'] = true;
-		
+
 		return $GLOBALS['__ThemeModuleSkin__'];
 	}
-	
+
 	/**
 	 * Return admin menu language
 	 * @return array
 	 */
 	function getAdminMenuLang(){
 		static $lang = false;
-		
+
 		$oCacheHandler = CacheHandler::getInstance('object', null, true);
 		if($lang === false && $oCacheHandler->isSupport()){
 			$cache_key = 'admin_menu_langs:' . Context::getLangType();
 			$lang = $oCacheHandler->get($cache_key);
-			
+
 			if($lang === false){
 				$lang = array();
 				$oModuleModel = getModel('module');
 				$installed_module_list = $oModuleModel->getModulesXmlInfo();
-				
+
 				foreach($installed_module_list as $key => $value){
 					$moduleActionInfo = $oModuleModel->getModuleActionXml($value->module);
 					if(is_object($moduleActionInfo->menu)){
@@ -418,14 +418,14 @@ class adminAdminModel extends admin {
 						}
 					}
 				}
-				
+
 				$oCacheHandler->put($cache_key, $lang);
 			}
 		}
-		
+
 		return $lang;
 	}
-	
+
 	/**
 	 * Get admin favorite list
 	 * @param int  $siteSrl if default site, siteSrl is zero
@@ -438,7 +438,7 @@ class adminAdminModel extends admin {
 		$output = executeQueryArray('admin.getFavoriteList', $args);
 		if(!$output->toBool()) return $output;
 		if(!$output->data) return new BaseObject();
-		
+
 		if($isGetModuleInfo && is_array($output->data)) {
 			$oModuleModel = &getModel('module');
 			foreach($output->data AS $key => $value) {
@@ -447,12 +447,12 @@ class adminAdminModel extends admin {
 				$output->data[$key]->title = $moduleInfo->title;
 			}
 		}
-		
+
 		$returnObject = new BaseObject();
 		$returnObject->add('favoriteList', $output->data);
 		return $returnObject;
 	}
-	
+
 	/**
 	 * Check available insert favorite
 	 * @param int    $siteSrl if default site, siteSrl is zero
@@ -465,7 +465,7 @@ class adminAdminModel extends admin {
 		$args->module = $module;
 		$output = executeQuery('admin.getFavorite', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$returnObject = new BaseObject();
 		if($output->data) {
 			$returnObject->add('result', true);
@@ -473,10 +473,10 @@ class adminAdminModel extends admin {
 		} else {
 			$returnObject->add('result', false);
 		}
-		
+
 		return $returnObject;
 	}
-	
+
 	/**
 	 * Return site list
 	 * @return void
@@ -486,7 +486,7 @@ class adminAdminModel extends admin {
 		$siteList = $this->getAllSitesThatHaveModules($domain);
 		$this->add('site_list', $siteList);
 	}
-	
+
 	/**
 	 * Returns a list of all sites that contain modules
 	 * For each site domain and site_srl are retrieved
@@ -497,33 +497,33 @@ class adminAdminModel extends admin {
 		$args = new stdClass();
 		if($domain) $args->domain = $domain;
 		$columnList = array('domain', 'site_srl');
-		
+
 		$siteList = array();
 		$output = executeQueryArray('admin.getSiteAllList', $args, $columnList);
 		if($output->toBool()) $siteList = $output->data;
-		
+
 		$oModuleModel = &getModel('module');
 		foreach($siteList as $key => $value) {
 			$args->site_srl = $value->site_srl;
 			$list = $oModuleModel->getModuleSrlList($args);
-			
+
 			if(!is_array($list)) {
 				$list = array($list);
 			}
-			
+
 			foreach($list as $k => $v) {
 				if(!is_dir('./modules/' . $v->module)) {
 					unset($list[$k]);
 				}
 			}
-			
+
 			if(!count($list)) {
 				unset($siteList[$key]);
 			}
 		}
 		return $siteList;
 	}
-	
+
 	/**
 	 * Return site count
 	 * @param string $date
@@ -532,28 +532,28 @@ class adminAdminModel extends admin {
 	function getSiteCountByDate($date = '') {
 		$args = new stdClass();
 		if($date) $args->regDate = date('Ymd', strtotime($date));
-		
+
 		$output = executeQuery('admin.getSiteCountByDate', $args);
 		if(!$output->toBool()) return 0;
-		
+
 		return $output->data->count;
 	}
-	
+
 	function getFaviconUrl($default = true) {
 		return $this->iconUrlCheck('favicon.ico', 'faviconSample.png', $default);
 	}
-	
+
 	function getMobileIconUrl($default = true) {
 		return $this->iconUrlCheck('mobicon.png', 'mobiconSample.png', $default);
 	}
-	
+
 	function iconUrlCheck($iconname, $default_icon_name, $default) {
 		$site_info = Context::get('site_module_info');
 		$virtual_site = '';
 		if($site_info->site_srl) {
 			$virtual_site = $site_info->site_srl . '/';
 		}
-		
+
 		$file_exsit = FileHandler::readFile(_DAOL_PATH_ . 'files/attach/xeicon/' . $virtual_site . $iconname);
 		if(!$file_exsit && $default === true){
 			$icon_url = '/modules/admin/tpl/img/' . $default_icon_name;
@@ -563,7 +563,7 @@ class adminAdminModel extends admin {
 			if($default_url && substr_compare($default_url, '/', -1) === 0) $default_url = substr($default_url, 0, -1);
 			$icon_url = $default_url . '/files/attach/xeicon/' . $virtual_site . $iconname;
 		}
-		
+
 		return $icon_url;
 	}
 }

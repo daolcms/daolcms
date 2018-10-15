@@ -4,33 +4,33 @@
 /* Copyright (C) DAOL Project <http://www.daolcms.org> */
 
 class Purifier {
-	
+
 	private $_cacheDir;
 	private $_htmlPurifier;
 	private $_config;
 	private $_def;
-	
+
 	public function __construct() {
 		$this->_checkCacheDir();
-		
+
 		// purifier setting
 		require_once _DAOL_PATH_ . 'classes/security/htmlpurifier/library/HTMLPurifier.auto.php';
 		require_once 'HTMLPurifier.func.php';
-		
+
 		$this->_setConfig();
 	}
-	
+
 	public function getInstance() {
 		if(!isset($GLOBALS['__PURIFIER_INSTANCE__'])) {
 			$GLOBALS['__PURIFIER_INSTANCE__'] = new Purifier();
 		}
 		return $GLOBALS['__PURIFIER_INSTANCE__'];
 	}
-	
+
 	private function _setConfig() {
 		$whiteDomainRegex = $this->_getWhiteDomainRegx();
 		//$allowdClasses = array('emoticon');
-		
+
 		$this->_config = HTMLPurifier_Config::createDefault();
 		$this->_config->autoFinalize = false;
 		$this->_config->set('HTML.TidyLevel', 'light');
@@ -41,20 +41,20 @@ class Purifier {
 		$this->_config->set('URI.SafeIframeRegexp', $whiteDomainRegex);
 		$this->_config->set('Cache.SerializerPath', $this->_cacheDir);
 		$this->_config->set('Attr.AllowedFrameTargets', array('_blank'));
-		
+
 		// @see https://github.com/xpressengine/xe-core/issues/2138
 		$this->_config->set('Attr.IDPrefix', 'user_content_');
-		
+
 		$this->_def = $this->_config->getHTMLDefinition(TRUE);
 		$this->_def->addAttribute('iframe', 'allowfullscreen', 'Text');
 	}
-	
+
 	public function setConfig($name, $value){
 		if($this->_config->isFinalized()) return;
-		
+
  		$this->_config->set($name, $value);
 	}
-	
+
 	private function _setDefinition(&$content) {
 		// add attribute for edit component
 		$editComponentAttrs = $this->_searchEditComponent($content);
@@ -64,7 +64,7 @@ class Purifier {
 				$this->_def->addAttribute('div', $v, 'CDATA');
 			}
 		}
-		
+
 		// add attribute for widget component
 		$widgetAttrs = $this->_searchWidget($content);
 		if(is_array($widgetAttrs)) {
@@ -73,7 +73,7 @@ class Purifier {
 			}
 		}
 	}
-	
+
 	/**
 	 * Search attribute of edit component tag
 	 * @param string $content
@@ -81,13 +81,13 @@ class Purifier {
 	 */
 	private function _searchEditComponent($content) {
 		preg_match_all('!<(?:(div)|img)([^>]*)editor_component=([^>]*)>(?(1)(.*?)</div>)!is', $content, $m);
-		
+
 		$attributeList = array();
 		if(is_array($m[2])) {
 			foreach($m[2] as $key => $value) {
 				unset($script, $m2);
 				$script = " {$m[2][$key]} editor_component={$m[3][$key]}";
-				
+
 				if(preg_match_all('/([a-z0-9_-]+)="([^"]+)"/is', $script, $m2)) {
 					foreach($m2[1] as $value2) {
 						//SECISSUE check style attr
@@ -99,10 +99,10 @@ class Purifier {
 				}
 			}
 		}
-		
+
 		return array_unique($attributeList);
 	}
-	
+
 	/**
 	 * Search edit component tag
 	 * @param string $content
@@ -110,11 +110,11 @@ class Purifier {
 	 */
 	private function _searchWidget(&$content) {
 		preg_match_all('!<(?:(div)|img)([^>]*)class="zbxe_widget_output"([^>]*)>(?(1)(.*?)</div>)!is', $content, $m);
-		
+
 		$attributeList = array();
 		if(is_array($m[3])) {
 			$content = str_replace('<img class="zbxe_widget_output"', '<img src="" class="zbxe_widget_output"', $content);
-			
+
 			foreach($m[3] as $key => $value) {
 				if(preg_match_all('/([a-z0-9_-]+)="([^"]+)"/is', $m[3][$key], $m2)) {
 					foreach($m2[1] as $value2) {
@@ -129,7 +129,7 @@ class Purifier {
 		}
 		return array_unique($attributeList);
 	}
-	
+
 	private function _getWhiteDomainRegx() {
 		require_once(_DAOL_PATH_ . 'classes/security/EmbedFilter.class.php');
 		$oEmbedFilter = EmbedFilter::getInstance();
@@ -141,20 +141,20 @@ class Purifier {
 		$whiteDomainRegex = '%^(' . implode('|', $whiteDomain) . ')%';
 		return $whiteDomainRegex;
 	}
-	
+
 	private function _checkCacheDir() {
 		// check htmlpurifier cache directory
 		$this->_cacheDir = _DAOL_PATH_ . 'files/cache/htmlpurifier';
 		FileHandler::makeDir($this->_cacheDir);
 	}
-	
+
 	public function purify(&$content) {
 		$this->_setDefinition($content);
 		$this->_htmlPurifier = new HTMLPurifier($this->_config);
-		
+
 		$content = $this->_htmlPurifier->purify($content);
 	}
-	
+
 }
 /* End of file : Purifier.class.php */
 /* Location: ./classes/security/Purifier.class.php */

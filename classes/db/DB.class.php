@@ -508,7 +508,7 @@ class DB {
 	 */
 	function _executeQuery($cache_file, $source_args, $query_id, $arg_columns, $type){
 		global $lang;
-		
+
 		if(!in_array($type, array('master','slave'))) $type = 'slave';
 
 		if(!file_exists($cache_file)){

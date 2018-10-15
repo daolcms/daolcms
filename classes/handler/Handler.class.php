@@ -6,5 +6,5 @@
  * @author NAVER (developers@xpressengine.com)
  **/
 class Handler {
-	
+
 }

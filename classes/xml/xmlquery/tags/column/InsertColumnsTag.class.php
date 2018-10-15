@@ -14,7 +14,7 @@ class InsertColumnsTag {
 	 * @var array value is InsertColumnTag object
 	 */
 	var $columns;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -23,19 +23,19 @@ class InsertColumnsTag {
 	 */
 	function __construct($xml_columns) {
 		$this->columns = array();
-		
+
 		if(!$xml_columns)
 			return;
-		
+
 		if(!is_array($xml_columns)) $xml_columns = array($xml_columns);
-		
+
 		foreach($xml_columns as $column) {
 			if($column->name === 'query') $this->columns[] = new QueryTag($column, true);
 			else if(!isset($column->attrs->var) && !isset($column->attrs->default)) $this->columns[] = new InsertColumnTagWithoutArgument($column);
 			else $this->columns[] = new InsertColumnTag($column);
 		}
 	}
-	
+
 	/**
 	 * InsertColumnTag object to string
 	 *
@@ -50,7 +50,7 @@ class InsertColumnsTag {
 		$output_columns .= ')';
 		return $output_columns;
 	}
-	
+
 	/**
 	 * Return argument list
 	 *
@@ -63,7 +63,7 @@ class InsertColumnsTag {
 		}
 		return $arguments;
 	}
-	
+
 }
 
 ?>

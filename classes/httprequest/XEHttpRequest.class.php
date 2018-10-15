@@ -20,19 +20,19 @@ class XEHttpRequest {
 	 * @var int
 	 */
 	var $m_port;
-	
+
 	/**
 	 * target scheme
 	 * @var string
 	 */
 	var $m_scheme;
-	
+
 	/**
 	 * target header
 	 * @var array
 	 */
 	var $m_headers;
-	
+
 	/**
 	 * constructor
 	 * @return void
@@ -43,7 +43,7 @@ class XEHttpRequest {
 		$this->m_scheme = $scheme;
 		$this->m_headers = array();
 	}
-	
+
 	/**
 	 * Mether to add key/value pair to the HTTP request header
 	 * @param int|string $key   HTTP header element
@@ -53,7 +53,7 @@ class XEHttpRequest {
 	function addToHeader($key, $value) {
 		$this->m_headers[$key] = $value;
 	}
-	
+
 	/**
 	 * Send HTTP message to the host
 	 * @param string $target    ip or url of the external server
@@ -64,27 +64,27 @@ class XEHttpRequest {
 	 */
 	function send($target = '/', $method = 'GET', $timeout = 3, $post_vars = null) {
 		static $allow_methods = null;
-		
+
 		$this->addToHeader('Host', $this->m_host);
 		$this->addToHeader('Connection', 'close');
-		
+
 		$method = strtoupper($method);
 		if(!$allow_methods) $allow_methods = explode(' ', 'GET POST PUT');
 		if(!in_array($method, $allow_methods)) $method = $allow_methods[0];
-		
+
 		// $timeout should be an integer that is bigger than zero
 		$timout = max((int)$timeout, 0);
-		
+
 		// list of post variables
 		if(!is_array($post_vars)) $post_vars = array();
-		
+
 		if(false && is_callable('curl_init')) {
 			return $this->sendWithCurl($target, $method, $timeout, $post_vars);
 		} else {
 			return $this->sendWithSock($target, $method, $timeout, $post_vars);
 		}
 	}
-	
+
 	/**
 	 * Send a request with the file socket
 	 * @param string $target    ip or url of the external server
@@ -95,20 +95,20 @@ class XEHttpRequest {
 	 */
 	function sendWithSock($target, $method, $timeout, $post_vars) {
 		static $crlf = "\r\n";
-		
+
 		$scheme = '';
 		if($this->m_scheme == 'https') {
 			$scheme = 'ssl://';
 		}
-		
+
 		$sock = @fsockopen($scheme . $this->m_host, $this->m_port, $errno, $errstr, $timeout);
 		if(!$sock) {
 			return new BaseObject(-1, 'socket_connect_failed');
 		}
-		
+
 		$headers = $this->m_headers + array();
 		if(!isset($headers['Accept-Encoding'])) $headers['Accept-Encoding'] = 'identity';
-		
+
 		// post body
 		$post_body = '';
 		if($method == 'POST' && count($post_vars)) {
@@ -116,20 +116,20 @@ class XEHttpRequest {
 				$post_body .= urlencode($key) . '=' . urlencode($value) . '&';
 			}
 			$post_body = substr($post_body, 0, -1);
-			
+
 			$headers['Content-Length'] = strlen($post_body);
 			$headers['Content-Type'] = 'application/x-www-form-urlencoded';
 		}
-		
+
 		$request = "$method $target HTTP/1.1$crlf";
 		foreach($headers as $equiv => $content) {
 			$request .= "$equiv: $content$crlf";
 		}
 		$request .= $crlf . $post_body;
 		fwrite($sock, $request);
-		
+
 		list($httpver, $code, $status) = preg_split('/ +/', rtrim(fgets($sock)), 3);
-		
+
 		// read response headers
 		$is_chunked = false;
 		while(strlen(trim($line = fgets($sock)))) {
@@ -138,7 +138,7 @@ class XEHttpRequest {
 				$is_chunked = true;
 			}
 		}
-		
+
 		$body = '';
 		while(!feof($sock)){
 			if($is_chunked){
@@ -152,14 +152,14 @@ class XEHttpRequest {
 			}
 		}
 		fclose($sock);
-		
+
 		$ret = new stdClass;
 		$ret->result_code = $code;
 		$ret->body = $body;
-		
+
 		return $ret;
 	}
-	
+
 	/**
 	 * Send a request with the curl library
 	 * @param string $target    ip or url of the external server
@@ -170,12 +170,12 @@ class XEHttpRequest {
 	 */
 	function sendWithCurl($target, $method, $timeout, $post_vars) {
 		$headers = $this->m_headers + array();
-		
+
 		// creat a new cURL resource
 		$ch = curl_init();
-		
+
 		$headers['Expect'] = '';
-		
+
 		// set URL and other appropriate options
 		curl_setopt($ch, CURLOPT_URL, "http://{$this->m_host}{$target}");
 		curl_setopt($ch, CURLOPT_HEADER, false);
@@ -183,7 +183,7 @@ class XEHttpRequest {
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
 		curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		
+
 		switch($method) {
 			case 'GET':
 				curl_setopt($ch, CURLOPT_HTTPGET, true);
@@ -196,25 +196,25 @@ class XEHttpRequest {
 				curl_setopt($ch, CURLOPT_POSTFIELDS, $post_vars);
 				break;
 		}
-		
+
 		$arr_headers = array();
 		foreach($headers as $key => $value) {
 			$arr_headers[] = "$key: $value";
 		}
-		
+
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $arr_headers);
-		
+
 		$body = curl_exec($ch);
 		if(curl_errno($ch)) {
 			return new BaseObject(-1, 'socket_connect_failed');
 		}
-		
+
 		$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		
+
 		$ret = new stdClass;
 		$ret->result_code = $code;
 		$ret->body = $body;
-		
+
 		return $ret;
 	}
 }

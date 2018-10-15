@@ -16,11 +16,11 @@ class StarExpression extends SelectExpression {
 	function __construct() {
 		parent::__construct("*");
 	}
-	
+
 	function getArgument() {
 		return null;
 	}
-	
+
 	function getArguments() {
 		// StarExpression has no arguments
 		return array();

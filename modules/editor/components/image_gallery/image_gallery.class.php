@@ -9,7 +9,7 @@ class image_gallery extends EditorHandler {
 	// editor_sequence from the editor must attend mandatory wearing ....
 	var $editor_sequence = 0;
 	var $component_path = '';
-	
+
 	/**
 	 * @brief editor_sequence and components out of the path
 	 **/
@@ -17,7 +17,7 @@ class image_gallery extends EditorHandler {
 		$this->editor_sequence = $editor_sequence;
 		$this->component_path = $component_path;
 	}
-	
+
 	/**
 	 * @brief popup window to display in popup window request is to add content
 	 **/
@@ -25,13 +25,13 @@ class image_gallery extends EditorHandler {
 		// Pre-compiled source code to compile template return to
 		$tpl_path = $this->component_path . 'tpl';
 		$tpl_file = 'popup.html';
-		
+
 		Context::set("tpl_path", $tpl_path);
-		
+
 		$oTemplate = &TemplateHandler::getInstance();
 		return $oTemplate->compile($tpl_path, $tpl_file);
 	}
-	
+
 	/**
 	 * @brief Editor of the components separately if you use a unique code to the html code for a method to change
 	 *
@@ -47,16 +47,16 @@ class image_gallery extends EditorHandler {
 		$gallery_info->border_color = $xml_obj->attrs->border_color;
 		$gallery_info->bg_color = $xml_obj->attrs->bg_color;
 		$gallery_info->gallery_align = $xml_obj->attrs->gallery_align;
-		
+
 		if(!in_array($gallery_info->gallery_align, array('left', 'center', 'right'))) {
 			$gallery_info->gallery_align = 'center';
 		}
-		
+
 		$images_list = $xml_obj->attrs->images_list;
 		$images_list = preg_replace('/\.(gif|jpe?g|png) /i', ".\\1\n", $images_list);
 		$images_list = explode("\n", trim($images_list));
 		$gallery_info->images_list = preg_grep("/^[a-z0-9\/]+\.(gif|jpe?g|png)+$/i", $images_list);
-		
+
 		// If you set the output to output the XML code generated a list of the image
 		if(Context::getResponseMethod() == 'XMLRPC') {
 			$output = '';
@@ -69,19 +69,19 @@ class image_gallery extends EditorHandler {
 		preg_match_all('/(width|height)([^[:digit:]]+)([0-9]+)/i', $xml_obj->attrs->style, $matches);
 		$gallery_info->width = trim($matches[3][0]);
 		if(!$gallery_info->width) $gallery_info->width = 400;
-		
+
 		Context::set('gallery_info', $gallery_info);
-		
+
 		$tpl_path = $this->component_path . 'tpl';
 		Context::set("tpl_path", $tpl_path);
-		
+
 		if($gallery_info->gallery_style == "list") $tpl_file = 'list_gallery.html';
 		else $tpl_file = 'slide_gallery.html';
-		
+
 		$oTemplate = &TemplateHandler::getInstance();
 		return $oTemplate->compile($tpl_path, $tpl_file);
 	}
-	
+
 }
 
 ?>

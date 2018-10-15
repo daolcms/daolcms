@@ -7,21 +7,21 @@
  * member module's admin view class
  **/
 class memberAdminView extends member {
-	
+
 	/**
 	 * Group list
 	 *
 	 * @var array
 	 **/
 	var $group_list = NULL;
-	
+
 	/**
 	 * Selected member info
 	 *
 	 * @var array
 	 **/
 	var $memberInfo = NULL;
-	
+
 	/**
 	 * initialization
 	 *
@@ -33,24 +33,24 @@ class memberAdminView extends member {
 		Context::set('config', $this->memberConfig);
 		$oSecurity = new Security();
 		$oSecurity->encodeHTML('config.signupForm..');
-		
+
 		// if member_srl exists, set memberInfo            
 		$member_srl = Context::get('member_srl');
 		if($member_srl){
 			$this->memberInfo = $oMemberModel->getMemberInfoByMemberSrl($member_srl);
 			if(!$this->memberInfo) Context::set('member_srl', ''); else Context::set('member_info', $this->memberInfo);
 		}
-		
+
 		// retrieve group list            
 		$this->group_list = $oMemberModel->getGroups();
 		Context::set('group_list', $this->group_list);
-		
+
 		$security = new Security();
 		$security->encodeHTML('group_list..');
-		
+
 		$this->setTemplatePath($this->module_path . 'tpl');
 	}
-	
+
 	/**
 	 * display member list
 	 *
@@ -60,7 +60,7 @@ class memberAdminView extends member {
 		$oMemberAdminModel = getAdminModel('member');
 		$oMemberModel = getModel('member');
 		$output = $oMemberAdminModel->getMemberList();
-		
+
 		$filter = Context::get('filter_type');
 		global $lang;
 		switch($filter){
@@ -89,7 +89,7 @@ class memberAdminView extends member {
 		$config = $oMemberModel->getMemberConfig();
 		$memberIdentifiers = array('user_id' => 'user_id', 'user_name' => 'user_name', 'nick_name' => 'nick_name');
 		$usedIdentifiers = array();
-		
+
 		if(is_array($config->signupForm)){
 			foreach($config->signupForm as $signupItem){
 				if(!count($memberIdentifiers)) break;
@@ -105,14 +105,14 @@ class memberAdminView extends member {
 		Context::set('member_list', $output->data);
 		Context::set('usedIdentifiers', $usedIdentifiers);
 		Context::set('page_navigation', $output->page_navigation);
-		
+
 		$security = new Security();
 		$security->encodeHTML('member_list..user_name', 'member_list..nick_name', 'member_list..group_list..');
 		$security->encodeHTML('search_target', 'search_keyword');
-		
+
 		$this->setTemplateFile('member_list');
 	}
-	
+
 	/**
 	 * default configuration for member management
 	 *
@@ -121,35 +121,35 @@ class memberAdminView extends member {
 	function dispMemberAdminConfig(){
 		$oPassword = new Password();
 		Context::set('password_hashing_algos', $oPassword->getSupportedAlgorithms());
-		
+
 		$oModuleModel = getModel('module');
 		$oMemberModel = getModel('member');
 		$config = $oMemberModel->getMemberConfig();
-		
+
 		Context::set('config', $config);
-		
+
 		// Get a layout list
 		$oLayoutModel = getModel('layout');
 		$layout_list = $oLayoutModel->getLayoutList();
-		
+
 		Context::set('layout_list', $layout_list);
-		
+
 		$mlayout_list = $oLayoutModel->getLayoutList(0, 'M');
-		
+
 		Context::set('mlayout_list', $mlayout_list);
-		
+
 		// list of skins for member module
 		$skin_list = $oModuleModel->getSkins($this->module_path);
 		Context::set('skin_list', $skin_list);
-		
+
 		// list of skins for member module
 		$mskin_list = $oModuleModel->getSkins($this->module_path, 'm.skins');
 		Context::set('mskin_list', $mskin_list);
-		
+
 		// retrieve skins of editor
 		$oEditorModel = getModel('editor');
 		Context::set('editor_skin_list', $oEditorModel->getEditorSkinList());
-		
+
 		// get an editor
 		$option = new stdClass();
 		$option->skin = $oEditorModel->getEditorConfig()->editor_skin;
@@ -163,7 +163,7 @@ class memberAdminView extends member {
 		$option->height = 300;
 		$editor = $oEditorModel->getEditor(0, $option);
 		Context::set('editor', $editor);
-		
+
 		$signupForm = $config->signupForm;
 		foreach($signupForm as $val){
 			if($val->name == 'user_id'){
@@ -171,7 +171,7 @@ class memberAdminView extends member {
 				break;
 			}
 		}
-		
+
 		$oSecurity = new Security();
 		if($userIdInfo->isUse){
 			// get denied ID list
@@ -180,18 +180,18 @@ class memberAdminView extends member {
 			Context::set('deniedIDs', $denied_list);
 			$oSecurity->encodeHTML('deniedIDs..user_id');
 		}
-		
+
 		// get denied NickName List
 		$deniedNickNames = $oMemberModel->getDeniedNickNames();
 		Context::set('deniedNickNames', $deniedNickNames);
 		$oSecurity->encodeHTML('deniedNickNames..nick_name');
-		
+
 		$security = new Security();
 		$security->encodeHTML('config..');
-		
+
 		$this->setTemplateFile('member_config');
 	}
-	
+
 	/**
 	 * display member information
 	 *
@@ -215,14 +215,14 @@ class memberAdminView extends member {
 		$security = new Security();
 		$security->encodeHTML('member_config..');
 		$security->encodeHTML('extend_form_list...');
-		
+
 		$oMemberView = getView('member');
 
 		$oMemberView->_getDisplayedMemberInfo($this->memberInfo, $extendForm, $member_config);
 
 		$this->setTemplateFile('member_info');
 	}
-	
+
 	/**
 	 * display member insert form
 	 *
@@ -231,11 +231,11 @@ class memberAdminView extends member {
 	function dispMemberAdminInsert(){
 		// retrieve extend form
 		$oMemberModel = getModel('member');
-		
+
 		$memberInfo = Context::get('member_info');
 		$memberInfo->signature = $oMemberModel->getSignature($this->memberInfo->member_srl);
 		Context::set('member_info', $memberInfo);
-		
+
 		// get an editor for the signature
 		if($memberInfo->member_srl){
 			$oEditorModel = getModel('editor');
@@ -252,13 +252,13 @@ class memberAdminView extends member {
 			$editor = $oEditorModel->getEditor($this->memberInfo->member_srl, $option);
 			Context::set('editor', $editor);
 		}
-		
+
 		unset($memberInfo->find_account_question);
 		unset($memberInfo->find_account_answer);
 		$formTags = $this->_getMemberInputTag($memberInfo, true);
 		Context::set('formTags', $formTags);
 		$member_config = $oMemberModel->getMemberConfig();
-		
+
 		global $lang;
 		$identifierForm = new stdClass();
 		$identifierForm->title = $lang->{$member_config->identifier};
@@ -267,7 +267,7 @@ class memberAdminView extends member {
 		Context::set('identifierForm', $identifierForm);
 		$this->setTemplateFile('insert_member');
 	}
-	
+
 	/**
 	 * Get tags by the member info type
 	 *
@@ -282,7 +282,7 @@ class memberAdminView extends member {
 		$extend_form_list = $oMemberModel->getCombineJoinForm($memberInfo);
 		$security = new Security($extend_form_list);
 		$security->encodeHTML('..column_title', '..description', '..default_value.');
-		
+
 		if($memberInfo){
 			$memberInfo = get_object_vars($memberInfo);
 		}
@@ -297,10 +297,10 @@ class memberAdminView extends member {
 
 		$formTags = array();
 		global $lang;
-		
+
 		foreach($member_config->signupForm as $no => $formInfo){
 			if(!$formInfo->isUse) continue;
-			
+
 			// 회원 본인이 아닌 경우 입력 폼 제거
 			if($formInfo->name == 'find_account_question' && $memberInfo['member_srl'] !== $logged_info->member_srl){
 				unset($member_config->signupForm[$no]);
@@ -319,7 +319,7 @@ class memberAdminView extends member {
 				if($formInfo->required && $formInfo->name != 'password') $formTag->title = $formTag->title . ' <em style="color:red">*</em>';
 			}
 			$formTag->name = $formInfo->name;
-			
+
 			if($formInfo->isDefaultForm){
 				if($formInfo->imageType){
 					$formTag->type = 'image';
@@ -378,7 +378,7 @@ class memberAdminView extends member {
 					}
 					$inputTag = sprintf($inputTag, $disabled, implode('', $optionTag));
 					$inputTag .= '<input type="text" name="find_account_answer" id="find_account_answer" title="'.Context::getLang('find_account_answer').'" value="" ' . $disabled . ' />';
-					
+
 					if($disabled){
 						$inputTag .= ' <label><input type="checkbox" name="modify_find_account_answer" value="Y" /> ' . Context::getLang('cmd_modify') . '</label>';
 						$inputTag .= '<script>(function($) {$(function() {$(\'[name=modify_find_account_answer]\').change(function() {var $this = $(this); if($this.prop(\'checked\')) {$(\'[name=find_account_question],[name=find_account_answer]\').attr(\'disabled\', false); } else {$(\'[name=find_account_question]\').attr(\'disabled\', true); $(\'[name=find_account_answer]\').attr(\'disabled\', true).val(\'\'); } }); }); })(jQuery);</script>';
@@ -397,7 +397,7 @@ class memberAdminView extends member {
 				$replace = array('column_name' => $extendForm->column_name,
 					'value' => $extendForm->value);
 				$extentionReplace = array();
-				
+
 				$formTag->type = $extendForm->column_type;
 				if($extendForm->column_type == 'text' || $extendForm->column_type == 'homepage' || $extendForm->column_type == 'email_address'){
 					$template = '<input type="text" name="%column_name%" id="%column_name%" value="%value%" />';
@@ -464,12 +464,12 @@ class memberAdminView extends member {
 						'cmd_delete' => $lang->cmd_delete);
 					$template = '<input type="hidden" name="%column_name%" id="date_%column_name%" value="%value%" /><input type="text" class="inputDate" value="%date%" readonly="readonly" /> <input type="button" value="%cmd_delete%" class="dateRemover" />';
 				}
-				
+
 				$replace = array_merge($extentionReplace, $replace);
 				$inputTag = preg_replace_callback('@%(\w+)%@', function ($n) use ($replace){
 					return $replace[$n[1]];
 				}, $template);
-				
+
 				if($extendForm->description)
 					$inputTag .= '<p style="color:#999;">' . $extendForm->description . '</p>';
 			}
@@ -478,7 +478,7 @@ class memberAdminView extends member {
 		}
 		return $formTags;
 	}
-	
+
 	/**
 	 * display member delete form
 	 *
@@ -488,7 +488,7 @@ class memberAdminView extends member {
 		if(!Context::get('member_srl')) return $this->dispMemberAdminList();
 		$this->setTemplateFile('delete_form');
 	}
-	
+
 	/**
 	 * display group list
 	 *
@@ -496,12 +496,12 @@ class memberAdminView extends member {
 	 **/
 	function dispMemberAdminGroupList(){
 		$oModuleModel = getModel('module');
-		
+
 		$config = $oModuleModel->getModuleConfig('member');
 		Context::set('config', $config);
-		
+
 		$group_srl = Context::get('group_srl');
-		
+
 		if($group_srl && $this->group_list[$group_srl]){
 			Context::set('selected_group', $this->group_list[$group_srl]);
 			$this->setTemplateFile('group_update_form');
@@ -512,7 +512,7 @@ class memberAdminView extends member {
 		$output = $oModuleModel->getModuleFileBoxList();
 		Context::set('fileBoxList', $output->data);
 	}
-	
+
 	/**
 	 * Display a list of member join form
 	 *
@@ -526,10 +526,10 @@ class memberAdminView extends member {
 		Context::set('form_list', $form_list);
 		$security = new Security($form_list);
 		$security->encodeHTML('form_list..');
-		
+
 		$this->setTemplateFile('join_form_list');
 	}
-	
+
 	/**
 	 * Display an admin page for memebr join forms
 	 *
@@ -541,18 +541,18 @@ class memberAdminView extends member {
 		if($member_join_form_srl){
 			$oMemberModel = getModel('member');
 			$join_form = $oMemberModel->getJoinForm($member_join_form_srl);
-			
+
 			if(!$join_form) Context::set('member_join_form_srl', '', true);
 			else{
 				Context::set('join_form', $join_form);
 				$security = new Security();
 				$security->encodeHTML('join_form..');
 			}
-			
+
 		}
 		$this->setTemplateFile('insert_join_form');
 	}
-	
+
 	/**
 	 * Display denied ID list
 	 *
@@ -563,18 +563,18 @@ class memberAdminView extends member {
 		$oMemberModel = getModel('member');
 		// Get a denied ID list            
 		$output = $oMemberModel->getDeniedIDList();
-		
+
 		Context::set('total_count', $output->total_count);
 		Context::set('total_page', $output->total_page);
 		Context::set('page', $output->page);
 		Context::set('member_list', $output->data);
 		Context::set('page_navigation', $output->page_navigation);
-		
+
 		$security = new Security();
 		$security->encodeHTML('member_list..');
 		$this->setTemplateFile('denied_id_list');
 	}
-	
+
 	/**
 	 * Update all the member groups
 	 *
@@ -588,14 +588,14 @@ class memberAdminView extends member {
 		// Get a list of the selected member            
 		$oMemberModel = getModel('member');
 		Context::set('member_groups', $oMemberModel->getGroups());
-		
+
 		$security = new Security();
 		$security->encodeHTML('member_list..');
-		
+
 		$this->setLayoutFile('popup_layout');
 		$this->setTemplateFile('manage_member_group');
 	}
-	
+
 	/**
 	 * Delete members
 	 *
@@ -606,7 +606,7 @@ class memberAdminView extends member {
 		$args->member_srl = trim(Context::get('member_srls'));
 		$output = executeQueryArray('member.getMembers', $args);
 		Context::set('member_list', $output->data);
-		
+
 		$this->setLayoutFile('popup_layout');
 		$this->setTemplateFile('delete_members');
 	}

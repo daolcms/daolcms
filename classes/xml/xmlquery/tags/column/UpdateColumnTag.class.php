@@ -14,14 +14,14 @@ class UpdateColumnTag extends ColumnTag {
 	 * @var QueryArgument object
 	 */
 	var $argument;
-	
+
 	/**
 	 * Default value
 	 *
 	 * @var string
 	 */
 	var $default_value;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -30,10 +30,10 @@ class UpdateColumnTag extends ColumnTag {
 	 */
 	function __construct($column) {
 		parent::__construct($column->attrs->name);
-		
+
 		$dbParser = DB::getParser();
 		$this->name = $dbParser->parseColumnName($this->name);
-		
+
 		if($column->attrs->var)
 			$this->argument = new QueryArgument($column);
 		else {
@@ -53,12 +53,12 @@ class UpdateColumnTag extends ColumnTag {
 						$this->default_value = '"' . $this->default_value . '"';
 					}
 				}
-				
-				
+
+
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns the string to be output in the cache file
 	 *
@@ -75,7 +75,7 @@ class UpdateColumnTag extends ColumnTag {
 				, $this->default_value);
 		}
 	}
-	
+
 	/**
 	 * Returns the Argument associated with this update statement
 	 *

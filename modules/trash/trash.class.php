@@ -18,7 +18,7 @@ class trash extends ModuleObject {
 	function moduleInstall(){
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * A method to check if successfully installed
 	 * @return bool
@@ -26,10 +26,10 @@ class trash extends ModuleObject {
 	function checkUpdate(){
 		//$oDB = &DB::getInstance();
 		//$oModuleModel = getModel('module');
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Execute update
 	 * @return BaseObject
@@ -37,7 +37,7 @@ class trash extends ModuleObject {
 	function moduleUpdate(){
 		//$oDB = &DB::getInstance();
 		//$oModuleModel = getModel('module');
-		
+
 		return new BaseObject(0, 'success_updated');
 	}
 }

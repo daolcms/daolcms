@@ -5,11 +5,11 @@
 
 <h3 class="pTitle7">Message Box</h3>
 <div class="xeMessages">
-   
+
 	<ul class="isTab">
 		<li loop="$lang->message_box => $key,$val" class="on"|cond="$key==$message_type"><a href="{getUrl(message_type,$key,message_srl,0)}">{$val}</a></li>
 	</ul>
- 
+
 	<form action="./" method="POST" onsubmit="return procFilter(this, update_allow_message)" class="setupMessage">
         <select name="allow_message">
             <!--@foreach($lang->allow_message_type as $key => $val)-->
@@ -57,7 +57,7 @@
     	<tr>
     	<th scope="col" class="chk"><div>
                 <input name="check_all" type="checkbox" onclick="XE.checkboxToggleAll('message_srl_list', { wrap:'fo_message_list' }); return false;" />
-               
+
             </div>
 		</th>
         <th scope="col" class="subject"><div class="member_{$val->member_srl}"> {$lang->title}</div></th>

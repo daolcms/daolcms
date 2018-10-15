@@ -24,7 +24,7 @@ xe.MidManager = xe.createApp("MidManager", {
 			$finder.slideUp(100);
 			return false;
 		});
-		
+
 		jQuery(function($){
 			$('.moduleSearch').bind('moduleSelect', function(e, aSelected){
 				self.cast('MID_SYNC_NEW', aSelected);
@@ -52,12 +52,12 @@ xe.MidManager = xe.createApp("MidManager", {
 
 		$.exec_json('module.getModuleAdminModuleList', {'module_srls': module_srl}, on_complete);
 	},
-	
+
 	API_MID_SYNC_NEW: function(htBase, aParam){
 		var self = this;
 
 		htSelected = aParam[0];
-		
+
 		var module_srl = htSelected.module_srl;
 		if (!module_srl) return;
 

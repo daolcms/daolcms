@@ -7,7 +7,7 @@
  * @brief   Display counter status by using data in the counter module
  **/
 class counter_status extends WidgetHandler {
-	
+
 	/**
 	 * @brief Widget execution
 	 * Get extra_vars declared in ./widgets/widget/conf/info.xml as arguments
@@ -16,7 +16,7 @@ class counter_status extends WidgetHandler {
 	function proc($args) {
 		// Get status of the accumulated, yesterday's, today's counts
 		$oCounterModel = &getModel('counter');
-		
+
 		$site_module_info = Context::get('site_module_info');
 		$output = $oCounterModel->getStatus(array('00000000', date('Ymd', time() - 60 * 60 * 24), date('Ymd')), $site_module_info->site_srl);
 		if(count($output)) {

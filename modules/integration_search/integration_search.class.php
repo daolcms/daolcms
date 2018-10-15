@@ -6,7 +6,7 @@
  * @author NAVER (developers@xpressengine.com)
  **/
 class integration_search extends ModuleObject {
-	
+
 	/**
 	 * Implement if additional tasks are necessary when installing
 	 *
@@ -16,10 +16,10 @@ class integration_search extends ModuleObject {
 		// Registered in action forward
 		$oModuleController = &getController('module');
 		$oModuleController->insertActionForward('integration_search', 'view', 'IS');
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * Check methoda whether successfully installed
 	 *
@@ -28,7 +28,7 @@ class integration_search extends ModuleObject {
 	function checkUpdate() {
 		$oModuleModel = &getModel('module');
 		$config = $oModuleModel->getModuleConfig('integration_search');
-		
+
 		if($config->skin) {
 			$config_parse = explode('.', $config->skin);
 			if(count($config_parse) > 1) {
@@ -38,7 +38,7 @@ class integration_search extends ModuleObject {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Execute update
 	 *
@@ -47,7 +47,7 @@ class integration_search extends ModuleObject {
 	function moduleUpdate() {
 		$oModuleModel = &getModel('module');
 		$config = $oModuleModel->getModuleConfig('message');
-		
+
 		if($config->skin) {
 			$config_parse = explode('.', $config->skin);
 			if(count($config_parse) > 1) {
@@ -59,10 +59,10 @@ class integration_search extends ModuleObject {
 				}
 			}
 		}
-		
+
 		return new BaseObject(0, 'success_updated');
 	}
-	
+
 	/**
 	 * Re-generate the cache file
 	 *

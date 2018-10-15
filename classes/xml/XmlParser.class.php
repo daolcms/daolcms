@@ -53,7 +53,7 @@ class XmlParser {
 	 * @var string
 	 */
 	var $lang = "en";
-	
+
 	/**
 	 * Load a xml file specified by a filename and parse it to Return the resultant data object
 	 * @param string $filename a file path of file
@@ -63,11 +63,11 @@ class XmlParser {
 	function loadXmlFile($filename) {
 		if(!file_exists($filename)) return;
 		$buff = FileHandler::readFile($filename);
-		
+
 		$oXmlParser = new XmlParser();
 		return $oXmlParser->parse($buff);
 	}
-	
+
 	/**
 	 * Parse xml data to extract values from it and construct data object
 	 * @param string $input a data buffer containing xml data
@@ -78,15 +78,15 @@ class XmlParser {
 	function parse($input = '', $arg1 = NULL, $arg2 = NULL) {
 		// Save the compile starting time for debugging
 		if(__DEBUG__ == 3) $start = getMicroTime();
-		
+
 		$this->lang = Context::getLangType();
-		
+
 		$this->input = $input ? $input : $GLOBALS['HTTP_RAW_POST_DATA'];
 		$this->input = str_replace(array('', ''), array('', ''), $this->input);
-		
+
 		// extracts a supported language
 		preg_match_all("/xml:lang=\"([^\"].+)\"/i", $this->input, $matches);
-		
+
 		// extracts the supported lanuage when xml:lang is used
 		if(count($matches[1]) && $supported_lang = array_unique($matches[1])) {
 			$tmpLangList = array_flip($supported_lang);
@@ -102,26 +102,26 @@ class XmlParser {
 		} else {
 			$this->lang = '';
 		}
-		
+
 		$this->oParser = xml_parser_create('UTF-8');
-		
+
 		xml_set_object($this->oParser, $this);
 		xml_set_element_handler($this->oParser, "_tagOpen", "_tagClosed");
 		xml_set_character_data_handler($this->oParser, "_tagBody");
-		
+
 		xml_parse($this->oParser, $this->input);
 		xml_parser_free($this->oParser);
-		
+
 		if(!count($this->output)) return;
-		
+
 		$output = array_shift($this->output);
 		// Save compile starting time for debugging
 		if(__DEBUG__ == 3) $GLOBALS['__xmlparse_elapsed__'] += getMicroTime() - $start;
-		
+
 		return $output;
 	}
-	
-	
+
+
 	/**
 	 * Start element handler.
 	 * @param resource $parse     an instance of parser
@@ -133,11 +133,11 @@ class XmlParser {
 		$obj = new Xml_Node_();
 		$obj->node_name = strtolower($node_name);
 		$obj->attrs = $this->_arrToAttrsObj($attrs);
-		
+
 		array_push($this->output, $obj);
 	}
-	
-	
+
+
 	/**
 	 * Character data handler
 	 * Variable in the last element of this->output
@@ -149,7 +149,7 @@ class XmlParser {
 		//if(!trim($body)) return;
 		$this->output[count($this->output) - 1]->body .= $body;
 	}
-	
+
 	/**
 	 * End element handler
 	 * @param resource $parse     an instance of parser
@@ -162,7 +162,7 @@ class XmlParser {
 		$parent_obj = &$this->output[count($this->output) - 1];
 		if($this->lang && $cur_obj->attrs->{'xml:lang'} && $cur_obj->attrs->{'xml:lang'} != $this->lang) return;
 		if($this->lang && $parent_obj->{$node_name}->attrs->{'xml:lang'} && $parent_obj->{$node_name}->attrs->{'xml:lang'} != $this->lang) return;
-		
+
 		if(isset($parent_obj->{$node_name})) {
 			$tmp_obj = $parent_obj->{$node_name};
 			if(is_array($tmp_obj)) {
@@ -175,11 +175,11 @@ class XmlParser {
 		} else {
 			if(!is_object($parent_obj))
 				$parent_obj = (object)$parent_obj;
-			
+
 			$parent_obj->{$node_name} = $cur_obj;
 		}
 	}
-	
+
 	/**
 	 * Method to transfer values in an array to a data object
 	 * @param array $arr data array

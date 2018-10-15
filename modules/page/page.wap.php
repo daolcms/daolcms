@@ -6,7 +6,7 @@
  * @brief  wap class page of the module
  **/
 class pageWap extends page {
-	
+
 	/**
 	 * @brief wap procedure method
 	 *

@@ -6,7 +6,7 @@
  * @brief  widget module's high class
  **/
 class widget extends ModuleObject {
-	
+
 	/**
 	 * @brief Implement if additional tasks are necessary when installing
 	 **/
@@ -17,10 +17,10 @@ class widget extends ModuleObject {
 		// Add this widget compile the trigger for the display.after
 		$oModuleController = getController('module');
 		$oModuleController->insertTrigger('display', 'widget', 'controller', 'triggerWidgetCompile', 'before');
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief a method to check if successfully installed
 	 **/
@@ -28,10 +28,10 @@ class widget extends ModuleObject {
 		$oModuleModel = getModel('module');
 		// widget compile display.after trigger for further (04/14/2009)
 		if(!$oModuleModel->getTrigger('display', 'widget', 'controller', 'triggerWidgetCompile', 'before')) return true;
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * @brief Execute update
 	 **/
@@ -42,10 +42,10 @@ class widget extends ModuleObject {
 		if(!$oModuleModel->getTrigger('display', 'widget', 'controller', 'triggerWidgetCompile', 'before')){
 			$oModuleController->insertTrigger('display', 'widget', 'controller', 'triggerWidgetCompile', 'before');
 		}
-		
+
 		return new BaseObject(0, 'success_updated');
 	}
-	
+
 	/**
 	 * @brief Re-generate the cache file
 	 **/

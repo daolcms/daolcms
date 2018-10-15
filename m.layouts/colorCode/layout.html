@@ -38,9 +38,9 @@
 		<a href="#" onclick="return false;" title="{$lang_type}">{$lang_supported[$lang_type]} <i class="icon_arr_draw"></i></a>
 		<ul class="lang_lst">
 		<!--@foreach($lang_supported as $key=>$val)-->
-			   
+
 				<li cond="$key != $lang_type"><a href="{getUrl('act',$oldact,'l',$key)}">{$val}</a></li>
-				
+
 		<!--@end-->
 		</ul>
 	</li>

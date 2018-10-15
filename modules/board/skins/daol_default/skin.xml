@@ -7,7 +7,7 @@
 	<description xml:lang="jp">DAOL基本掲示板.</description>
 	<version>1.0</version>
 	<date>2010-12-24</date>
-	
+
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org/">
 		<name xml:lang="ko">DAOL</name>
 		<name xml:lang="en">DAOL</name>
@@ -17,7 +17,7 @@
 		<name xml:lang="en">NAVER</name>
 	</author>
 	<license>LGPL v2</license>
-	
+
 	<extra_vars>
 		<var name="title_image" type="image">
 			<title xml:lang="ko">게시판 제목 이미지</title>

@@ -6,30 +6,30 @@
  * @brief  high class of the module page
  **/
 class page extends ModuleObject {
-	
+
 	/**
 	 * @brief Implement if additional tasks are necessary when installing
 	 **/
 	function moduleInstall(){
 		// page generated from the cache directory to use
 		FileHandler::makeDir('./files/cache/page');
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief a method to check if successfully installed
 	 **/
 	function checkUpdate(){
 		$output = executeQuery('page.pageTypeOpageCheck');
 		if($output->toBool() && $output->data) return true;
-		
+
 		$output = executeQuery('page.pageTypeNullCheck');
 		if($output->toBool() && $output->data) return true;
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * @brief Execute update
 	 **/
@@ -47,7 +47,7 @@ class page extends ModuleObject {
 			$output = executeQuery('page.updateAllOpage');
 			if(!$output->toBool()) return $output;
 		}
-		
+
 		// old page module instance update
 		$output = executeQueryArray('page.pageTypeNullCheck');
 		$skin_update_srls = array();
@@ -57,11 +57,11 @@ class page extends ModuleObject {
 				$args->name = 'page_type';
 				$args->value = 'WIDGET';
 				$in_out = executeQuery('page.insertPageType', $args);
-				
+
 				$skin_update_srls[] = $val->module_srl;
 			}
 		}
-		
+
 		if(count($skin_update_srls) > 0){
 			$skin_args = new stdClass;
 			$skin_args->module_srls = implode(',', $skin_update_srls);
@@ -70,7 +70,7 @@ class page extends ModuleObject {
 		}
 		return new BaseObject(0, 'success_updated');
 	}
-	
+
 	/**
 	 * @brief Re-generate the cache file
 	 **/

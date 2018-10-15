@@ -6,19 +6,19 @@
  * @Adaptor DAOL Project (developer@daolcms.org)
  **/
 class autoinstallAdminView extends autoinstall {
-	
+
 	/**
 	 * Category list
 	 * @var array
 	 */
 	var $categories;
-	
+
 	/**
 	 * Is set a ftp information
 	 * @var bool
 	 */
 	var $ftp_set = false;
-	
+
 	/**
 	 * initialize
 	 *
@@ -29,18 +29,18 @@ class autoinstallAdminView extends autoinstall {
 		Context::set('original_site', _XE_LOCATION_SITE_);
 		Context::set('uri', _XE_DOWNLOAD_SERVER_);
 		$this->setTemplatePath($template_path);
-		
+
 		$ftp_info = Context::getFTPInfo();
 		if(!$ftp_info->ftp_root_path) Context::set('show_ftp_note', true);
 		else $this->ftp_set = true;
-		
-		
+
+
 		$this->dispCategory();
 		$oModel = getModel('autoinstall');
 		Context::set('tCount', $oModel->getPackageCount(null));
 		Context::set('iCount', $oModel->getInstalledPackageCount());
 	}
-	
+
 	/**
 	 * Rearrange one item
 	 *
@@ -89,7 +89,7 @@ class autoinstallAdminView extends autoinstall {
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Rearrage all item
 	 *
@@ -192,7 +192,7 @@ class autoinstallAdminView extends autoinstall {
 			}
 			$item_list[$v->package_srl] = $v;
 		}
-		
+
 		if(count($depto) > 0) {
 			$installed = $oModel->getInstalledPackages(implode(",", array_keys($depto)));
 			foreach($installed as $key => $val) {
@@ -201,7 +201,7 @@ class autoinstallAdminView extends autoinstall {
 				if(!$type || $type == "core") continue;
 				$config_file = $oModel->getConfigFilePath($type);
 				if(!$config_file) continue;
-				
+
 				$xml = new XmlParser();
 				$xmlDoc = $xml->loadXmlFile(FileHandler::getRealPath($path) . $config_file);
 				if(!$xmlDoc) continue;
@@ -211,11 +211,11 @@ class autoinstallAdminView extends autoinstall {
 				$title = $xmlDoc->{$type}->title->body;
 				$installed[$key]->title = $title;
 			}
-			
+
 			Context::set('installed', $installed);
 			$oSecurity = new Security();
 			$oSecurity->encodeHTML('installed..');
-			
+
 			foreach($installed as $key => $val) {
 				foreach($depto[$key] as $package_srl) {
 					$item_list[$package_srl]->avail_remove = false;
@@ -223,10 +223,10 @@ class autoinstallAdminView extends autoinstall {
 				}
 			}
 		}
-		
+
 		return $item_list;
 	}
-	
+
 	/**
 	 * Display installed packages
 	 *
@@ -239,7 +239,7 @@ class autoinstallAdminView extends autoinstall {
 		$oModel = getModel('autoinstall');
 		$output = $oModel->getInstalledPackageList($page);
 		$package_list = $output->data;
-		
+
 		$params["act"] = "getResourceapiPackages";
 		$params["package_srls"] = implode(",", array_keys($package_list));
 		$body = XmlGenerater::generate($params);
@@ -256,7 +256,7 @@ class autoinstallAdminView extends autoinstall {
 			}
 			Context::set('item_list', $res);
 		}
-		
+
 		if(count($package_list) != count($res)) {
 			$localPackageSrls = array_keys($package_list);
 			$remotePackageSrls = array_keys($item_list);
@@ -264,15 +264,15 @@ class autoinstallAdminView extends autoinstall {
 			$countDiff = count($targetPackageSrls);
 			$output->page_navigation->total_count -= $countDiff;
 		}
-		
+
 		Context::set('page_navigation', $output->page_navigation);
-		
+
 		$this->setTemplateFile('index');
-		
+
 		$security = new Security();
 		$security->encodeHTML('item_list..');
 	}
-	
+
 	/**
 	 * Display install package
 	 *
@@ -283,31 +283,31 @@ class autoinstallAdminView extends autoinstall {
 		if(!$package_srl) {
 			return $this->dispAutoinstallAdminIndex();
 		}
-		
+
 		if($package_srl == "18325662") return $this->stop("msg_daol_cannot_use_easyinstall");
-		
+
 		$oAdminModel = getAdminModel('autoinstall');
 		$package = $oAdminModel->getInstallInfo($package_srl);
-		
+
 		Context::set("package", $package);
 		Context::set('contain_core', $package->contain_core);
-		
+
 		if(!$_SESSION['ftp_password']) {
 			Context::set('need_password', TRUE);
 		}
-		
+
 		$output = $oAdminModel->checkUseDirectModuleInstall($package);
 		if($output->toBool() == TRUE) {
 			Context::set('show_ftp_note', FALSE);
 		}
 		Context::set('directModuleInstall', $output);
-		
+
 		$this->setTemplateFile('install');
-		
+
 		$security = new Security();
 		$security->encodeHTML('package.', 'package.depends..');
 	}
-	
+
 	/**
 	 * Display package list
 	 *
@@ -318,9 +318,9 @@ class autoinstallAdminView extends autoinstall {
 		$config = $oModuleModel->getModuleConfig('autoinstall');
 		$ftp_info = Context::getFTPInfo();
 		if(!$ftp_info->ftp_root_path) Context::set('show_ftp_note', true);
-		
+
 		$this->setTemplateFile('index');
-		
+
 		$params = array();
 		$params["act"] = "getResourceapiLastupdate";
 		$body = XmlGenerater::generate($params);
@@ -328,19 +328,19 @@ class autoinstallAdminView extends autoinstall {
 		$xml_lUpdate = new XmlParser();
 		$lUpdateDoc = $xml_lUpdate->parse($buff);
 		$updateDate = $lUpdateDoc->response->updatedate->body;
-		
+
 		if(!$updateDate) {
 			return $this->stop('msg_connection_fail');
 		}
-		
+
 		if($package_srl == "18325662") return $this->stop("msg_daol_cannot_use_easyinstall");
-		
+
 		$oModel = getModel('autoinstall');
 		$item = $oModel->getLatestPackage();
 		if(!$item || $item->updatedate < $updateDate || count($this->categories) < 1) {
 			$oController = &getAdminController('autoinstall');
 			$oController->_updateinfo();
-			
+
 			if(!$_SESSION['__XE_EASYINSTALL_REDIRECT__']) {
 				header('location: ' . getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex'));
 				$_SESSION['__XE_EASYINSTALL_REDIRECT__'] = true;
@@ -348,26 +348,26 @@ class autoinstallAdminView extends autoinstall {
 			}
 		}
 		unset($_SESSION['__XE_EASYINSTALL_REDIRECT__']);
-		
+
 		$page = Context::get('page');
 		if(!$page) $page = 1;
 		Context::set('page', $page);
-		
+
 		$order_type = Context::get('order_type');
 		if(!in_array($order_type, array('asc', 'desc'))) $order_type = 'desc';
 		Context::set('order_type', $order_type);
-		
+
 		$order_target = Context::get('order_target');
 		if(!in_array($order_target, array('newest', 'download', 'popular'))) $order_target = 'newest';
 		Context::set('order_target', $order_target);
-		
+
 		$search_keyword = Context::get('search_keyword');
-		
+
 		$childrenList = Context::get('childrenList');
 		$category_srl = Context::get('category_srl');
 		if($childrenList) $params["category_srl"] = $childrenList;
 		else if($category_srl) $params["category_srl"] = $category_srl;
-		
+
 		$params["act"] = "getResourceapiPackagelist";
 		$params["order_target"] = $order_target;
 		$params["order_type"] = $order_type;
@@ -384,12 +384,12 @@ class autoinstallAdminView extends autoinstall {
 			$page_navigation = new PageHandler($page_nav->total_count, $page_nav->total_page, $page_nav->cur_page, 5);
 			Context::set('page_navigation', $page_navigation);
 		}
-		
+
 		$security = new Security();
 		$security->encodeHTML('package.', 'package.depends..', 'item_list..');
 		$security->encodeHTML('search_target', 'search_keyword', 'order_target', 'order_type');
 	}
-	
+
 	/**
 	 * Display category
 	 *
@@ -400,7 +400,7 @@ class autoinstallAdminView extends autoinstall {
 		$this->categories = &$oModel->getCategoryList();
 		Context::set('categories', $this->categories);
 	}
-	
+
 	/**
 	 * Display uninstall package
 	 *
@@ -413,7 +413,7 @@ class autoinstallAdminView extends autoinstall {
 		$oAdminModel = getAdminModel('autoinstall');
 		$installedPackage = $oModel->getInstalledPackage($package_srl);
 		if(!$installedPackage) return $this->dispAutoinstallAdminInstalledPackages();
-		
+
 		if(!$_SESSION['ftp_password']) {
 			Context::set('need_password', true);
 		}
@@ -423,13 +423,13 @@ class autoinstallAdminView extends autoinstall {
 		if(!$type || $type == "core") return $this->stop("msg_invalid_request");
 		$config_file = $oModel->getConfigFilePath($type);
 		if(!$config_file) return $this->stop("msg_invalid_request");
-		
+
 		$output = $oAdminModel->checkUseDirectModuleInstall($installedPackage);
 		if($output->toBool() == TRUE) {
 			Context::set('show_ftp_note', FALSE);
 		}
 		Context::set('directModuleInstall', $output);
-		
+
 		$params["act"] = "getResourceapiPackages";
 		$params["package_srls"] = $package_srl;
 		$body = XmlGenerater::generate($params);
@@ -445,10 +445,10 @@ class autoinstallAdminView extends autoinstall {
 			Context::set('package', $installedPackage);
 			$this->setTemplateFile('uninstall');
 			Context::addJsFilter($this->module_path . 'tpl/filter', 'uninstall_package.xml');
-			
+
 			$security = new Security();
 			$security->encodeHTML('package.');
-			
+
 			$this->setTemplateFile('uninstall');
 		} else {
 			return $this->stop('msg_connection_fail');

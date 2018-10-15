@@ -35,13 +35,13 @@
 					<option value="include">{$lang->include_search_target}</option>
 					<option value="exclude" <!--@if($config->target=='exclude')-->selected="selected"<!--@end-->>{$lang->exclude_search_target}</option>
 				</select>
-	
+
 				<select name="_target_module_srl" id="_target_module_srl" size="8" style="display:block;margin:10px 0;"></select>
-	
+
 				<a href="{getUrl('','module','module','act','dispModuleSelectList','id','target_module_srl')}" onclick="popopen(this.href, 'ModuleSelect');return false;" class="button blue"><span>{$lang->cmd_insert}</span></a>
 				<a href="#" onclick="midRemove('target_module_srl');return false;" class="button red"><span>{$lang->cmd_delete}</span></a>
 				<p><strong>{$lang->about_target_module}</strong></p>
-	
+
 				<script type="text/javascript">
 					jQuery( function() { getModuleSrlList('target_module_srl'); } );
 				</script>

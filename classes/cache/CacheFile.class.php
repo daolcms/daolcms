@@ -15,7 +15,7 @@ class CacheFile extends CacheBase {
 	 * @var string
 	 */
 	var $cache_dir = 'files/cache/store/';
-	
+
 	/**
 	 * Get instance of CacheFile
 	 *
@@ -27,7 +27,7 @@ class CacheFile extends CacheBase {
 		}
 		return $GLOBALS['__CacheFile__'];
 	}
-	
+
 	/**
 	 * Constructor
 	 *
@@ -37,7 +37,7 @@ class CacheFile extends CacheBase {
 		$this->cache_dir = _DAOL_PATH_ . $this->cache_dir;
 		FileHandler::makeDir($this->cache_dir);
 	}
-	
+
 	/**
 	 * Get cache file name by key
 	 *
@@ -47,7 +47,7 @@ class CacheFile extends CacheBase {
 	function getCacheFileName($key) {
 		return $this->cache_dir . str_replace(':', DIRECTORY_SEPARATOR, $key) . '.php';
 	}
-	
+
 	/**
 	 * Return whether support or not support cache
 	 *
@@ -56,7 +56,7 @@ class CacheFile extends CacheBase {
 	function isSupport() {
 		return true;
 	}
-	
+
 	/**
 	 * Cache a variable in the data store
 	 *
@@ -76,7 +76,7 @@ class CacheFile extends CacheBase {
 			@opcache_invalidate($cache_file, true);
 		}
 	}
-	
+
 	/**
 	 * Return whether cache is valid or invalid
 	 *
@@ -86,19 +86,19 @@ class CacheFile extends CacheBase {
 	 */
 	function isValid($key, $modified_time = 0) {
 		$cache_file = $this->getCacheFileName($key);
-		
+
 		if(file_exists($cache_file)) {
 			if($modified_time > 0 && filemtime($cache_file) < $modified_time) {
 				FileHandler::removeFile($cache_file);
 				return false;
 			}
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Fetch a stored variable from the cache
 	 *
@@ -110,17 +110,17 @@ class CacheFile extends CacheBase {
 		if(!$cache_file = FileHandler::exists($this->getCacheFileName($key))) {
 			return false;
 		}
-		
+
 		if($modified_time > 0 && filemtime($cache_file) < $modified_time) {
 			FileHandler::removeFile($cache_file);
 			return false;
 		}
-		
+
 		$content = include($cache_file);
-		
+
 		return unserialize(stripslashes($content));
 	}
-	
+
 	/**
 	 * Delete variable from the cache(private)
 	 *
@@ -134,7 +134,7 @@ class CacheFile extends CacheBase {
 		}
 		return FileHandler::removeFile($cache_file);
 	}
-	
+
 	/**
 	 * Delete variable from the cache
 	 *
@@ -144,7 +144,7 @@ class CacheFile extends CacheBase {
 	function delete($key) {
 		return $this->_delete($key);
 	}
-	
+
 	/**
 	 * Truncate all existing variables at the cache
 	 *
@@ -153,7 +153,7 @@ class CacheFile extends CacheBase {
 	function truncate() {
 		return FileHandler::removeFilesInDir($this->cache_dir);
 	}
-	
+
 }
 /* End of file CacheFile.class.php */
 /* Location: ./classes/cache/CacheFile.class.php */

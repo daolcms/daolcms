@@ -15,7 +15,7 @@ class menuAdminModel extends menu {
 	 */
 	function init(){
 	}
-	
+
 	/**
 	 * Get a list of all menus
 	 * @param object $obj
@@ -36,10 +36,10 @@ class menuAdminModel extends menu {
 		$output = executeQuery('menu.getMenuList', $args);
 		// Return if no result or an error occurs
 		if(!$output->toBool() || !count($output->data)) return $output;
-		
+
 		return $output;
 	}
-	
+
 	/**
 	 * Return all menus
 	 * @param int $site_srl
@@ -59,7 +59,7 @@ class menuAdminModel extends menu {
 		$menus = $output->data;
 		return $menus;
 	}
-	
+
 	/**
 	 * Get information of a new menu from the DB
 	 * Return DB and XML information of the menu
@@ -72,13 +72,13 @@ class menuAdminModel extends menu {
 		$args->menu_srl = $menu_srl;
 		$output = executeQuery('menu.getMenu', $args);
 		if(!$output->data) return;
-		
+
 		$menu_info = $output->data;
 		$menu_info->xml_file = sprintf('./files/cache/menu/%s.xml.php', $menu_srl);
 		$menu_info->php_file = sprintf('./files/cache/menu/%s.php', $menu_srl);
 		return $menu_info;
 	}
-	
+
 	/**
 	 * Get information of a new menu from the DB, search condition is menu title
 	 * Return DB and XML information of the menu
@@ -94,17 +94,17 @@ class menuAdminModel extends menu {
 		$args->title = $title;
 		$output = executeQuery('menu.getMenuByTitle', $args);
 		if(!$output->data) return;
-		
+
 		if(is_array($output->data)) $menu_info = $output->data[0];
 		else $menu_info = $output->data;
-		
+
 		if($menu_info->menu_srl){
 			$menu_info->xml_file = sprintf('./files/cache/menu/%s.xml.php', $menu_info->menu_srl);
 			$menu_info->php_file = sprintf('./files/cache/menu/%s.php', $menu_info->menu_srl);
 		}
 		return $menu_info;
 	}
-	
+
 	/**
 	 * Return item information of the menu_srl
 	 * group_srls uses a seperator with comma(,) and converts to an array by explode
@@ -120,7 +120,7 @@ class menuAdminModel extends menu {
 		settype($node, 'object');
 		if($node->group_srls) $node->group_srls = explode(',', $node->group_srls);
 		else $node->group_srls = array();
-		
+
 		$tmp_name = unserialize($node->name);
 		if($tmp_name && count($tmp_name)){
 			$selected_lang = array();
@@ -130,7 +130,7 @@ class menuAdminModel extends menu {
 		}
 		return $node;
 	}
-	
+
 	/**
 	 * Return item information of the menu_srl
 	 * @return void
@@ -138,7 +138,7 @@ class menuAdminModel extends menu {
 	function getMenuAdminItemInfo(){
 		$menuItemSrl = Context::get('menu_item_srl');
 		$menuItem = $this->getMenuItemInfo($menuItemSrl);
-		
+
 		if(!$menuItem->url){
 			$menuItem->moduleType = null;
 		}
@@ -157,7 +157,7 @@ class menuAdminModel extends menu {
 		else{
 			$menuItem->moduleType = 'url';
 		}
-		
+
 		// get groups
 		$oMemberModel = getModel('member');
 		$oModuleAdminModel = getAdminModel('module');
@@ -174,7 +174,7 @@ class menuAdminModel extends menu {
 				else{
 					$groupList[$value->group_srl]->title = $value->title;
 				}
-				
+
 				if(in_array($key, $menuItem->group_srls)){
 					$groupList[$value->group_srl]->isChecked = true;
 				}
@@ -184,14 +184,14 @@ class menuAdminModel extends menu {
 			}
 		}
 		$menuItem->groupList = $groupList;
-		
+
 		$oModuleController = getController('module');
 		$menuItem->name_key = $menuItem->name;
 		$oModuleController->replaceDefinedLangCode($menuItem->name);
-		
+
 		$this->add('menu_item', $menuItem);
 	}
-	
+
 	/**
 	 * Return menu item list by menu number
 	 * @param int   $menu_srl
@@ -203,11 +203,11 @@ class menuAdminModel extends menu {
 		$args = new stdClass();
 		$args->menu_srl = $menu_srl;
 		$args->parent_srl = $parent_srl;
-		
+
 		$output = executeQueryArray('menu.getMenuItems', $args, $columnList);
 		return $output;
 	}
-	
+
 	/**
 	 * Return menu name in each language to support multi-language
 	 * @param string $source_name
@@ -223,7 +223,7 @@ class menuAdminModel extends menu {
 		$oModuleAdminModel = getAdminModel('module');
 		return $oModuleAdminModel->getLangCode($site_srl, $source_name);
 	}
-	
+
 	/**
 	 * Get a template by using the menu_srl and retrun.
 	 * Return html after compiling tpl on the server in order to add menu information on the admin page
@@ -262,14 +262,14 @@ class menuAdminModel extends menu {
 		$security->encodeHTML('group_list..title');
 		$security->encodeHTML('item_info.url');
 		$security->encodeHTML('item_info.name');
-		
+
 		// Compile the template file into tpl variable and then return it
 		$oTemplate = &TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($this->module_path . 'tpl', 'menu_item_info');
-		
+
 		$this->add('tpl', str_replace("\n", " ", $tpl));
 	}
-	
+
 	/**
 	 * @brief when menu add in sitemap, select module list
 	 * this menu showing with trigger
@@ -280,20 +280,20 @@ class menuAdminModel extends menu {
 		$oModuleModel = getModel('module');
 		$columnList = array('module');
 		$moduleList = array('page');
-		
+
 		$output = $oModuleModel->getModuleListByInstance($site_srl, $columnList);
 		if(is_array($output->data)){
 			foreach($output->data AS $key => $value){
 				array_push($moduleList, $value->module);
 			}
 		}
-		
+
 		// after trigger
 		$output = ModuleHandler::triggerCall('menu.getModuleListInSitemap', 'after', $moduleList);
 		if(!$output->toBool()) return $output;
-		
+
 		$moduleList = array_unique($moduleList);
-		
+
 		$moduleInfoList = array();
 		if(is_array($moduleList)){
 			foreach($moduleList AS $key => $value){
@@ -301,7 +301,7 @@ class menuAdminModel extends menu {
 				$moduleInfoList[$value] = $moduleInfo;
 			}
 		}
-		
+
 		return $moduleInfoList;
 	}
 }

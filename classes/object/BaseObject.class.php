@@ -6,31 +6,31 @@
  * @author NAVER (developers@xpressengine.com)
  */
 class BaseObject {
-	
+
 	/**
 	 * Error code. If `0`, it is not an error.
 	 * @var int
 	 */
 	var $error = 0;
-	
+
 	/**
 	 * Error message. If `success`, it is not an error.
 	 * @var string
 	 */
 	var $message = 'success';
-	
+
 	/**
 	 * An additional variable
 	 * @var array
 	 */
 	var $variables = array();
-	
+
 	/**
 	 * http status code.
 	 * @var int
 	 */
 	var $httpStatusCode = NULL;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -42,7 +42,7 @@ class BaseObject {
 		$this->setError($error);
 		$this->setMessage($message);
 	}
-	
+
 	/**
 	 * Setter to set error code
 	 *
@@ -52,7 +52,7 @@ class BaseObject {
 	function setError($error = 0) {
 		$this->error = $error;
 	}
-	
+
 	/**
 	 * Getter to retrieve error code
 	 *
@@ -61,7 +61,7 @@ class BaseObject {
 	function getError() {
 		return $this->error;
 	}
-	
+
 	/**
 	 * Setter to set HTTP status code
 	 *
@@ -71,7 +71,7 @@ class BaseObject {
 	function setHttpStatusCode($code = '200') {
 		$this->httpStatusCode = $code;
 	}
-	
+
 	/**
 	 * Getter to retrieve HTTP status code
 	 *
@@ -80,7 +80,7 @@ class BaseObject {
 	function getHttpStatusCode() {
 		return $this->httpStatusCode;
 	}
-	
+
 	/**
 	 * Setter to set set the error message
 	 *
@@ -91,11 +91,11 @@ class BaseObject {
 		if(Context::getLang($message))
 			$message = Context::getLang($message);
 		$this->message = $message;
-		
+
 		// TODO This method always returns True. We'd better remove it
 		return TRUE;
 	}
-	
+
 	/**
 	 * Getter to retrieve an error message
 	 *
@@ -104,7 +104,7 @@ class BaseObject {
 	function getMessage() {
 		return $this->message;
 	}
-	
+
 	/**
 	 * Setter to set a key/value pair as an additional variable
 	 *
@@ -115,7 +115,7 @@ class BaseObject {
 	function add($key, $val) {
 		$this->variables[$key] = $val;
 	}
-	
+
 	/**
 	 * Method to set multiple key/value pairs as an additional variables
 	 *
@@ -126,14 +126,14 @@ class BaseObject {
 		if(is_object($object)) {
 			$object = get_object_vars($object);
 		}
-		
+
 		if(is_array($object)) {
 			foreach($object as $key => $val) {
 				$this->variables[$key] = $val;
 			}
 		}
 	}
-	
+
 	/**
 	 * Method to retrieve a corresponding value to a given key
 	 *
@@ -143,7 +143,7 @@ class BaseObject {
 	function get($key) {
 		return $this->variables[$key];
 	}
-	
+
 	/**
 	 * Method to retrieve an object containing a key/value paris
 	 *
@@ -158,7 +158,7 @@ class BaseObject {
 		}
 		return $output;
 	}
-	
+
 	/**
 	 * Method to retrieve an array of key/value pairs
 	 *
@@ -167,7 +167,7 @@ class BaseObject {
 	function getVariables() {
 		return $this->variables;
 	}
-	
+
 	/**
 	 * Method to retrieve an object of key/value pairs
 	 *
@@ -180,7 +180,7 @@ class BaseObject {
 		}
 		return $output;
 	}
-	
+
 	/**
 	 * Method to return either true or false depnding on the value in a 'error' variable
 	 *
@@ -190,8 +190,8 @@ class BaseObject {
 		// TODO This method is misleading in that it returns true if error is 0, which should be true in boolean representation.
 		return $this->error == 0 ? TRUE : FALSE;
 	}
-	
-	
+
+
 	/**
 	 * Method to return either true or false depnding on the value in a 'error' variable
 	 *

@@ -6,15 +6,15 @@
  * @brief  controller class of the document module
  **/
 class pageController extends page {
-	
+
 	var $target_path = '';
-	
+
 	/**
 	 * @brief Initialization
 	 **/
 	function init(){
 	}
-	
+
 	/**
 	 * @brief Extract a title
 	 **/
@@ -22,7 +22,7 @@ class pageController extends page {
 		preg_match('!<title([^>]*)>(.*?)<\/title>!is', $content, $buff);
 		return trim($buff[2]);
 	}
-	
+
 	/**
 	 * @brief Extract header script
 	 **/
@@ -38,17 +38,17 @@ class pageController extends page {
 			if(!$tmp_str) continue;
 			$header_script .= $tmp_str . "\n";
 		}
-		
+
 		preg_match_all('!<(style|script)(.*?)<\/(style|script)>!is', $content, $script_buff);
 		for($i = 0; $i < count($script_buff[0]); $i++){
 			$tmp_str = trim($script_buff[0][$i]);
 			if(!$tmp_str) continue;
 			$header_script .= $tmp_str . "\n";
 		}
-		
+
 		return $header_script;
 	}
-	
+
 	/**
 	 * @brief Extract the contents of the body
 	 **/
@@ -61,7 +61,7 @@ class pageController extends page {
 		$body_script = preg_replace('!<(style|script)(.*?)<\/(style|script)>!is', '', $body_script);
 		return $body_script;
 	}
-	
+
 	/**
 	 * @brief Change the value of src, href in the content
 	 **/
@@ -82,10 +82,10 @@ class pageController extends page {
 		if(substr($path, -1) != '/') $path .= '/';
 		$this->path = $path;
 		$content = preg_replace_callback('/(src=|href=|url\()("|\')?([^"\'\)]+)("|\'\))?/is', array($this, '_replacePath'), $content);
-		
+
 		return $content;
 	}
-	
+
 	function _replacePath($matches){
 		$val = trim($matches[3]);
 		if(preg_match('/^(http|https|ftp|telnet|mms|mailto)/i', $val)) return $matches[0];
@@ -98,5 +98,5 @@ class pageController extends page {
 		}
 		return sprintf("%s%s%s%s", $matches[1], $matches[2], $path, $matches[4]);
 	}
-	
+
 }

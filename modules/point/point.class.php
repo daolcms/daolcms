@@ -6,7 +6,7 @@
  * @brief  The parent class of the point module
  **/
 class point extends ModuleObject {
-	
+
 	/**
 	 * @brief Additional tasks required to accomplish during the installation
 	 **/
@@ -15,9 +15,9 @@ class point extends ModuleObject {
 		$oModuleController = getController('module');
 		// Create a directory to store points information
 		FileHandler::makeDir('./files/member_extra_info/point');
-		
+
 		$oModuleController = getController('module');
-		
+
 		// default, point module is OFF
 		$config = new stdClass();
 		$config->able_module = 'N';
@@ -37,23 +37,23 @@ class point extends ModuleObject {
 		$config->level_icon = "default";
 		// Prevent downloads if there are no scores
 		$config->disable_download = false;
-		
+
 		/**
 		 * Define the default points per module as well as all actions (as we do not know if it is forum or blogs, specify "act")
 		 **/
 		// Insert document
 		$config->insert_document = 10;
-		
+
 		$config->insert_document_act = 'procBoardInsertDocument';
 		$config->delete_document_act = 'procBoardDeleteDocument';
 		// Insert comment
 		$config->insert_comment = 5;
-		
+
 		$config->insert_comment_act = 'procBoardInsertComment,procBlogInsertComment';
 		$config->delete_comment_act = 'procBoardDeleteComment,procBlogDeleteComment';
 		// Upload
 		$config->upload_file = 5;
-		
+
 		$config->upload_file_act = 'procFileUpload';
 		$config->delete_file_act = 'procFileDelete';
 		// Download
@@ -87,10 +87,10 @@ class point extends ModuleObject {
 		$oModuleController->insertTrigger('document.updateVotedCount', 'point', 'controller', 'triggerUpdateVotedCount', 'after');
 		// Add a trigger for using points for permanent saving of a temporarily saved document 2009.05.19 zero
 		$oModuleController->insertTrigger('document.updateDocument', 'point', 'controller', 'triggerUpdateDocument', 'before');
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief A method to check if the installation has been successful
 	 **/
@@ -118,14 +118,14 @@ class point extends ModuleObject {
 			if(!$oModuleModel->getTrigger('document.updateVotedCount', 'point', 'controller', 'triggerUpdateVotedCount', 'after')) return true;
 			// Add a trigger for using points for permanent saving of a temporarily saved document 2009.05.19 zero
 			if(!$oModuleModel->getTrigger('document.updateDocument', 'point', 'controller', 'triggerUpdateDocument', 'before')) return true;
-			
+
 			// 2012. 08. 29 Add a trigger to copy additional setting when the module is copied 
 			if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'point', 'controller', 'triggerCopyModule', 'after')) return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * @brief Execute update
 	 **/
@@ -170,10 +170,10 @@ class point extends ModuleObject {
 		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'point', 'controller', 'triggerCopyModule', 'after')){
 			$oModuleController->insertTrigger('module.procModuleAdminCopyModule', 'point', 'controller', 'triggerCopyModule', 'after');
 		}
-		
+
 		return new BaseObject(0, 'success_updated');
 	}
-	
+
 	/**
 	 * @brief Re-create the cache file
 	 **/
@@ -181,6 +181,6 @@ class point extends ModuleObject {
 		// redefine point action file
 		$oPointAdminController = getAdminController('point');
 		$oPointAdminController->cacheActList();
-		
+
 	}
 }

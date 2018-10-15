@@ -6,21 +6,21 @@
  * @brief  high class of message module
  **/
 class message extends ModuleObject {
-	
+
 	/**
 	 * @brief Implement if additional tasks are necessary when installing
 	 **/
 	function moduleInstall(){
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief a method to check if successfully installed
 	 **/
 	function checkUpdate(){
 		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('message');
-		
+
 		if($config->skin){
 			$config_parse = explode('.', $config->skin);
 			if(count($config_parse) > 1){
@@ -30,14 +30,14 @@ class message extends ModuleObject {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * @brief Execute update
 	 **/
 	function moduleUpdate(){
 		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('message');
-		
+
 		if($config->skin){
 			$config_parse = explode('.', $config->skin);
 			if(count($config_parse) > 1){
@@ -51,7 +51,7 @@ class message extends ModuleObject {
 		}
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief Re-generate the cache file
 	 **/

@@ -24,10 +24,10 @@ class spamfilter extends ModuleObject {
 		$oModuleController->insertTrigger('document.updateDocument', 'spamfilter', 'controller', 'triggerInsertDocument', 'before');
 		// 2013-11-14 The trigger which try to perform spam filtering when new message are registered
 		$oModuleController->insertTrigger('communication.sendMessage', 'spamfilter', 'controller', 'triggerSendMessage', 'before');
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief A method to check if the installation has been successful
 	 */
@@ -43,18 +43,18 @@ class spamfilter extends ModuleObject {
 		if(!$oModuleModel->getTrigger('document.updateDocument', 'spamfilter', 'controller', 'triggerInsertDocument', 'before')) return true;
 		// 2013-11-14 The trigger which try to perform spam filtering when new message are registered
 		if(!$oModuleModel->getTrigger('communication.sendMessage', 'spamfilter', 'controller', 'triggerSendMessage', 'before')) return true;
-		
+
 		/**
 		 * Add the hit count field (hit)
 		 */
 		if(!$oDB->isColumnExists('spamfilter_denied_word', 'hit')) return true;
 		if(!$oDB->isColumnExists('spamfilter_denied_word', 'latest_hit')) return true;
-		
+
 		if(!$oDB->isColumnExists('spamfilter_denied_ip', 'description')) return true;
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * @brief Execute update
 	 */
@@ -81,7 +81,7 @@ class spamfilter extends ModuleObject {
 		if(!$oModuleModel->getTrigger('communication.sendMessage', 'spamfilter', 'controller', 'triggerSendMessage', 'before')){
 			$oModuleController->insertTrigger('communication.sendMessage', 'spamfilter', 'controller', 'triggerSendMessage', 'before');
 		}
-		
+
 		/**
 		 * Add the hit count field (hit)
 		 */
@@ -93,14 +93,14 @@ class spamfilter extends ModuleObject {
 			$oDB->addColumn('spamfilter_denied_word', 'latest_hit', 'date');
 			$oDB->addIndex('spamfilter_denied_word', 'idx_latest_hit', 'latest_hit');
 		}
-		
+
 		if(!$oDB->isColumnExists('spamfilter_denied_ip', 'description')){
 			$oDB->addColumn('spamfilter_denied_ip', 'description', 'varchar', 250);
 		}
-		
+
 		return new BaseObject(0, 'success_updated');
 	}
-	
+
 	/**
 	 * @brief Re-generate the cache file
 	 */

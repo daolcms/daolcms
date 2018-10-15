@@ -83,7 +83,7 @@ function getScreen() {
 			.appendTo(controls).draggable();
 
 		body.append(xScreen).append(controls);
-		
+
 		imgframe.live('load', function(){
 			var clientWidth = $(window).width();
 			var clientHeight = $(window).height();

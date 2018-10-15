@@ -28,7 +28,7 @@ class Password {
 		$retval['md5'] = 'md5';
 		return $retval;
 	}
-	
+
 	/**
 	 * @brief Return the best hashing algorithm supported by this server
 	 * @return string
@@ -37,7 +37,7 @@ class Password {
 		$algos = $this->getSupportedAlgorithms();
 		return key($algos);
 	}
-	
+
 	/**
 	 * @brief Return the currently selected hashing algorithm
 	 * @return string
@@ -54,7 +54,7 @@ class Password {
 		}
 		return $algorithm;
 	}
-	
+
 	/**
 	 * @brief Return the currently configured work factor for bcrypt and other adjustable algorithms
 	 * @return int
@@ -71,7 +71,7 @@ class Password {
 		}
 		return $work_factor;
 	}
-	
+
 	/**
 	 * @brief Create a hash using the specified algorithm
 	 * @param string $password  The password
@@ -85,27 +85,27 @@ class Password {
 		if(!array_key_exists($algorithm, $this->getSupportedAlgorithms())) {
 			return false;
 		}
-		
+
 		$password = trim($password);
-		
+
 		switch($algorithm) {
 			case 'md5':
 				return md5($password);
-			
+
 			case 'pbkdf2':
 				$iterations = pow(2, $this->getWorkFactor() + 5);
 				$salt = $this->createSecureSalt(12, 'alnum');
 				$hash = base64_encode($this->pbkdf2($password, $salt, 'sha256', $iterations, 24));
 				return 'sha256:' . sprintf('%07d', $iterations) . ':' . $salt . ':' . $hash;
-			
+
 			case 'bcrypt':
 				return $this->bcrypt($password);
-			
+
 			default:
 				return false;
 		}
 	}
-	
+
 	/**
 	 * @brief Check if a password matches a hash
 	 * @param string $password  The password
@@ -117,35 +117,35 @@ class Password {
 		if($algorithm === null) {
 			$algorithm = $this->checkAlgorithm($hash);
 		}
-		
+
 		$password = trim($password);
-		
+
 		switch($algorithm) {
 			case 'md5':
 				return md5($password) === $hash || md5(sha1(md5($password))) === $hash;
-			
+
 			case 'mysql_old_password':
 				return (class_exists('Context') && substr(Context::getDBType(), 0, 5) === 'mysql') ?
 					DB::getInstance()->isValidOldPassword($password, $hash) : false;
-			
+
 			case 'mysql_password':
 				return $hash[0] === '*' && substr($hash, 1) === strtoupper(sha1(sha1($password, true)));
-			
+
 			case 'pbkdf2':
 				$hash = explode(':', $hash);
 				$hash[3] = base64_decode($hash[3]);
 				$hash_to_compare = $this->pbkdf2($password, $hash[2], $hash[0], intval($hash[1], 10), strlen($hash[3]));
 				return $this->strcmpConstantTime($hash_to_compare, $hash[3]);
-			
+
 			case 'bcrypt':
 				$hash_to_compare = $this->bcrypt($password, $hash);
 				return $this->strcmpConstantTime($hash_to_compare, $hash);
-			
+
 			default:
 				return false;
 		}
 	}
-	
+
 	/**
 	 * @brief Check the algorithm used to create a hash
 	 * @param string $hash The hash
@@ -166,7 +166,7 @@ class Password {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * @brief Check the work factor of a hash
 	 * @param string $hash The hash
@@ -181,7 +181,7 @@ class Password {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * @brief Generate a cryptographically secure random string to use as a salt
 	 * @param int    $length The number of bytes to return
@@ -201,10 +201,10 @@ class Password {
 			default:
 				$entropy_required_bytes = $length;
 		}
-		
+
 		// Cap entropy to 256 bits from any one source, because anything more is meaningless
 		$entropy_capped_bytes = min(32, $entropy_required_bytes);
-		
+
 		// Find and use the most secure way to generate a random string
 		$is_windows = (defined('PHP_OS') && strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
 		if(function_exists('openssl_random_pseudo_bytes') && (!$is_windows || version_compare(PHP_VERSION, '5.4', '>='))) {
@@ -223,13 +223,13 @@ class Password {
 				$entropy .= pack('S', rand(0, 65536) ^ mt_rand(0, 65535));
 			}
 		}
-		
+
 		// Mixing (see RFC 4086 section 5)
 		$output = '';
 		for($i = 0; $i < $entropy_required_bytes; $i += 32) {
 			$output .= hash('sha256', $entropy . $i . rand(), true);
 		}
-		
+
 		// Encode and return the random string
 		switch($format) {
 			case 'hex':
@@ -249,7 +249,7 @@ class Password {
 				return strtr($salt, '+/=', $replacements);
 		}
 	}
-	
+
 	/**
 	 * @brief Generate a temporary password using the secure salt generator
 	 * @param int $length The number of bytes to return
@@ -268,7 +268,7 @@ class Password {
 			}
 		}
 	}
-	
+
 	/**
 	 * @brief Create a digital signature to verify the authenticity of a string
 	 * @param string $string
@@ -280,7 +280,7 @@ class Password {
 		$hash = substr(base64_encode(hash_hmac('sha256', hash_hmac('sha256', $string, $salt), $key, true)), 0, 32);
 		return $salt . strtr($hash, '+/', '-_');
 	}
-	
+
 	/**
 	 * @brief Check whether a signature is valid
 	 * @param string $string
@@ -291,13 +291,13 @@ class Password {
 		if(strlen($signature) !== 40) {
 			return false;
 		}
-		
+
 		$key = self::getSecretKey();
 		$salt = substr($signature, 0, 8);
 		$hash = substr(base64_encode(hash_hmac('sha256', hash_hmac('sha256', $string, $salt), $key, true)), 0, 32);
 		return self::strcmpConstantTime(substr($signature, 8), strtr($hash, '+/', '-_'));
 	}
-	
+
 	/**
 	 * @brief Get the secret key for this site
 	 * @return bool
@@ -312,7 +312,7 @@ class Password {
 		}
 		return $db_info->secret_key;
 	}
-	
+
 	/**
 	 * @brief Generate the PBKDF2 hash of a string using a salt
 	 * @param string $password   The password
@@ -339,7 +339,7 @@ class Password {
 			return substr($output, 0, $length);
 		}
 	}
-	
+
 	/**
 	 * @brief Generate the bcrypt hash of a string using a salt
 	 * @param string $password The password
@@ -352,7 +352,7 @@ class Password {
 		}
 		return crypt($password, $salt);
 	}
-	
+
 	/**
 	 * @brief Compare two strings in constant time
 	 * @param string $a The first string

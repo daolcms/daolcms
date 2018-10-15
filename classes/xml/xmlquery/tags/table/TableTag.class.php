@@ -51,7 +51,7 @@ class TableTag {
 	 * @var JoinConditionsTag object
 	 */
 	var $conditionsTag;
-	
+
 	/**
 	 * constructor
 	 * Initialises Table Tag properties
@@ -60,21 +60,21 @@ class TableTag {
 	 */
 	function __construct($table) {
 		$dbParser = DB::getParser();
-		
+
 		$this->unescaped_name = $table->attrs->name;
 		$this->name = $dbParser->parseTableName($table->attrs->name);
-		
+
 		$this->alias = $table->attrs->alias;
 		if(!$this->alias) $this->alias = $table->attrs->name;
-		
+
 		$this->join_type = $table->attrs->type;
-		
+
 		$this->conditions = $table->conditions;
-		
+
 		if($this->isJoinTable())
 			$this->conditionsTag = new JoinConditionsTag($this->conditions);
 	}
-	
+
 	function isJoinTable() {
 		$joinList = array('left join' => 1, 'left outer join' => 1, 'right join' => 1, 'right outer join' => 1);
 		if(isset($joinList[$this->join_type])
@@ -82,15 +82,15 @@ class TableTag {
 		) return true;
 		return false;
 	}
-	
+
 	function getTableAlias() {
 		return $this->alias;
 	}
-	
+
 	function getTableName() {
 		return $this->unescaped_name;
 	}
-	
+
 	/**
 	 * Returns string for printing in PHP query cache file
 	 * The string contains code for instantiation of either
@@ -99,7 +99,7 @@ class TableTag {
 	 */
 	function getTableString() {
 		$dbParser = DB::getParser();
-		
+
 		if($this->isJoinTable()) {
 			return sprintf('new JoinTable(\'%s\', \'%s\', "%s", %s)'
 				, $dbParser->escape($this->name)
@@ -110,7 +110,7 @@ class TableTag {
 			, $dbParser->escape($this->name)
 			, $this->alias ? ', \'' . $dbParser->escape($this->alias) . '\'' : '');
 	}
-	
+
 	function getArguments() {
 		if(!isset($this->conditionsTag)) return array();
 		return $this->conditionsTag->getArguments();

@@ -175,7 +175,7 @@ jQuery(function($){
 				}
 			});
 	};
-	
+
 	$('div.gnb').xeMenu();
 
 	$('.gnb>.mnv').change(function(){
@@ -564,7 +564,7 @@ _xeModuleSearch = function(){
 	var aSiteListData;
 
 	var MAX_LIST_HEIGHT = 280;
-	
+
 	function setListSize($UL, nHeight){
 		var nWidth, $div;
 		$UL.find('li div').width('');
@@ -584,7 +584,7 @@ _xeModuleSearch = function(){
 		var list = aSiteListData;
 
 		$siteList.empty();
-	
+
 		for(i=0,c=list.length; i < c; i++) {
 			sDomain = list[i].domain;
 			if(sFilter){
@@ -685,7 +685,7 @@ _xeModuleSearch = function(){
 		//.find('.moduleList,.moduleIdList').hide().end()
 		.find('.moduleTypeListUL')
 			.delegate('a', 'click', function(oEvent){
-			
+
 				var $this, $mid_select, val, list;
 
 				$this = $(this);
@@ -724,10 +724,10 @@ _xeModuleSearch = function(){
 
 				$t.trigger('moduleSelect', [aSelected]);
 				$('.tgAnchor.moduleSearch').trigger('close.tc');
-				
+
 				oEvent.preventDefault();
 			});
-			
+
 
 	return this;
 };
@@ -911,7 +911,7 @@ $('.multiLangEdit')
 
 			// remove lagnauge key
 			$this.data('mle-langkey').val('');
-			
+
 			// copy current string to hidden input
 			$this.prev('input.vLang').val(val);
 
@@ -963,7 +963,7 @@ $('.multiLangEdit')
 
 			if(key == ENTER) {
 				if($active.length === 0) return true;
-				
+
 				$active.click();
 				return false;
 			}

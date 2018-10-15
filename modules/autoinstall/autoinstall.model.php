@@ -5,7 +5,7 @@
  * @author NAVER (developers@xpressengine.com)
  **/
 class autoinstallModel extends autoinstall {
-	
+
 	/**
 	 * Get category information
 	 *
@@ -19,7 +19,7 @@ class autoinstallModel extends autoinstall {
 		if(!$output->data) return null;
 		return array_shift($output->data);
 	}
-	
+
 	/**
 	 * Get packages information
 	 *
@@ -30,7 +30,7 @@ class autoinstallModel extends autoinstall {
 		if(!$output->data) return array();
 		return $output->data;
 	}
-	
+
 	/**
 	 * Get installed packages information
 	 *
@@ -44,7 +44,7 @@ class autoinstallModel extends autoinstall {
 		if(!$output->data) return null;
 		return array_shift($output->data);
 	}
-	
+
 	/**
 	 * Get one package information
 	 *
@@ -58,7 +58,7 @@ class autoinstallModel extends autoinstall {
 		if(!$output->data) return null;
 		return array_shift($output->data);
 	}
-	
+
 	/**
 	 * Get category list
 	 *
@@ -67,13 +67,13 @@ class autoinstallModel extends autoinstall {
 	function getCategoryList() {
 		$output = executeQueryArray("autoinstall.getCategories");
 		if(!$output->toBool() || !$output->data) return array();
-		
+
 		$categoryList = array();
 		foreach($output->data as $category) {
 			$category->children = array();
 			$categoryList[$category->category_srl] = $category;
 		}
-		
+
 		$depth0 = array();
 		foreach($categoryList as $key => $category) {
 			if($category->parent_srl) {
@@ -88,7 +88,7 @@ class autoinstallModel extends autoinstall {
 		}
 		return $resultList;
 	}
-	
+
 	/**
 	 * Get pcakge count in category
 	 *
@@ -102,7 +102,7 @@ class autoinstallModel extends autoinstall {
 		if(!$output->data) return 0;
 		return $output->data->count;
 	}
-	
+
 	/**
 	 * Get installed package count
 	 *
@@ -113,7 +113,7 @@ class autoinstallModel extends autoinstall {
 		if(!$output->data) return 0;
 		return $output->data->count;
 	}
-	
+
 	/**
 	 * Set depth, children list and package count of category
 	 *
@@ -136,7 +136,7 @@ class autoinstallModel extends autoinstall {
 		$item->childrenList = $siblingList;
 		return $siblingList;
 	}
-	
+
 	/**
 	 * Get lastest package information
 	 *
@@ -147,7 +147,7 @@ class autoinstallModel extends autoinstall {
 		if(!$output->data) return null;
 		return array_shift($output->data);
 	}
-	
+
 	/**
 	 * Get installed package informations
 	 *
@@ -165,7 +165,7 @@ class autoinstallModel extends autoinstall {
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * Get installed package list
 	 *
@@ -187,7 +187,7 @@ class autoinstallModel extends autoinstall {
 		$output->data = $res;
 		return $output;
 	}
-	
+
 	/**
 	 * Get type using path
 	 *
@@ -202,7 +202,7 @@ class autoinstallModel extends autoinstall {
 		$type = substr(array_pop($path_array), 0, -1);
 		return $type;
 	}
-	
+
 	/**
 	 * Get config file path by type
 	 *
@@ -234,7 +234,7 @@ class autoinstallModel extends autoinstall {
 		}
 		return $config_file;
 	}
-	
+
 	/**
 	 * Returns target is removable
 	 *
@@ -249,7 +249,7 @@ class autoinstallModel extends autoinstall {
 		if(method_exists($oModule, "moduleUninstall")) return true;
 		else return false;
 	}
-	
+
 	/**
 	 * Get sequence of package by path
 	 *
@@ -258,19 +258,19 @@ class autoinstallModel extends autoinstall {
 	 */
 	function getPackageSrlByPath($path) {
 		if(!$path) return;
-		
+
 		if(substr($path, -1) == '/') $path = substr($path, 0, strlen($path) - 1);
-		
+
 		if(!$GLOBLAS['XE_AUTOINSTALL_PACKAGE_SRL_BY_PATH'][$path]) {
 			$args->path = $path;
 			$output = executeQuery('autoinstall.getPackageSrlByPath', $args);
-			
+
 			$GLOBLAS['XE_AUTOINSTALL_PACKAGE_SRL_BY_PATH'][$path] = $output->data->package_srl;
 		}
-		
+
 		return $GLOBLAS['XE_AUTOINSTALL_PACKAGE_SRL_BY_PATH'][$path];
 	}
-	
+
 	/**
 	 * Get remove url by package srl
 	 *
@@ -280,12 +280,12 @@ class autoinstallModel extends autoinstall {
 	function getRemoveUrlByPackageSrl($packageSrl) {
 		$ftp_info = Context::getFTPInfo();
 		if(!$ftp_info->ftp_root_path) return;
-		
+
 		if(!$packageSrl) return;
-		
+
 		return getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminUninstall', 'package_srl', $packageSrl);
 	}
-	
+
 	/**
 	 * Get remove url by path
 	 *
@@ -294,16 +294,16 @@ class autoinstallModel extends autoinstall {
 	 */
 	function getRemoveUrlByPath($path) {
 		if(!$path) return;
-		
+
 		$ftp_info = Context::getFTPInfo();
 		if(!$ftp_info->ftp_root_path) return;
-		
+
 		$packageSrl = $this->getPackageSrlByPath($path);
 		if(!$packageSrl) return;
-		
+
 		return getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminUninstall', 'package_srl', $packageSrl);
 	}
-	
+
 	/**
 	 * Get update url by package srl
 	 *
@@ -312,10 +312,10 @@ class autoinstallModel extends autoinstall {
 	 */
 	function getUpdateUrlByPackageSrl($packageSrl) {
 		if(!$packageSrl) return;
-		
+
 		return getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminInstall', 'package_srl', $packageSrl);
 	}
-	
+
 	/**
 	 * Get update url by path
 	 *
@@ -324,10 +324,10 @@ class autoinstallModel extends autoinstall {
 	 */
 	function getUpdateUrlByPath($path) {
 		if(!$path) return;
-		
+
 		$packageSrl = $this->getPackageSrlByPath($path);
 		if(!$packageSrl) return;
-		
+
 		return getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminInstall', 'package_srl', $packageSrl);
 	}
 }

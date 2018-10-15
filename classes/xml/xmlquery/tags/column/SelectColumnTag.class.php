@@ -14,14 +14,14 @@ class SelectColumnTag extends ColumnTag {
 	 * @var string
 	 */
 	var $alias;
-	
+
 	/**
 	 * Click count status
 	 *
 	 * @var bool
 	 */
 	var $click_count;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -37,12 +37,12 @@ class SelectColumnTag extends ColumnTag {
 			$dbParser = new DB();
 			$dbParser = &$dbParser->getParser();
 			$this->name = $dbParser->parseExpression($this->name);
-			
+
 			$this->alias = $column->attrs->alias;
 			$this->click_count = $column->attrs->click_count;
 		}
 	}
-	
+
 	/**
 	 * Returns the string to be output in the cache file
 	 *

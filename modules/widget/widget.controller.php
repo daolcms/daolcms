@@ -6,41 +6,41 @@
  * @brief  Controller class for widget modules
  **/
 class widgetController extends widget {
-	
+
 	// The results are not widget modify/delete and where to use the flag for
 	// layout_javascript_mode include all the results into the javascript mode Sikkim
 	var $javascript_mode = false;
 	var $layout_javascript_mode = false;
-	
+
 	// Where the cache files are created widget
 	var $cache_path = './files/cache/widget_cache/';
-	
+
 	/**
 	 * @brief Initialization
 	 **/
 	function init(){
 	}
-	
+
 	/**
 	 * @brief Selected photos - the return of the skin-color three
 	 **/
 	function procWidgetGetColorsetList(){
 		$widget = Context::get('selected_widget');
 		$skin = Context::get('skin');
-		
+
 		$path = sprintf('./widgets/%s/', $widget);
 		$oModuleModel = getModel('module');
 		$skin_info = $oModuleModel->loadSkinInfo($path, $skin);
-		
+
 		for($i = 0; $i < count($skin_info->colorset); $i++){
 			$colorset = sprintf('%s|@|%s', $skin_info->colorset[$i]->name, $skin_info->colorset[$i]->title);
 			$colorset_list[] = $colorset;
 		}
-		
+
 		if(count($colorset_list)) $colorsets = implode("\n", $colorset_list);
 		$this->add('colorset_list', $colorsets);
 	}
-	
+
 	/**
 	 * @brief Return the generated code of the widget
 	 **/
@@ -48,45 +48,45 @@ class widgetController extends widget {
 		$widget = Context::get('selected_widget');
 		if(!$widget) return new BaseObject(-1, 'msg_invalid_request');
 		if(!Context::get('skin')) return new BaseObject(-1, Context::getLang('msg_widget_skin_is_null'));
-		
+
 		$attribute = $this->arrangeWidgetVars($widget, Context::getRequestVars(), $vars);
-		
+
 		$widget_code = sprintf('<img class="zbxe_widget_output" widget="%s" %s />', $widget, implode(' ', $attribute));
 		// Code output
 		$this->add('widget_code', $widget_code);
 	}
-	
+
 	/**
 	 * @brief Edit page request for the creation of the widget code
 	 **/
 	function procWidgetGenerateCodeInPage(){
 		$widget = Context::get('selected_widget');
 		if(!$widget) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		if(!in_array($widget, array('widgetBox', 'widgetContent')) && !Context::get('skin')) return new BaseObject(-1, Context::getLang('msg_widget_skin_is_null'));
-		
+
 		$attribute = $this->arrangeWidgetVars($widget, Context::getRequestVars(), $vars);
 		// Wanted results
 		$widget_code = $this->execute($widget, $vars, true, false);
-		
+
 		$oModuleController = getController('module');
 		$oModuleController->replaceDefinedLangCode($widget_code);
-		
+
 		$this->add('widget_code', $widget_code);
 	}
-	
+
 	/**
 	 * @brief Upload widget styles
 	 **/
 	function procWidgetStyleExtraImageUpload(){
 		$attribute = $this->arrangeWidgetVars($widget, Context::getRequestVars(), $vars);
-		
+
 		$this->setLayoutPath('./common/tpl');
 		$this->setLayoutFile('default_layout.html');
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile("top_refresh.html");
 	}
-	
+
 	/**
 	 * @brief Add content widget
 	 **/
@@ -96,20 +96,20 @@ class widgetController extends widget {
 		$document_srl = Context::get('document_srl');
 		$content = Context::get('content');
 		$editor_sequence = Context::get('editor_sequence');
-		
+
 		$err = 0;
 		$oLayoutModel = getModel('layout');
 		$layout_info = $oLayoutModel->getLayout($module_srl);
 		if(!$layout_info || $layout_info->type != 'faceoff') $err++;
-		
+
 		// Destination Information Wanted page module
 		$oModuleModel = getModel('module');
 		$columnList = array('module_srl', 'module');
 		$page_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl, $columnList);
 		if(!$page_info->module_srl || $page_info->module != 'page') $err++;
-		
+
 		if($err > 1) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		// Check permissions
 		$logged_info = Context::get('logged_info');
 		if(!$logged_info->member_srl){
@@ -119,16 +119,16 @@ class widgetController extends widget {
 		if(!$module_grant->manager){
 			return new BaseObject(-1, 'msg_not_permitted');
 		}
-		
+
 		// Enter post
 		$oDocumentModel = getModel('document');
 		$oDocumentController = getController('document');
-		
+
 		$obj = new stdClass();
 		$obj->module_srl = $module_srl;
 		$obj->content = $content;
 		$obj->document_srl = $document_srl;
-		
+
 		$oDocument = $oDocumentModel->getDocument($obj->document_srl);
 		if($oDocument->isExists() && $oDocument->document_srl == $obj->document_srl){
 			$output = $oDocumentController->updateDocument($oDocument, $obj);
@@ -137,35 +137,35 @@ class widgetController extends widget {
 			$output = $oDocumentController->insertDocument($obj);
 			$obj->document_srl = $output->get('document_srl');
 		}
-		
+
 		// Stop when an error occurs
 		if(!$output->toBool()) return $output;
-		
+
 		// Return results
 		$this->add('document_srl', $obj->document_srl);
 	}
-	
+
 	/**
 	 * @brief Copy the content widget
 	 **/
 	function procWidgetCopyDocument(){
 		// Variable Wanted
 		$document_srl = Context::get('document_srl');
-		
+
 		$oDocumentModel = getModel('document');
 		$oDocumentController = getController('document');
 		$oDocumentAdminController = getAdminController('document');
-		
+
 		$oDocument = $oDocumentModel->getDocument($document_srl);
 		if(!$oDocument->isExists()) return new BaseObject(-1, 'msg_invalid_request');
 		$module_srl = $oDocument->get('module_srl');
-		
+
 		// Destination Information Wanted page module
 		$oModuleModel = getModel('module');
 		$columnList = array('module_srl', 'module');
 		$page_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl, $columnList);
 		if(!$page_info->module_srl || $page_info->module != 'page') return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		// Check permissions
 		$logged_info = Context::get('logged_info');
 		if(!$logged_info->member_srl){
@@ -175,34 +175,34 @@ class widgetController extends widget {
 		if(!$module_grant->manager){
 			return new BaseObject(-1, 'msg_not_permitted');
 		}
-		
+
 		$output = $oDocumentAdminController->copyDocumentModule(array($oDocument->get('document_srl')), $oDocument->get('module_srl'), 0);
 		if(!$output->toBool()) return $output;
-		
+
 		// Return results
 		$copied_srls = $output->get('copied_srls');
 		$this->add('document_srl', $copied_srls[$oDocument->get('document_srl')]);
 	}
-	
+
 	/**
 	 * @brief Deleting widgets
 	 **/
 	function procWidgetDeleteDocument(){
 		// Variable Wanted
 		$document_srl = Context::get('document_srl');
-		
+
 		$oDocumentModel = getModel('document');
 		$oDocumentController = getController('document');
-		
+
 		$oDocument = $oDocumentModel->getDocument($document_srl);
 		if(!$oDocument->isExists()) return new BaseObject();
 		$module_srl = $oDocument->get('module_srl');
-		
+
 		// Destination Information Wanted page module
 		$oModuleModel = getModel('module');
 		$page_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
 		if(!$page_info->module_srl || $page_info->module != 'page') return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		// Check permissions
 		$logged_info = Context::get('logged_info');
 		if(!$logged_info->member_srl){
@@ -212,18 +212,18 @@ class widgetController extends widget {
 		if(!$module_grant->manager){
 			return new BaseObject(-1, 'msg_not_permitted');
 		}
-		
+
 		$output = $oDocumentController->deleteDocument($oDocument->get('document_srl'));
 		if(!$output->toBool()) return $output;
 	}
-	
+
 	/**
 	 * @brief Modify the code in Javascript widget/Javascript edit mode for dragging and converted to
 	 **/
 	function setWidgetCodeInJavascriptMode(){
 		$this->layout_javascript_mode = true;
 	}
-	
+
 	/**
 	 * @brief Widget code compiles and prints the information to trigger
 	 * display:: before invoked in
@@ -233,7 +233,7 @@ class widgetController extends widget {
 		$content = $this->transWidgetCode($content, $this->layout_javascript_mode);
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @breif By converting the specific content of the widget tag return
 	 **/
@@ -247,29 +247,29 @@ class widgetController extends widget {
 		$content = preg_replace_callback('!<div([^\>]*)widget=([^\>]*?)\><div><div>((<img.*?>)*)!is', array($this, 'transWidgetBox'), $content);
 		// Widget code information byeogyeong
 		$content = preg_replace_callback('!<img([^\>]*)widget=([^\>]*?)\>!is', array($this, 'transWidget'), $content);
-		
+
 		return $content;
 	}
-	
+
 	/**
 	 * @brief Widget code with the actual code changes
 	 **/
 	function transWidget($matches){
 		$buff = trim($matches[0]);
-		
+
 		$oXmlParser = new XmlParser();
 		$xml_doc = $oXmlParser->parse(trim($buff));
-		
+
 		if($xml_doc->img) $vars = $xml_doc->img->attrs;
 		else $vars = $xml_doc->attrs;
-		
+
 		$widget = $vars->widget;
 		if(!$widget) return $matches[0];
 		unset($vars->widget);
-		
+
 		return $this->execute($widget, $vars, $this->javascript_mode);
 	}
-	
+
 	/**
 	 * @brief Widget box with the actual code changes
 	 **/
@@ -277,16 +277,16 @@ class widgetController extends widget {
 		$buff = preg_replace('/<div><div>(.*)$/i', '</div>', $matches[0]);
 		$oXmlParser = new XmlParser();
 		$xml_doc = $oXmlParser->parse($buff);
-		
+
 		$vars = $xml_doc->div->attrs;
 		$widget = $vars->widget;
 		if(!$widget) return $matches[0];
 		unset($vars->widget);
-		
+
 		$vars->widgetbox_content = $matches[3];
 		return $this->execute($widget, $vars, $this->javascript_mode);
 	}
-	
+
 	/**
 	 * @brief Re-create specific content within a widget
 	 * Widget on the page and create cache file in the module using
@@ -296,14 +296,14 @@ class widgetController extends widget {
 		$lang_list = Context::get('lang_supported');
 		// Bringing widget cache sequence
 		preg_match_all('!<img([^\>]*)widget=([^\>]*?)\>!is', $content, $matches);
-		
+
 		$oXmlParser = new XmlParser();
-		
+
 		$cnt = count($matches[1]);
 		for($i = 0; $i < $cnt; $i++){
 			$buff = $matches[0][$i];
 			$xml_doc = $oXmlParser->parse(trim($buff));
-			
+
 			$args = $xml_doc->img->attrs;
 			if(!$args) continue;
 			// If you are not caching path
@@ -311,7 +311,7 @@ class widgetController extends widget {
 			$sequence = $args->widget_sequence;
 			$cache = $args->widget_cache;
 			if(!$sequence || !$cache) continue;
-			
+
 			if(count($args)){
 				foreach($args as $k => $v) $args->{$k} = urldecode($v);
 			}
@@ -323,7 +323,7 @@ class widgetController extends widget {
 			}
 		}
 	}
-	
+
 	/**
 	 * @brief Widget cache handling
 	 **/
@@ -333,20 +333,20 @@ class widgetController extends widget {
 		// widget, the cache number and cache values are set
 		$widget_sequence = $args->widget_sequence;
 		$widget_cache = $args->widget_cache;
-		
+
 		/**
 		 * Even if the cache number and value of the cache and return it to extract data
 		 **/
 		if(!$ignore_cache && (!$widget_cache || !$widget_sequence)){
 			$oWidget = $this->getWidgetObject($widget);
 			if(!$oWidget || !method_exists($oWidget, 'proc')) return;
-			
+
 			$widget_content = $oWidget->proc($args);
 			$oModuleController = getController('module');
 			$oModuleController->replaceDefinedLangCode($widget_content);
 			return $widget_content;
 		}
-		
+
 		if($cache_body){
 			return $cache_body;
 		}
@@ -364,7 +364,7 @@ class widgetController extends widget {
 				if($filemtime + $widget_cache * 60 > $_SERVER['REQUEST_TIME'] && $filemtime > filemtime(_DAOL_PATH_ . 'modules/widget/widget.controller.php')){
 					$cache_body = FileHandler::readFile($cache_file);
 					$cache_body = preg_replace('@<\!--#Meta:@', '<!--Meta:', $cache_body);
-					
+
 					return $cache_body;
 				}
 			}
@@ -372,10 +372,10 @@ class widgetController extends widget {
 			if(!$oCacheHandler->isSupport()){
 				touch($cache_file);
 			}
-			
+
 			$oWidget = $this->getWidgetObject($widget);
 			if(!$oWidget || !method_exists($oWidget,'proc')) return;
-			
+
 			$widget_content = $oWidget->proc($args);
 			$oModuleController = getController('module');
 			$oModuleController->replaceDefinedLangCode($widget_content);
@@ -386,10 +386,10 @@ class widgetController extends widget {
 				FileHandler::writeFile($cache_file, $widget_content);
 			}
 		}
-		
+
 		return $widget_content;
 	}
-	
+
 	/**
 	 * @brief Widget name and argument and produce a result and Return the results
 	 * Tags used in templateHandler $this-&gt; execute() will be replaced by the code running
@@ -407,8 +407,8 @@ class widgetController extends widget {
 				if($escaped) $args->{$key} = utf8RawUrlDecode($val);
 			}
 		}
-		
-		
+
+
 		/**
 		 * Widgets widgetContent/widgetBox Wanted If you are not content
 		 **/
@@ -418,11 +418,11 @@ class widgetController extends widget {
 			// Hold the contents of the widget parameter
 			$widget_content = $this->getCache($widget, $args);
 		}
-		
+
 		if($widget == 'widgetBox'){
 			$widgetbox_content = $args->widgetbox_content;
 		}
-		
+
 		/**
 		 * Wanted specified by the administrator of the widget style
 		 **/
@@ -434,11 +434,11 @@ class widgetController extends widget {
 		$widget_padding_top = $args->widget_padding_top;
 		$widget_padding_bottom = $args->widget_padding_bottom;
 		$inner_style = sprintf("padding:%dpx %dpx %dpx %dpx !important; padding:none !important;", $widget_padding_top, $widget_padding_right, $widget_padding_bottom, $widget_padding_left);
-		
+
 		/**
 		 * Wanted widget output
 		 **/
-		
+
 		$widget_content_header = '';
 		$widget_content_body = '';
 		$widget_content_footer = '';
@@ -459,17 +459,17 @@ class widgetController extends widget {
 					// Change the editor component
 					$oEditorController = getController('editor');
 					$body = $oEditorController->transComponent($body);
-					
+
 					$widget_content_header = sprintf('<div class="daol_content" %sstyle="overflow:hidden;%s"><div style="%s">', $args->id, $style, $inner_style);
 					$widget_content_body = $body;
 					$widget_content_footer = '</div></div>';
-					
+
 					break;
 				// If the widget box; it could
 				case 'widgetBox' :
 					$widget_content_header = sprintf('<div %sstyle="overflow:hidden;%s;"><div style="%s"><div>', $args->id, $style, $inner_style);
 					$widget_content_body = $widgetbox_content;
-					
+
 					break;
 				// If the General wijetil
 				default :
@@ -501,9 +501,9 @@ class widgetController extends widget {
 							$attribute[] = sprintf('%s="%s"', $key, htmlspecialchars($val, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
 						}
 					}
-					
+
 					$oWidgetController = getController('widget');
-					
+
 					$widget_content_header = sprintf(
 						'<div class="daol_content widgetOutput" widgetstyle="%s" style="%s" widget_padding_left="%s" widget_padding_right="%s" widget_padding_top="%s" widget_padding_bottom="%s" widget="widgetContent" document_srl="%d" %s>' .
 						'<div class="widgetResize"></div>' .
@@ -515,13 +515,13 @@ class widgetController extends widget {
 						$args->document_srl,
 						implode(' ', $attribute),
 						$inner_style);
-					
+
 					$widget_content_body = $body;
 					$widget_content_footer = sprintf('</div>' .
 						'</div>' .
 						'<div class="widgetContent" style="display:none;width:1px;height:1px;overflow:hidden;">%s</div>' .
 						'</div>', base64_encode($body));
-					
+
 					break;
 				// If the widget box; it could
 				case 'widgetBox' :
@@ -535,15 +535,15 @@ class widgetController extends widget {
 							$attribute[] = sprintf('%s="%s"', $key, htmlspecialchars($val, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
 						}
 					}
-					
+
 					$widget_content_header = sprintf(
 						'<div class="widgetOutput" widgetstyle="%s" widget="widgetBox" style="%s;" widget_padding_top="%s" widget_padding_right="%s" widget_padding_bottom="%s" widget_padding_left="%s" %s >' .
 						'<div class="widgetBoxResize"></div>' .
 						'<div class="widgetBoxResizeLeft"></div>' .
 						'<div class="widgetBoxBorder"><div class="nullWidget" style="%s">', $args->widgetstyle, $style, $widget_padding_top, $widget_padding_right, $widget_padding_bottom, $widget_padding_left, implode(' ', $attribute), $inner_style);
-					
+
 					$widget_content_body = $widgetbox_content;
-					
+
 					break;
 				// If the General wijetil
 				default :
@@ -558,7 +558,7 @@ class widgetController extends widget {
 							$attribute[] = sprintf('%s="%s"', $key, htmlspecialchars($val, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
 						}
 					}
-					
+
 					$widget_content_header = sprintf(
 						'<div class="widgetOutput" widgetstyle="%s" style="%s" widget_padding_top="%s" widget_padding_right="%s" widget_padding_bottom="%s" widget_padding_left="%s" widget="%s" %s >' .
 						'<div class="widgetResize"></div>' .
@@ -566,24 +566,24 @@ class widgetController extends widget {
 						'<div class="widgetBorder">', $args->widgetstyle, $style,
 						$widget_padding_top, $widget_padding_right, $widget_padding_bottom, $widget_padding_left,
 						$widget, implode(' ', $attribute));
-					
+
 					$widget_content_body = sprintf('<div style="%s">%s</div>', $inner_style, $widget_content);
-					
+
 					$widget_content_footer = '</div></div>';
-					
+
 					break;
 			}
 		}
 		// Compile the widget style.
 		if($args->widgetstyle) $widget_content_body = $this->compileWidgetStyle($args->widgetstyle, $widget, $widget_content_body, $args, $javascript_mode);
-		
+
 		$output = $widget_content_header . $widget_content_body . $widget_content_footer;
 		// Debug widget creation time information added to the results
 		if(__DEBUG__ == 3) $GLOBALS['__widget_excute_elapsed__'] += getMicroTime() - $start;
 		// Return result
 		return $output;
 	}
-	
+
 	/**
 	 * @brief Return widget object
 	 **/
@@ -591,7 +591,7 @@ class widgetController extends widget {
 		if(!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $widget)){
 			return Context::getLang('msg_invalid_request');
 		}
-		
+
 		if(!$GLOBALS['_xe_loaded_widgets_'][$widget]){
 			// Finding the location of a widget
 			$oWidgetModel = getModel('widget');
@@ -601,33 +601,33 @@ class widgetController extends widget {
 			if(!file_exists($class_file)) return sprintf(Context::getLang('msg_widget_is_not_exists'), $widget);
 			// Widget classes include
 			require_once($class_file);
-			
+
 			// Creating Objects
 			if(!class_exists($widget, false)){
 				return sprintf(Context::getLang('msg_widget_object_is_null'), $widget);
 			}
-			
+
 			$oWidget = new $widget();
 			if(!is_object($oWidget)) return sprintf(Context::getLang('msg_widget_object_is_null'), $widget);
-			
+
 			if(!method_exists($oWidget, 'proc')) return sprintf(Context::getLang('msg_widget_proc_is_null'), $widget);
-			
+
 			$oWidget->widget_path = $path;
-			
+
 			$GLOBALS['_xe_loaded_widgets_'][$widget] = $oWidget;
 		}
 		return $GLOBALS['_xe_loaded_widgets_'][$widget];
 	}
-	
-	
+
+
 	function compileWidgetStyle($widgetStyle, $widget, $widget_content_body, $args, $javascript_mode){
 		if(!$widgetStyle) return $widget_content_body;
-		
+
 		$oWidgetModel = getModel('widget');
 		// Bring extra_var widget style tie
 		$widgetstyle_info = $oWidgetModel->getWidgetStyleInfo($widgetStyle);
 		if(!$widgetstyle_info) return $widget_content_body;
-		
+
 		$widgetstyle_extra_var_key = get_object_vars($widgetstyle_info);
 		if(count($widgetstyle_extra_var_key['extra_var'])){
 			foreach($widgetstyle_extra_var_key['extra_var'] as $key => $val){
@@ -637,7 +637,7 @@ class widgetController extends widget {
 		Context::set('widgetstyle_extra_var', $widgetstyle_extra_var);
 		// #18994272 오타를 수정했으나 하위 호환성을 위해 남겨둠 - deprecated
 		Context::set('widgetstyle_extar_var', $widgetstyle_extra_var);
-		
+
 		if($javascript_mode && $widget == 'widgetBox'){
 			Context::set('widget_content', '<div class="widget_inner">' . $widget_content_body . '</div>');
 		}
@@ -648,24 +648,24 @@ class widgetController extends widget {
 		$widgetstyle_path = $oWidgetModel->getWidgetStylePath($widgetStyle);
 		$oTemplate = &TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($widgetstyle_path, 'widgetstyle');
-		
+
 		return $tpl;
 	}
-	
+
 	/**
 	 * @brief request parameters and variables sort through the information widget
 	 **/
 	function arrangeWidgetVars($widget, $request_vars, &$vars){
 		$oWidgetModel = getModel('widget');
 		$widget_info = $oWidgetModel->getWidgetInfo($widget);
-		
+
 		if(!$vars){
 			$vars = new stdClass();
 		}
-		
+
 		$widget = $vars->selected_widget;
 		$vars->widgetstyle = $request_vars->widgetstyle;
-		
+
 		$vars->skin = trim($request_vars->skin);
 		$vars->colorset = trim($request_vars->colorset);
 		$vars->widget_sequence = (int)($request_vars->widget_sequence);
@@ -676,8 +676,8 @@ class widgetController extends widget {
 		$vars->widget_padding_top = trim($request_vars->widget_padding_top);
 		$vars->widget_padding_bottom = trim($request_vars->widget_padding_bottom);
 		$vars->document_srl = trim($request_vars->document_srl);
-		
-		
+
+
 		if(count($widget_info->extra_var)){
 			foreach($widget_info->extra_var as $key => $val){
 				$vars->{$key} = trim($request_vars->{$key});
@@ -694,14 +694,14 @@ class widgetController extends widget {
 				}
 			}
 		}
-		
+
 		if($vars->widget_sequence){
 			$cache_file = sprintf('%s%d.%s.cache', $this->cache_path, $vars->widget_sequence, Context::getLangType());
 			FileHandler::removeFile($cache_file);
 		}
-		
+
 		if($vars->widget_cache > 0) $vars->widget_sequence = getNextSequence();
-		
+
 		$attribute = array();
 		foreach($vars as $key => $val){
 			if(!$val){
@@ -712,7 +712,7 @@ class widgetController extends widget {
 			$vars->{$key} = Context::convertEncodingStr($val);
 			$attribute[] = sprintf('%s="%s"', $key, htmlspecialchars(Context::convertEncodingStr($val), ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
 		}
-		
+
 		return $attribute;
 	}
 }

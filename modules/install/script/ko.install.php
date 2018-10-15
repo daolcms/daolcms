@@ -81,7 +81,7 @@
 	$page_args->page_caching_interval = 0;
 	$page_args->page_type = 'ARTICLE';
 	$page_args->skin = 'default';
-	
+
 	$oModuleController = getController('module');
 	$output = $oModuleController->insertModule($page_args);
 
@@ -110,7 +110,7 @@
 
 	$output = $oDocumentController->insertDocument($obj,true);
 	if(!$output->toBool()) return $output;
-	
+
 	$document_srl = $output->get('document_srl');
 
 	// save PageWidget

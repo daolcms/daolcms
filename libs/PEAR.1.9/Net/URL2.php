@@ -176,7 +176,7 @@ class Net_URL2
             $this->$method($arg);
         }
     }
-    
+
     /**
      * Magic Getter.
      *
@@ -194,10 +194,10 @@ class Net_URL2
         if (method_exists($this, $method)) {
             return $this->$method();
         }
-        
+
         return false;
     }
-    
+
     /**
      * Returns the scheme, e.g. "http" or "urn", or false if there is no
      * scheme specified, i.e. if this is a relative URL.
@@ -602,7 +602,7 @@ class Net_URL2
         if ($this->_fragment !== false) {
             $url .= '#' . $this->_fragment;
         }
-    
+
         return $url;
     }
 

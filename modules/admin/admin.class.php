@@ -17,7 +17,7 @@ class admin extends ModuleObject {
 	function moduleInstall() {
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * If update is necessary it returns true
 	 * @return bool
@@ -25,10 +25,10 @@ class admin extends ModuleObject {
 	function checkUpdate() {
 		$oDB = &DB::getInstance();
 		if(!$oDB->isColumnExists("admin_favorite", "type")) return true;
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Update module
 	 * @return BaseObject
@@ -39,7 +39,7 @@ class admin extends ModuleObject {
 			$oAdminAdminModel = &getAdminModel('admin');
 			$output = $oAdminAdminModel->getFavoriteList();
 			$favoriteList = $output->get('favoriteList');
-			
+
 			$oDB->dropColumn('admin_favorite', 'admin_favorite_srl');
 			$oDB->addColumn('admin_favorite', "admin_favorite_srl", "number", 11, 0);
 			$oDB->addColumn('admin_favorite', "type", "varchar", 30, 'module');
@@ -53,14 +53,14 @@ class admin extends ModuleObject {
 		}
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * Regenerate cache file
 	 * @return void
 	 */
 	function recompileCache() {
 	}
-	
+
 	/**
 	 * Regenerate xe admin default menu
 	 * @return void
@@ -74,7 +74,7 @@ class admin extends ModuleObject {
 		$output = executeQuery('menu.insertMenu', $args);
 		$menuSrl = $args->menu_srl;
 		unset($args);
-		
+
 		// gnb item create
 		$gnbList = array('dashboard', 'menu', 'user', 'content', 'theme', 'extensions', 'configuration');
 		foreach($gnbList AS $key => $value) {
@@ -88,7 +88,7 @@ class admin extends ModuleObject {
 			$args->listorder = -1 * $args->menu_item_srl;
 			$output = executeQuery('menu.insertMenuItem', $args);
 		}
-		
+
 		$oMenuAdminModel = &getAdminModel('menu');
 		$columnList = array('menu_item_srl', 'name');
 		$output = $oMenuAdminModel->getMenuItems($menuSrl, 0, $columnList);
@@ -99,7 +99,7 @@ class admin extends ModuleObject {
 			}
 		}
 		unset($args);
-		
+
 		$gnbModuleList = array(
 			0 => array(
 				'module' => 'menu',
@@ -190,11 +190,11 @@ class admin extends ModuleObject {
 				'subMenu' => array('point')
 			),
 		);
-		
+
 		$oMemberModel = &getModel('member');
 		$output = $oMemberModel->getAdminGroup(array('group_srl'));
 		$adminGroupSrl = $output->group_srl;
-		
+
 		// gnb sub item create
 		// common argument setting
 		$args->menu_srl = $menuSrl;
@@ -205,13 +205,13 @@ class admin extends ModuleObject {
 		$args->active_btn = '';
 		$args->group_srls = $adminGroupSrl;
 		$oModuleModel = &getModel('module');
-		
+
 		foreach($gnbModuleList AS $key => $value) {
 			if(is_array($value['subMenu'])) {
 				$moduleActionInfo = $oModuleModel->getModuleActionXml($value['module']);
 				foreach($value['subMenu'] AS $key2 => $value2) {
 					$gnbKey = "'" . $this->_getGnbKey($value2) . "'";
-					
+
 					//insert menu item
 					$args->menu_item_srl = getNextSequence();
 					$args->parent_srl = $gnbDBList[$gnbKey];
@@ -222,11 +222,11 @@ class admin extends ModuleObject {
 				}
 			}
 		}
-		
+
 		$oMenuAdminConroller = &getAdminController('menu');
 		$oMenuAdminConroller->makeXmlFile($menuSrl);
 	}
-	
+
 	/**
 	 * Return parent menu key by child menu
 	 * @return string

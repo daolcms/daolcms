@@ -12,7 +12,7 @@ class ClickCountExpression extends SelectExpression {
 	 * @var bool
 	 */
 	var $click_count;
-	
+
 	/**
 	 * constructor
 	 * @param string $column_name
@@ -22,18 +22,18 @@ class ClickCountExpression extends SelectExpression {
 	 */
 	function __construct($column_name, $alias = NULL, $click_count = false) {
 		parent::__construct($column_name, $alias);
-		
+
 		if(!is_bool($click_count)) {
 			// error_log("Click_count value for $column_name was not boolean", 0);
 			$this->click_count = false;
 		}
 		$this->click_count = $click_count;
 	}
-	
+
 	function show() {
 		return $this->click_count;
 	}
-	
+
 	/**
 	 * Return column expression, ex) column = column + 1
 	 * @return string

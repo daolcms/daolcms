@@ -6,13 +6,13 @@
  * @brief  The admin view class of the session module
  **/
 class sessionAdminView extends session {
-	
+
 	/**
 	 * @brief Initialization
 	 **/
 	function init(){
 	}
-	
+
 	/**
 	 * @brief Configure
 	 **/

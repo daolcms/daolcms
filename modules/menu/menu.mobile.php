@@ -15,7 +15,7 @@ class menuMobile extends moduleObject {
 	 * @var array
 	 */
 	var $result = array();
-	
+
 	/**
 	 * Menu depth arrange
 	 * @return void
@@ -33,7 +33,7 @@ class menuMobile extends moduleObject {
 			$this->straightenMenu($item, $depth + 1);
 		}
 	}
-	
+
 	/**
 	 * Display menu
 	 * @return void
@@ -42,16 +42,16 @@ class menuMobile extends moduleObject {
 		$menu_srl = Context::get('menu_srl');
 		$oAdminModel = getAdminModel('menu');
 		$menu_info = $oAdminModel->getMenu($menu_srl);
-		
+
 		if(file_exists($menu_info->php_file)) include($menu_info->php_file);
 		foreach($menu->list as $menu_item){
 			$this->straightenMenu($menu_item, 0);
 		}
-		
+
 		Context::set('menu', $this->result);
-		
+
 		$this->setTemplatePath(sprintf("%stpl/", $this->module_path));
 		$this->setTemplateFile('menu.html');
-		
+
 	}
 }

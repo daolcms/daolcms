@@ -6,14 +6,14 @@
  * admin controller class of the layout module
  **/
 class layoutAdminController extends layout {
-	
+
 	/**
 	 * Initialization
 	 * @return void
 	 **/
 	function init(){
 	}
-	
+
 	/**
 	 * Create a new layout
 	 * Insert a title into "layouts" table in order to create a layout
@@ -22,7 +22,7 @@ class layoutAdminController extends layout {
 	 **/
 	function procLayoutAdminInsert(){
 		if(Context::get('layout') == 'faceoff') return $this->stop('not supported');
-		
+
 		// Get information to create a layout
 		$site_module_info = Context::get('site_module_info');
 		$args->site_srl = (int)$site_module_info->site_srl;
@@ -31,22 +31,22 @@ class layoutAdminController extends layout {
 		$args->title = Context::get('title');
 		$args->layout_type = Context::get('_layout_type');
 		if(!$args->layout_type) $args->layout_type = "P";
-		
+
 		// Insert into the DB
 		$output = $this->insertLayout($args);
 		if(!$output->toBool()) return $output;
-		
+
 		// initiate if it is faceoff layout
 		$this->initLayout($args->layout_srl, $args->layout);
-		
+
 		// update layout info
 		Context::set('layout_srl', $args->layout_srl);
 		$output = $this->procLayoutAdminUpdate();
 		if(!$output->toBool()) return $output;
-		
+
 		return $this->setRedirectUrl(Context::get('success_return_url'), $output);
 	}
-	
+
 	/**
 	 * Insert layout information into the DB
 	 * @param object $args layout information
@@ -56,7 +56,7 @@ class layoutAdminController extends layout {
 		$output = executeQuery("layout.insertLayout", $args);
 		return $output;
 	}
-	
+
 	/**
 	 * Initiate if it is faceoff layout
 	 * @param int    $layout_srl
@@ -74,7 +74,7 @@ class layoutAdminController extends layout {
 			FileHandler::removeDir($oLayoutModel->getUserLayoutPath($layout_srl));
 		}
 	}
-	
+
 	/**
 	 * Update layout information
 	 * Apply a title of the new layout and extra vars
@@ -90,7 +90,7 @@ class layoutAdminController extends layout {
 		unset($extra_vars->title);
 		unset($extra_vars->apply_layout);
 		unset($extra_vars->apply_mobile_view);
-		
+
 		$args = Context::gets('layout_srl', 'title');
 		// Get layout information
 		$oLayoutModel = getModel('layout');
@@ -103,14 +103,14 @@ class layoutAdminController extends layout {
 			foreach($menus as $menu_id => $val){
 				$menu_srl = Context::get($menu_id);
 				if(!$menu_srl) continue;
-				
+
 				$output = $oMenuAdminModel->getMenu($menu_srl);
 				$menu_srl_list[] = $menu_srl;
 				$menu_name_list[$menu_srl] = $output->title;
-				
+
 				$apply_layout = Context::get('apply_layout');
 				$apply_mobile_view = Context::get('apply_mobile_view');
-				
+
 				if($apply_layout == 'Y' || $apply_mobile_view == 'Y'){
 					$menu_args = new stdClass();
 					$menu_args->menu_srl = $menu_srl;
@@ -121,7 +121,7 @@ class layoutAdminController extends layout {
 						for($i = 0; $i < count($output->data); $i++){
 							$modules[] = $output->data[$i]->module_srl;
 						}
-						
+
 						if(count($modules)){
 							$update_args = new stdClass();
 							$update_args->module_srls = implode(',', $modules);
@@ -142,33 +142,33 @@ class layoutAdminController extends layout {
 				}
 			}
 		}
-		
+
 		$tmpDir = sprintf('./files/attach/images/%s/tmp', $args->layout_srl);
 		// Separately handle if a type of extra_vars is an image
 		if($layout_info->extra_var){
 			foreach($layout_info->extra_var as $name => $vars){
 				if($vars->type != 'image') continue;
-				
+
 				$fileName = $extra_vars->{$name};
 				if($vars->value == $fileName){
 					continue;
 				}
-				
+
 				FileHandler::removeFile($vars->value);
-				
+
 				if(!$fileName){
 					continue;
 				}
-				
+
 				$pathInfo = pathinfo($fileName);
 				$tmpFileName = sprintf('%s/tmp/%s', $pathInfo['dirname'], $pathInfo['basename']);
-				
+
 				if(!FileHandler::moveFile($tmpFileName, $fileName)){
 					unset($extra_vars->{$name});
 				}
 			}
 		}
-		
+
 		// Save header script into "config" of layout module
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
@@ -179,15 +179,15 @@ class layoutAdminController extends layout {
 		$extra_vars->menu_name_list = $menu_name_list;
 		// Variable setting for DB insert
 		$args->extra_vars = serialize($extra_vars);
-		
+
 		$output = $this->updateLayout($args);
 		if(!$output->toBool()) return $output;
-		
+
 		FileHandler::removeDir($tmpDir);
-		
+
 		return $this->setRedirectUrl(Context::get('error_return_url'), $output);
 	}
-	
+
 	/**
 	 * Update layout information into the DB
 	 * @param object $args
@@ -200,10 +200,10 @@ class layoutAdminController extends layout {
 			$cache_file = $oLayoutModel->getUserLayoutCache($args->layout_srl, Context::getLangType());
 			FileHandler::removeFile($cache_file);
 		}
-		
+
 		return $output;
 	}
-	
+
 	/**
 	 * Delete Layout
 	 * Delete xml cache file too when deleting a layout
@@ -214,7 +214,7 @@ class layoutAdminController extends layout {
 		$this->setRedirectUrl(Context::get('error_return_url'));
 		return $this->deleteLayout($layout_srl);
 	}
-	
+
 	/**
 	 * Delete layout xml cache file
 	 * @param int $layout_srl
@@ -222,22 +222,22 @@ class layoutAdminController extends layout {
 	 **/
 	function deleteLayout($layout_srl){
 		$oLayoutModel = getModel('layout');
-		
+
 		$path = $oLayoutModel->getUserLayoutPath($layout_srl);
 		FileHandler::removeDir($path);
-		
+
 		$layout_file = $oLayoutModel->getUserLayoutHtml($layout_srl);
 		if(file_exists($layout_file)) FileHandler::removeFile($layout_file);
 		// Delete Layout
 		$args = new stdClass();
 		$args->layout_srl = $layout_srl;
 		$output = executeQuery("layout.deleteLayout", $args);
-		
+
 		if(!$output->toBool()) return $output;
-		
+
 		return new BaseObject(0, 'success_deleted');
 	}
-	
+
 	/**
 	 * Adding Layout Code
 	 * @return void|Object (void : success, Object : fail)
@@ -247,7 +247,7 @@ class layoutAdminController extends layout {
 		if($mode == 'reset'){
 			return $this->procLayoutAdminCodeReset();
 		}
-		
+
 		$layout_srl = Context::get('layout_srl');
 		$code = Context::get('code');
 		$code_css = Context::get('code_css');
@@ -255,18 +255,18 @@ class layoutAdminController extends layout {
 		if(!$layout_srl || !$code || !$is_post){
 			return new BaseObject(-1, 'msg_invalid_request');
 		}
-		
+
 		$oLayoutModel = getModel('layout');
 		$layout_file = $oLayoutModel->getUserLayoutHtml($layout_srl);
 		FileHandler::writeFile($layout_file, $code);
-		
+
 		$layout_css_file = $oLayoutModel->getUserLayoutCss($layout_srl);
 		FileHandler::writeFile($layout_css_file, $code_css);
-		
+
 		$this->setRedirectUrl(Context::get('error_return_url'));
 		$this->setMessage('success_updated');
 	}
-	
+
 	/**
 	 * Reset layout code
 	 * @return void|Object (void : success, Object : fail)
@@ -274,45 +274,45 @@ class layoutAdminController extends layout {
 	function procLayoutAdminCodeReset(){
 		$layout_srl = Context::get('layout_srl');
 		if(!$layout_srl) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		// delete user layout file
 		$oLayoutModel = getModel('layout');
 		$layout_file = $oLayoutModel->getUserLayoutHtml($layout_srl);
 		FileHandler::removeFile($layout_file);
-		
+
 		$info = $oLayoutModel->getLayout($layout_srl);
-		
+
 		// if face off delete, tmp file
 		if($oLayoutModel->useDefaultLayout($info->layout)){
 			$this->deleteUserLayoutTempFile($layout_srl);
 			$faceoff_css = $oLayoutModel->getUserLayoutFaceOffCss($layout_srl);
 			FileHandler::removeFile($faceoff_css);
 		}
-		
+
 		$this->initLayout($layout_srl, $info->layout);
 		$this->setMessage('success_reset');
 		$this->setRedirectUrl(Context::get('error_return_url'));
 	}
-	
-	
+
+
 	/**
 	 * Layout setting page -> Upload an image
 	 * @return void
 	 **/
 	function procLayoutAdminUserImageUpload(){
 		if(!Context::isUploaded()) exit();
-		
+
 		$image = Context::get('user_layout_image');
 		$layout_srl = Context::get('layout_srl');
 		if(!is_uploaded_file($image['tmp_name'])) exit();
-		
+
 		$this->insertUserLayoutImage($layout_srl, $image);
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile("top_refresh.html");
-		
+
 		$this->setRedirectUrl(Context::get('error_return_url'));
 	}
-	
+
 	/**
 	 * insert image into user layout
 	 * @param int    $layout_srl
@@ -323,21 +323,21 @@ class layoutAdminController extends layout {
 		$oLayoutModel = getModel('layout');
 		$path = $oLayoutModel->getUserLayoutImagePath($layout_srl);
 		if(!is_dir($path)) FileHandler::makeDir($path);
-		
+
 		$filename = strtolower($source['name']);
 		if($filename != urlencode($filename)){
 			$ext = substr(strrchr($filename, '.'), 1);
 			$filename = sprintf('%s.%s', md5($filename), $ext);
 		}
-		
+
 		// Check uploaded file
 		if(!checkUploadedFile($source['tmp_name'])) return false;
-		
+
 		if(file_exists($path . '/' . $filename)) @unlink($path . $filename);
 		if(!move_uploaded_file($source['tmp_name'], $path . $filename)) return false;
 		return true;
 	}
-	
+
 	/**
 	 * Layout setting page -> Delete an image
 	 * @return void
@@ -349,7 +349,7 @@ class layoutAdminController extends layout {
 		$this->setMessage('success_deleted');
 		$this->setRedirectUrl(Context::get('error_return_url'));
 	}
-	
+
 	/**
 	 * delete image into user layout
 	 * @param int    $layout_srl
@@ -361,7 +361,7 @@ class layoutAdminController extends layout {
 		$path = $oLayoutModel->getUserLayoutImagePath($layout_srl);
 		@unlink($path . $filename);
 	}
-	
+
 	// deprecated
 	/**
 	 * Save layout configuration
@@ -371,18 +371,18 @@ class layoutAdminController extends layout {
 	 **/
 	function procLayoutAdminUserValueInsert(){
 		$oModuleModel = getModel('module');
-		
+
 		$mid = Context::get('mid');
 		if(!$mid) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		$site_module_info = Context::get('site_module_info');
 		$columnList = array('layout_srl');
 		$module_info = $oModuleModel->getModuleInfoByMid($mid, $site_module_info->site_srl, $columnList);
 		$layout_srl = $module_info->layout_srl;
 		if(!$layout_srl) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		$oLayoutModel = getModel('layout');
-		
+
 		// save tmp?
 		$temp = Context::get('saveTemp');
 		if($temp == 'Y'){
@@ -392,23 +392,23 @@ class layoutAdminController extends layout {
 			// delete temp files
 			$this->deleteUserLayoutTempFile($layout_srl);
 		}
-		
+
 		$this->add('saveTemp', $temp);
-		
+
 		// write user layout
 		$extension_obj = Context::gets('e1', 'e2', 'neck', 'knee');
-		
+
 		$file = $oLayoutModel->getUserLayoutHtml($layout_srl);
 		$content = FileHandler::readFile($file);
 		$content = $this->addExtension($layout_srl, $extension_obj, $content);
 		FileHandler::writeFile($file, $content);
-		
+
 		// write faceoff.css
 		$css = stripslashes(Context::get('css'));
-		
+
 		$css_file = $oLayoutModel->getUserLayoutFaceOffCss($layout_srl);
 		FileHandler::writeFile($css_file, $css);
-		
+
 		// write ini
 		$obj = Context::gets('type', 'align', 'column');
 		$obj = (array)$obj;
@@ -416,7 +416,7 @@ class layoutAdminController extends layout {
 		foreach($obj as $key => $val) $src[$key] = $val;
 		$this->insertUserLayoutValue($layout_srl, $src);
 	}
-	
+
 	/**
 	 * Layout setting, save "ini"
 	 * @param int    $layout_srl
@@ -428,7 +428,7 @@ class layoutAdminController extends layout {
 		$file = $oLayoutModel->getUserLayoutIni($layout_srl);
 		FileHandler::writeIniFile($file, $arr);
 	}
-	
+
 	/**
 	 * Add the widget code for faceoff into user layout file
 	 * @param int    $layout_srl
@@ -441,22 +441,22 @@ class layoutAdminController extends layout {
 		$reg = '/(<\!\-\- start\-e1 \-\->)(.*)(<\!\-\- end\-e1 \-\->)/i';
 		$extension_content = '\1' . stripslashes($arg->e1) . '\3';
 		$content = preg_replace($reg, $extension_content, $content);
-		
+
 		$reg = '/(<\!\-\- start\-e2 \-\->)(.*)(<\!\-\- end\-e2 \-\->)/i';
 		$extension_content = '\1' . stripslashes($arg->e2) . '\3';
 		$content = preg_replace($reg, $extension_content, $content);
-		
+
 		$reg = '/(<\!\-\- start\-neck \-\->)(.*)(<\!\-\- end\-neck \-\->)/i';
 		$extension_content = '\1' . stripslashes($arg->neck) . '\3';
 		$content = preg_replace($reg, $extension_content, $content);
-		
+
 		$reg = '/(<\!\-\- start\-knee \-\->)(.*)(<\!\-\- end\-knee \-\->)/i';
 		$extension_content = '\1' . stripslashes($arg->knee) . '\3';
 		$content = preg_replace($reg, $extension_content, $content);
 		return $content;
 	}
-	
-	
+
+
 	/**
 	 * Delete temp files for faceoff
 	 * @param int $layout_srl
@@ -469,7 +469,7 @@ class layoutAdminController extends layout {
 			FileHandler::removeFile($file);
 		}
 	}
-	
+
 	/**
 	 * export user layout
 	 * @return void
@@ -477,23 +477,23 @@ class layoutAdminController extends layout {
 	function procLayoutAdminUserLayoutExport(){
 		$layout_srl = Context::get('layout_srl');
 		if(!$layout_srl) return new BaseObject('-1', 'msg_invalid_request');
-		
+
 		require_once(_DAOL_PATH_ . 'libs/tar.class.php');
 		$oLayoutModel = getModel('layout');
-		
+
 		// Copy files to temp path
 		$file_path = $oLayoutModel->getUserLayoutPath($layout_srl);
 		$target_path = $oLayoutModel->getUserLayoutPath(0);
 		FileHandler::copyDir($file_path, $target_path);
-		
+
 		// replace path and ini config
 		$ini_config = $oLayoutModel->getUserLayoutIniConfig(0);
 		$file_list = $oLayoutModel->getUserLayoutFileList($layout_srl);
 		unset($file_list[2]);
-		
+
 		foreach($file_list as $file){
 			if(preg_match('/^images/', $file)) continue;
-			
+
 			// replace path
 			$file = $target_path . $file;
 			$content = FileHandler::readFile($file);
@@ -502,15 +502,15 @@ class layoutAdminController extends layout {
 				$content = preg_replace($pattern, '../', $content);
 			else
 				$content = preg_replace($pattern, './', $content);
-			
+
 			// replace ini config
 			foreach($ini_config as $key => $value){
 				$content = str_replace('{$layout_info->faceoff_ini_config[\'' . $key . '\']}', $value, $content);
 			}
-			
+
 			FileHandler::writeFile($file, $content);
 		}
-		
+
 		// make info.xml
 		$info_file = $target_path . 'conf/info.xml';
 		FileHandler::copyFile('./modules/layout/faceoff/conf/info.xml', $info_file);
@@ -518,7 +518,7 @@ class layoutAdminController extends layout {
 		$content = str_replace('type="faceoff"', '', $content);
 		FileHandler::writeFile($info_file, $content);
 		$file_list[] = 'conf/info.xml';
-		
+
 		// make css file
 		$css_file = $target_path . 'css/layout.css';
 		FileHandler::copyFile('./modules/layout/faceoff/css/layout.css', $css_file);
@@ -528,7 +528,7 @@ class layoutAdminController extends layout {
 		FileHandler::writeFile($css_file, "\n" . $content, 'a');
 		$content = FileHandler::readFile($target_path . 'layout.css');
 		FileHandler::writeFile($css_file, "\n" . $content, 'a');
-		
+
 		// css load
 		$content = FileHandler::readFile($target_path . 'layout.html');
 		$content = "<load target=\"css/layout.css\" />\n" . $content;
@@ -536,13 +536,13 @@ class layoutAdminController extends layout {
 		unset($file_list[3]);
 		unset($file_list[1]);
 		$file_list[] = 'css/layout.css';
-		
+
 		// Compress the files
 		$tar = new tar();
 		$user_layout_path = FileHandler::getRealPath($oLayoutModel->getUserLayoutPath(0));
 		chdir($user_layout_path);
 		foreach($file_list as $key => $file) $tar->addFile($file);
-		
+
 		$stream = $tar->toTarStream();
 		$filename = 'faceoff_' . date('YmdHis') . '.tar';
 		header("Cache-Control: ");
@@ -555,13 +555,13 @@ class layoutAdminController extends layout {
 		echo $stream;
 		// Close Context and then exit
 		Context::close();
-		
+
 		// delete temp path
 		FileHandler::removeDir($target_path);
-		
+
 		exit();
 	}
-	
+
 	/**
 	 * faceoff import
 	 * @deprecated
@@ -569,25 +569,25 @@ class layoutAdminController extends layout {
 	 **/
 	function procLayoutAdminUserLayoutImport(){
 		return $this->stop('not supported');
-		
+
 		// check upload
 		if(!Context::isUploaded()) exit();
 		$file = Context::get('file');
 		if(!is_uploaded_file($file['tmp_name']) || !checkUploadedFile($file['tmp_name'])) exit();
 		if(!preg_match('/\.(tar)$/i', $file['name'])) exit();
-		
+
 		$layout_srl = Context::get('layout_srl');
 		if(!$layout_srl) exit();
-		
+
 		$oLayoutModel = getModel('layout');
 		$user_layout_path = FileHandler::getRealPath($oLayoutModel->getUserLayoutPath($layout_srl));
 		if(!move_uploaded_file($file['tmp_name'], $user_layout_path . 'faceoff.tar')) exit();
-		
+
 		$this->importLayout($layout_srl, $user_layout_path . 'faceoff.tar');
-		
+
 		$this->setRedirectUrl(Context::get('error_return_url'));
 	}
-	
+
 	/**
 	 * layout copy
 	 * @return void
@@ -597,70 +597,70 @@ class layoutAdminController extends layout {
 		if($sourceArgs->layout == 'faceoff'){
 			return $this->stop('not supported');
 		}
-		
+
 		if(!$sourceArgs->layout_srl){
 			return $this->stop('msg_empty_origin_layout');
 		}
-		
+
 		if(!is_array($sourceArgs->title) || count($sourceArgs->title) == 0){
 			return $this->stop('msg_empty_target_layout');
 		}
-		
+
 		$oLayoutModel = getModel('layout');
 		$layout = $oLayoutModel->getLayout($sourceArgs->layout_srl);
-		
+
 		$output = $oLayoutModel->getLayoutRawData($sourceArgs->layout_srl, array('extra_vars'));
 		$args = new stdClass();
 		$args->extra_vars = $output->extra_vars;
 		$extra_vars = unserialize($args->extra_vars);
-		
+
 		$oModuleController = getController('module');
 		$layout_config = new stdClass();
 		$layout_config->header_script = $extra_vars->header_script;
-		
+
 		// Get information to create a layout
 		$args->site_srl = (int)$layout->site_srl;
 		$args->layout = $layout->layout;
 		$args->layout_type = $layout->type;
 		if(!$args->layout_type) $args->layout_type = "P";
-		
+
 		$oDB = &DB::getInstance();
 		$oDB->begin();
-		
+
 		if(is_array($sourceArgs->title)){
 			foreach($sourceArgs->title AS $key => $value){
 				if(!trim($value)){
 					continue;
 				}
-				
+
 				$args->layout_srl = getNextSequence();
 				$args->title = $value;
-				
+
 				// for header script
 				$oModuleController->insertModulePartConfig('layout', $args->layout_srl, $layout_config);
-				
+
 				// Insert into the DB
 				$output = $this->insertLayout($args);
 				if(!$output->toBool()){
 					$oDB->rollback();
 					return $output;
 				}
-				
+
 				// initiate if it is faceoff layout
 				$this->initLayout($args->layout_srl, $args->layout);
-				
+
 				// update layout info
 				$output = $this->updateLayout($args);
 				if(!$output->toBool()){
 					$oDB->rollback();
 					return $output;
 				}
-				
+
 				$this->_copyLayoutFile($layout->layout_srl, $args->layout_srl);
 			}
 		}
 		$oDB->commit();
-		
+
 		$this->setMessage('success_registed');
 		if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))){
 			global $lang;
@@ -673,7 +673,7 @@ class layoutAdminController extends layout {
 			exit;
 		}
 	}
-	
+
 	/**
 	 * Layout file copy
 	 * @param $sourceLayoutSrl origin layout number
@@ -684,11 +684,11 @@ class layoutAdminController extends layout {
 		$oLayoutModel = getModel('layout');
 		$sourceLayoutPath = FileHandler::getRealPath($oLayoutModel->getUserLayoutPath($sourceLayoutSrl));
 		$targetLayoutPath = FileHandler::getRealPath($oLayoutModel->getUserLayoutPath($targetLayoutSrl));
-		
+
 		$sourceImagePath = $oLayoutModel->getUserLayoutImagePath($sourceLayoutSrl);
 		$targetImagePath = $oLayoutModel->getUserLayoutImagePath($targetLayoutSrl);
 		FileHandler::makeDir($targetImagePath);
-		
+
 		$sourceFileList = $oLayoutModel->getUserLayoutFileList($sourceLayoutSrl);
 		foreach($sourceFileList as $key => $file){
 			if(is_readable($sourceLayoutPath . $file)){
@@ -699,7 +699,7 @@ class layoutAdminController extends layout {
 			}
 		}
 	}
-	
+
 	/**
 	 * Change resource file path in Layout file
 	 * @param string $file
@@ -710,7 +710,7 @@ class layoutAdminController extends layout {
 		$content = str_replace($source, $target, $content);
 		FileHandler::writeFile($file, $content);
 	}
-	
+
 	/**
 	 * import layout
 	 * @param int    $layout_srl
@@ -724,7 +724,7 @@ class layoutAdminController extends layout {
 		foreach($file_list as $key => $file){
 			FileHandler::removeFile($user_layout_path . $file);
 		}
-		
+
 		require_once(_DAOL_PATH_ . 'libs/tar.class.php');
 		$image_path = $oLayoutModel->getUserLayoutImagePath($layout_srl);
 		FileHandler::makeDir($image_path);
@@ -732,7 +732,7 @@ class layoutAdminController extends layout {
 		$tar->openTAR($source_file);
 		// If layout.ini file does not exist
 		if(!$tar->getFile('layout.ini')) return;
-		
+
 		$replace_path = getNumberingPath($layout_srl, 3);
 		foreach($tar->files as $key => $info){
 			FileHandler::writeFile($user_layout_path . $info['name'], str_replace('__LAYOUT_PATH__', $replace_path, $info['file']));
@@ -740,7 +740,7 @@ class layoutAdminController extends layout {
 		// Remove uploaded file
 		FileHandler::removeFile($source_file);
 	}
-	
+
 	/**
 	 * Upload config image
 	 */
@@ -748,63 +748,63 @@ class layoutAdminController extends layout {
 		$layoutSrl = Context::get('layout_srl');
 		$name = Context::get('name');
 		$img = Context::get('img');
-		
+
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile("after_upload_config_image.html");
-		
+
 		if(!$img['tmp_name'] || !is_uploaded_file($img['tmp_name']) || !checkUploadedFile($img['tmp_name'])){
 			Context::set('msg', Context::getLang('upload failed'));
 			return;
 		}
-		
+
 		if(!preg_match('/\.(jpg|jpeg|gif|png)$/i', $img['name'])){
 			Context::set('msg', Context::getLang('msg_layout_image_target'));
 			return;
 		}
-		
+
 		$path = sprintf('./files/attach/images/%s/', $layoutSrl);
 		$tmpPath = $path . 'tmp/';
 		if(!FileHandler::makeDir($tmpPath)){
 			Context::set('msg', Context::getLang('make directory failed'));
 			return;
 		}
-		
+
 		$ext = substr(strrchr($img['name'], '.'), 1);
 		$_fileName = md5(crypt(rand(1000000, 900000), rand(0, 100))) . '.' . $ext;
 		$fileName = $path . $_fileName;
 		$tmpFileName = $tmpPath . $_fileName;
-		
+
 		if(!move_uploaded_file($img['tmp_name'], $tmpFileName)){
 			Context::set('msg', Context::getLang('move file failed'));
 			return;
 		}
-		
+
 		Context::set('name', $name);
 		Context::set('fileName', $fileName);
 		Context::set('tmpFileName', $tmpFileName);
 	}
-	
+
 	/**
 	 * Delete config image
 	 */
 	function procLayoutAdminConfigImageDelete(){
 		$layoutSrl = Context::get('layout_srl');
 		$name = Context::get('name');
-		
+
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile("after_delete_config_image.html");
-		
+
 		$oModel = getModel('layout');
 		$layoutInfo = $oModel->getLayout($layoutSrl);
-		
+
 		if($layoutInfo->extra_var_count){
 			foreach($layoutInfo->extra_var as $varId => $val){
 				$newLayoutInfo->{$varId} = $val->value;
 			}
 		}
-		
+
 		unset($newLayoutInfo->{$name});
-		
+
 		$args->layout_srl = $layoutSrl;
 		$args->extra_vars = serialize($newLayoutInfo);
 		$output = $this->updateLayout($args);
@@ -812,7 +812,7 @@ class layoutAdminController extends layout {
 			Context::set('msg', Context::getLang($output->getMessage()));
 			return $output;
 		}
-		
+
 		FileHandler::removeFile($layoutInfo->extra_var->{$name}->value);
 		Context::set('name', $name);
 	}

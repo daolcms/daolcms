@@ -37,15 +37,15 @@ class QueryArgumentValidator {
 	 * @var int
 	 */
 	var $max_length;
-	
+
 	var $validator_string;
-	
+
 	/**
 	 * Query argument for validate
 	 * @var QueryArgument object
 	 */
 	var $argument;
-	
+
 	/**
 	 * constructor
 	 * @param Xml_Node_     $tag tag object by Query xml file parse
@@ -55,19 +55,19 @@ class QueryArgumentValidator {
 	function __construct($tag, $argument) {
 		$this->argument = $argument;
 		$this->argument_name = $this->argument->getArgumentName();
-		
+
 		$this->default_value = $tag->attrs->default;
 		$this->notnull = $tag->attrs->notnull;
 		$this->filter = $tag->attrs->filter;
 		$this->min_length = $tag->attrs->min_length;
 		$this->max_length = $tag->attrs->max_length;
 	}
-	
+
 	function isIgnorable() {
 		if(isset($this->default_value) || isset($this->notnull)) return false;
 		return true;
 	}
-	
+
 	function toString() {
 		$validator = '';
 		if($this->filter) {

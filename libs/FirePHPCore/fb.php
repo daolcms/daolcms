@@ -57,7 +57,7 @@ require_once dirname(__FILE__).'/FirePHP.class.php';
 function fb()
 {
   $instance = FirePHP::getInstance(true);
-  
+
   $args = func_get_args();
   return call_user_func_array(array($instance,'fb'),$args);
 }
@@ -76,7 +76,7 @@ class FB
     $instance = FirePHP::getInstance(true);
     $instance->setEnabled($Enabled);
   }
-  
+
   /**
    * Check if logging is enabled
    * 
@@ -87,7 +87,7 @@ class FB
     $instance = FirePHP::getInstance(true);
     return $instance->getEnabled();
   }  
-  
+
   /**
    * Specify a filter to be used when encoding an object
    * 
@@ -102,7 +102,7 @@ class FB
     $instance = FirePHP::getInstance(true);
     $instance->setObjectFilter($Class, $Filter);
   }
-  
+
   /**
    * Set some options for the library
    * 

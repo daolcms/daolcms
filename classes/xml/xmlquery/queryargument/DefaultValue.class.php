@@ -42,7 +42,7 @@ class DefaultValue {
 	 * @var bool
 	 */
 	var $_is_string_from_function = false;
-	
+
 	/**
 	 * constructor
 	 * @param string $column_name column name
@@ -55,39 +55,39 @@ class DefaultValue {
 		$this->value = $value;
 		$this->value = $this->_setValue();
 	}
-	
+
 	function isString() {
 		return $this->_is_string;
 		$str_pos = strpos($this->value, '(');
 		if($str_pos === false) return true;
 		return false;
 	}
-	
+
 	function isStringFromFunction() {
 		return $this->_is_string_from_function;
 	}
-	
+
 	function isSequence() {
 		return $this->is_sequence;
 	}
-	
+
 	function isOperation() {
 		return $this->is_operation;
 	}
-	
+
 	function getOperation() {
 		return $this->operation;
 	}
-	
+
 	function _setValue() {
 		if(!isset($this->value)) return;
-		
+
 		// If value contains comma separated values and does not contain paranthesis
 		//  -> default value is an array
 		if(strpos($this->value, ',') !== false && strpos($this->value, '(') === false) {
 			return sprintf('array(%s)', $this->value);
 		}
-		
+
 		$str_pos = strpos($this->value, '(');
 		// // TODO Replace this with parseExpression
 		if($str_pos === false) {
@@ -95,10 +95,10 @@ class DefaultValue {
 			return '\'' . $this->value . '\'';
 		}
 		//if($str_pos===false) return $this->value;
-		
+
 		$func_name = substr($this->value, 0, $str_pos);
 		$args = substr($this->value, $str_pos + 1, -1);
-		
+
 		switch($func_name) {
 			case 'ipaddress' :
 				$val = '$_SERVER[\'REMOTE_ADDR\']';
@@ -137,10 +137,10 @@ class DefaultValue {
 				$val = '\'' . $this->value . '\'';
 			//$val = $this->value;
 		}
-		
+
 		return $val;
 	}
-	
+
 	function toString() {
 		return $this->value;
 	}

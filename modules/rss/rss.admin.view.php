@@ -15,8 +15,8 @@ class rssAdminView extends rss {
 		//Set template path
 		$this->setTemplatePath($this->module_path . 'tpl');
 	}
-	
-	
+
+
 	/**
 	 * In case an administrator page has been initialized
 	 *
@@ -30,7 +30,7 @@ class rssAdminView extends rss {
 			$total_config = new stdClass();
 		}
 		$oRssModel = getModel('rss');
-		
+
 		if($rss_config){
 			$feed_config = array();
 			foreach($rss_config as $module_srl => $config){
@@ -50,14 +50,14 @@ class rssAdminView extends rss {
 		}
 		if(!$total_config->feed_document_count) $total_config->feed_document_count = 15;
 		$total_config->url = $oRssModel->getModuleFeedUrl(NULL, '', 'rss', TRUE);
-		
+
 		Context::set('feed_config', $feed_config);
 		Context::set('total_config', $total_config);
-		
+
 		$security = new Security();
 		$security->encodeHTML('feed_config..mid', 'feed_config..url');
 		$security->encodeHTML('total_config..');
-		
+
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile('rss_admin_index');
 	}

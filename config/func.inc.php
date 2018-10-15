@@ -264,7 +264,7 @@ function checkUserSequence($seq){
 	if(!in_array($seq, $_SESSION['seq'])){
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -284,10 +284,10 @@ function checkUserSequence($seq){
 function getUrl(){
 	$num_args = func_num_args();
 	$args_list = func_get_args();
-	
+
 	if($num_args) $url = Context::getUrl($num_args, $args_list);
 	else $url = Context::getRequestUri();
-	
+
 	return preg_replace('@\berror_return_url=[^&]*|\w+=(?:&|$)@', '', $url);
 }
 
@@ -300,10 +300,10 @@ function getUrl(){
 function getNotEncodedUrl(){
 	$num_args = func_num_args();
 	$args_list = func_get_args();
-	
+
 	if($num_args) $url = Context::getUrl($num_args, $args_list, null, false);
 	else $url = Context::getRequestUri();
-	
+
 	return preg_replace('@\berror_return_url=[^&]*|\w+=(?:&|$)@', '', $url);
 }
 
@@ -316,10 +316,10 @@ function getNotEncodedUrl(){
 function getAutoEncodedUrl(){
 	$num_args = func_num_args();
 	$args_list = func_get_args();
-	
+
 	if($num_args) $url = Context::getUrl($num_args, $args_list, null, true, true);
 	else $url = Context::getRequestUri();
-	
+
 	return preg_replace('@\berror_return_url=[^&]*|\w+=(?:&|$)@', '', $url);
 }
 
@@ -333,7 +333,7 @@ function getFullUrl(){
 	$args_list = func_get_args();
 	$request_uri = Context::getRequestUri();
 	if(!$num_args) return $request_uri;
-	
+
 	$url = Context::getUrl($num_args, $args_list);
 	if(!preg_match('/^http/i', $url)){
 		preg_match('/^(http|https):\/\/([^\/]+)\//', $request_uri, $match);
@@ -352,7 +352,7 @@ function getNotEncodedFullUrl(){
 	$args_list = func_get_args();
 	$request_uri = Context::getRequestUri();
 	if(!$num_args) return $request_uri;
-	
+
 	$url = Context::getUrl($num_args, $args_list, null, false);
 	if(!preg_match('/^http/i', $url)){
 		preg_match('/^(http|https):\/\/([^\/]+)\//', $request_uri, $match);
@@ -371,12 +371,12 @@ function getNotEncodedFullUrl(){
 function getSiteUrl(){
 	$num_args = func_num_args();
 	$args_list = func_get_args();
-	
+
 	if(!$num_args) return Context::getRequestUri();
-	
+
 	$domain = array_shift($args_list);
 	$num_args = count($args_list);
-	
+
 	return Context::getUrl($num_args, $args_list, $domain);
 }
 
@@ -389,12 +389,12 @@ function getSiteUrl(){
 function getNotEncodedSiteUrl(){
 	$num_args = func_num_args();
 	$args_list = func_get_args();
-	
+
 	if(!$num_args) return Context::getRequestUri();
-	
+
 	$domain = array_shift($args_list);
 	$num_args = count($args_list);
-	
+
 	return Context::getUrl($num_args, $args_list, $domain, false);
 }
 
@@ -406,13 +406,13 @@ function getNotEncodedSiteUrl(){
 function getFullSiteUrl(){
 	$num_args = func_num_args();
 	$args_list = func_get_args();
-	
+
 	$request_uri = Context::getRequestUri();
 	if(!$num_args) return $request_uri;
-	
+
 	$domain = array_shift($args_list);
 	$num_args = count($args_list);
-	
+
 	$url = Context::getUrl($num_args, $args_list, $domain);
 	if(!preg_match('/^http/i', $url)){
 		preg_match('/^(http|https):\/\/([^\/]+)\//', $request_uri, $match);
@@ -452,19 +452,19 @@ function isSiteID($domain){
  **/
 function cut_str($string, $cut_size = 0, $tail = '...'){
 	if($cut_size < 1 || !$string) return $string;
-	
+
 	if($GLOBALS['use_mb_strimwidth'] || function_exists('mb_strimwidth')){
 		$GLOBALS['use_mb_strimwidth'] = TRUE;
 		return mb_strimwidth($string, 0, $cut_size + 4, $tail, 'utf-8');
 	}
-	
+
 	$chars = array(12, 4, 3, 5, 7, 7, 11, 8, 4, 5, 5, 6, 6, 4, 6, 4, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, 4, 8, 6, 8, 6, 10, 8, 8, 9, 8, 8, 7, 9, 8, 3, 6, 7, 7, 11, 8, 9, 8, 9, 8, 8, 7, 8, 8, 10, 8, 8, 8, 6, 11, 6, 6, 6, 4, 7, 7, 7, 7, 7, 3, 7, 7, 3, 3, 6, 3, 9, 7, 7, 7, 7, 4, 7, 3, 7, 6, 10, 6, 6, 7, 6, 6, 6, 9);
 	$max_width = $cut_size * $chars[0] / 2;
 	$char_width = 0;
-	
+
 	$string_length = strlen($string);
 	$char_count = 0;
-	
+
 	$idx = 0;
 	while($idx < $string_length && $char_count < $cut_size && $char_width <= $max_width){
 		$c = ord(substr($string, $idx, 1));
@@ -482,12 +482,12 @@ function cut_str($string, $cut_size = 0, $tail = '...'){
 			$idx += 3;
 		}
 	}
-	
+
 	$output = substr($string, 0, $idx);
 	if(strlen($output) < $string_length){
 		$output .= $tail;
 	}
-	
+
 	return $output;
 }
 
@@ -501,15 +501,15 @@ function zgap(){
 	if($time_zone < 0) $to = -1; else $to = 1;
 	$t_hour = substr($time_zone, 1, 2) * $to;
 	$t_min = substr($time_zone, 3, 2) * $to;
-	
+
 	$server_time_zone = date("O");
 	if($server_time_zone < 0) $so = -1; else $so = 1;
 	$c_hour = substr($server_time_zone, 1, 2) * $so;
 	$c_min = substr($server_time_zone, 3, 2) * $so;
-	
+
 	$g_min = $t_min - $c_min;
 	$g_hour = $t_hour - $c_hour;
-	
+
 	$gap = $g_min * 60 + $g_hour * 60 * 60;
 	return $gap;
 }
@@ -534,7 +534,7 @@ function ztime($str){
 	else{
 		$gap = zgap();
 	}
-	
+
 	return mktime($hour, $min, $sec, $month ? $month : 1, $day ? $day : 1, $year) + $gap;
 }
 
@@ -548,7 +548,7 @@ function ztime($str){
  **/
 function getTimeGap($date, $format = 'Y.m.d'){
 	$gap = time() + zgap() - ztime($date);
-	
+
 	$lang_time_gap = Context::getLang('time_gap');
 	if($gap < 60) $buff = sprintf($lang_time_gap['min'], (int)($gap / 60) + 1);
 	elseif($gap < 60 * 60) $buff = sprintf($lang_time_gap['mins'], (int)($gap / 60) + 1);
@@ -596,10 +596,10 @@ function zdate($str, $format = 'Y-m-d H:i:s', $conversion = true){
 				elseif($format == 'Y-m-d H:i:s') $format = 'H:i:s d-m-Y';
 				elseif($format == 'Y-m-d H:i') $format = 'H:i d-m-Y';
 				break;
-			
+
 		}
 	}
-	
+
 	// If year value is less than 1970, handle it separately.
 	if((int)substr($str, 0, 4) < 1970){
 		$hour = (int)substr($str, 8, 2);
@@ -608,7 +608,7 @@ function zdate($str, $format = 'Y-m-d H:i:s', $conversion = true){
 		$year = (int)substr($str, 0, 4);
 		$month = (int)substr($str, 4, 2);
 		$day = (int)substr($str, 6, 2);
-		
+
 		$trans = array(
 			'Y' => $year,
 			'y' => sprintf('%02d', $year % 100),
@@ -625,7 +625,7 @@ function zdate($str, $format = 'Y-m-d H:i:s', $conversion = true){
 			'M' => getMonthName($month),
 			'F' => getMonthName($month, FALSE)
 		);
-		
+
 		$string = strtr($format, $trans);
 	}
 	else{
@@ -667,11 +667,11 @@ function getEncodeEmailAddress($email){
  **/
 function debugPrint($debug_output = NULL, $display_option = TRUE, $file = '_debug_message.php'){
 	static $debug_file;
-	
+
 	if(!(__DEBUG__ & 1)){
 		return;
 	}
-	
+
 	static $firephp;
 	$bt = debug_backtrace();
 	if(is_array($bt)){
@@ -681,15 +681,15 @@ function debugPrint($debug_output = NULL, $display_option = TRUE, $file = '_debu
 	$file_name = str_replace(_DAOL_PATH_, '', $bt_debug_print['file']);
 	$line_num = $bt_debug_print['line'];
 	$function = $bt_called_function['class'] . $bt_called_function['type'] . $bt_called_function['function'];
-	
+
 	if(__DEBUG_OUTPUT__ == 2){
 		if(!isset($firephp)){
 			$firephp = FirePHP::getInstance(TRUE);
 		}
 		$type = FirePHP::INFO;
-		
+
 		$label = sprintf('[%s:%d] %s() (Memory usage: current=%s, peak=%s)', $file_name, $line_num, $function, FileHandler::filesize(memory_get_usage()), FileHandler::filesize(memory_get_peak_usage()));
-		
+
 		// Check a FirePHP option
 		if($display_option === 'TABLE'){
 			$label = $display_option;
@@ -702,20 +702,20 @@ function debugPrint($debug_output = NULL, $display_option = TRUE, $file = '_debu
 			$debug_output = 'The IP address is not allowed. Change the value of __DEBUG_PROTECT_IP__ into your IP address in config/config.user.inc.php or config/config.inc.php';
 			$label = NULL;
 		}
-		
+
 		$firephp->fb($debug_output, $label, $type);
 	}
 	else{
 		if(__DEBUG_PROTECT__ === 1 && __DEBUG_PROTECT_IP__ != $_SERVER['REMOTE_ADDR']){
 			return;
 		}
-		
+
 		$print = array();
 		if(!$debug_file){
 			$debug_file = _XE_PATH_ . 'files/' . $file;
 		}
 		if(!file_exists($debug_file)) $print[] = '<?php exit() ?>';
-		
+
 		if($display_option === TRUE || $display_option === 'ERROR'){
 			$print[] = sprintf("[%s %s:%d] %s() - mem(%s)", date('Y-m-d H:i:s'), $file_name, $line_num, $function, FileHandler::filesize(memory_get_usage()));;
 			$print[] = str_repeat('=', 80);
@@ -734,7 +734,7 @@ function debugPrint($debug_output = NULL, $display_option = TRUE, $file = '_debu
 		}
 		$backtrace_args = defined('\DEBUG_BACKTRACE_IGNORE_ARGS') ? \DEBUG_BACKTRACE_IGNORE_ARGS : 0;
 		$backtrace = debug_backtrace($backtrace_args);
-		
+
 		if(count($backtrace) > 1 && $backtrace[1]['function'] === 'debugPrint' && !$backtrace[1]['class']){
 			array_shift($backtrace);
 		}
@@ -834,33 +834,33 @@ function getMicroTime(){
 function delObjectVars($target_obj, $del_obj){
 	if(!is_object($target_obj)) return;
 	if(!is_object($del_obj)) return;
-	
+
 	$target_vars = get_object_vars($target_obj);
 	$del_vars = get_object_vars($del_obj);
-	
+
 	$target = array_keys($target_vars);
 	$del = array_keys($del_vars);
 	if(!count($target) || !count($del)) return $target_obj;
-	
+
 	$return_obj = new stdClass();
-	
+
 	$target_count = count($target);
 	for($i = 0; $i < $target_count; $i++){
 		$target_key = $target[$i];
 		if(!in_array($target_key, $del)) $return_obj->{$target_key} = $target_obj->{$target_key};
 	}
-	
+
 	return $return_obj;
 }
 
 function getDestroyXeVars(&$vars){
 	$del_vars = array('error_return_url', 'success_return_url', 'ruleset', 'xe_validator_id');
-	
+
 	foreach($del_vars as $var){
 		if(is_array($vars)) unset($vars[$var]);
 		else if(is_object($vars)) unset($vars->$var);
 	}
-	
+
 	return $vars;
 }
 
@@ -877,10 +877,10 @@ function handleError($errno, $errstr, $file, $line){
 	if(!__DEBUG__) return;
 	$errors = array(E_USER_ERROR, E_ERROR, E_PARSE);
 	if(!in_array($errno, $errors)) return;
-	
+
 	$output = sprintf("Fatal error : %s - %d", $file, $line);
 	$output .= sprintf("%d - %s", $errno, $errstr);
-	
+
 	debugPrint($output);
 }
 
@@ -910,14 +910,14 @@ function url_decode($str){
 function purifierHtml(&$content){
 	require_once(_DAOL_PATH_ . 'classes/security/Purifier.class.php');
 	$oPurifier = Purifier::getInstance();
-	
+
 	// @see https://github.com/xpressengine/xe-core/issues/2278
 	$logged_info = Context::get('logged_info');
 	$db_info = Context::getDBInfo();
 	if($logged_info->is_admin !== 'Y' && $db_info->use_nofollow == 'Y'){
 		$oPurifier->setConfig('HTML.Nofollow', true);
 	}
-	
+
 	$oPurifier->purify($content);
 }
 
@@ -931,22 +931,22 @@ function removeHackTag($content){
 	require_once(_DAOL_PATH_ . 'classes/security/EmbedFilter.class.php');
 	$oEmbedFilter = EmbedFilter::getInstance();
 	$oEmbedFilter->check($content);
-	
+
 	purifierHtml($content);
-	
+
 	// change the specific tags to the common texts
 	$content = preg_replace('@<(\/?(?:html|body|head|title|meta|base|link|script|style|applet)(/*).*?>)@i', '&lt;$1', $content);
-	
+
 	/**
 	 * Remove codes to abuse the admin session in src by tags of imaages and video postings
 	 * - Issue reported by Sangwon Kim
 	 **/
 	$content = preg_replace_callback('@<(/?)([a-z]+[0-9]?)((?>"[^"]*"|\'[^\']*\'|[^>])*?\b(?:on[a-z]+|data|style|background|href|(?:dyn|low)?src)\s*=[\s\S]*?)(/?)($|>|<)@i', 'removeSrcHack', $content);
-	
+
 	// xmp tag 확인 및 추가
 	$content = checkXmpTag($content);
 	$content = blockWidgetCode($content);
-	
+
 	return $content;
 }
 
@@ -958,7 +958,7 @@ function removeHackTag($content){
  **/
 function blockWidgetCode($content){
 	$content = preg_replace('/(<(?:img|div)(?:[^>]*))(widget)(?:(=([^>]*?)>))/is', '$1blocked-widget$3', $content);
-	
+
 	return $content;
 }
 
@@ -981,12 +981,12 @@ function checkUploadedFile($file){
  **/
 function checkXmpTag($content){
 	$content = preg_replace('@<(/?)xmp.*?>@i', '<\1xmp>', $content);
-	
+
 	if(($start_xmp = strrpos($content, '<xmp>')) !== false){
 		if(($close_xmp = strrpos($content, '</xmp>')) === false) $content .= '</xmp>';
 		else if($close_xmp < $start_xmp) $content .= '</xmp>';
 	}
-	
+
 	return $content;
 }
 
@@ -998,36 +998,36 @@ function checkXmpTag($content){
  */
 function removeSrcHack($match){
 	$tag = strtolower($match[2]);
-	
+
 	// xmp tag 정리
 	if($tag == 'xmp') return "<{$match[1]}xmp>";
 	if($match[1]) return $match[0];
 	if($match[4]) $match[4] = ' ' . $match[4];
-	
+
 	$attrs = array();
 	if(preg_match_all('/([\w:-]+)\s*=(?:\s*(["\']))?(?(2)(.*?)\2|([^ ]+))/s', $match[3], $m)){
 		foreach($m[1] as $idx => $name){
 			if(substr($name, 0, 2) == 'on') continue;
-			
+
 			$val = preg_replace_callback('/&#(?:x([a-fA-F0-9]+)|0*(\d+));/', function ($n){
 				return chr($n[1] ? ('0x00' . $n[1]) : ($n[2] + 0));
 			}, $m[3][$idx] . $m[4][$idx]);
 			$val = preg_replace('/^\s+|[\t\n\r]+/', '', $val);
-			
+
 			if(preg_match('/^[a-z]+script:/i', $val)) continue;
-			
+
 			$attrs[$name] = $val;
 		}
 	}
-	
+
 	$filter_arrts = array('style', 'src', 'href');
-	
+
 	if($tag === 'object') array_push($filter_arrts, 'data');
 	if($tag === 'param') array_push($filter_arrts, 'value');
-	
+
 	foreach($filter_arrts as $attr){
 		if(!isset($attrs[$attr])) continue;
-		
+
 		$attr_value = rawurldecode($attrs[$attr]);
 		$attr_value = htmlspecialchars_decode($attr_value, ENT_COMPAT);
 		$attr_value = preg_replace('/\s+|[\t\n\r]+/', '', $attr_value);
@@ -1035,11 +1035,11 @@ function removeSrcHack($match){
 			unset($attrs[$attr]);
 		}
 	}
-	
+
 	if(isset($attrs['style']) && preg_match('@(?:/\*|\*/|\n|:\s*expression\s*\()@i', $attrs['style'])){
 		unset($attrs['style']);
 	}
-	
+
 	$attr = array();
 	foreach($attrs as $name => $val){
 		if($tag == 'object' || $tag == 'embed' || $tag == 'a'){
@@ -1050,7 +1050,7 @@ function removeSrcHack($match){
 				}
 			}
 		}
-		
+
 		if($tag == 'img'){
 			$attribute = strtolower(trim($name));
 			if(strpos(strtolower($val), 'data:') === 0){
@@ -1061,7 +1061,7 @@ function removeSrcHack($match){
 		$attr[] = $name . "=\"{$val}\"";
 	}
 	$attr = count($attr) ? ' ' . implode(' ', $attr) : '';
-	
+
 	return "<{$match[1]}{$tag}{$attr}{$match[4]}>";
 }
 
@@ -1075,7 +1075,7 @@ if(!function_exists('hexrgb')){
 	 */
 	function hexrgb($hexstr){
 		$int = hexdec($hexstr);
-		
+
 		return array('red' => 0xFF & ($int >> 0x10),
 			'green' => 0xFF & ($int >> 0x8),
 			'blue' => 0xFF & $int);
@@ -1094,9 +1094,9 @@ function mysql_pre4_hash_password($password){
 	$nr = 1345345333;
 	$add = 7;
 	$nr2 = 0x12345671;
-	
+
 	settype($password, "string");
-	
+
 	for($i = 0; $i < strlen($password); $i++){
 		if($password[$i] == ' ' || $password[$i] == '\t') continue;
 		$tmp = ord($password[$i]);
@@ -1106,10 +1106,10 @@ function mysql_pre4_hash_password($password){
 	}
 	$result1 = sprintf("%08lx", $nr & ((1 << 31) - 1));
 	$result2 = sprintf("%08lx", $nr2 & ((1 << 31) - 1));
-	
+
 	if($result1 == '80000000') $nr += 0x80000000;
 	if($result2 == '80000000') $nr2 += 0x80000000;
-	
+
 	return sprintf("%08lx%08lx", $nr, $nr2);
 }
 
@@ -1120,12 +1120,12 @@ function mysql_pre4_hash_password($password){
  **/
 function getScriptPath(){
 	static $url = null;
-	
+
 	if($url == null){
 		$script_path = filter_var($_SERVER['SCRIPT_NAME'], FILTER_SANITIZE_STRING);
 		$url = str_ireplace('/tools/', '/', preg_replace('/index.php.*/i', '', str_replace('\\', '/', $script_path)));
 	}
-	
+
 	return $url;
 }
 
@@ -1202,14 +1202,14 @@ function _code2utf($num){
  */
 function detectUTF8($string, $return_convert = false, $urldecode = true){
 	if($urldecode) $string = urldecode($string);
-	
+
 	$sample = iconv('utf-8', 'utf-8', $string);
 	$is_utf8 = (md5($sample) === md5($string));
-	
+
 	if(!$urldecode) $string = urldecode($string);
-	
+
 	if($return_convert) return ($is_utf8) ? $string : iconv('euc-kr', 'utf-8', $string);
-	
+
 	return $is_utf8;
 }
 
@@ -1239,12 +1239,12 @@ function json_encode2($data){
 					break;
 				}
 			}
-			
+
 			$arr = array();
 			foreach($data as $k => $v){
 				$arr[] = ($rel ? '"' . strtr($k, array('\\' => '\\\\', '"' => '\\"')) . '":' : '') . json_encode2($v);
 			}
-			
+
 			return $rel ? '{' . join(',', $arr) . '}' : '[' . join(',', $arr) . ']';
 		default:
 			return '""';
@@ -1283,7 +1283,7 @@ function stripEmbedTagForAdmin(&$content, $writer_member_srl){
 	if(!Context::get('is_logged')) return;
 	$oModuleModel = &getModel('module');
 	$logged_info = Context::get('logged_info');
-	
+
 	if($writer_member_srl != $logged_info->member_srl && ($logged_info->is_admin == "Y" || $oModuleModel->isSiteAdmin($logged_info))){
 		if($writer_member_srl){
 			$oMemberModel =& getModel('member');
@@ -1297,7 +1297,7 @@ function stripEmbedTagForAdmin(&$content, $writer_member_srl){
 		$content = preg_replace('/<embed[^>]+>(\s*<\/embed>)?/is', $security_msg, $content);
 		$content = preg_replace('/<img[^>]+editor_component="multimedia_link"[^>]*>(\s*<\/img>)?/is', $security_msg, $content);
 	}
-	
+
 	return;
 }
 
@@ -1311,7 +1311,7 @@ function requirePear(){
 	if($required){
 		return;
 	}
-	
+
 	set_include_path(_DAOL_PATH_ . "libs/PEAR.1.9.5" . PATH_SEPARATOR . get_include_path());
 	$required = true;
 }
@@ -1320,29 +1320,29 @@ function checkCSRF(){
 	if($_SERVER['REQUEST_METHOD'] != 'POST'){
 		return false;
 	}
-	
+
 	// exception blog api write
 	$act = Context::get('act');
 	$actList = array('rss' => 1, 'atom' => 1, 'api' => 1);
 	if(isset($actList[$act])){
 		return true;
 	}
-	
+
 	$default_url = Context::getDefaultUrl();
 	$referer = $_SERVER["HTTP_REFERER"];
-	
+
 	if(strpos($default_url, 'xn--') !== FALSE && strpos($referer, 'xn--') === FALSE){
 		require_once(_DAOL_PATH_ . 'libs/idna_convert/idna_convert.class.php');
 		$IDN = new idna_convert(array('idn_version' => 2008));
 		$referer = $IDN->encode($referer);
 	}
-	
+
 	$default_url = parse_url($default_url);
 	$referer = parse_url($referer);
-	
+
 	$oModuleModel = getModel('module');
 	$siteModuleInfo = $oModuleModel->getDefaultMid();
-	
+
 	if($siteModuleInfo->site_srl == 0){
 		if($default_url['host'] !== $referer['host']){
 			return false;
@@ -1354,7 +1354,7 @@ function checkCSRF(){
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 
@@ -1381,7 +1381,7 @@ function changeValueInUrl($key, $requestKey, $dbKey, $urlName = 'success_return_
 		$arrayUrl = parse_url(Context::get('success_return_url'));
 		if($arrayUrl['query']){
 			parse_str($arrayUrl['query'], $parsedStr);
-			
+
 			if(isset($parsedStr[$key])){
 				$parsedStr[$key] = $requestKey;
 				$successReturnUrl .= $arrayUrl['path'] . '?' . http_build_query($parsedStr);
@@ -1444,7 +1444,7 @@ function closePopupScript(){
  */
 function reload($isOpener = false){
 	$reloadScript = $isOpener ? 'window.opener.location.reload()' : 'document.location.reload()';
-	
+
 	echo '<script type="text/javascript">' . $reloadScript . '</script>';
 }
 

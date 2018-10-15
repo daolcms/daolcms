@@ -8,13 +8,13 @@ require_once(_DAOL_PATH_ . 'modules/autoinstall/autoinstall.lib.php');
  * @author NAVER (developers@xpressengine.com)
  **/
 class autoinstallAdminController extends autoinstall {
-	
+
 	/**
 	 * Initialization
 	 **/
 	function init() {
 	}
-	
+
 	/**
 	 * Check file checksum is equal
 	 *
@@ -26,7 +26,7 @@ class autoinstallAdminController extends autoinstall {
 		$local_checksum = md5_file(FileHandler::getRealPath($file));
 		return ($local_checksum === $checksum);
 	}
-	
+
 	/**
 	 * Clean download file
 	 *
@@ -36,7 +36,7 @@ class autoinstallAdminController extends autoinstall {
 	function _cleanDownloaded($obj) {
 		FileHandler::removeDir($obj->download_path);
 	}
-	
+
 	/**
 	 * Update easy install information
 	 *
@@ -47,7 +47,7 @@ class autoinstallAdminController extends autoinstall {
 		$this->setMessage("success_updated", 'update');
 		$this->setRedirectUrl(Context::get('error_return_url'));
 	}
-	
+
 	/**
 	 * Update easy install information
 	 *
@@ -59,7 +59,7 @@ class autoinstallAdminController extends autoinstall {
 		if($item) {
 			$params["updatedate"] = $item->updatedate;
 		}
-		
+
 		$params["act"] = "getResourceapiUpdate";
 		$body = XmlGenerater::generate($params);
 		$buff = FileHandler::getRemoteResource(_XE_DOWNLOAD_SERVER_, $body, 3, "POST", "application/xml");
@@ -68,11 +68,11 @@ class autoinstallAdminController extends autoinstall {
 		$this->updateCategory($xmlDoc);
 		$this->updatePackages($xmlDoc);
 		$this->checkInstalled();
-		
+
 		$oAdminController = &getAdminController('admin');
 		$output = $oAdminController->cleanFavorite();
 	}
-	
+
 	/**
 	 * Update installed package information
 	 *
@@ -87,7 +87,7 @@ class autoinstallAdminController extends autoinstall {
 			if(!file_exists($real_path)) {
 				continue;
 			}
-			
+
 			$type = $oModel->getTypeFromPath($package->path);
 			if($type == "core") null;
 			else {
@@ -126,7 +126,7 @@ class autoinstallAdminController extends autoinstall {
 				if(!$xmlDoc) continue;
 				$version = $xmlDoc->{$type}->version->body;
 			}
-			
+
 			$args = new stdClass();
 			$args->package_srl = $package->package_srl;
 			$args->version = $package->version;
@@ -136,11 +136,11 @@ class autoinstallAdminController extends autoinstall {
 			} else {
 				$args->need_update = "N";
 			}
-			
+
 			$output = executeQuery("autoinstall.insertInstalledPackage", $args);
 		}
 	}
-	
+
 	/**
 	 * Install package
 	 *
@@ -158,12 +158,12 @@ class autoinstallAdminController extends autoinstall {
 		} else {
 			$ftp_password = $_SESSION['ftp_password'];
 		}
-		
+
 		$isSftpSupported = function_exists(ssh2_sftp);
 		foreach($packages as $package_srl) {
 			// XE 코어가 쉬운 설치되지 않도록 변경
 			if($package_srl == 18325662) continue;
-			
+
 			$package = $oModel->getPackage($package_srl);
 			if($oAdminModel->checkUseDirectModuleInstall($package)->toBool()) {
 				$oModuleInstaller = new DirectModuleInstaller($package);
@@ -174,24 +174,24 @@ class autoinstallAdminController extends autoinstall {
 			} else {
 				$oModuleInstaller = new FTPModuleInstaller($package);
 			}
-			
+
 			$oModuleInstaller->setServerUrl(_XE_DOWNLOAD_SERVER_);
 			$oModuleInstaller->setPassword($ftp_password);
 			$output = $oModuleInstaller->install();
 			if(!$output->toBool()) return $output;
 		}
-		
+
 		$this->_updateinfo();
-		
+
 		$this->setMessage('success_installed', 'update');
-		
+
 		if(Context::get('return_url')) {
 			$this->setRedirectUrl(Context::get('return_url'));
 		} else {
 			$this->setRedirectUrl(preg_replace('/act=[^&]*/', 'act=dispAutoinstallAdminIndex', Context::get('error_return_url')));
 		}
 	}
-	
+
 	/**
 	 * Update package informations using recieved data from server
 	 *
@@ -221,7 +221,7 @@ class autoinstallAdminController extends autoinstall {
 			}
 		}
 	}
-	
+
 	/**
 	 * Update category using recived data from server.
 	 *
@@ -244,7 +244,7 @@ class autoinstallAdminController extends autoinstall {
 			$output = executeQuery("autoinstall.insertCategory", $args);
 		}
 	}
-	
+
 	/**
 	 * Uninstall package
 	 *
@@ -256,14 +256,14 @@ class autoinstallAdminController extends autoinstall {
 		if($output->toBool() == FALSE) {
 			return $output;
 		}
-		
+
 		if(Context::get('return_url')) {
 			$this->setRedirectUrl(Context::get('return_url'));
 		} else {
 			$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminInstalledPackages'));
 		}
 	}
-	
+
 	/**
 	 * Uninstall package by package serial number
 	 *
@@ -272,10 +272,10 @@ class autoinstallAdminController extends autoinstall {
 	function uninstallPackageByPackageSrl($package_srl) {
 		$oModel = getModel('autoinstall');
 		$package = $oModel->getPackage($package_srl);
-		
+
 		return $this->_uninstallPackage($package);
 	}
-	
+
 	/**
 	 * Uninstall package by package path
 	 *
@@ -285,19 +285,19 @@ class autoinstallAdminController extends autoinstall {
 		$path = $package->path;
 		return $this->_uninstallPackage($package);
 	}
-	
+
 	private function _uninstallPackage($package) {
 		$path = $package->path;
-		
+
 		$oAdminModel = getAdminModel('autoinstall');
-		
+
 		if(!$_SESSION['ftp_password']) {
 			$ftp_password = Context::get('ftp_password');
 		} else {
 			$ftp_password = $_SESSION['ftp_password'];
 		}
 		$ftp_info = Context::getFTPInfo();
-		
+
 		$isSftpSupported = function_exists(ssh2_sftp);
 		if($oAdminModel->checkUseDirectModuleInstall($package)->toBool()) {
 			$oModuleInstaller = new DirectModuleInstaller($package);
@@ -308,17 +308,17 @@ class autoinstallAdminController extends autoinstall {
 		} else {
 			$oModuleInstaller = new FTPModuleInstaller($package);
 		}
-		
+
 		$oModuleInstaller->setServerUrl(_XE_DOWNLOAD_SERVER_);
-		
+
 		$oModuleInstaller->setPassword($ftp_password);
 		$output = $oModuleInstaller->uninstall();
 		if(!$output->toBool()) return $output;
-		
+
 		$this->_updateinfo();
-		
+
 		$this->setMessage('success_deleted', 'update');
-		
+
 		return new BaseObject();
 	}
 }

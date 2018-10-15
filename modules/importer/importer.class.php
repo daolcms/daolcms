@@ -16,7 +16,7 @@ class importer extends ModuleObject {
 	function moduleInstall() {
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * A method to check if successfully installed
 	 * @return bool
@@ -24,7 +24,7 @@ class importer extends ModuleObject {
 	function checkUpdate() {
 		return false;
 	}
-	
+
 	/**
 	 * Execute update
 	 * @return BaseObject
@@ -32,7 +32,7 @@ class importer extends ModuleObject {
 	function moduleUpdate() {
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * Re-generate the cache file
 	 * @return void

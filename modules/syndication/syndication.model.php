@@ -223,7 +223,7 @@ class syndicationModel extends syndication {
 								// 문서 전체를 신디케이션에 추가
 								Context::set('articles', $this->getArticles($module_srl, $page, $startTime, $endTime, 'article',$site_info->id));
 								$next_url = Context::get('articles')->next_url;
-								
+
 								break;
 							case 'deleted' :
 								// 문서 전체를 신디케이션에서 삭제

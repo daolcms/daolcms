@@ -6,14 +6,14 @@
  * high class of the member module
  **/
 class member extends ModuleObject {
-	
+
 	/**
 	 * Use sha1 encryption
 	 *
 	 * @var boolean
 	 **/
 	var $useSha1 = false;
-	
+
 	/**
 	 * constructor
 	 *
@@ -21,7 +21,7 @@ class member extends ModuleObject {
 	 **/
 	function __construct(){
 		if(!Context::isInstalled()) return;
-		
+
 		$oModuleModel = getModel('module');
 		$member_config = $oModuleModel->getModuleConfig('member');
 		// Set to use SSL upon actions related member join/information/password and so on
@@ -46,7 +46,7 @@ class member extends ModuleObject {
 			//Context::addSSLAction('getMemberMenu');
 		}
 	}
-	
+
 	/**
 	 * Implement if additional tasks are necessary when installing
 	 *
@@ -55,10 +55,10 @@ class member extends ModuleObject {
 	function moduleInstall(){
 		// Register action forward (to use in administrator mode)
 		$oModuleController = getController('module');
-		
+
 		$oDB = &DB::getInstance();
 		$oDB->addIndex("member_group", "idx_site_title", array("site_srl", "title"), true);
-		
+
 		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('member');
 
@@ -82,7 +82,7 @@ class member extends ModuleObject {
 		if(!$config->profile_image_max_height) $config->profile_image_max_height = '90';
 		if($config->group_image_mark!='Y') $config->group_image_mark = 'N';
 		if(!$config->password_strength) $config->password_strength = 'normal';
-		
+
 		if(!$config->password_hashing_algorithm){
 			$oPassword = new Password();
 			$config->password_hashing_algorithm = $oPassword->getBestAlgorithm();
@@ -93,28 +93,28 @@ class member extends ModuleObject {
 		if(!$config->password_hashing_auto_upgrade){
 			$config->password_hashing_auto_upgrade = 'Y';
 		}
-		
+
 		global $lang;
 		$oMemberModel = getModel('member');
 		// Create a member controller object
 		$oMemberController = getController('member');
 		$oMemberAdminController = getAdminController('member');
-		
+
 		if(!$args->signupForm || !is_array($args->signupForm)){
 			$identifier = $isNotInstall ? 'email_address' : 'user_id';
-			
+
 			$args->signupForm = $oMemberAdminController->createSignupForm($identifier);
 			$args->identifier = $identifier;
-			
+
 			$oModuleController->insertModuleConfig('member', $args);
-			
+
 			// Create Ruleset File
 			FileHandler::makeDir('./files/ruleset');
 			$oMemberAdminController->_createSignupRuleset($args->signupForm);
 			$oMemberAdminController->_createLoginRuleset($args->identifier);
 			$oMemberAdminController->_createFindAccountByQuestion($args->identifier);
 		}
-		
+
 		$groups = $oMemberModel->getGroups();
 		if(!count($groups)){
 			// Set an administrator, regular member(group1), and associate member(group2)
@@ -123,13 +123,13 @@ class member extends ModuleObject {
 			$group_args->is_default = 'N';
 			$group_args->is_admin = 'Y';
 			$output = $oMemberAdminController->insertGroup($group_args);
-			
+
 			$group_args = new stdClass();
 			$group_args->title = Context::getLang('default_group_1');
 			$group_args->is_default = 'Y';
 			$group_args->is_admin = 'N';
 			$output = $oMemberAdminController->insertGroup($group_args);
-			
+
 			$group_args = new stdClass();
 			$group_args->title = Context::getLang('default_group_2');
 			$group_args->is_default = 'N';
@@ -166,10 +166,10 @@ class member extends ModuleObject {
 		FileHandler::makeDir('./files/member_extra_info/image_mark');
 		FileHandler::makeDir('./files/member_extra_info/profile_image');
 		FileHandler::makeDir('./files/member_extra_info/signature');
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * a method to check if successfully installed
 	 *
@@ -189,36 +189,36 @@ class member extends ModuleObject {
 		if(!$oDB->isColumnExists("member_group_member", "site_srl")) return true;
 		if(!$oDB->isColumnExists("member_group", "site_srl")) return true;
 		if($oDB->isIndexExists("member_group", "uni_member_group_title")) return true;
-		
+
 		// Add a column for list_order (05/18/2011)
 		if(!$oDB->isColumnExists("member_group", "list_order")) return true;
-		
+
 		// image_mark 추가 (2009. 02. 14)
 		if(!$oDB->isColumnExists("member_group", "image_mark")) return true;
 		// Add c column for password expiration date
 		if(!$oDB->isColumnExists("member", "change_password_date")) return true;
-		
+
 		// Add columns of question and answer to verify a password
 		if(!$oDB->isColumnExists("member", "find_account_question")) return true;
 		if(!$oDB->isColumnExists("member", "find_account_answer")) return true;
-		
+
 		if(!$oDB->isColumnExists("member", "list_order")) return true;
 		if(!$oDB->isIndexExists("member", "idx_list_order")) return true;
-		
+
 		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('member');
 		// check signup form ordering info
 		if(!$config->signupForm) return true;
-		
+
 		foreach($config->signupForm as $form){
 			if($form->name === 'email_address' && $form->isPublic !== 'N'){
 				return true;
 			}
 		}
-		
+
 		// check agreement field exist
 		if($config->agreement) return true;
-		
+
 		if($config->skin){
 			$config_parse = explode('.', $config->skin);
 			if(count($config_parse) > 1){
@@ -226,17 +226,17 @@ class member extends ModuleObject {
 				if(is_dir($template_path)) return true;
 			}
 		}
-		
+
 		// supprot multilanguage agreement.
 		if(is_readable('./files/member_extra_info/agreement.txt')) return true;
-		
+
 		if(!is_readable('./files/ruleset/insertMember.xml')) return true;
 		if(!is_readable('./files/ruleset/login.xml')) return true;
 		if(!is_readable('./files/ruleset/find_member_account_by_question.xml')) return true;
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Execute update
 	 *
@@ -266,7 +266,7 @@ class member extends ModuleObject {
 		if($oDB->isIndexExists("member_group", "uni_member_group_title")){
 			$oDB->dropIndex("member_group", "uni_member_group_title", true);
 		}
-		
+
 		// Add a column(list_order) to "member_group" table (05/18/2011)
 		if(!$oDB->isColumnExists("member_group", "list_order")){
 			$oDB->addColumn("member_group", "list_order", "number", 11, '', true);
@@ -282,7 +282,7 @@ class member extends ModuleObject {
 			$oDB->addColumn("member", "change_password_date", "date");
 			executeQuery('member.updateAllChangePasswordDate');
 		}
-		
+
 		// Add columns of question and answer to verify a password
 		if(!$oDB->isColumnExists("member", "find_account_question")){
 			$oDB->addColumn("member", "find_account_question", "number", 11);
@@ -290,7 +290,7 @@ class member extends ModuleObject {
 		if(!$oDB->isColumnExists("member", "find_account_answer")){
 			$oDB->addColumn("member", "find_account_answer", "varchar", 250);
 		}
-		
+
 		if(!$oDB->isColumnExists("member", "list_order")){
 			$oDB->addColumn("member", "list_order", "number", 11);
 			set_time_limit(0);
@@ -301,30 +301,30 @@ class member extends ModuleObject {
 		if(!$oDB->isIndexExists("member", "idx_list_order")){
 			$oDB->addIndex("member", "idx_list_order", array("list_order"));
 		}
-		
+
 		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('member');
 		$oModuleController = getController('module');
-		
+
 		// check agreement value exist
 		if($config->agreement){
 			$agreement_file = _DAOL_PATH_ . 'files/member_extra_info/agreement_' . Context::get('lang_type') . '.txt';
 			$output = FileHandler::writeFile($agreement_file, $config->agreement);
-			
+
 			$config->agreement = NULL;
 			$output = $oModuleController->updateModuleConfig('member', $config);
 		}
-		
+
 		$oMemberAdminController = getAdminController('member');
 		// check signup form ordering info
 		if(!$config->signupForm || !is_array($config->signupForm)){
 			$identifier = 'email_address';
-			
+
 			$config->signupForm = $oMemberAdminController->createSignupForm($identifier);
 			$config->identifier = $identifier;
 			unset($config->agreement);
 		}
-		
+
 		// 회원정보에서 이메일 노출 제거
 		// @see https://github.com/daolcms/daolcms/issues/129
 		foreach($config->signupForm as $form){
@@ -334,7 +334,7 @@ class member extends ModuleObject {
 			}
 		}
 		$oModuleController->updateModuleConfig('member', $config);
-		
+
 		if($config->skin){
 			$config_parse = explode('.', $config->skin);
 			if(count($config_parse) > 1){
@@ -346,14 +346,14 @@ class member extends ModuleObject {
 				}
 			}
 		}
-		
+
 		if(is_readable('./files/member_extra_info/agreement.txt')){
 			$source_file = _DAOL_PATH_ . 'files/member_extra_info/agreement.txt';
 			$target_file = _DAOL_PATH_ . 'files/member_extra_info/agreement_' . Context::get('lang_type') . '.txt';
-			
+
 			FileHandler::rename($source_file, $target_file);
 		}
-		
+
 		FileHandler::makeDir('./files/ruleset');
 		if(!is_readable('./files/ruleset/insertMember.xml'))
 			$oMemberAdminController->_createSignupRuleset($config->signupForm);
@@ -361,10 +361,10 @@ class member extends ModuleObject {
 			$oMemberAdminController->_createLoginRuleset($config->identifier);
 		if(!is_readable('./files/ruleset/find_member_account_by_question.xml'))
 			$oMemberAdminController->_createFindAccountByQuestion($config->identifier);
-		
+
 		return new BaseObject(0, 'success_updated');
 	}
-	
+
 	/**
 	 * Re-generate the cache file
 	 *
@@ -372,24 +372,24 @@ class member extends ModuleObject {
 	 **/
 	function recompileCache(){
 	}
-	
+
 	/**
 	 * @brief Record login error and return the error, about IPaddress.
 	 **/
 	function recordLoginError($error = 0, $message = 'success'){
 		if($error == 0) return new BaseObject($error, $message);
-		
+
 		// Create a member model object
 		$oMemberModel = getModel('member');
 		$config = $oMemberModel->getMemberConfig();
-		
+
 		// Check if there is recoding table.
 		$oDB = &DB::getInstance();
 		if(!$oDB->isTableExists('member_login_count') || $config->enable_login_fail_report == 'N') return new BaseObject($error, $message);
-		
+
 		$args = new stdClass();
 		$args->ipaddress = $_SERVER['REMOTE_ADDR'];
-		
+
 		$output = executeQuery('member.getLoginCountByIp', $args);
 		if($output->data && $output->data->count){
 			$last_update = strtotime($output->data->last_update);
@@ -412,21 +412,21 @@ class member extends ModuleObject {
 		}
 		return new BaseObject($error, $message);
 	}
-	
+
 	/**
 	 * @brief Record login error and return the error, about MemberSrl.
 	 **/
 	function recordMemberLoginError($error = 0, $message = 'success', $args = NULL){
 		if($error == 0 || !$args->member_srl) return new BaseObject($error, $message);
-		
+
 		// Create a member model object
 		$oMemberModel = getModel('member');
 		$config = $oMemberModel->getMemberConfig();
-		
+
 		// Check if there is recoding table.
 		$oDB = &DB::getInstance();
 		if(!$oDB->isTableExists('member_count_history') || $config->enable_login_fail_report == 'N') return new BaseObject($error, $message);
-		
+
 		$output = executeQuery('member.getLoginCountHistoryByMemberSrl', $args);
 		if($output->data && $output->data->content){
 			//update

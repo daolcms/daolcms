@@ -6,13 +6,13 @@
  * @brief  tag module's controller class
  **/
 class tagController extends tag {
-	
+
 	/**
 	 * @brief Initialization
 	 **/
 	function init(){
 	}
-	
+
 	/**
 	 * @brief , (Comma) to clean up the tags attached to the trigger
 	 **/
@@ -23,7 +23,7 @@ class tagController extends tag {
 		$tag_count = count($tag_list);
 		$tag_list = array_unique($tag_list);
 		if(!count($tag_list)) return new BaseObject();
-		
+
 		foreach($tag_list as $tag){
 			if(!trim($tag)) continue;
 			$arranged_tag_list[] = trim($tag);
@@ -32,7 +32,7 @@ class tagController extends tag {
 		else $obj->tags = implode(',', $arranged_tag_list);
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief Input trigger tag
 	 * Enter a Tag to delete that article and then re-enter all the tags using a method
@@ -49,7 +49,7 @@ class tagController extends tag {
 		$args = new stdClass();
 		$args->module_srl = $module_srl;
 		$args->document_srl = $document_srl;
-		
+
 		$tag_list = explode(',', $tags);
 		$tag_count = count($tag_list);
 		for($i = 0; $i < $tag_count; $i++){
@@ -59,10 +59,10 @@ class tagController extends tag {
 			$output = executeQuery('tag.insertTag', $args);
 			if(!$output->toBool()) return $output;
 		}
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief Delete the tag trigger a specific article
 	 * document_srl delete tag belongs to
@@ -70,19 +70,19 @@ class tagController extends tag {
 	function triggerDeleteTag(&$obj){
 		$document_srl = $obj->document_srl;
 		if(!$document_srl) return new BaseObject();
-		
+
 		$args = new stdClass();
 		$args->document_srl = $document_srl;
 		return executeQuery('tag.deleteTag', $args);
 	}
-	
+
 	/**
 	 * @brief module delete trigger to delete all the tags
 	 **/
 	function triggerDeleteModuleTags(&$obj){
 		$module_srl = $obj->module_srl;
 		if(!$module_srl) return new BaseObject();
-		
+
 		$oTagController = getAdminController('tag');
 		return $oTagController->deleteModuleTags($module_srl);
 	}

@@ -6,7 +6,7 @@
  * @version 0.1
  */
 class ConditionSubquery extends Condition {
-	
+
 	/**
 	 * constructor
 	 * @param string $column_name

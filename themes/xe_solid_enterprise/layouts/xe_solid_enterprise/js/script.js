@@ -6,7 +6,7 @@ jQuery(function($){
 	var subItem = gnb.find('>li.m1>div.sub');
 	var lastEvent = null;
 	subItem.hide();
-	
+
 	function gnbToggle(){
 		var t = $(this);
 		gnbItem.removeClass('m_on');
@@ -57,7 +57,7 @@ jQuery(function($){
 		function(){$(this).addClass('on')},
 		function(){$(this).removeClass('on')}
 	);
-		
-		
+
+
 
 });

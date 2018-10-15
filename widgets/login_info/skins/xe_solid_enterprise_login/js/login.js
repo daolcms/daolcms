@@ -13,7 +13,7 @@ jQuery(function($){
 			sign_box.find('>div.mbInfo_window').slideToggle('fast');
 		});
 
-	
+
 });
 function completeLogin(ret_obj, response_tags, params, fo_obj) {
 	var url =  current_url.setQuery('act','');

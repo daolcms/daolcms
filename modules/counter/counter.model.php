@@ -7,7 +7,7 @@
  * @Adaptor DAOL Project (developer@daolcms.org)
  **/
 class counterModel extends counter {
-	
+
 	/**
 	 * Initialization
 	 *
@@ -15,7 +15,7 @@ class counterModel extends counter {
 	 **/
 	function init() {
 	}
-	
+
 	/**
 	 * Verify logs
 	 *
@@ -30,7 +30,7 @@ class counterModel extends counter {
 		$output = executeQuery('counter.getCounterLog', $args);
 		return $output->data->count ? true : false;
 	}
-	
+
 	/**
 	 * Check if a row of today's counter status exists
 	 *
@@ -48,7 +48,7 @@ class counterModel extends counter {
 		}
 		return $output->data->count ? true : false;
 	}
-	
+
 	/**
 	 * Get access statistics for a given date
 	 *
@@ -67,7 +67,7 @@ class counterModel extends counter {
 			if(strlen($selected_date) == 8) $selected_date = $selected_date;
 			$args->regdate = $selected_date;
 		}
-		
+
 		if($site_srl) {
 			$args->site_srl = $site_srl;
 			$output = executeQuery('counter.getSiteCounterStatusDays', $args);
@@ -75,18 +75,18 @@ class counterModel extends counter {
 			$output = executeQuery('counter.getCounterStatusDays', $args);
 		}
 		$status = $output->data;
-		
+
 		if(!is_array($selected_date)) return $status;
-		
+
 		if(!is_array($status)) $status = array($status);
 		unset($output);
-		
+
 		foreach($status as $key => $val) {
 			$output[substr($val->regdate, 0, 8)] = $val;
 		}
 		return $output;
 	}
-	
+
 	/**
 	 * Select hourly logs of a given date
 	 *
@@ -212,10 +212,10 @@ class counterModel extends counter {
 				}
 				break;
 		}
-		
+
 		$status->max = $max;
 		$status->sum = $sum;
 		return $status;
 	}
-	
+
 }

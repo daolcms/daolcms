@@ -14,7 +14,7 @@ class spamfilterModel extends spamfilter {
 	 */
 	function init(){
 	}
-	
+
 	/**
 	 * @brief Return the user setting values of the Spam filter module
 	 */
@@ -23,7 +23,7 @@ class spamfilterModel extends spamfilter {
 		$oModuleModel = getModel('module');
 		return $oModuleModel->getModuleConfig('spamfilter');
 	}
-	
+
 	/**
 	 * @brief Return the list of registered IP addresses which were banned
 	 */
@@ -36,25 +36,25 @@ class spamfilterModel extends spamfilter {
 		if(!is_array($output->data)) return array($output->data);
 		return $output->data;
 	}
-	
+
 	/**
 	 * @brief Check if the ipaddress is in the list of banned IP addresses
 	 */
 	function isDeniedIP(){
 		$ipaddress = $_SERVER['REMOTE_ADDR'];
-		
+
 		$ip_list = $this->getDeniedIPList();
 		if(!count($ip_list)) return new BaseObject();
-		
+
 		$count = count($ip_list);
 		for($i = 0; $i < $count; $i++){
 			$ip = str_replace('.', '\.', str_replace('*', '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)', $ip_list[$i]->ipaddress));
 			if(preg_match('/^' . $ip . '$/', $ipaddress, $matches)) return new BaseObject(-1, 'msg_alert_registered_denied_ip');
 		}
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief Return the list of registered Words which were banned
 	 */
@@ -66,14 +66,14 @@ class spamfilterModel extends spamfilter {
 		if(!is_array($output->data)) return array($output->data);
 		return $output->data;
 	}
-	
+
 	/**
 	 * @brief Check if the text, received as a parameter, is banned or not
 	 */
 	function isDeniedWord($text){
 		$word_list = $this->getDeniedWordList();
 		if(!count($word_list)) return new BaseObject();
-		
+
 		$count = count($word_list);
 		for($i = 0; $i < $count; $i++){
 			$word = $word_list[$i]->word;
@@ -83,22 +83,22 @@ class spamfilterModel extends spamfilter {
 				return new BaseObject(-1, sprintf(Context::getLang('msg_alert_denied_word'), $word));
 			}
 		}
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief Check the specified time
 	 */
 	function checkLimited($isMessage = FALSE){
 		$config = $this->getConfig();
-		
+
 		if($config->limits != 'Y') return new BaseObject();
 		$limit_count = '3';
 		$interval = '10';
-		
+
 		$count = $this->getLogCount($interval);
-		
+
 		$ipaddress = $_SERVER['REMOTE_ADDR'];
 		// Ban the IP address if the interval is exceeded
 		if($count >= $limit_count){
@@ -114,15 +114,15 @@ class spamfilterModel extends spamfilter {
 			else{
 				$message = sprintf(Context::getLang('msg_alert_limited_by_config'), $interval);
 			}
-			
+
 			$oSpamFilterController = getController('spamfilter');
 			$oSpamFilterController->insertLog();
-			
+
 			return new BaseObject(-1, $message);
 		}
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief Check if the trackbacks have already been registered to a particular article
 	 */
@@ -130,16 +130,16 @@ class spamfilterModel extends spamfilter {
 		$oTrackbackModel = getModel('trackback');
 		$count = $oTrackbackModel->getTrackbackCountByIPAddress($document_srl, $_SERVER['REMOTE_ADDR']);
 		if($count > 0) return new BaseObject(-1, 'msg_alert_trackback_denied');
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief Return the number of logs recorded within the interval for the specified IPaddress
 	 */
 	function getLogCount($time = 60, $ipaddress = ''){
 		if(!$ipaddress) $ipaddress = $_SERVER['REMOTE_ADDR'];
-		
+
 		$args->ipaddress = $ipaddress;
 		$args->regdate = date("YmdHis", $_SERVER['REQUEST_TIME'] - $time);
 		$output = executeQuery('spamfilter.getLogCount', $args);

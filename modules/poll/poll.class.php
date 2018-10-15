@@ -6,7 +6,7 @@
  * @brief  The parent class of the poll module
  **/
 class poll extends ModuleObject {
-	
+
 	/**
 	 * @brief Additional tasks required to accomplish during the installation
 	 **/
@@ -15,7 +15,7 @@ class poll extends ModuleObject {
 		$oModuleController = getController('module');
 		// Set the default skin
 		$oModuleController = getController('module');
-		
+
 		$config = new stdClass();
 		$config->skin = 'default';
 		$config->colorset = 'normal';
@@ -27,10 +27,10 @@ class poll extends ModuleObject {
 		$oModuleController->insertTrigger('comment.updateComment', 'poll', 'controller', 'triggerUpdateCommentPoll', 'after');
 		$oModuleController->insertTrigger('document.deleteDocument', 'poll', 'controller', 'triggerDeleteDocumentPoll', 'after');
 		$oModuleController->insertTrigger('comment.deleteComment', 'poll', 'controller', 'triggerDeleteCommentPoll', 'after');
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief A method to check if the installation has been successful
 	 **/
@@ -43,10 +43,10 @@ class poll extends ModuleObject {
 		if(!$oModuleModel->getTrigger('comment.updateComment', 'poll', 'controller', 'triggerUpdateCommentPoll', 'after')) return true;
 		if(!$oModuleModel->getTrigger('document.deleteDocument', 'poll', 'controller', 'triggerDeleteDocumentPoll', 'after')) return true;
 		if(!$oModuleModel->getTrigger('comment.deleteComment', 'poll', 'controller', 'triggerDeleteCommentPoll', 'after')) return true;
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * @brief Execute update
 	 **/
@@ -67,10 +67,10 @@ class poll extends ModuleObject {
 			$oModuleController->insertTrigger('document.updateDocument', 'poll', 'controller', 'triggerUpdateDocumentPoll', 'after');
 		if(!$oModuleModel->getTrigger('comment.updateComment', 'poll', 'controller', 'triggerUpdateCommentPoll', 'after'))
 			$oModuleController->insertTrigger('comment.updateComment', 'poll', 'controller', 'triggerUpdateCommentPoll', 'after');
-		
+
 		return new BaseObject(0, 'success_updated');
 	}
-	
+
 	/**
 	 * @brief Re-generate the cache file
 	 **/

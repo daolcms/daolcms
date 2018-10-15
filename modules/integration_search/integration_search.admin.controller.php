@@ -13,7 +13,7 @@ class integration_searchAdminController extends integration_search {
 	 **/
 	function init() {
 	}
-	
+
 	/**
 	 * Save Settings
 	 *
@@ -23,20 +23,20 @@ class integration_searchAdminController extends integration_search {
 		// Get configurations (using module model object)
 		$oModuleModel = &getModel('module');
 		$config = $oModuleModel->getModuleConfig('integration_search');
-		
+
 		$args->skin = Context::get('skin');
 		$args->target = Context::get('target');
 		$args->target_module_srl = Context::get('target_module_srl');
 		if(!$args->target_module_srl) $args->target_module_srl = '';
 		$args->skin_vars = $config->skin_vars;
-		
+
 		$oModuleController = &getController('module');
 		$output = $oModuleController->insertModuleConfig('integration_search', $args);
-		
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispIntegration_searchAdminContent');
 		return $this->setRedirectUrl($returnUrl, $output);
 	}
-	
+
 	/**
 	 * Save the skin information
 	 *
@@ -46,7 +46,7 @@ class integration_searchAdminController extends integration_search {
 		// Get configurations (using module model object)
 		$oModuleModel = &getModel('module');
 		$config = $oModuleModel->getModuleConfig('integration_search');
-		
+
 		$args->skin = $config->skin;
 		$args->target_module_srl = $config->target_module_srl;
 		// Get skin information (to check extra_vars)
@@ -60,7 +60,7 @@ class integration_searchAdminController extends integration_search {
 		if($skin_info->extra_vars) {
 			foreach($skin_info->extra_vars as $vars) {
 				if($vars->type != 'image') continue;
-				
+
 				$image_obj = $obj->{$vars->name};
 				// Get a variable on a request to delete
 				$del_var = $obj->{"del_" . $vars->name};
@@ -88,7 +88,7 @@ class integration_searchAdminController extends integration_search {
 				$path = sprintf("./files/attach/images/%s/", $module_srl);
 				// Create a directory
 				if(!FileHandler::makeDir($path)) return false;
-				
+
 				$filename = $path . $image_obj['name'];
 				// Move the file
 				if(!move_uploaded_file($image_obj['tmp_name'], $filename)) {
@@ -102,12 +102,12 @@ class integration_searchAdminController extends integration_search {
 		}
 		// Serialize and save 
 		$args->skin_vars = serialize($obj);
-		
+
 		$oModuleController = &getController('module');
 		$output = $oModuleController->insertModuleConfig('integration_search', $args);
-		
+
 		$this->setMessage('success_updated', 'info');
-		
+
 		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispIntegration_searchAdminSkinInfo');
 		return $this->setRedirectUrl($returnUrl, $output);
 	}

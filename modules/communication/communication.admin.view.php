@@ -6,13 +6,13 @@
  * communication module of the admin view class
  **/
 class communicationAdminView extends communication {
-	
+
 	/**
 	 * Initialization
 	 **/
 	function init() {
 	}
-	
+
 	/**
 	 * configuration to manage messages and friends
 	 * @return void
@@ -33,28 +33,28 @@ class communicationAdminView extends communication {
 		Context::set('communication_skin_list', $oModuleModel->getSkins($this->module_path));
 		// get a list of communication skins
 		Context::set('communication_mobile_skin_list', $oModuleModel->getSkins($this->module_path, 'm.skins'));
-		
+
 		// Get a layout list
 		$layout_list = $oLayoutModel->getLayoutList();
 		Context::set('layout_list', $layout_list);
-		
+
 		$mlayout_list = $oLayoutModel->getLayoutList(0, 'M');
 		Context::set('mlayout_list', $mlayout_list);
-		
+
 		$security = new Security();
 		$security->encodeHTML('communication_config..');
 		$security->encodeHTML('layout_list..');
 		$security->encodeHTML('editor_skin_list..');
 		$security->encodeHTML('communication_skin_list..title');
 		$security->encodeHTML('communication_mobile_skin_list..title');
-		
+
 		$oMemberModel = getModel('member');
 		$group_list = $oMemberModel->getGroups($this->site_srl);
 		Context::set('group_list', $group_list);
-		
+
 		// specify a template
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile('index');
 	}
-	
+
 }

@@ -16,10 +16,10 @@ class SortQueryArgument extends QueryArgument {
 			, $this->argument_name
 			, $this->argument_name
 			, '$args->' . $this->variable_name);
-		
-		
+
+
 		$arg .= $this->argument_validator->toString();
-		
+
 		$arg .= sprintf('if(!${\'%s_argument\'}->isValid()) return ${\'%s_argument\'}->getErrorMessage();' . "\n"
 			, $this->argument_name
 			, $this->argument_name

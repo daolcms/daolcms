@@ -16,7 +16,7 @@ class ColumnTag {
 	 * @var string
 	 */
 	var $name;
-	
+
 	/**
 	 * Constructor
 	 * @param string $name

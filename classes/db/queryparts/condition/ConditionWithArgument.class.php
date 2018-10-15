@@ -6,7 +6,7 @@
  * @version 0.1
  */
 class ConditionWithArgument extends Condition {
-	
+
 	/**
 	 * constructor
 	 * @param string $column_name
@@ -23,19 +23,19 @@ class ConditionWithArgument extends Condition {
 		parent::__construct($column_name, $argument, $operation, $pipe);
 		$this->_value = $argument->getValue();
 	}
-	
+
 	function getArgument() {
 		if(!$this->show()) return;
 		return $this->argument;
 	}
-	
+
 	/**
 	 * change string without value
 	 * @return string
 	 */
 	function toStringWithoutValue() {
 		$value = $this->argument->getUnescapedValue();
-		
+
 		if(is_array($value)) {
 			$q = '';
 			foreach($value as $v) $q .= '?,';
@@ -51,7 +51,7 @@ class ConditionWithArgument extends Condition {
 		}
 		return $this->pipe . ' ' . $this->getConditionPart($q);
 	}
-	
+
 	/**
 	 * @return boolean
 	 */

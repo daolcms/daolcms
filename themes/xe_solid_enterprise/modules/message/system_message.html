@@ -26,7 +26,7 @@
 			<div class="bottom_bar">
 				<a href="{getUrl('','act','dispMemberFindAccount')}" class="vr">{$lang->cmd_find_member_account}</a>
 				<a href="{getUrl('','act','dispMemberSignUpForm')}" >{$lang->cmd_signup}</a>
-				
+
 				<!--@if($member_config->enable_openid=='Y')-->
 				<a href="#oLogin" onclick="jQuery('#loginAccess').removeClass('gLogin'); jQuery('#loginAccess').addClass('oLogin'); return false;">Open ID</a>
 				<!--@end-->
@@ -34,10 +34,10 @@
 		</div><!-- //signPanel -->
 		</fieldset>
 		</form>
-		
-		
+
+
 	</div>
-	
+
 	<!-- OpenID -->
 	<!--@if($member_config->enable_openid=='Y')-->
 	<div class="oSignPanel" id="oLogin">
@@ -47,7 +47,7 @@
 				<div class="tInBox"><img src="images/bullet_input_id.gif" width="10" height="12" alt="" /><input type="text" name="openid" class="iText" title="Open ID" value="" /></div>
 				</div>
 				<div class="right">
-					
+
 				<input type="image" src="images/btn_signin.gif" width="70px" height="65px"/>
 				</div>
 			</fieldset>

@@ -7,19 +7,19 @@
  * View class of communication module
  **/
 class communicationView extends communication {
-	
+
 	/**
 	 * Initialization
 	 * @return void
 	 **/
 	function init() {
 		$oCommunicationModel = &getModel('communication');
-		
+
 		$this->communication_config = $oCommunicationModel->getConfig();
 		$skin = $this->communication_config->skin;
-		
+
 		Context::set('communication_config', $this->communication_config);
-		
+
 		$config_parse = explode('|@|', $skin);
 		if(count($config_parse) > 1) {
 			$tpl_path = sprintf('./themes/%s/modules/communication/', $config_parse[0]);
@@ -27,7 +27,7 @@ class communicationView extends communication {
 			$tpl_path = sprintf('%sskins/%s', $this->module_path, $skin);
 		}
 		$this->setTemplatePath($tpl_path);
-		
+
 		$oLayoutModel = &getModel('layout');
 		$layout_info = $oLayoutModel->getLayout($this->communication_config->layout_srl);
 		if($layout_info) {
@@ -35,7 +35,7 @@ class communicationView extends communication {
 			$this->setLayoutPath($layout_info->path);
 		}
 	}
-	
+
 	/**
 	 * Display message box
 	 * @return void|Object (void : success, Object : fail)
@@ -47,7 +47,7 @@ class communicationView extends communication {
 		if(!array_key_exists('dispCommunicationMessages', $logged_info->menu_list)) {
 			return $this->stop('msg_invalid_request');
 		}
-		
+
 		// Set the variables
 		$message_srl = Context::get('message_srl');
 		$message_type = Context::get('message_type');
@@ -55,7 +55,7 @@ class communicationView extends communication {
 			$message_type = 'R';
 			Context::set('message_type', $message_type);
 		}
-		
+
 		$oCommunicationModel = &getModel('communication');
 		// extract contents if message_srl exists
 		if($message_srl) {
@@ -86,20 +86,20 @@ class communicationView extends communication {
 		// Extract a list
 		$columnList = array('message_srl', 'readed', 'title', 'member.member_srl', 'member.nick_name', 'message.regdate', 'readed_date');
 		$output = $oCommunicationModel->getMessages($message_type, $columnList);
-		
+
 		// set a template file
 		Context::set('total_count', $output->total_count);
 		Context::set('total_page', $output->total_page);
 		Context::set('page', $output->page);
 		Context::set('message_list', $output->data);
 		Context::set('page_navigation', $output->page_navigation);
-		
+
 		$oSecurity = new Security();
 		$oSecurity->encodeHTML('message_list..nick_name');
-		
+
 		$this->setTemplateFile('messages');
 	}
-	
+
 	/**
 	 * display a new message
 	 * @return void|Object (void : success, Object : fail)
@@ -110,7 +110,7 @@ class communicationView extends communication {
 		// Error appears if not logged-in
 		if(!Context::get('is_logged')) return $this->stop('msg_not_logged');
 		$logged_info = Context::get('logged_info');
-		
+
 		$oCommunicationModel = &getModel('communication');
 		// get a new message
 		$columnList = array('message_srl', 'member_srl', 'nick_name', 'title', 'content', 'sender_srl');
@@ -119,15 +119,15 @@ class communicationView extends communication {
 			stripEmbedTagForAdmin($message->content, $message->sender_srl);
 			Context::set('message', $message);
 		}
-		
+
 		// Delete a flag
 		$flag_path = './files/communication_extra_info/new_message_flags/' . getNumberingPath($logged_info->member_srl);
 		$flag_file = sprintf('%s%s', $flag_path, $logged_info->member_srl);
 		FileHandler::removeFile($flag_file);
-		
+
 		$this->setTemplateFile('new_message');
 	}
-	
+
 	/**
 	 * Display message sending
 	 * @return void|Object (void : success, Object : fail)
@@ -141,11 +141,11 @@ class communicationView extends communication {
 		if(!Context::get('is_logged')) return $this->stop('msg_not_logged');
 		$logged_info = Context::get('logged_info');
 		// get receipient's information 
-		
+
 		// check inalid request
 		$receiver_srl = Context::get('receiver_srl');
 		if(!$receiver_srl) return $this->stop('msg_invalid_request');
-		
+
 		// check receiver and sender are same
 		if($logged_info->member_srl == $receiver_srl) return $this->stop('msg_cannot_send_to_yourself');
 		// get message_srl of the original message if it is a reply
@@ -158,12 +158,12 @@ class communicationView extends communication {
 				Context::set('source_message', $source_message);
 			}
 		}
-		
+
 		$receiver_info = $oMemberModel->getMemberInfoByMemberSrl($receiver_srl);
 		if(!$receiver_info) {
 			return $this->stop('msg_invalid_request');
 		}
-		
+
 		Context::set('receiver_info', $receiver_info);
 		// set a signiture by calling getEditor of the editor module
 		$oEditorModel = &getModel('editor');
@@ -181,10 +181,10 @@ class communicationView extends communication {
 		$option->colorset = $this->communication_config->editor_colorset;
 		$editor = $oEditorModel->getEditor($logged_info->member_srl, $option);
 		Context::set('editor', $editor);
-		
+
 		$this->setTemplateFile('send_message');
 	}
-	
+
 	/**
 	 * display a list of friends
 	 * @return void|Object (void : success, Object : fail)
@@ -192,7 +192,7 @@ class communicationView extends communication {
 	function dispCommunicationFriend() {
 		// Error appears if not logged-in
 		if(!Context::get('is_logged')) return $this->stop('msg_not_logged');
-		
+
 		$oCommunicationModel = &getModel('communication');
 		// get a group list
 		$tmp_group_list = $oCommunicationModel->getFriendGroups();
@@ -218,10 +218,10 @@ class communicationView extends communication {
 		Context::set('page', $output->page);
 		Context::set('friend_list', $output->data);
 		Context::set('page_navigation', $output->page_navigation);
-		
+
 		$this->setTemplateFile('friends');
 	}
-	
+
 	/**
 	 * display Add a friend
 	 * @return void|Object (void : success, Object : fail)
@@ -232,7 +232,7 @@ class communicationView extends communication {
 		// error appears if not logged-in
 		if(!Context::get('is_logged')) return $this->stop('msg_not_logged');
 		$logged_info = Context::get('logged_info');
-		
+
 		$target_srl = Context::get('target_srl');
 		if(!$target_srl) return $this->stop('msg_invalid_request');
 		// get information of the member
@@ -244,10 +244,10 @@ class communicationView extends communication {
 		// get a group list
 		$friend_group_list = $oCommunicationModel->getFriendGroups();
 		Context::set('friend_group_list', $friend_group_list);
-		
+
 		$this->setTemplateFile('add_friend');
 	}
-	
+
 	/**
 	 * display add a group of friends
 	 * @return void|Object (void : success, Object : fail)

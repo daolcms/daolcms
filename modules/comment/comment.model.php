@@ -15,7 +15,7 @@ class commentModel extends comment {
 	 */
 	function init() {
 	}
-	
+
 	/**
 	 * display the pop-up menu of the post
 	 * Print, scrap, vote-up(recommen), vote-down(non-recommend), report features added
@@ -27,22 +27,22 @@ class commentModel extends comment {
 		$mid = Context::get('cur_mid');
 		$logged_info = Context::get('logged_info');
 		$act = Context::get('cur_act');
-		
+
 		// array values for menu_list, "comment post, target, url"
 		$menu_list = array();
 		// call a trigger
 		ModuleHandler::triggerCall('comment.getCommentMenu', 'before', $menu_list);
-		
+
 		$oCommentController = &getController('comment');
 		// feature that only member can do
 		if($logged_info->member_srl) {
-			
+
 			$oCommentModel = &getModel('comment');
 			$columnList = array('comment_srl', 'module_srl', 'member_srl', 'ipaddress');
 			$oComment = $oCommentModel->getComment($comment_srl, false, $columnList);
 			$module_srl = $oComment->get('module_srl');
 			$member_srl = $oComment->get('member_srl');
-			
+
 			$oModuleModel = &getModel('module');
 			$comment_config = $oModuleModel->getModulePartConfig('document', $module_srl);
 			if($comment_config->use_vote_up != 'N' && $member_srl != $logged_info->member_srl) {
@@ -55,7 +55,7 @@ class commentModel extends comment {
 				$url = sprintf("doCallModuleAction('comment','procCommentVoteDown','%s')", $comment_srl);
 				$oCommentController->addCommentPopupMenu($url, 'cmd_vote_down', '', 'javascript');
 			}
-			
+
 			// Add the report feature against abused posts
 			$url = sprintf("doCallModuleAction('comment','procCommentDeclare','%s')", $comment_srl);
 			$oCommentController->addCommentPopupMenu($url, 'cmd_declare', '', 'javascript');
@@ -66,12 +66,12 @@ class commentModel extends comment {
 		if($logged_info->is_admin == 'Y') {
 			$oCommentModel = &getModel('comment');
 			$oComment = $oCommentModel->getComment($comment_srl);
-			
+
 			if($oComment->isExists()) {
 				// Find a post of the corresponding ip address
 				$url = getUrl('', 'module', 'admin', 'act', 'dispCommentAdminList', 'search_target', 'ipaddress', 'search_keyword', $oComment->getIpAddress());
 				$oCommentController->addCommentPopupMenu($url, 'cmd_search_by_ipaddress', $icon_path, 'TraceByIpaddress');
-				
+
 				$url = sprintf("var params = new Array(); params['ipaddress_list']='%s'; exec_xml('spamfilter', 'procSpamfilterAdminInsertDeniedIP', params, completeCallModuleAction)", $oComment->getIpAddress());
 				$oCommentController->addCommentPopupMenu($url, 'cmd_add_ip_to_spamfilter', '', 'javascript');
 			}
@@ -85,8 +85,8 @@ class commentModel extends comment {
 		// get a list of final organized pop-up menus
 		$this->add('menus', $menus);
 	}
-	
-	
+
+
 	/**
 	 * Check if you have a permission to comment_srl
 	 * use only session information
@@ -96,7 +96,7 @@ class commentModel extends comment {
 	function isGranted($comment_srl) {
 		return $_SESSION['own_comment'][$comment_srl];
 	}
-	
+
 	/**
 	 * Returns the number of child comments
 	 * @param int $comment_srl
@@ -108,7 +108,7 @@ class commentModel extends comment {
 		$output = executeQuery('comment.getChildCommentCount', $args, NULL, 'master');
 		return (int)$output->data->count;
 	}
-	
+
 	/**
 	 * Returns the number of child comments
 	 * @param int $comment_srl
@@ -120,7 +120,7 @@ class commentModel extends comment {
 		$output = executeQueryArray('comment.getChildComments', $args, NULL, 'master');
 		return $output->data;
 	}
-	
+
 	/**
 	 * Get the comment
 	 * @param int   $comment_srl
@@ -131,10 +131,10 @@ class commentModel extends comment {
 	function getComment($comment_srl = 0, $is_admin = false, $columnList = array()) {
 		$oComment = new commentItem($comment_srl, $columnList);
 		if($is_admin) $oComment->setGrant();
-		
+
 		return $oComment;
 	}
-	
+
 	/**
 	 * Get the comment list(not paginating)
 	 * @param string|array $comment_srl_list
@@ -151,7 +151,7 @@ class commentModel extends comment {
 		$comment_list = $output->data;
 		if(!$comment_list) return;
 		if(!is_array($comment_list)) $comment_list = array($comment_list);
-		
+
 		$comment_count = count($comment_list);
 		foreach($comment_list as $key => $attribute) {
 			if(!$attribute->comment_srl) continue;
@@ -159,12 +159,12 @@ class commentModel extends comment {
 			$oComment = new commentItem();
 			$oComment->setAttribute($attribute);
 			if($is_admin) $oComment->setGrant();
-			
+
 			$result[$attribute->comment_srl] = $oComment;
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * Get the total number of comments in corresponding with document_srl.
 	 * @param int $document_srl
@@ -173,7 +173,7 @@ class commentModel extends comment {
 	function getCommentCount($document_srl) {
 		$args = new stdClass();
 		$args->document_srl = $document_srl;
-		
+
 		// get the number of comments on the document module
 		$oDocumentModel = &getModel('document');
 		$columnList = array('document_srl', 'module_srl');
@@ -188,12 +188,12 @@ class commentModel extends comment {
 		if($using_validation) {
 			$args->status = 1;
 		}
-		
+
 		$output = executeQuery('comment.getCommentCount', $args, NULL, 'master');
 		$total_count = $output->data->count;
 		return (int)$total_count;
 	}
-	
+
 	/**
 	 * Get the total number of comments in corresponding with document_srl.
 	 * @param string $date
@@ -203,13 +203,13 @@ class commentModel extends comment {
 	function getCommentCountByDate($date = '', $moduleSrlList = array()) {
 		if($date) $args->regDate = date('Ymd', strtotime($date));
 		if(count($moduleSrlList) > 0) $args->module_srl = $moduleSrlList;
-		
+
 		$output = executeQuery('comment.getCommentCount', $args);
 		if(!$output->toBool()) return 0;
-		
+
 		return $output->data->count;
 	}
-	
+
 	/**
 	 * Get the total number of comments in corresponding with module_srl.
 	 * @param int  $module_srl
@@ -219,7 +219,7 @@ class commentModel extends comment {
 	function getCommentAllCount($module_srl, $published = null) {
 		$args = new stdClass();
 		$args->module_srl = $module_srl;
-		
+
 		if(is_null($published)) {
 			// check if module is using comment validation system
 			$oCommentController = &getController("comment");
@@ -236,10 +236,10 @@ class commentModel extends comment {
 		}
 		$output = executeQuery('comment.getCommentCount', $args);
 		$total_count = $output->data->count;
-		
+
 		return (int)$total_count;
 	}
-	
+
 	/**
 	 * Get the module info without duplication
 	 * @return array
@@ -257,7 +257,7 @@ class commentModel extends comment {
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * Get the comment in corresponding with mid.
 	 * @todo add commentItems to cache too
@@ -299,7 +299,7 @@ class commentModel extends comment {
 			if($oCacheHandler->isSupport()) $oCacheHandler->put($cache_key, $output);
 		}
 		if(!$output->toBool()) return $output;
-		
+
 		$comment_list = $output->data;
 		if($comment_list) {
 			if(!is_array($comment_list)) $comment_list = array($comment_list);
@@ -309,14 +309,14 @@ class commentModel extends comment {
 				$oComment = null;
 				$oComment = new commentItem();
 				$oComment->setAttribute($attribute);
-				
+
 				$result[$key] = $oComment;
 			}
 			$output->data = $result;
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * Get a comment list of the doc in corresponding woth document_srl.
 	 * @param int  $document_srl
@@ -345,7 +345,7 @@ class commentModel extends comment {
 			if($oDocument->getCommentCount() < 1) return;
 			// get a list of comments
 			$module_srl = $oDocument->get('module_srl');
-			
+
 			if(!$count) {
 				$comment_config = $this->getCommentConfig($module_srl);
 				$comment_count = $comment_config->comment_count;
@@ -361,15 +361,15 @@ class commentModel extends comment {
 			$args->list_count = $comment_count;
 			$args->page = $page;
 			$args->page_count = 10;
-			
+
 			//check if module is using validation system
 			$oCommentController = &getController('comment');
 			$using_validation = $oCommentController->isModuleUsingPublishValidation($module_srl);
 			if($using_validation) {
 				$args->status = 1;
 			}
-			
-			
+
+
 			$output = executeQueryArray('comment.getCommentPageList', $args);
 			// return if an error occurs in the query results
 			if(!$output->toBool()) return;
@@ -381,12 +381,12 @@ class commentModel extends comment {
 			}
 			//insert in cache
 			if($oCacheHandler->isSupport()) $oCacheHandler->put($cache_key, $output);
-			
+
 		}
-		
+
 		return $output;
 	}
-	
+
 	/**
 	 * Update a list of comments in corresponding with document_srl
 	 * Take care of previously used data than GA version
@@ -405,12 +405,12 @@ class commentModel extends comment {
 		$args->list_order = 'list_order';
 		$output = executeQuery('comment.getCommentList', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$source_list = $output->data;
 		if(!is_array($source_list)) $source_list = array($source_list);
 		// Sort comments by the hierarchical structure
 		$comment_count = count($source_list);
-		
+
 		$root = NULL;
 		$list = NULL;
 		$comment_list = array();
@@ -423,7 +423,7 @@ class commentModel extends comment {
 			if(!$comment_srl) continue;
 			// generate a list
 			$list[$comment_srl] = $source_list[$i];
-			
+
 			if($parent_srl) {
 				$list[$parent_srl]->child[] = &$list[$comment_srl];
 			} else {
@@ -442,14 +442,14 @@ class commentModel extends comment {
 				$comment_args->module_srl = $module_srl;
 				$comment_args->regdate = $item->regdate;
 				$comment_args->depth = $item->depth;
-				
+
 				executeQuery('comment.insertCommentList', $comment_args);
 			}
 		}
 		// remove the lock file if successful.
 		FileHandler::removeFile($lock_file);
 	}
-	
+
 	/**
 	 * Relocate comments in the hierarchical structure
 	 * @param array  $comment_list
@@ -461,11 +461,11 @@ class commentModel extends comment {
 	function _arrangeComment(&$comment_list, $list, $depth, $parent = null) {
 		if(!count($list)) return;
 		foreach($list as $key => $val) {
-			
+
 			if($parent) $val->head = $parent->head;
 			else $val->head = $val->comment_srl;
 			$val->arrange = count($comment_list) + 1;
-			
+
 			if($val->child) {
 				$val->depth = $depth;
 				$comment_list[$val->comment_srl] = $val;
@@ -477,7 +477,7 @@ class commentModel extends comment {
 			}
 		}
 	}
-	
+
 	/**
 	 * Get all the comments in time decending order(for administrators)
 	 * @param object $obj
@@ -494,14 +494,14 @@ class commentModel extends comment {
 		$args->page_count = $obj->page_count ? $obj->page_count : 10;
 		$args->s_module_srl = $obj->module_srl;
 		$args->exclude_module_srl = $obj->exclude_module_srl;
-		
+
 		// check if module is using comment validation system
 		$oCommentController = &getController("comment");
 		$is_using_validation = $oCommentController->isModuleUsingPublishValidation($obj->module_srl);
 		if($is_using_validation) {
 			$args->s_is_published = 1;
 		}
-		
+
 		// Search options
 		$search_target = $obj->search_target ? $obj->search_target : trim(Context::get('search_target'));
 		$search_keyword = $obj->search_keyword ? $obj->search_keyword : trim(Context::get('search_keyword'));
@@ -571,10 +571,10 @@ class commentModel extends comment {
 			$_oComment->setAttribute($val);
 			$output->data[$key] = $_oComment;
 		}
-		
+
 		return $output;
 	}
-	
+
 	/**
 	 * Get all the comment count in time decending order(for administrators)
 	 * @param object $obj
@@ -636,10 +636,10 @@ class commentModel extends comment {
 		$output = executeQueryArray($query_id, $args);
 		// return when no result or error occurance
 		if(!$output->toBool() || !count($output->data)) return $output;
-		
+
 		return $output->data;
 	}
-	
+
 	/**
 	 * Return a configuration of comments for each module
 	 * @param int $module_srl
@@ -651,7 +651,7 @@ class commentModel extends comment {
 		if(!isset($comment_config->comment_count)) $comment_config->comment_count = 50;
 		return $comment_config;
 	}
-	
+
 	/**
 	 * Return a list of voting member
 	 * @return void
@@ -659,15 +659,15 @@ class commentModel extends comment {
 	function getCommentVotedMemberList() {
 		$comment_srl = Context::get('comment_srl');
 		if(!$comment_srl) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		$point = Context::get('point');
 		if($point != -1) $point = 1;
-		
+
 		$oCommentModel = &getModel('comment');
 		$oComment = $oCommentModel->getComment($comment_srl, false, false);
 		$module_srl = $oComment->get('module_srl');
 		if(!$module_srl) return new BaseObject(-1, 'msg_invalid_request');
-		
+
 		$oModuleModel = &getModel('module');
 		$comment_config = $oModuleModel->getModulePartConfig('comment', $module_srl);
 		$args = new stdClass();
@@ -678,11 +678,11 @@ class commentModel extends comment {
 			if($comment_config->use_vote_up != 'S') return new BaseObject(-1, 'msg_invalid_request');
 			$args->more_point = 0;
 		}
-		
+
 		$args->comment_srl = $comment_srl;
 		$output = executeQueryArray('comment.getVotedMemberList', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		$oMemberModel = &getModel('member');
 		if($output->data) {
 			foreach($output->data as $k => $d) {
@@ -690,10 +690,10 @@ class commentModel extends comment {
 				$output->data[$k]->src = $profile_image->src;
 			}
 		}
-		
+
 		$this->add('voted_member_list', $output->data);
 	}
-	
+
 	/**
 	 * Return a secret status by secret field
 	 * @return array

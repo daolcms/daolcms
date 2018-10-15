@@ -51,7 +51,7 @@ var Validator = xe.createApp('Validator', {
 		// number
 		var regNum = /^[0-9]*$/;
 		this.cast('ADD_RULE', ['number', regNum]);
-		
+
 		// float
 		var regFloat = /^\d+(\.\d+)?$/;
 		this.cast('ADD_RULE', ['float', regFloat]);
@@ -100,7 +100,7 @@ var Validator = xe.createApp('Validator', {
 		} else if(elems._filter) {
 			filter = form.elements._filter.value;
 		}
-	
+
 		if(!filter) return true;
 
 		if($.isFunction(callbacks[filter])) callback = callbacks[filter];
@@ -187,7 +187,7 @@ var Validator = xe.createApp('Validator', {
 			if((min && min > (minb?lenb:len)) || (max && max < (maxb?lenb:len))) {
 				return this.cast('ALERT', [form, name, 'outofrange', min, max]) && false;
 			}
-			
+
 			if(f.equalto) {
 				e_el  = elems[f.equalto];
 				e_val = e_el?$.trim(get_value($(e_el))):'';
@@ -195,7 +195,7 @@ var Validator = xe.createApp('Validator', {
 					return this.cast('ALERT', [form, name, 'equalto']) && false;
 				}
 			}
-			
+
 			rules = (f.rule || '').split(',');
 			for(i=0,c=rules.length; i < c; i++) {
 				if(!(r = rules[i])) continue;
@@ -413,7 +413,7 @@ function legacy_filter(filter_name, form, module, act, callback, responses, conf
 			var v = $.trim(field.value), n = field.name;
 			if(!v || !n) return true;
 			if(rename_params[n]) n = rename_params[n];
-			
+
 			if(/\[\]$/.test(n)) n = n.replace(/\[\]$/, '');
 			if(params[n]) params[n] += '|@|'+v;
 			else params[n] = field.value;			

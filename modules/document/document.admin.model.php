@@ -16,7 +16,7 @@ class documentAdminModel extends document {
 	 */
 	function init() {
 	}
-	
+
 	/**
 	 * Get a document list from the trash
 	 * @param object $obj
@@ -48,27 +48,27 @@ class documentAdminModel extends document {
 		$output = executeQueryArray($query_id, $args);
 		// Return if no result or an error occurs
 		if(!$output->toBool() || !count($output->data)) return $output;
-		
+
 		$idx = 0;
 		$data = $output->data;
 		unset($output->data);
-		
+
 		$keys = array_keys($data);
 		$virtual_number = $keys[0];
-		
+
 		foreach($data as $key => $attribute) {
 			$oDocument = null;
 			$oDocument = new documentItem();
 			$oDocument->setAttribute($attribute, false);
 			if($is_admin) $oDocument->setGrant();
-			
+
 			$output->data[$virtual_number] = $oDocument;
 			$virtual_number--;
 		}
-		
+
 		return $output;
 	}
-	
+
 	/**
 	 * Get the doc which has trash_srl from the trash can
 	 * @param int $trash_srl
@@ -77,13 +77,13 @@ class documentAdminModel extends document {
 	function getDocumentTrash($trash_srl) {
 		$args->trash_srl = $trash_srl;
 		$output = executeQuery('document.getTrash', $args);
-		
+
 		$node = $output->data;
 		if(!$node) return;
-		
+
 		return $node;
 	}
-	
+
 	/**
 	 * Return document count with date
 	 * @param string $date
@@ -96,10 +96,10 @@ class documentAdminModel extends document {
 		if($date) $args->regDate = date('Ymd', strtotime($date));
 		if(count($moduleSrlList) > 0) $args->moduleSrlList = $moduleSrlList;
 		if(count($statusList) > 0) $args->statusList = $statusList;
-		
+
 		$output = executeQuery('document.getDocumentCountByDate', $args);
 		if(!$output->toBool()) return 0;
-		
+
 		return $output->data->count;
 	}
 }

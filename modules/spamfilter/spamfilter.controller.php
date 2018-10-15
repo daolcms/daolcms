@@ -14,14 +14,14 @@ class spamfilterController extends spamfilter {
 	 */
 	function init(){
 	}
-	
+
 	/**
 	 * @brief Call this function in case you need to stop the spam filter's usage during the batch work
 	 */
 	function setAvoidLog(){
 		$_SESSION['avoid_log'] = true;
 	}
-	
+
 	/**
 	 * @brief The routine process to check the time it takes to store a document, when writing it, and to ban IP/word
 	 */
@@ -36,7 +36,7 @@ class spamfilterController extends spamfilter {
 			if($logged_info->is_admin == 'Y') return new BaseObject();
 			if($grant->manager) return new BaseObject();
 		}
-		
+
 		$oFilterModel = getModel('spamfilter');
 		// Check if the IP is prohibited
 		$output = $oFilterModel->isDeniedIP();
@@ -58,10 +58,10 @@ class spamfilterController extends spamfilter {
 		}
 		// Save a log
 		$this->insertLog();
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief The routine process to check the time it takes to store a comment, and to ban IP/word
 	 */
@@ -76,7 +76,7 @@ class spamfilterController extends spamfilter {
 			if($logged_info->is_admin == 'Y') return new BaseObject();
 			if($grant->manager) return new BaseObject();
 		}
-		
+
 		$oFilterModel = getModel('spamfilter');
 		// Check if the IP is prohibited
 		$output = $oFilterModel->isDeniedIP();
@@ -99,21 +99,21 @@ class spamfilterController extends spamfilter {
 		unset($obj->__isupdate);
 		// Save a log
 		$this->insertLog();
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief Inspect the trackback creation time and IP
 	 */
 	function triggerInsertTrackback(&$obj){
 		if($_SESSION['avoid_log']) return new BaseObject();
-		
+
 		$oFilterModel = getModel('spamfilter');
 		// Confirm if the trackbacks have been added more than once to your document
 		$output = $oFilterModel->isInsertedTrackback($obj->document_srl);
 		if(!$output->toBool()) return $output;
-		
+
 		// Check if the IP is prohibited
 		$output = $oFilterModel->isDeniedIP();
 		if(!$output->toBool()) return $output;
@@ -124,7 +124,7 @@ class spamfilterController extends spamfilter {
 		// Start Filtering
 		$oTrackbackModel = getModel('trackback');
 		$oTrackbackController = getController('trackback');
-		
+
 		list($ipA, $ipB, $ipC, $ipD) = explode('.', $_SERVER['REMOTE_ADDR']);
 		$ipaddress = $ipA . '.' . $ipB . '.' . $ipC;
 		// In case the title and the blog name are indentical, investigate the IP address of the last 6 hours, delete and ban it.
@@ -142,10 +142,10 @@ class spamfilterController extends spamfilter {
 		   return new BaseObject(-1,'msg_alert_trackback_denied');
 		   }
 		 */
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief IP registration
 	 * The registered IP address is considered as a spammer
@@ -166,20 +166,20 @@ class spamfilterController extends spamfilter {
 			$output = executeQuery('spamfilter.insertDeniedIP', $args);
 			if(!$output->toBool()) $fail_list .= $ipaddress . '<br/>';
 		}
-		
+
 		$output->add('fail_list', $fail_list);
 		return $output;
 	}
-	
+
 	/**
 	 * @brief The routine process to check the time it takes to store a message, when writing it, and to ban IP/word
 	 */
 	function triggerSendMessage(&$obj){
 		if($_SESSION['avoid_log']) return new BaseObject();
-		
+
 		$logged_info = Context::get('logged_info');
 		if($logged_info->is_admin == 'Y') return new BaseObject();
-		
+
 		$oFilterModel = getModel('spamfilter');
 		// Check if the IP is prohibited
 		$output = $oFilterModel->isDeniedIP();
@@ -193,10 +193,10 @@ class spamfilterController extends spamfilter {
 		if(!$output->toBool()) return $output;
 		// Save a log
 		$this->insertLog();
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief Log registration
 	 * Register the newly accessed IP address in the log. In case the log interval is withing a certain time,

@@ -16,7 +16,7 @@ class documentView extends document {
 	 */
 	function init() {
 	}
-	
+
 	/**
 	 * Document printing
 	 * I make it out to find the geulman;;
@@ -25,11 +25,11 @@ class documentView extends document {
 	function dispDocumentPrint() {
 		// Bring a list of variables needed to implement
 		$document_srl = Context::get('document_srl');
-		
+
 		// module_info not use in UI
 		//$oModuleModel = &getModel('module');
 		//$module_info = $oModuleModel->getModuleInfoByDocumentSrl($document_srl);
-		
+
 		// Create the document object. If the document module of basic data structures, write it all works .. -_-;
 		$oDocumentModel = &getModel('document');
 		// Creates an object for displaying the selected document
@@ -42,12 +42,12 @@ class documentView extends document {
 		// Browser title settings
 		Context::setBrowserTitle($oDocument->getTitleText());
 		Context::set('oDocument', $oDocument);
-		
+
 		Context::set('layout', 'none');
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile('print_page');
 	}
-	
+
 	/**
 	 * Preview
 	 * @return void
@@ -56,17 +56,17 @@ class documentView extends document {
 		if(!checkCSRF()) {
 			return new BaseObject(-1, 'msg_invalid_request');
 		}
-		
+
 		if(Context::get('logged_info')->is_admin != 'Y') {
 			Context::set('content', removeHackTag(Context::get('content')));
 		}
-		
+
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile('preview_page');
-		
+
 		Context::set('layout', 'none');
 	}
-	
+
 	/**
 	 * Selected by the administrator for the document management
 	 * @return void|Object
@@ -81,32 +81,32 @@ class documentView extends document {
 				$document_srl_list[] = $key;
 			}
 		}
-		
+
 		if(count($document_srl_list)) {
 			$oDocumentModel = &getModel('document');
 			$document_list = $oDocumentModel->getDocuments($document_srl_list, $this->grant->is_admin);
 			Context::set('document_list', $document_list);
 		}
-		
+
 		$oModuleModel = &getModel('module');
 		// The combination of module categories list and the list of modules
 		if(count($module_list) > 1) Context::set('module_list', $module_categories);
-		
+
 		$module_srl = Context::get('module_srl');
 		Context::set('module_srl', $module_srl);
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
 		Context::set('mid', $module_info->mid);
 		Context::set('browser_title', $module_info->browser_title);
-		
-		
+
+
 		// Select Pop-up layout
 		$this->setLayoutPath('./common/tpl');
 		$this->setLayoutFile('popup_layout');
-		
+
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile('checked_list');
 	}
-	
+
 	/**
 	 * Trigger method.
 	 * Additional information realte to document setting
@@ -116,14 +116,14 @@ class documentView extends document {
 	function triggerDispDocumentAdditionSetup(&$obj) {
 		$current_module_srl = Context::get('module_srl');
 		$current_module_srls = Context::get('module_srls');
-		
+
 		if(!$current_module_srl && !$current_module_srls) {
 			// Get information of the current module
 			$current_module_info = Context::get('current_module_info');
 			$current_module_srl = $current_module_info->module_srl;
 			if(!$current_module_srl) return new BaseObject();
 		}
-		
+
 		$oModuleModel = getModel('module');
 		if($current_module_srl) {
 			$document_config = $oModuleModel->getModulePartConfig('document', $current_module_srl);
@@ -133,21 +133,21 @@ class documentView extends document {
 		}
 		if(!isset($document_config->use_history)) $document_config->use_history = 'N';
 		Context::set('document_config', $document_config);
-		
+
 		$oTemplate = &TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($this->module_path . 'tpl', 'document_module_config');
 		$obj .= $tpl;
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * Document temp saved list
 	 * @return void
 	 */
 	function dispTempSavedList() {
 		$this->setLayoutFile('popup_layout');
-		
+
 		$oMemberModel = &getModel('member');
 		// A message appears if the user is not logged-in
 		if(!$oMemberModel->isLogged()) return $this->stop('msg_not_logged');
@@ -158,7 +158,7 @@ class documentView extends document {
 		$args->statusList = array($this->getConfigStatus('temp'));
 		$args->page = (int)Context::get('page');
 		$args->list_count = 10;
-		
+
 		$oDocumentModel = &getModel('document');
 		$output = $oDocumentModel->getDocumentList($args, true);
 		Context::set('total_count', $output->total_count);
@@ -166,7 +166,7 @@ class documentView extends document {
 		Context::set('page', $output->page);
 		Context::set('document_list', $output->data);
 		Context::set('page_navigation', $output->page_navigation);
-		
+
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile('saved_list_popup');
 	}

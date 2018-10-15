@@ -6,14 +6,14 @@
  * @brief  view class of the message module
  **/
 class messageView extends message {
-	
+
 	/**
 	 * @brief Initialization
 	 **/
 	function init(){
-		
+
 	}
-	
+
 	/**
 	 * @brief Display messages
 	 **/
@@ -21,11 +21,11 @@ class messageView extends message {
 		// Get configurations (using module model object)
 		$oModuleModel = getModel('module');
 		$this->module_config = $config = $oModuleModel->getModuleConfig('message', $this->module_info->site_srl);
-		
+
 		if(!$config){
 			$config = new stdClass();
 		}
-		
+
 		if(!$config->skin){
 			$config->skin = 'default';
 			$template_path = sprintf('%sskins/%s', $this->module_path, $config->skin);
@@ -42,7 +42,7 @@ class messageView extends message {
 		}
 		// Template path
 		$this->setTemplatePath($template_path);
-		
+
 		// Get the member configuration
 		$member_config = $oModuleModel->getModuleConfig('member');
 		Context::set('member_config', $member_config);
@@ -52,9 +52,9 @@ class messageView extends message {
 			if(preg_match('/^https:\/\//i', Context::getRequestUri())) $ssl_mode = true;
 		}
 		Context::set('ssl_mode', $ssl_mode);
-		
+
 		Context::set('system_message', nl2br($this->getMessage()));
-		
+
 		$this->setTemplateFile('system_message');
 	}
 }

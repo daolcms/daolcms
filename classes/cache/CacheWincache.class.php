@@ -14,7 +14,7 @@ class CacheWincache extends CacheBase {
 	 * @var int
 	 */
 	var $valid_time = 36000;
-	
+
 	/**
 	 * Get instance of CacheWincache
 	 *
@@ -27,7 +27,7 @@ class CacheWincache extends CacheBase {
 		}
 		return $GLOBALS['__CacheWincache__'];
 	}
-	
+
 	/**
 	 * Constructor
 	 *
@@ -35,7 +35,7 @@ class CacheWincache extends CacheBase {
 	 */
 	function __construct() {
 	}
-	
+
 	/**
 	 * Return whether support or not support cache
 	 *
@@ -44,7 +44,7 @@ class CacheWincache extends CacheBase {
 	function isSupport() {
 		return function_exists('wincache_ucache_set');
 	}
-	
+
 	/**
 	 * Adds a variable in user cache and overwrites a variable if it already exists in the cache
 	 *
@@ -63,7 +63,7 @@ class CacheWincache extends CacheBase {
 		if($valid_time == 0) $valid_time = $this->valid_time;
 		return wincache_ucache_set(md5(_DAOL_PATH_ . $key), array(time(), $buff), $valid_time);
 	}
-	
+
 	/**
 	 * Return whether cache is valid or invalid
 	 *
@@ -77,15 +77,15 @@ class CacheWincache extends CacheBase {
 		$obj = wincache_ucache_get($_key, $success);
 		if(!$success || !is_array($obj)) return false;
 		unset($obj[1]);
-		
+
 		if($modified_time > 0 && $modified_time > $obj[0]) {
 			$this->_delete($_key);
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Gets a variable stored in the user cache
 	 *
@@ -99,15 +99,15 @@ class CacheWincache extends CacheBase {
 		$_key = md5(_DAOL_PATH_ . $key);
 		$obj = wincache_ucache_get($_key, $success);
 		if(!$success || !is_array($obj)) return false;
-		
+
 		if($modified_time > 0 && $modified_time > $obj[0]) {
 			$this->_delete($_key);
 			return false;
 		}
-		
+
 		return $obj[1];
 	}
-	
+
 	/**
 	 * Delete variable from the cache(private)
 	 *
@@ -117,7 +117,7 @@ class CacheWincache extends CacheBase {
 	function _delete($_key) {
 		wincache_ucache_delete($_key);
 	}
-	
+
 	/**
 	 * Delete variable from the cache
 	 *
@@ -129,7 +129,7 @@ class CacheWincache extends CacheBase {
 		$this->_delete($_key);
 		return true;
 	}
-	
+
 	/**
 	 * Truncate all existing variables at the cache
 	 *

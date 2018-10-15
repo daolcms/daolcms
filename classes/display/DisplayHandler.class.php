@@ -10,12 +10,12 @@
  *   is the combination of the variables of oModue and template files/.
  **/
 class DisplayHandler extends Handler {
-	
+
 	var $content_size = 0; // /< The size of displaying contents
-	
+
 	var $gz_enabled = false; // / <a flog variable whether to call contents after compressing by gzip
 	var $handler = null;
-	
+
 	/**
 	 * print either html or xml content given oModule object
 	 * @remark addon execution and the trigger execution are included within this method, which might create
@@ -42,7 +42,7 @@ class DisplayHandler extends Handler {
 		} else {
 			$handler = new HTMLDisplayHandler();
 		}
-		
+
 		$output = $handler->toDoc($oModule);
 		// call a trigger before display
 		ModuleHandler::triggerCall('display', 'before', $output);
@@ -51,12 +51,12 @@ class DisplayHandler extends Handler {
 		$oAddonController = &getController('addon');
 		$addon_file = $oAddonController->getCacheFilePath(Mobile::isFromMobilePhone() ? "mobile" : "pc");
 		@include($addon_file);
-		
+
 		if(method_exists($handler, "prepareToPrint")){
 			$handler->prepareToPrint($output);
 		}
 		// header output
-		
+
 		$httpStatusCode = $oModule->getHttpStatusCode();
 		if($httpStatusCode && $httpStatusCode != 200){
 			$this->_printHttpStatusCode($httpStatusCode);
@@ -72,29 +72,29 @@ class DisplayHandler extends Handler {
 				$this->_printHTMLHeader();
 			}
 		}
-		
+
 		// debugOutput output
 		$this->content_size = strlen($output);
 		$output .= $this->_debugOutput();
-		
+
 		// disable gzip if output already exists
 		ob_flush();
 		if(headers_sent()){
 			$this->gz_enabled = FALSE;
 		}
-		
+
 		// enable gzip using zlib extension
 		if($this->gz_enabled){
 			ini_set('zlib.output_compression', true);
 		}
 		// results directly output
 		print $output;
-		
+
 		// call a trigger after display
 		ModuleHandler::triggerCall('display', 'after', $content);
 	}
-	
-	
+
+
 	/**
 	 * Print debugging message to designated output source depending on the value set to __DEBUG_OUTPUT_. \n
 	 * This method only functions when __DEBUG__ variable is set to 1.
@@ -103,13 +103,13 @@ class DisplayHandler extends Handler {
 	 **/
 	function _debugOutput() {
 		if(!__DEBUG__) return;
-		
+
 		$end = getMicroTime();
 		// Firebug console output
 		if(__DEBUG_OUTPUT__ == 2) {
 			static $firephp;
 			if(!isset($firephp)) $firephp = FirePHP::getInstance(true);
-			
+
 			if(__DEBUG_PROTECT__ == 1 && __DEBUG_PROTECT_IP__ != $_SERVER['REMOTE_ADDR']) {
 				$firephp->fb('Change the value of __DEBUG_PROTECT_IP__ into your IP address in config/config.user.inc.php or config/config.inc.php', 'The IP address is not allowed.');
 				return;
@@ -176,7 +176,7 @@ class DisplayHandler extends Handler {
 				$buff .= sprintf("\tResponse contents size\t\t: %d byte\n", $this->content_size);
 				// total execution time
 				$buff .= sprintf("\n- Total elapsed time : %0.5f sec\n", $end - __StartTime__);
-				
+
 				$buff .= sprintf("\tclass file load elapsed time \t: %0.5f sec\n", $GLOBALS['__elapsed_class_load__']);
 				$buff .= sprintf("\tTemplate compile elapsed time\t: %0.5f sec (%d called)\n", $GLOBALS['__template_elapsed__'], $GLOBALS['__TemplateHandlerCalled__']);
 				$buff .= sprintf("\tXmlParse compile elapsed time\t: %0.5f sec\n", $GLOBALS['__xmlparse_elapsed__']);
@@ -194,11 +194,11 @@ class DisplayHandler extends Handler {
 				if(__DEBUG_PROTECT__ == 1 && __DEBUG_PROTECT_IP__ != $_SERVER['REMOTE_ADDR']) {
 					return;
 				}
-				
+
 				if($GLOBALS['__db_queries__']) {
 					$buff .= sprintf("\n- DB Queries : %d Queries. %0.5f sec\n", count($GLOBALS['__db_queries__']), $GLOBALS['__db_elapsed_time__']);
 					$num = 0;
-					
+
 					foreach($GLOBALS['__db_queries__'] as $query) {
 						$buff .= sprintf("\t%02d. %s\n\t\t%0.6f sec. ", ++$num, $query['query'], $query['elapsed_time']);
 						if($query['result'] == 'Success') {
@@ -213,28 +213,28 @@ class DisplayHandler extends Handler {
 			// Output in HTML comments
 			if($buff && __DEBUG_OUTPUT__ == 1 && Context::getResponseMethod() == 'HTML') {
 				$buff = sprintf("[%s %s:%d]\n%s\n", date('Y-m-d H:i:s'), $file_name, $line_num, print_r($buff, true));
-				
+
 				if(__DEBUG_PROTECT__ == 1 && __DEBUG_PROTECT_IP__ != $_SERVER['REMOTE_ADDR']) {
 					$buff = 'The IP address is not allowed. Change the value of __DEBUG_PROTECT_IP__ into your IP address in config/config.user.inc.php or config/config.inc.php';
 				}
-				
+
 				return "<!--\r\n" . $buff . "\r\n-->";
 			}
 			// Output to a file
 			if($buff && __DEBUG_OUTPUT__ == 0) {
 				$debug_file = _DAOL_PATH_ . 'files/_debug_message.php';
 				$buff = sprintf("[%s %s:%d]\n%s\n", date('Y-m-d H:i:s'), $file_name, $line_num, print_r($buff, true));
-				
+
 				$buff = str_repeat('=', 40) . "\n" . $buff . str_repeat('-', 40);
 				$buff = "\n<?php\n/*" . $buff . "*/\n?>\n";
-				
+
 				if(!@file_put_contents($debug_file, $buff, FILE_APPEND|LOCK_EX)){
 					return;
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * print a HTTP HEADER for XML, which is encoded in UTF-8
 	 * @return void
@@ -247,8 +247,8 @@ class DisplayHandler extends Handler {
 		header("Cache-Control: post-check=0, pre-check=0", false);
 		header("Pragma: no-cache");
 	}
-	
-	
+
+
 	/**
 	 * print a HTTP HEADER for HTML, which is encoded in UTF-8
 	 * @return void
@@ -261,8 +261,8 @@ class DisplayHandler extends Handler {
 		header("Cache-Control: post-check=0, pre-check=0", false);
 		header("Pragma: no-cache");
 	}
-	
-	
+
+
 	/**
 	 * print a HTTP HEADER for JSON, which is encoded in UTF-8
 	 * @return void
@@ -275,8 +275,8 @@ class DisplayHandler extends Handler {
 		header("Cache-Control: post-check=0, pre-check=0", false);
 		header("Pragma: no-cache");
 	}
-	
-	
+
+
 	/**
 	 * print a HTTP HEADER for HTML, which is encoded in UTF-8
 	 * @return void

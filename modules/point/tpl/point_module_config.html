@@ -5,7 +5,7 @@
 	<input type="hidden" name="act" value="procPointAdminInsertPointModuleConfig" />
 	<input type="hidden" name="target_module_srl" value="{$module_config['module_srl']?$module_config['module_srl']:$module_srls}" />
 	<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
-	
+
 	<h3 class="h3">{$lang->point}</h3>
 	<div class="table">
 		<table width="100%" border="1" cellspacing="0">
@@ -43,7 +43,7 @@
 		<span class="btn"><input type="submit" value="{$lang->cmd_save}" /></span>
 		<span class="btn"><button type="button" onclick="doPointReset('{$module_config['module_srl']?$module_config['module_srl']:$module_srls}')">{$lang->cmd_reset}</button></span>
 	</div>
-	
+
 	<!-- 버튼 -->
-	
+
 </form>

@@ -33,7 +33,7 @@ class IndexTag {
 	 * @var SortQueryArgument object
 	 */
 	var $sort_order_argument;
-	
+
 	/**
 	 * constructor
 	 * @param object $index
@@ -41,13 +41,13 @@ class IndexTag {
 	 */
 	function __construct($index) {
 		$this->argument_name = $index->attrs->var;
-		
+
 		// Sort index - column by which to sort
 		//$dbParser = new DB(); $dbParser = &$dbParser->getParser();
 		//$index->attrs->default = $dbParser->parseExpression($index->attrs->default);
 		$this->default = $index->attrs->default;
 		$this->argument = new QueryArgument($index);
-		
+
 		// Sort order - asc / desc
 		$this->sort_order = $index->attrs->order;
 		$sortList = array('asc' => 1, 'desc' => 1);
@@ -60,11 +60,11 @@ class IndexTag {
 			$this->sort_order = '$' . $this->sort_order_argument->getArgumentName() . '_argument';
 		} else $this->sort_order = '"' . $this->sort_order . '"';
 	}
-	
+
 	function toString() {
 		return sprintf('new OrderByColumn(${\'%s_argument\'}, %s)', $this->argument->getArgumentName(), $this->sort_order);
 	}
-	
+
 	function getArguments() {
 		$arguments = array();
 		$arguments[] = $this->argument;

@@ -6,7 +6,7 @@
  * high class of the layout module
  **/
 class layout extends ModuleObject {
-	
+
 	/**
 	 * Implement if additional tasks are necessary when installing
 	 * @return BaseObject
@@ -14,10 +14,10 @@ class layout extends ModuleObject {
 	function moduleInstall(){
 		// Create a directory to be used in the layout
 		FileHandler::makeDir('./files/cache/layout');
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * a method to check if successfully installed
 	 * @return boolean
@@ -32,9 +32,9 @@ class layout extends ModuleObject {
 			$filename = $files[$i];
 			if(preg_match('/([0-9]+)\.html/i', $filename)) return true;
 		}
-		
+
 		if(!$oDB->isColumnExists('layouts', 'layout_type')) return true;
-		
+
 		$args->layout = '.';
 		$output = executeQueryArray('layout.getLayoutDotList', $args);
 		if($output->data && count($output->data) > 0){
@@ -44,10 +44,10 @@ class layout extends ModuleObject {
 				if(is_dir(sprintf(_DAOL_PATH_ . 'themes/%s/layouts/%s', $layout_path[0], $layout_path[1]))) return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Execute update
 	 * @return BaseObject
@@ -71,11 +71,11 @@ class layout extends ModuleObject {
 			FileHandler::copyFile('./files/cache/layout/' . $filename, $path . 'layout.html');
 			@unlink('./files/cache/layout/' . $filename);
 		}
-		
+
 		if(!$oDB->isColumnExists('layouts', 'layout_type')){
 			$oDB->addColumn('layouts', 'layout_type', 'char', 1, 'P', true);
 		}
-		
+
 		$args = new stdClass();
 		$args->layout = '.';
 		$output = executeQueryArray('layout.getLayoutDotList', $args);
@@ -92,8 +92,8 @@ class layout extends ModuleObject {
 		}
 		return new BaseObject(0, 'success_updated');
 	}
-	
-	
+
+
 	/**
 	 * Re-generate the cache file
 	 * @return void

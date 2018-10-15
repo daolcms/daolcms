@@ -14,7 +14,7 @@ class integration_searchModel extends module {
 	 **/
 	function init() {
 	}
-	
+
 	/**
 	 * Search documents
 	 *
@@ -29,7 +29,7 @@ class integration_searchModel extends module {
 	 **/
 	function getDocuments($target, $module_srls_list, $search_target, $search_keyword, $page = 1, $list_count = 20) {
 		if(is_array($module_srls_list)) $module_srls_list = implode(',', $module_srls_list);
-		
+
 		$args = new stdClass();
 		if($target == 'exclude') {
 			$module_srls_list .= ',0'; // exclude 'trash'
@@ -39,7 +39,7 @@ class integration_searchModel extends module {
 			$args->module_srl = $module_srls_list;
 			$args->exclude_module_srl = '0'; // exclude 'trash'
 		}
-		
+
 		$args->page = $page;
 		$args->list_count = $list_count;
 		$args->page_count = 10;
@@ -51,10 +51,10 @@ class integration_searchModel extends module {
 		if(!$args->module_srl) unset($args->module_srl);
 		// Get a list of documents
 		$oDocumentModel = &getModel('document');
-		
+
 		return $oDocumentModel->getDocumentList($args);
 	}
-	
+
 	/**
 	 * Search comment
 	 *
@@ -76,7 +76,7 @@ class integration_searchModel extends module {
 		}
 		if($target == 'exclude') $args->exclude_module_srl = $module_srls;
 		else $args->module_srl = $module_srls;
-		
+
 		$args->page = $page;
 		$args->list_count = $list_count;
 		$args->page_count = 10;
@@ -90,7 +90,7 @@ class integration_searchModel extends module {
 		if(!$output->toBool() || !$output->data) return $output;
 		return $output;
 	}
-	
+
 	/**
 	 * Search trackbacks
 	 *
@@ -106,7 +106,7 @@ class integration_searchModel extends module {
 	function getTrackbacks($target, $module_srls_list, $search_target = "title", $search_keyword, $page = 1, $list_count = 20) {
 		$oTrackbackModel = getAdminModel('trackback');
 		if(!$oTrackbackModel) return new BaseObject();
-		
+
 		$args = new stdClass();
 		if(is_array($module_srls_list)) $module_srls = implode(',', $module_srls_list);
 		else $module_srls = $module_srls_list;
@@ -124,7 +124,7 @@ class integration_searchModel extends module {
 		if(!$output->toBool() || !$output->data) return $output;
 		return $output;
 	}
-	
+
 	/**
 	 * Search file
 	 *
@@ -156,7 +156,7 @@ class integration_searchModel extends module {
 		$oFileAdminModel = &getAdminModel('file');
 		$output = $oFileAdminModel->getFileList($args);
 		if(!$output->toBool() || !$output->data) return $output;
-		
+
 		$list = array();
 		foreach($output->data as $key => $val) {
 			$obj = null;
@@ -169,7 +169,7 @@ class integration_searchModel extends module {
 			// Images
 			if(preg_match('/\.(jpg|jpeg|gif|png)$/i', $val->source_filename)) {
 				$obj->type = 'image';
-				
+
 				$thumbnail_path = sprintf('files/thumbnails/%s', getNumberingPath($val->file_srl, 3));
 				if(!is_dir($thumbnail_path)) FileHandler::makeDir($thumbnail_path);
 				$thumbnail_file = sprintf('%s%dx%d.%s.jpg', $thumbnail_path, 120, 120, 'crop');
@@ -181,12 +181,12 @@ class integration_searchModel extends module {
 				$obj->type = 'binary';
 				$obj->src = '';
 			}
-			
+
 			$list[] = $obj;
 			$target_list[] = $val->upload_target_srl;
 		}
 		$output->data = $list;
-		
+
 		$oDocumentModel = &getModel('document');
 		$document_list = $oDocumentModel->getDocuments($target_list);
 		if($document_list) foreach($document_list as $key => $val) {
@@ -198,7 +198,7 @@ class integration_searchModel extends module {
 				}
 			}
 		}
-		
+
 		$oCommentModel = &getModel('comment');
 		$comment_list = $oCommentModel->getComments($target_list);
 		if($comment_list) foreach($comment_list as $key => $val) {
@@ -210,10 +210,10 @@ class integration_searchModel extends module {
 				}
 			}
 		}
-		
+
 		return $output;
 	}
-	
+
 	/**
 	 * Search Multimedia. call function _getFiles().
 	 *
@@ -228,7 +228,7 @@ class integration_searchModel extends module {
 	function getImages($target, $module_srls_list, $search_keyword, $page = 1, $list_count = 20) {
 		return $this->_getFiles($target, $module_srls_list, $search_keyword, $page, $list_count);
 	}
-	
+
 	/**
 	 * Search for attachments. call function _getFiles().
 	 *
@@ -243,5 +243,5 @@ class integration_searchModel extends module {
 	function getFiles($target, $module_srls_list, $search_keyword, $page = 1, $list_count = 20) {
 		return $this->_getFiles($target, $module_srls_list, $search_keyword, $page, $list_count, 'N');
 	}
-	
+
 }

@@ -7,13 +7,13 @@
  * @brief   view class of the editor module
  **/
 class editorView extends editor {
-	
+
 	/**
 	 * @brief Initialization
 	 **/
 	function init() {
 	}
-	
+
 	/**
 	 * @brief Action to get a request to display compoenet pop-up
 	 **/
@@ -23,7 +23,7 @@ class editorView extends editor {
 		// List variables
 		$editor_sequence = Context::get('editor_sequence');
 		$component = Context::get('component');
-		
+
 		$site_module_info = Context::get('site_module_info');
 		$site_srl = (int)$site_module_info->site_srl;
 		// Get compoenet object
@@ -44,16 +44,16 @@ class editorView extends editor {
 			$this->setTemplateFile('popup');
 		}
 	}
-	
+
 	/**
 	 * @brief Get component information
 	 **/
 	function dispEditorComponentInfo() {
 		$component_name = Context::get('component_name');
-		
+
 		$site_module_info = Context::get('site_module_info');
 		$site_srl = (int)$site_module_info->site_srl;
-		
+
 		$oEditorModel = &getModel('editor');
 		$component = $oEditorModel->getComponent($component_name, $site_srl);
 
@@ -61,21 +61,21 @@ class editorView extends editor {
 			$this->stop('msg_invalid_request');
 			return;
 		}
-		
+
 		Context::set('component', $component);
-		
+
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile('view_component');
 		$this->setLayoutFile("popup_layout");
 	}
-	
+
 	/**
 	 * @brief Add a form for editor addition setup
 	 **/
 	function triggerDispEditorAdditionSetup(&$obj) {
 		$current_module_srl = Context::get('module_srl');
 		$current_module_srls = Context::get('module_srls');
-		
+
 		if(!$current_module_srl && !$current_module_srls) {
 			// Get information of the current module
 			$current_module_info = Context::get('current_module_info');
@@ -85,19 +85,19 @@ class editorView extends editor {
 		// Get editors settings
 		$oEditorModel = &getModel('editor');
 		$editor_config = $oEditorModel->getEditorConfig($current_module_srl);
-		
+
 		Context::set('editor_config', $editor_config);
-		
+
 		$oModuleModel = &getModel('module');
 		// Get a list of editor skin
 		$editor_skin_list = FileHandler::readDir(_DAOL_PATH_ . 'modules/editor/skins');
 		Context::set('editor_skin_list', $editor_skin_list);
-		
+
 		$skin_info = $oModuleModel->loadSkinInfo($this->module_path, $editor_config->editor_skin);
 		Context::set('editor_colorset_list', $skin_info->colorset);
 		$skin_info = $oModuleModel->loadSkinInfo($this->module_path, $editor_config->comment_editor_skin);
 		Context::set('editor_comment_colorset_list', $skin_info->colorset);
-		
+
 		$contents = FileHandler::readDir(_DAOL_PATH_ . 'modules/editor/styles');
 		for($i = 0, $c = count($contents); $i < $c; $i++) {
 			$style = $contents[$i];
@@ -111,28 +111,28 @@ class editorView extends editor {
 		$site_module_info = Context::get('site_module_info');
 		$group_list = $oMemberModel->getGroups($site_module_info->site_srl);
 		Context::set('group_list', $group_list);
-		
+
 		//Security
 		$security = new Security();
 		$security->encodeHTML('group_list..title');
 		$security->encodeHTML('group_list..description');
 		$security->encodeHTML('content_style_list..');
 		$security->encodeHTML('editor_comment_colorset_list..title');
-		
+
 		// Set a template file
 		$oTemplate = &TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($this->module_path . 'tpl', 'editor_module_config');
 		$obj .= $tpl;
-		
+
 		return new BaseObject();
 	}
-	
-	
+
+
 	function dispEditorPreview() {
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile('preview');
 	}
-	
+
 	function dispEditorSkinColorset() {
 		$skin = Context::get('skin');
 		$oModuleModel = &getModel('module');
@@ -140,11 +140,11 @@ class editorView extends editor {
 		$colorset = $skin_info->colorset;
 		Context::set('colorset', $colorset);
 	}
-	
+
 	function dispEditorConfigPreview() {
 		$oEditorModel = getModel('editor');
 		$config = $oEditorModel->getEditorConfig();
-		
+
 		$option = new stdClass();
 		$option->allow_fileupload = false;
 		$option->content_style = $config->content_style;
@@ -160,9 +160,9 @@ class editorView extends editor {
 		$option->primary_key_name = 'dummy_key';
 		$option->colorset = $config->sel_editor_colorset;
 		$editor = $oEditorModel->getEditor(0, $option);
-		
+
 		Context::set('editor', $editor);
-		
+
 		$option_com = new stdClass();
 		$option_com->allow_fileupload = false;
 		$option_com->content_style = $config->content_style;
@@ -178,14 +178,14 @@ class editorView extends editor {
 		$option_com->primary_key_name = 'dummy_key2';
 		$option_com->content_style = $config->comment_content_style;
 		$option_com->colorset = $config->sel_comment_editor_colorset;
-		
+
 		$editor_comment = $oEditorModel->getEditor(0, $option_com);
-		
+
 		Context::set('editor_comment', $editor_comment);
-		
-		
+
+
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile('config_preview');
-		
+
 	}
 }

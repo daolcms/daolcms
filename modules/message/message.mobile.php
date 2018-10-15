@@ -2,13 +2,13 @@
 require_once(_DAOL_PATH_ . 'modules/message/message.view.php');
 
 class messageMobile extends messageView {
-	
+
 	/**
 	 * @brief Initialization
 	 **/
 	function init(){
 	}
-	
+
 	/**
 	 * @brief Message output
 	 **/
@@ -30,14 +30,14 @@ class messageMobile extends messageView {
 			if(preg_match('/^https:\/\//i', Context::getRequestUri())) $ssl_mode = true;
 		}
 		Context::set('ssl_mode', $ssl_mode);
-		
+
 		Context::set('system_message', nl2br($this->getMessage()));
-		
+
 		Context::set('act', 'procMemberLogin');
 		Context::set('mid', '');
-		
+
 		$this->setTemplatePath($template_path);
 		$this->setTemplateFile('system_message');
 	}
-	
+
 }

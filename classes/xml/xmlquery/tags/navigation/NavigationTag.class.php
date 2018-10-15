@@ -33,7 +33,7 @@ class NavigationTag {
 	 * @var LimitTag object
 	 */
 	var $limit;
-	
+
 	/**
 	 * constructor
 	 * @param object $xml_navigation
@@ -48,22 +48,22 @@ class NavigationTag {
 				foreach($order as $order_info) {
 					$this->order[] = new IndexTag($order_info);
 				}
-				
+
 				if($xml_navigation->page && $xml_navigation->page->attrs || $xml_navigation->list_count && $xml_navigation->list_count->attrs)
 					$this->limit = new LimitTag($xml_navigation);
-				
+
 				if($xml_navigation->list_count)
 					$this->list_count = $xml_navigation->list_count->attrs;
-				
+
 				if($xml_navigation->page_count)
 					$this->page_count = $xml_navigation->page_count->attrs;
-				
+
 				if($xml_navigation->page)
 					$this->page = $xml_navigation->page->attrs;
 			}
 		}
 	}
-	
+
 	/**
 	 * NavigationTag object to string
 	 * @return string
@@ -77,7 +77,7 @@ class NavigationTag {
 		$output .= ')';
 		return $output;
 	}
-	
+
 	/**
 	 * LimitTag object to string
 	 * @return string
@@ -86,7 +86,7 @@ class NavigationTag {
 		if($this->limit) return $this->limit->toString();
 		else return "";
 	}
-	
+
 	function getArguments() {
 		$arguments = array();
 		foreach($this->order as $order) {

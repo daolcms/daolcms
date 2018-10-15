@@ -8,7 +8,7 @@ class memberMobile extends memberView {
 	 * dispMemberModifyInfoBefore
 	 */
 	var $memberInfo;
-	
+
 	function init(){
 		// Get the member configuration
 		$oMemberModel = getModel('member');
@@ -16,7 +16,7 @@ class memberMobile extends memberView {
 		Context::set('member_config', $this->member_config);
 		$oSecurity = new Security();
 		$oSecurity->encodeHTML('member_config.signupForm..');
-		
+
 		$mskin = $this->member_config->mskin;
 		// Set the template path
 		if(!$mskin){
@@ -26,7 +26,7 @@ class memberMobile extends memberView {
 		else{
 			$template_path = sprintf('%sm.skins/%s', $this->module_path, $mskin);
 		}
-		
+
 		// if member_srl exists, set memberInfo
 		$member_srl = Context::get('member_srl');
 		if($member_srl){
@@ -39,9 +39,9 @@ class memberMobile extends memberView {
 				Context::set('member_info', $this->memberInfo);
 			}
 		}
-		
+
 		$this->setTemplatePath($template_path);
-		
+
 		$oLayoutModel = getModel('layout');
 		$layout_info = $oLayoutModel->getLayout($this->member_config->mlayout_srl);
 		if($layout_info){
@@ -49,10 +49,10 @@ class memberMobile extends memberView {
 			$this->setLayoutPath($layout_info->path);
 		}
 	}
-	
+
 	function dispMemberModifyInfo(){
 		parent::dispMemberModifyInfo();
-		
+
 		if($this->member_info){
 			Context::set('oMemberInfo', get_object_vars($this->member_info));
 		}

@@ -7,13 +7,13 @@
  * @brief   AdminModel class of the "module" module
  **/
 class moduleAdminModel extends module {
-	
+
 	/**
 	 * @brief Initialization
 	 **/
 	function init(){
 	}
-	
+
 	/**
 	 * @brief Return a list of target modules by using module_srls separated by comma(,)
 	 * Used in the ModuleSelector
@@ -25,7 +25,7 @@ class moduleAdminModel extends module {
 		$args->module_srls = Context::get('module_srls');
 		$output = executeQueryArray('module.getModulesInfo', $args);
 		if(!$output->toBool() || !$output->data) return new BaseObject();
-		
+
 		foreach($output->data as $key => $val){
 			$info_xml = $oModuleModel->getModuleInfoXml($val->module);
 			$oModuleController->replaceDefinedLangCode($val->browser_title);
@@ -35,47 +35,47 @@ class moduleAdminModel extends module {
 		for($i = 0; $i < count($modules); $i++){
 			$module_list[$modules[$i]] = $list[$modules[$i]];
 		}
-		
+
 		$this->add('id', Context::get('id'));
 		$this->add('module_list', $module_list);
 	}
-	
+
 	function getModuleMidList($args){
 		$args->list_count = 20;
 		$args->page_count = 10;
 		$output = executeQueryArray('module.getModuleMidList', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		ModuleModel::syncModuleToSite($output->data);
-		
+
 		return $output;
 	}
-	
+
 	function getSelectedManageHTML($grantList, $tabChoice = array(), $modulePath = NULL){
 		if($modulePath){
 			// get the skins path
 			$oModuleModel = getModel('module');
 			$skin_list = $oModuleModel->getSkins($modulePath);
 			Context::set('skin_list', $skin_list);
-			
+
 			$mskin_list = $oModuleModel->getSkins($modulePath, "m.skins");
 			Context::set('mskin_list', $mskin_list);
 		}
-		
+
 		// get the layouts path
 		$oLayoutModel = getModel('layout');
 		$layout_list = $oLayoutModel->getLayoutList();
 		Context::set('layout_list', $layout_list);
-		
+
 		$mobile_layout_list = $oLayoutModel->getLayoutList(0, "M");
 		Context::set('mlayout_list', $mobile_layout_list);
-		
+
 		$security = new Security();
 		$security->encodeHTML('layout_list..layout', 'layout_list..title');
 		$security->encodeHTML('mlayout_list..layout', 'mlayout_list..title');
 		$security->encodeHTML('skin_list..title');
 		$security->encodeHTML('mskin_list..title');
-		
+
 		$grant_list = new stdClass();
 		// Grant virtual permission for access and manager
 		if(!$grantList){
@@ -95,12 +95,12 @@ class moduleAdminModel extends module {
 		$grant_list->manager->title = Context::getLang('grant_manager');
 		$grant_list->manager->default = 'manager';
 		Context::set('grant_list', $grant_list);
-		
+
 		// Get a list of groups
 		$oMemberModel = getModel('member');
 		$group_list = $oMemberModel->getGroups(0);
 		Context::set('group_list', $group_list);
-		
+
 		Context::set('module_srls', 'dummy');
 		$content = '';
 		// Call a trigger for additional settings
@@ -108,12 +108,12 @@ class moduleAdminModel extends module {
 		$output = ModuleHandler::triggerCall('module.dispAdditionSetup', 'before', $content);
 		$output = ModuleHandler::triggerCall('module.dispAdditionSetup', 'after', $content);
 		Context::set('setup_content', $content);
-		
+
 		// Get information of module_grants
 		$oTemplate = &TemplateHandler::getInstance();
 		return $oTemplate->compile($this->module_path . 'tpl', 'include.manage_selected.html');
 	}
-	
+
 	/**
 	 * @brief Common:: module's permission displaying page in the module
 	 * Available when using module instance in all the modules
@@ -122,12 +122,12 @@ class moduleAdminModel extends module {
 		if(!$module_srl){
 			return;
 		}
-		
+
 		// get member module's config
 		$oMemberModel = getModel('member');
 		$member_config = $oMemberModel->getMemberConfig();
 		Context::set('member_config', $member_config);
-		
+
 		$oModuleModel = getModel('module');
 		$columnList = array('module_srl', 'site_srl');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl, $columnList);
@@ -171,25 +171,25 @@ class moduleAdminModel extends module {
 		$oMemberModel = getModel('member');
 		$group_list = $oMemberModel->getGroups($module_info->site_srl);
 		Context::set('group_list', $group_list);
-		
+
 		//Security			
 		$security = new Security();
 		$security->encodeHTML('group_list..title');
 		$security->encodeHTML('group_list..description');
 		$security->encodeHTML('admin_member..nick_name');
-		
+
 		// Get information of module_grants
 		$oTemplate = &TemplateHandler::getInstance();
 		return $oTemplate->compile($this->module_path . 'tpl', 'module_grants');
 	}
-	
+
 	/**
 	 * @brief Common:: skin setting page for the module
 	 **/
 	function getModuleSkinHTML($module_srl){
 		return $this->_getModuleSkinHTML($module_srl, 'P');
 	}
-	
+
 	/**
 	 * Common:: skin setting page for the module (mobile)
 	 *
@@ -199,7 +199,7 @@ class moduleAdminModel extends module {
 	function getModuleMobileSkinHTML($module_srl){
 		return $this->_getModuleSkinHtml($module_srl, 'M');
 	}
-	
+
 	/**
 	 * Skin setting page for the module
 	 *
@@ -209,20 +209,20 @@ class moduleAdminModel extends module {
 	 */
 	function _getModuleSkinHTML($module_srl, $mode){
 		$mode = $mode === 'P' ? 'P' : 'M';
-		
+
 		$oModuleModel = getModel('module');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
 		if(!$module_info) return;
-		
+
 		if($mode === 'P'){
 			$skin = $module_info->skin;
 		}
 		else{
 			$skin = $module_info->mskin;
 		}
-		
+
 		$module_path = './modules/' . $module_info->module;
-		
+
 		// Get XML information of the skin and skin sinformation set in DB
 		if($mode === 'P'){
 			$skin_info = $oModuleModel->loadSkinInfo($module_path, $skin);
@@ -232,7 +232,7 @@ class moduleAdminModel extends module {
 			$skin_info = $oModuleModel->loadSkinInfo($module_path, $skin, 'm.skins');
 			$skin_vars = $oModuleModel->getModuleMobileSkinVars($module_srl);
 		}
-		
+
 		if(count($skin_info->extra_vars)){
 			foreach($skin_info->extra_vars as $key => $val){
 				$group = $val->group;
@@ -245,35 +245,35 @@ class moduleAdminModel extends module {
 				if($type == "checkbox"){
 					$value = $value ? unserialize($value) : array();
 				}
-				
+
 				$value = empty($value) ? $val->default : $value;
 				$skin_info->extra_vars[$key]->value = $value;
 			}
 		}
-		
+
 		Context::set('module_info', $module_info);
 		Context::set('mid', $module_info->mid);
 		Context::set('skin_info', $skin_info);
 		Context::set('skin_vars', $skin_vars);
 		Context::set('mode', $mode);
-		
+
 		//Security
 		$security = new Security();
 		$security->encodeHTML('mid');
 		$security->encodeHTML('module_info.browser_title');
 		$security->encodeHTML('skin_info...');
-		
+
 		$oTemplate = &TemplateHandler::getInstance();
 		return $oTemplate->compile($this->module_path . 'tpl', 'skin_config');
 	}
-	
+
 	/**
 	 * @brief Get values for a particular language code
 	 * Return its corresponding value if lang_code is specified. Otherwise return $name.
 	 **/
 	function getLangCode($site_srl, $name){
 		$lang_supported = Context::get('lang_supported');
-		
+
 		if(substr($name, 0, 12) == '$user_lang->'){
 			$args->site_srl = (int)$site_srl;
 			$args->name = substr($name, 12);
@@ -296,7 +296,7 @@ class moduleAdminModel extends module {
 				}
 			}
 		}
-		
+
 		$output = array();
 		if(is_array($lang_supported)){
 			foreach($lang_supported as $key => $val)
@@ -304,7 +304,7 @@ class moduleAdminModel extends module {
 		}
 		return $output;
 	}
-	
+
 	/**
 	 * @brief Return if the module language in ajax is requested
 	 **/
@@ -316,62 +316,62 @@ class moduleAdminModel extends module {
 		$output = $this->getLangCode($site_module_info->site_srl, '$user_lang->' . $name);
 		$this->add('langs', $output);
 	}
-	
+
 	/**
 	 * @brief Returns lang list by lang name
 	 **/
 	function getModuleAdminLangListByName(){
 		$args = Context::getRequestVars();
 		if(!$args->site_srl) $args->site_srl = 0;
-		
+
 		$columnList = array('lang_code', 'name', 'value');
-		
+
 		$langList = array();
-		
+
 		$args->langName = preg_replace('/^\$user_lang->/', '', $args->lang_name);
 		$output = executeQueryArray('module.getLangListByName', $args, $columnList);
 		if($output->toBool()) $langList = $output->data;
-		
+
 		$this->add('lang_list', $langList);
 		$this->add('lang_name', $args->langName);
 	}
-	
+
 	/**
 	 * @brief Return lang list
 	 **/
 	function getModuleAdminLangListByValue(){
 		$args = Context::getRequestVars();
 		if(!$args->site_srl) $args->site_srl = 0;
-		
+
 		$langList = array();
-		
+
 		// search value
 		$output = executeQueryArray('module.getLangNameByValue', $args);
 		if($output->toBool() && is_array($output->data)){
 			unset($args->value);
-			
+
 			foreach($output->data as $data){
 				$args->langName = $data->name;
 				$columnList = array('lang_code', 'name', 'value');
 				$outputByName = executeQueryArray('module.getLangListByName', $args, $columnList);
-				
+
 				if($outputByName->toBool()){
 					$langList = array_merge($langList, $outputByName->data);
 				}
 			}
 		}
-		
+
 		$this->add('lang_list', $langList);
 	}
-	
+
 	/**
 	 * @brief Return current lang list
 	 **/
 	function getLangListByLangcode($args){
 		$output = executeQueryArray('module.getLangListByLangcode', $args);
 		if(!$output->toBool()) return array();
-		
+
 		return $output;
 	}
-	
+
 }

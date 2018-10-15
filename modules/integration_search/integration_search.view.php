@@ -6,7 +6,7 @@
  * @author NAVER (developers@xpressengine.com)
  **/
 class integration_searchView extends integration_search {
-	
+
 	/**
 	 * Target mid
 	 * @var array target mid
@@ -17,7 +17,7 @@ class integration_searchView extends integration_search {
 	 * @var string skin name
 	 */
 	var $skin = 'default';
-	
+
 	/**
 	 * Initialization
 	 *
@@ -25,7 +25,7 @@ class integration_searchView extends integration_search {
 	 **/
 	function init() {
 	}
-	
+
 	/**
 	 * Search Result
 	 *
@@ -35,10 +35,10 @@ class integration_searchView extends integration_search {
 		$oFile = &getClass('file');
 		$oModuleModel = &getModel('module');
 		$logged_info = Context::get('logged_info');
-		
+
 		// Check permissions
 		if(!$this->grant->access) return new BaseObject(-1, 'msg_not_permitted');
-		
+
 		$config = $oModuleModel->getModuleConfig('integration_search');
 		if(!$config->skin) {
 			$config->skin = 'default';
@@ -55,15 +55,15 @@ class integration_searchView extends integration_search {
 		// Template path
 		$this->setTemplatePath($template_path);
 		Context::set('module_info', unserialize($config->skin_vars));
-		
+
 		$target = $config->target;
 		if(!$target) $target = 'include';
-		
+
 		if(empty($config->target_module_srl))
 			$module_srl_list = array();
 		else
 			$module_srl_list = explode(',', $config->target_module_srl);
-		
+
 		if($target === 'include' && !count($module_srl_list)) {
 			$oMessageObject = ModuleHandler::getModuleInstance('message');
 			$oMessageObject->setError(-1);
@@ -73,7 +73,7 @@ class integration_searchView extends integration_search {
 			$this->setTemplateFile($oMessageObject->getTemplateFile());
 			return;
 		}
-		
+
 		// Set a variable for search keyword
 		$is_keyword = Context::get('is_keyword');
 		// Set page variables
@@ -89,7 +89,7 @@ class integration_searchView extends integration_search {
 					$search_target = Context::get('search_target');
 					if(!in_array($search_target, array('title', 'content', 'title_content', 'tag'))) $search_target = 'title';
 					Context::set('search_target', $search_target);
-					
+
 					$output = $oIS->getDocuments($target, $module_srl_list, $search_target, $is_keyword, $page, 10);
 					Context::set('output', $output);
 					$this->setTemplateFile("document", $page);
@@ -103,7 +103,7 @@ class integration_searchView extends integration_search {
 					$search_target = Context::get('search_target');
 					if(!in_array($search_target, array('title', 'url', 'blog_name', 'excerpt'))) $search_target = 'title';
 					Context::set('search_target', $search_target);
-					
+
 					$output = $oIS->getTrackbacks($target, $module_srl_list, $search_target, $is_keyword, $page, 10);
 					Context::set('output', $output);
 					$this->setTemplateFile("trackback", $page);
@@ -132,7 +132,7 @@ class integration_searchView extends integration_search {
 		} else {
 			$this->setTemplateFile("no_keywords");
 		}
-		
+
 		$security = new Security();
 		$security->encodeHTML('is_keyword', 'search_target', 'where', 'page');
 	}

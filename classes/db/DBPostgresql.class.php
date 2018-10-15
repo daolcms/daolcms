@@ -14,13 +14,13 @@
  * 2009.02.13 addColumn() function changes
  **/
 class DBPostgresql extends DB {
-	
+
 	/**
 	 * @brief Connection information for PostgreSQL DB
 	 **/
 	var $prefix = 'daol'; // / <prefix of a tablename (One or more DAOL CMS can be installed in a single DB)
 	var $comment_syntax = '/* %s */';
-	
+
 	/**
 	 * @brief column type used in postgresql
 	 *
@@ -37,7 +37,7 @@ class DBPostgresql extends DB {
 		'date' => 'varchar(14)',
 		'float' => 'real',
 	);
-	
+
 	/**
 	 * @brief constructor
 	 **/
@@ -45,14 +45,14 @@ class DBPostgresql extends DB {
 		$this->_setDBInfo();
 		$this->_connect();
 	}
-	
+
 	/**
 	 * @brief create an instance of this class
 	 */
 	function create(){
 		return new DBPostgresql;
 	}
-	
+
 	/**
 	 * @brief DB Connection
 	 **/
@@ -65,7 +65,7 @@ class DBPostgresql extends DB {
 		$conn_string .= ($connection["db_password"]) ? " password=" . $connection["db_password"] : "";
 		$conn_string .= ($connection["db_database"]) ? " dbname=" . $connection["db_database"] : "";
 		$conn_string .= ($connection["db_port"]) ? " port=" . $connection["db_port"] : "";
-		
+
 		// Attempt to connect
 		$result = @pg_connect($conn_string);
 		if(!$result || pg_connection_status($result) != PGSQL_CONNECTION_OK){
@@ -74,14 +74,14 @@ class DBPostgresql extends DB {
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * @brief DB disconnection
 	 **/
 	function _close($connection){
 		@pg_close($connection);
 	}
-	
+
 	/**
 	 * @brief Add quotes on the string variables in a query
 	 **/
@@ -94,7 +94,7 @@ class DBPostgresql extends DB {
 		}
 		return $string;
 	}
-	
+
 	/**
 	 * @brief Begin transaction
 	 **/
@@ -105,7 +105,7 @@ class DBPostgresql extends DB {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * @brief Rollback
 	 **/
@@ -115,7 +115,7 @@ class DBPostgresql extends DB {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * @brief Commits
 	 **/
@@ -125,7 +125,7 @@ class DBPostgresql extends DB {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * @brief : Run a query and fetch the result
 	 *
@@ -139,7 +139,7 @@ class DBPostgresql extends DB {
 		if(!$this->isConnected()){
 			return;
 		}
-		
+
 		/*
 		$l_query_array = explode(" ", $query);
 		if ($l_query_array[0] = "update")
@@ -176,7 +176,7 @@ class DBPostgresql extends DB {
 		// Return result
 		return $result;
 	}
-	
+
 	/**
 	 * @brief Fetch results
 	 **/
@@ -203,7 +203,7 @@ class DBPostgresql extends DB {
 		}
 		return $output;
 	}
-	
+
 	/**
 	 * @brief Return sequence value incremented by 1(in postgresql, auto_increment is used in the sequence table only)
 	 **/
@@ -213,7 +213,7 @@ class DBPostgresql extends DB {
 		$tmp = $this->_fetch($result);
 		return $tmp->seq;
 	}
-	
+
 	/**
 	 * @brief Return if a table already exists
 	 **/
@@ -223,7 +223,7 @@ class DBPostgresql extends DB {
 		}
 		$query = sprintf("SELECT tablename FROM pg_tables WHERE tablename = '%s%s' AND schemaname = current_schema()",
 			$this->prefix, $this->addQuotes($target_name));
-		
+
 		$result = $this->_query($query);
 		$tmp = $this->_fetch($result);
 		if(!$tmp){
@@ -231,7 +231,7 @@ class DBPostgresql extends DB {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * @brief Add a column to a table
 	 **/
@@ -240,18 +240,18 @@ class DBPostgresql extends DB {
 		if(strtoupper($type) == 'INTEGER' || strtoupper($type) == 'BIGINT'){
 			$size = '';
 		}
-		
+
 		$query = sprintf("alter table %s%s add %s ", $this->prefix, $table_name, $column_name);
-		
+
 		if($size){
 			$query .= sprintf(" %s(%s) ", $type, $size);
 		}
 		else{
 			$query .= sprintf(" %s ", $type);
 		}
-		
+
 		$this->_query($query);
-		
+
 		if(isset($default)){
 			$query = sprintf("alter table %s%s alter %s  set default '%s' ", $this->prefix, $table_name, $column_name, $default);
 			$this->_query($query);
@@ -263,15 +263,15 @@ class DBPostgresql extends DB {
 			$this->_query($query);
 		}
 	}
-	
-	
+
+
 	/**
 	 * @brief Return column information of a table
 	 **/
 	function isColumnExists($table_name, $column_name){
 		$query = sprintf("SELECT attname FROM pg_attribute WHERE attrelid = (SELECT oid FROM pg_class WHERE relname = '%s%s') AND attname = '%s'",
 			$this->prefix, strtolower($table_name), strtolower($column_name));
-		
+
 		// $query = sprintf("select column_name from information_schema.columns where table_schema = current_schema() and table_name = '%s%s' and column_name = '%s'", $this->prefix, $this->addQuotes($table_name), strtolower($column_name));
 		$result = $this->_query($query);
 		if($this->isError()){
@@ -283,7 +283,7 @@ class DBPostgresql extends DB {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * @brief Add an index to a table
 	 * $target_columns = array(col1, col2)
@@ -293,18 +293,18 @@ class DBPostgresql extends DB {
 		if(!is_array($target_columns)){
 			$target_columns = array($target_columns);
 		}
-		
+
 		if(strpos($table_name, $this->prefix) === false){
 			$table_name = $this->prefix . $table_name;
 		}
 		// Use a tablename before an index name to avoid defining the same index
 		$index_name = $table_name . $index_name;
-		
+
 		$query = sprintf("create %s index %s on %s (%s);", $is_unique ? 'unique' : '', $index_name,
 			$table_name, implode(',', $target_columns));
 		$this->_query($query);
 	}
-	
+
 	/**
 	 * @brief Delete a column from a table
 	 **/
@@ -312,7 +312,7 @@ class DBPostgresql extends DB {
 		$query = sprintf("alter table %s%s drop %s ", $this->prefix, $table_name, $column_name);
 		$this->_query($query);
 	}
-	
+
 	/**
 	 * @brief Drop an index from a table
 	 **/
@@ -322,12 +322,12 @@ class DBPostgresql extends DB {
 		}
 		// Use a tablename before an index name to avoid defining the same index
 		$index_name = $table_name . $index_name;
-		
+
 		$query = sprintf("drop index %s", $index_name);
 		$this->_query($query);
 	}
-	
-	
+
+
 	/**
 	 * @brief Return index information of a table
 	 **/
@@ -337,7 +337,7 @@ class DBPostgresql extends DB {
 		}
 		// Use a tablename before an index name to avoid defining the same index
 		$index_name = $table_name . $index_name;
-		
+
 		//$query = sprintf("show indexes from %s%s where key_name = '%s' ", $this->prefix, $table_name, $index_name);
 		$query = sprintf("select indexname from pg_indexes where schemaname = current_schema() and tablename = '%s' and indexname = '%s'",
 			$table_name, strtolower($index_name));
@@ -346,7 +346,7 @@ class DBPostgresql extends DB {
 			return;
 		}
 		$output = $this->_fetch($result);
-		
+
 		if($output){
 			return true;
 		}
@@ -354,14 +354,14 @@ class DBPostgresql extends DB {
 		//                die(" no index");
 		return false;
 	}
-	
+
 	/**
 	 * @brief Create a table by using xml file
 	 **/
 	function createTableByXml($xml_doc){
 		return $this->_createTable($xml_doc);
 	}
-	
+
 	/**
 	 * @brief Create a table by using xml file
 	 **/
@@ -373,7 +373,7 @@ class DBPostgresql extends DB {
 		$buff = FileHandler::readFile($file_name);
 		return $this->_createTable($buff);
 	}
-	
+
 	/**
 	 * @brief generate a query statement to create a table by using schema xml
 	 *
@@ -387,24 +387,24 @@ class DBPostgresql extends DB {
 		$xml_obj = $oXml->parse($xml_doc);
 		// Create a table schema
 		$table_name = $xml_obj->table->attrs->name;
-		
+
 		if($table_name == 'sequence'){
 			$query = sprintf('create sequence %s', $this->prefix . $table_name);
 			return $this->_query($query);
 		}
-		
+
 		if($this->isTableExists($table_name)){
 			return;
 		}
 		$table_name = $this->prefix . $table_name;
-		
+
 		if(!is_array($xml_obj->table->column)){
 			$columns[] = $xml_obj->table->column;
 		}
 		else{
 			$columns = $xml_obj->table->column;
 		}
-		
+
 		foreach($columns as $column){
 			$name = $column->attrs->name;
 			$type = $column->attrs->type;
@@ -415,15 +415,15 @@ class DBPostgresql extends DB {
 			$unique = $column->attrs->unique;
 			$default = $column->attrs->default;
 			$auto_increment = $column->attrs->auto_increment;
-			
+
 			if($type == "bignumber" || $type == "number"){
 				$size = 0;
 			}
-			
+
 			$column_schema[] = sprintf('%s %s%s %s %s', $name, $this->column_type[$type], $size ?
 				'(' . $size . ')' : '', isset($default) ? "default '" . $default . "'" : '', $notnull ?
 				'not null' : '');
-			
+
 			if($primary_key){
 				$primary_list[] = $name;
 			}
@@ -438,23 +438,23 @@ class DBPostgresql extends DB {
 				}
 			}
 		}
-		
+
 		if(count($primary_list)){
 			$column_schema[] = sprintf("primary key (%s)", implode($primary_list, ','));
 		}
-		
+
 		if(count($unique_list)){
 			foreach($unique_list as $key => $val){
 				$column_schema[] = sprintf("unique (%s)", implode($val, ','));
 			}
 		}
-		
-		
+
+
 		$schema = sprintf('create table %s (%s%s);', $this->addQuotes($table_name), "\n",
 			implode($column_schema, ",\n"));
-		
+
 		$output = $this->_query($schema);
-		
+
 		if(count($index_list)){
 			foreach($index_list as $key => $val){
 				if(!$this->isIndexExists($table_name, $key)){
@@ -462,14 +462,14 @@ class DBPostgresql extends DB {
 				}
 			}
 		}
-		
+
 		if(!$output){
 			return false;
 		}
-		
+
 	}
-	
-	
+
+
 	/**
 	 * @brief Handle the insertAct
 	 **/
@@ -478,10 +478,10 @@ class DBPostgresql extends DB {
 		if(is_a($query, 'Object')){
 			return;
 		}
-		
+
 		return $this->_query($query);
 	}
-	
+
 	/**
 	 * @brief Handle updateAct
 	 **/
@@ -492,19 +492,19 @@ class DBPostgresql extends DB {
 		}
 		return $this->_query($query);
 	}
-	
+
 	/**
 	 * @brief Handle deleteAct
 	 **/
 	function _executeDeleteAct($queryObject){
 		$query = $this->getDeleteSql($queryObject);
-		
+
 		if(is_a($query, 'Object')){
 			return;
 		}
 		return $this->_query($query);
 	}
-	
+
 	/**
 	 *
 	 * override
@@ -516,37 +516,37 @@ class DBPostgresql extends DB {
 			return new BaseObject(-1, "Invalid query");
 		}
 		$select = 'SELECT ' . $select;
-		
+
 		$from = $query->getFromString();
 		if($from == ''){
 			return new BaseObject(-1, "Invalid query");
 		}
 		$from = ' FROM ' . $from;
-		
+
 		$where = $query->getWhereString();
 		if($where != ''){
 			$where = ' WHERE ' . $where;
 		}
-		
+
 		$groupBy = $query->getGroupByString();
 		if($groupBy != ''){
 			$groupBy = ' GROUP BY ' . $groupBy;
 		}
-		
+
 		$orderBy = $query->getOrderByString();
 		if($orderBy != ''){
 			$orderBy = ' ORDER BY ' . $orderBy;
 		}
-		
+
 		$limit = $query->getLimitString();
 		$limitObject = $query->getLimit();
 		if($limit != ''){
 			$limit = ' LIMIT ' . $limitObject->getLimit() . ' OFFSET ' . $limitObject->getOffset();
 		}
-		
+
 		return $select . ' ' . $from . ' ' . $where . ' ' . $groupBy . ' ' . $orderBy . ' ' . $limit;
 	}
-	
+
 	/**
 	 * @brief Handle selectAct
 	 *
@@ -555,16 +555,16 @@ class DBPostgresql extends DB {
 	 **/
 	function _executeSelectAct($queryObject, $connection){
 		$query = $this->getSelectSql($queryObject);
-		
+
 		if(is_a($query, 'Object')){
 			return;
 		}
-		
+
 		$query .= (__DEBUG_QUERY__ & 1 && $queryObject->query_id) ? sprintf(' ' . $this->comment_syntax, $this->query_id) : '';
-		
+
 		// TODO Add support for click count
 		// TODO Add code for pagination
-		
+
 		$result = $this->_query($query, $connection);
 		if($this->isError()){
 			if($limit && $output->limit->isPageHandler()){
@@ -584,7 +584,7 @@ class DBPostgresql extends DB {
 				return;
 			}
 		}
-		
+
 		$limit = $queryObject->getLimit();
 		if($limit && $limit->isPageHandler()){
 			// Total count
@@ -593,12 +593,12 @@ class DBPostgresql extends DB {
 			if($queryObject->getGroupByString() != ''){
 				$count_query = sprintf('select count(*) as "count" from (%s) xet', $count_query);
 			}
-			
+
 			$count_query .= (__DEBUG_QUERY__ & 1 && $output->query_id) ? sprintf(' ' . $this->comment_syntax, $this->query_id) : '';
 			$result_count = $this->_query($count_query, $connection);
 			$count_output = $this->_fetch($result_count);
 			$total_count = (int)$count_output->count;
-			
+
 			// Total pages
 			if($total_count){
 				$total_page = (int)(($total_count - 1) / $limit->list_count) + 1;
@@ -606,11 +606,11 @@ class DBPostgresql extends DB {
 			else{
 				$total_page = 1;
 			}
-			
-			
+
+
 			$virtual_no = $total_count - ($limit->page - 1) * $limit->list_count;
 			$data = $this->_fetch($result, $virtual_no);
-			
+
 			$buff = new BaseObject ();
 			$buff->total_count = $total_count;
 			$buff->total_page = $total_page;
@@ -623,10 +623,10 @@ class DBPostgresql extends DB {
 			$buff = new BaseObject ();
 			$buff->data = $data;
 		}
-		
+
 		return $buff;
 	}
-	
+
 	function getParser(){
 		return new DBParser('"', '"', $this->prefix);
 	}

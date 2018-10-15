@@ -10,7 +10,7 @@
 	<input type="hidden" name="_mode" value="{$mode}" />
 	<input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
 	<input type="hidden" name="page" value="{$page}" />
-	
+
 	<h2 class="h2">{$lang->skin_default_info}</h2>
 
 	<ul>
@@ -116,10 +116,10 @@
 						<input type="checkbox" name="del_{$val->name}" value="Y" id="del_{$val->name}" class="checkbox" />
 						<label for="del_{$val->name}">{$lang->cmd_delete}</label>
 					</div>
-					
+
 					<input type="file" name="{$val->name}" value="" />
 				</div>
-					
+
 				<p cond="$val->description" class="desc">{nl2br(trim($val->description))}</p>
 			</li>
 		</block>

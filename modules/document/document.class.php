@@ -21,7 +21,7 @@ class document extends ModuleObject {
 	 * @var array
 	 */
 	var $statusList = array('private' => 'PRIVATE', 'public' => 'PUBLIC', 'secret' => 'SECRET', 'temp' => 'TEMP');
-	
+
 	/**
 	 * Implement if additional tasks are necessary when installing
 	 * @return BaseObject
@@ -29,7 +29,7 @@ class document extends ModuleObject {
 	function moduleInstall() {
 		// Register action forward (to use in administrator mode)
 		$oModuleController = &getController('module');
-		
+
 		$oDB = &DB::getInstance();
 		$oDB->addIndex("documents", "idx_module_list_order", array("module_srl", "list_order"));
 		$oDB->addIndex("documents", "idx_module_update_order", array("module_srl", "update_order"));
@@ -42,17 +42,17 @@ class document extends ModuleObject {
 		$oDB->addIndex("document_extra_vars", "unique_extra_vars", array("module_srl", "document_srl", "var_idx", "lang_code"), true);
 		// 2007. 10. 17 Add a trigger to delete all posts together when the module is deleted
 		$oModuleController->insertTrigger('module.deleteModule', 'document', 'controller', 'triggerDeleteModuleDocuments', 'after');
-		
+
 		// 2009. 01. 29 Added a trigger for additional setup
 		$oModuleController->insertTrigger('module.dispAdditionSetup', 'document', 'view', 'triggerDispDocumentAdditionSetup', 'before');
-		
+
 		if(!is_dir('./files/cache/tmp')) {
 			FileHandler::makeDir('./files/cache/tmp');
 		}
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * A method to check if successfully installed
 	 * @return bool
@@ -60,10 +60,10 @@ class document extends ModuleObject {
 	function checkUpdate() {
 		$oDB = &DB::getInstance();
 		$oModuleModel = &getModel('module');
-		
+
 		// 2007. 7. 25: Add a column(notify_message) for notification
 		if(!$oDB->isColumnExists("documents", "notify_message")) return true;
-		
+
 		// 2007. 8. 23: create a clustered index in the document table
 		if(!$oDB->isIndexExists("documents", "idx_module_list_order")) return true;
 		if(!$oDB->isIndexExists("documents", "idx_module_update_order")) return true;
@@ -79,7 +79,7 @@ class document extends ModuleObject {
 		if(!$oDB->isIndexExists("documents", "idx_module_notice")) return true;
 		// 2008. 02. 18 create a composite index on the columns(module_srl + document_srl) (checked by Manian))
 		if(!$oDB->isIndexExists("documents", "idx_module_document_srl")) return true;
-		
+
 		// 2007. 12. 03: Add if the colume(extra_vars) doesn't exist
 		if(!$oDB->isColumnExists("documents", "extra_vars")) return true;
 		// 2008. 04. 23 Add a column(blamed_count)
@@ -88,46 +88,46 @@ class document extends ModuleObject {
 		if(!$oDB->isColumnExists("document_voted_log", "point")) return true;
 		// 2008-12-15 Add a column(color)
 		if(!$oDB->isColumnExists("document_categories", "color")) return true;
-		
+
 		/**
 		 * 2009. 01. 29: Add a column(lang_code) if not exist in the document_extra_vars table
 		 */
 		if(!$oDB->isColumnExists("document_extra_vars", "lang_code")) return true;
-		
+
 		if(!$oModuleModel->getTrigger('module.dispAdditionSetup', 'document', 'view', 'triggerDispDocumentAdditionSetup', 'before')) return true;
 		// 2009. 03. 09 Add a column(lang_code) to the documnets table
 		if(!$oDB->isColumnExists("documents", "lang_code")) return true;
 		// 2009. 03. 11 check the index in the document_extra_vars table
 		if(!$oDB->isIndexExists("document_extra_vars", "unique_extra_vars")) return true;
-		
+
 		// 2009. 03. 19: Add a column(eid) if not exist in the table
 		if(!$oDB->isColumnExists("document_extra_keys", "eid")) return true;
 		if(!$oDB->isColumnExists("document_extra_vars", "eid")) return true;
-		
+
 		// 2011. 03. 30 Cubrid index Check the index in the document_extra_vars table
 		if(!$oDB->isIndexExists("document_extra_vars", "idx_document_list_order")) return true;
-		
+
 		//2011. 04. 07 adding description column to document categories
 		if(!$oDB->isColumnExists("document_categories", "description")) return true;
-		
+
 		//2011. 05. 23 adding status column to document
 		if(!$oDB->isColumnExists('documents', 'status')) return true;
-		
+
 		//2011. 06. 07 check comment status update
 		if($oDB->isColumnExists('documents', 'allow_comment') || $oDB->isColumnExists('documents', 'lock_comment')) return true;
-		
+
 		// 2011. 10. 25 status index check
 		if(!$oDB->isIndexExists("documents", "idx_module_status")) return true;
-		
+
 		// 2012. 02. 27 Add a trigger to copy extra keys when the module is copied 
 		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'document', 'controller', 'triggerCopyModuleExtraKeys', 'after')) return true;
-		
+
 		// 2012. 08. 29 Add a trigger to copy additional setting when the module is copied 
 		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'document', 'controller', 'triggerCopyModule', 'after')) return true;
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Execute update
 	 * @return BaseObject
@@ -136,25 +136,25 @@ class document extends ModuleObject {
 		$oDB = &DB::getInstance();
 		$oModuleModel = &getModel('module');
 		$oModuleController = &getController('module');
-		
+
 		// 2007. 7. 25: Add a column(notify_message) for notification
 		if(!$oDB->isColumnExists("documents", "notify_message")) {
 			$oDB->addColumn('documents', "notify_message", "char", 1);
 		}
-		
+
 		// 2007. 8. 23: create a clustered index in the document table
 		if(!$oDB->isIndexExists("documents", "idx_module_list_order")) {
 			$oDB->addIndex("documents", "idx_module_list_order", array("module_srl", "list_order"));
 		}
-		
+
 		if(!$oDB->isIndexExists("documents", "idx_module_update_order")) {
 			$oDB->addIndex("documents", "idx_module_update_order", array("module_srl", "update_order"));
 		}
-		
+
 		if(!$oDB->isIndexExists("documents", "idx_module_readed_count")) {
 			$oDB->addIndex("documents", "idx_module_readed_count", array("module_srl", "readed_count"));
 		}
-		
+
 		if(!$oDB->isIndexExists("documents", "idx_module_voted_count")) {
 			$oDB->addIndex("documents", "idx_module_voted_count", array("module_srl", "voted_count"));
 		}
@@ -167,10 +167,10 @@ class document extends ModuleObject {
 		if(!$oDB->isColumnExists("document_categories", "group_srls")) $oDB->addColumn('document_categories', "group_srls", "text");
 		// 2007. 11. 20 create a composite index on the columns(module_srl + is_notice)
 		if(!$oDB->isIndexExists("documents", "idx_module_notice")) $oDB->addIndex("documents", "idx_module_notice", array("module_srl", "is_notice"));
-		
+
 		// 2007. 12. 03: Add if the colume(extra_vars) doesn't exist
 		if(!$oDB->isColumnExists("documents", "extra_vars")) $oDB->addColumn('documents', 'extra_vars', 'text');
-		
+
 		// 2008. 02. 18 create a composite index on the columns(module_srl + document_srl) (checked by Manian))
 		if(!$oDB->isIndexExists("documents", "idx_module_document_srl")) $oDB->addIndex("documents", "idx_module_document_srl", array("module_srl", "document_srl"));
 		// 2008. 04. 23 Add a column(blamed count)
@@ -178,20 +178,20 @@ class document extends ModuleObject {
 			$oDB->addColumn('documents', 'blamed_count', 'number', 11, 0, true);
 			$oDB->addIndex('documents', 'idx_blamed_count', array('blamed_count'));
 		}
-		
+
 		if(!$oDB->isIndexExists("documents", "idx_module_blamed_count")) {
 			$oDB->addIndex('documents', 'idx_module_blamed_count', array('module_srl', 'blamed_count'));
 		}
-		
+
 		if(!$oDB->isColumnExists("document_voted_log", "point"))
 			$oDB->addColumn('document_voted_log', 'point', 'number', 11, 0, true);
-		
-		
+
+
 		if(!$oDB->isColumnExists("document_categories", "color")) $oDB->addColumn('document_categories', "color", "char", 7);
-		
+
 		// 2009. 01. 29: Add a column(lang_code) if not exist in the document_extra_vars table
 		if(!$oDB->isColumnExists("document_extra_vars", "lang_code")) $oDB->addColumn('document_extra_vars', "lang_code", "varchar", 10);
-		
+
 		// 2009. 01. 29 Added a trigger for additional setup
 		if(!$oModuleModel->getTrigger('module.dispAdditionSetup', 'document', 'view', 'triggerDispDocumentAdditionSetup', 'before'))
 			$oModuleController->insertTrigger('module.dispAdditionSetup', 'document', 'view', 'triggerDispDocumentAdditionSetup', 'before');
@@ -206,16 +206,16 @@ class document extends ModuleObject {
 		if(!$oDB->isIndexExists("document_extra_vars", "unique_extra_vars")) {
 			$oDB->addIndex("document_extra_vars", "unique_extra_vars", array("module_srl", "document_srl", "var_idx", "lang_code"), true);
 		}
-		
+
 		if($oDB->isIndexExists("document_extra_vars", "unique_module_vars")) {
 			$oDB->dropIndex("document_extra_vars", "unique_module_vars", true);
 		}
-		
+
 		// 2009. 03. 19: Add a column(eid)
 		// 2009. 04. 12: Fixed the issue(#17922959) that changes another column values when adding eid column
 		if(!$oDB->isColumnExists("document_extra_keys", "eid")) {
 			$oDB->addColumn("document_extra_keys", "eid", "varchar", 40);
-			
+
 			$output = executeQuery('document.getGroupsExtraKeys', $obj);
 			if($output->toBool() && $output->data && count($output->data)) {
 				foreach($output->data as $extra_keys) {
@@ -226,7 +226,7 @@ class document extends ModuleObject {
 				}
 			}
 		}
-		
+
 		if(!$oDB->isColumnExists("document_extra_vars", "eid")) {
 			$oDB->addColumn("document_extra_vars", "eid", "varchar", 40);
 			$obj->var_idx = '-1,-2';
@@ -240,72 +240,72 @@ class document extends ModuleObject {
 				}
 			}
 		}
-		
+
 		// 2011. 03. 30 Cubrid index Check the index in the document_extra_vars table
 		if(!$oDB->isIndexExists("document_extra_vars", "idx_document_list_order")) {
 			$oDB->addIndex("document_extra_vars", "idx_document_list_order", array("document_srl", "module_srl", "var_idx"), false);
 		}
-		
+
 		//2011. 04. 07 adding description column to document categories
 		if(!$oDB->isColumnExists("document_categories", "description")) $oDB->addColumn('document_categories', "description", "varchar", 200, 0);
-		
+
 		//2011. 05. 23 adding status column to document
 		if(!$oDB->isColumnExists('documents', 'status')) {
 			$oDB->addColumn('documents', 'status', 'varchar', 20, 'PUBLIC');
 			$args->is_secret = 'Y';
 			$output = executeQuery('document.updateDocumentStatus', $args);
 		}
-		
+
 		// 2011. 09. 08 drop column document is_secret
 		if($oDB->isColumnExists('documents', 'status') && $oDB->isColumnExists('documents', 'is_secret'))
 			$oDB->dropColumn('documents', 'is_secret');
-		
+
 		//2011. 06. 07 merge column, allow_comment and lock_comment
 		if($oDB->isColumnExists('documents', 'allow_comment') || $oDB->isColumnExists('documents', 'lock_comment')) {
 			$oDB->addColumn('documents', 'comment_status', 'varchar', 20, 'ALLOW');
 			$columnList = array('module_srl');
 			$moduleSrlList = $oModuleModel->getModuleSrlList(null, $columnList);
-			
+
 			$args->commentStatus = 'DENY';
-			
+
 			// allow_comment='Y', lock_comment='Y'
 			$args->allowComment = 'Y';
 			$args->lockComment = 'Y';
 			$output = executeQuery('document.updateDocumentCommentStatus', $args);
-			
+
 			// allow_comment='N', lock_comment='Y'
 			$args->allowComment = 'N';
 			$args->lockComment = 'Y';
 			$output = executeQuery('document.updateDocumentCommentStatus', $args);
-			
+
 			// allow_comment='N', lock_comment='N'
 			$args->allowComment = 'N';
 			$args->lockComment = 'N';
 			$output = executeQuery('document.updateDocumentCommentStatus', $args);
 		}
-		
+
 		if($oDB->isColumnExists('documents', 'allow_comment') && $oDB->isColumnExists('documents', 'comment_status'))
 			$oDB->dropColumn('documents', 'allow_comment');
-		
+
 		if($oDB->isColumnExists('documents', 'lock_comment') && $oDB->isColumnExists('documents', 'comment_status'))
 			$oDB->dropColumn('documents', 'lock_comment');
-		
+
 		if(!$oDB->isIndexExists("documents", "idx_module_status"))
 			$oDB->addIndex("documents", "idx_module_status", array("module_srl", "status"));
-		
+
 		// 2012. 02. 27 Add a trigger to copy extra keys when the module is copied 
 		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'document', 'controller', 'triggerCopyModuleExtraKeys', 'after')) {
 			$oModuleController->insertTrigger('module.procModuleAdminCopyModule', 'document', 'controller', 'triggerCopyModuleExtraKeys', 'after');
 		}
-		
+
 		// 2012. 08. 29 Add a trigger to copy additional setting when the module is copied 
 		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'document', 'controller', 'triggerCopyModule', 'after')) {
 			$oModuleController->insertTrigger('module.procModuleAdminCopyModule', 'document', 'controller', 'triggerCopyModule', 'after');
 		}
-		
+
 		return new BaseObject(0, 'success_updated');
 	}
-	
+
 	/**
 	 * Re-generate the cache file
 	 * @return void
@@ -315,7 +315,7 @@ class document extends ModuleObject {
 			FileHandler::makeDir('./files/cache/tmp');
 		}
 	}
-	
+
 	/**
 	 * Document Status List
 	 * @return array
@@ -323,7 +323,7 @@ class document extends ModuleObject {
 	function getStatusList() {
 		return $this->statusList;
 	}
-	
+
 	/**
 	 * Return default status
 	 * @return string
@@ -331,7 +331,7 @@ class document extends ModuleObject {
 	function getDefaultStatus() {
 		return $this->statusList['public'];
 	}
-	
+
 	/**
 	 * Return status by key
 	 * @return string

@@ -21,24 +21,24 @@ class importerAdminController extends importer {
 	 * @var XmlParser
 	 */
 	var $oXmlParser = null;
-	
+
 	/**
 	 * Initialization
 	 * @return void
 	 */
 	function init() {
 	}
-	
+
 	/**
 	 * Check whether the passing filename exists or not. Detect the file type, too.
 	 * @return void
 	 */
 	function procImporterAdminCheckXmlFile() {
 		global $lang;
-		
+
 		$filename = Context::get('filename');
 		$isExists = 'false';
-		
+
 		if(preg_match('/^http/i', $filename)) {
 			if(ini_get('allow_url_fopen')) {
 				$fp = @fopen($filename, "r");
@@ -48,36 +48,36 @@ class importerAdminController extends importer {
 						$isExists = 'true';
 						$type = 'XML';
 						if(stristr($str, 'tattertools')) $type = 'TTXML';
-						
+
 						$this->add('type', $type);
 					}
 					fclose($fp);
 					$resultMessage = $lang->found_xml_file;
 				} else $resultMessage = $lang->cannot_url_file;
 			} else $resultMessage = $lang->cannot_allow_fopen_in_phpini;
-			
+
 			$this->add('exists', $isExists);
 		} else {
 			$realPath = FileHandler::getRealPath($filename);
-			
+
 			if(file_exists($realPath) && is_file($realPath)) $isExists = 'true';
 			$this->add('exists', $isExists);
-			
+
 			if($isExists == 'true') {
 				$type = 'XML';
-				
+
 				$fp = fopen($realPath, "r");
 				$str = fgets($fp, 100);
 				if(stristr($str, 'tattertools')) $type = 'TTXML';
 				fclose($fp);
-				
+
 				$this->add('type', $type);
 				$resultMessage = $lang->found_xml_file;
 			} else $resultMessage = $lang->not_found_xml_file;
 		}
 		$this->add('result_message', $resultMessage);
 	}
-	
+
 	/**
 	 * Sync member information with document information
 	 * @return void
@@ -85,11 +85,11 @@ class importerAdminController extends importer {
 	function procImporterAdminSync() {
 		$oMemberModel = &getModel('member');
 		$member_config = $oMemberModel->getMemberConfig();
-		
+
 		$postFix = ($member_config->identifier == 'email_address') ? 'ByEmail' : '';
-		
+
 		// 계정이 이메일인 경우 이메일 정보로 사용자를 싱크하도록 한다. 이때 변수명은 그대로 user_id를 사용한다.
-		
+
 		/* DBMS가 CUBRID인 경우 MySQL과 동일한 방법으로는 문서 및 댓글에 대한 사용자 정보를 동기화 할 수 없으므로 예외 처리 합니다.
 		  CUBRID를 사용하지 않는 경우에만 보편적인 기존 질의문을 사용합니다. */
 		$db_info = Context::getDBInfo();
@@ -114,7 +114,7 @@ class importerAdminController extends importer {
 					$total_count++;
 				}
 			} // documents section
-			
+
 			$output = executeQueryArray('importer.getCommentMemberSrlWithUserID' . $postFix);
 			if(is_array($output->data) && count($output->data)) {
 				$success_count = 0;
@@ -133,10 +133,10 @@ class importerAdminController extends importer {
 				}
 			} // comments section
 		}
-		
+
 		$this->setMessage('msg_sync_completed');
 	}
-	
+
 	/**
 	 * Pre-analyze the xml file and cache it
 	 * @return void
@@ -148,7 +148,7 @@ class importerAdminController extends importer {
 		$type = Context::get('type');
 		// Extract and cache information from the xml file
 		$oExtract = new extract();
-		
+
 		switch($type) {
 			case 'member' :
 				$output = $oExtract->set($xml_file, '<members ', '</members>', '<member>', '</member>');
@@ -178,8 +178,8 @@ class importerAdminController extends importer {
 					$oExtract->closeFile();
 					$category_filename = sprintf('%s/%s', $oExtract->cache_path, 'category.xml');
 					FileHandler::writeFile($category_filename, $buff);
-					
-					
+
+
 					// Guestbook information
 					$output = $oExtract->set($xml_file, '', '', '', '');
 					if($output->toBool()) {
@@ -206,7 +206,7 @@ class importerAdminController extends importer {
 						// Individual items
 						$output = $oExtract->set($xml_file, '<blog', '</blog>', '<post ', '</post>');
 						if($output->toBool()) $oExtract->saveItems();
-						
+
 					}
 				}
 				break;
@@ -220,9 +220,9 @@ class importerAdminController extends importer {
 					if($output->toBool()) $oExtract->saveItems();
 				}
 				break;
-			
+
 		}
-		
+
 		if(!$output->toBool()) {
 			$this->add('error', 0);
 			$this->add('status', -1);
@@ -236,7 +236,7 @@ class importerAdminController extends importer {
 		$this->add('key', $oExtract->getKey());
 		$this->add('status', 0);
 	}
-	
+
 	/**
 	 * Migrate data after completing xml file extraction
 	 * @return void
@@ -254,15 +254,15 @@ class importerAdminController extends importer {
 		// Check if an index file exists
 		$index_file = './files/cache/importer/' . $key . '/index';
 		if(!file_exists($index_file)) return new BaseObject(-1, 'msg_invalid_xml_file');
-		
+
 		switch($type) {
 			case 'ttxml' :
 				if(!$target_module) return new BaseObject(-1, 'msg_invalid_request');
-				
+
 				$oModuleModel = &getModel('module');
 				$columnList = array('module_srl', 'module');
 				$target_module_info = $oModuleModel->getModuleInfoByModuleSrl($target_module, $columnList);
-				
+
 				require_once('./modules/importer/ttimport.class.php');
 				$oTT = new ttimport();
 				$cur = $oTT->importModule($key, $cur, $index_file, $this->unit_count, $target_module, $guestbook_target_module, $user_id, $target_module_info->module);
@@ -291,7 +291,7 @@ class importerAdminController extends importer {
 			FileHandler::removeDir('./files/cache/importer/' . $key);
 		} else $this->setMessage(sprintf(Context::getLang('msg_importing'), $total, $cur));
 	}
-	
+
 	/**
 	 * Import member information
 	 * @param int    $key
@@ -345,7 +345,7 @@ class importerAdminController extends importer {
 			$obj->signature = base64_decode($xmlObj->member->signature->body);
 			$obj->regdate = base64_decode($xmlObj->member->regdate->body);
 			$obj->last_login = base64_decode($xmlObj->member->last_login->body);
-			
+
 			if($xmlObj->member->extra_vars) {
 				foreach($xmlObj->member->extra_vars as $key => $val) {
 					if(in_array($key, array('node_name', 'attrs', 'body'))) continue;
@@ -404,7 +404,7 @@ class importerAdminController extends importer {
 
 			// Add a member
 			$output = executeQuery('member.insertMember', $obj);
-			
+
 			if($output->toBool() && !($obj->password)) {
 				// Send a mail telling the user to reset his password.
 				$oMail = new Mail();
@@ -421,7 +421,7 @@ class importerAdminController extends importer {
 				$oMail->setReceiptor($obj->user_name, $obj->email);
 				$oMail->send();
 			}
-			
+
 			// add group join/image name-mark-signiture and so on if a new member successfully added
 			if($output->toBool()) {
 				// Join to the default group
@@ -449,21 +449,21 @@ class importerAdminController extends importer {
 				if($obj->signature) {
 					$signature = removeHackTag($obj->signature);
 					$signature_buff = sprintf('<?php if(!defined("__XE__")) exit();?>%s', $signature);
-					
+
 					$target_path = sprintf('files/member_extra_info/signature/%s/', getNumberingPath($obj->member_srl));
 					if(!is_dir($target_path)) FileHandler::makeDir($target_path);
 					$target_filename = sprintf('%s%d.signature.php', $target_path, $obj->member_srl);
-					
+
 					FileHandler::writeFile($target_filename, $signature_buff);
 				}
 			}
 		}
-		
+
 		fclose($f);
-		
+
 		return $idx - 1;
 	}
-	
+
 	/**
 	 * Import message information parsed from a given xml file
 	 * @param int    $key
@@ -509,7 +509,7 @@ class importerAdminController extends importer {
 				$sender_srl = $sender_output->data->member_srl;
 			}
 			if(!$sender_srl) continue;
-			
+
 			$receiver_args->user_id = $obj->receiver;
 			if(!$obj->receiver) continue;
 			$receiver_output = executeQuery('member.getMemberInfo', $receiver_args);
@@ -533,7 +533,7 @@ class importerAdminController extends importer {
 			$sender_args->related_srl = getNextSequence();
 			$sender_args->message_srl = getNextSequence();
 			$sender_args->list_order = $sender_args->message_srl * -1;
-			
+
 			$output = executeQuery('communication.sendMessage', $sender_args);
 			if($output->toBool()) {
 				// Message to save into recipient's massage box
@@ -551,12 +551,12 @@ class importerAdminController extends importer {
 				$output = executeQuery('communication.sendMessage', $receiver_args);
 			}
 		}
-		
+
 		fclose($f);
-		
+
 		return $idx - 1;
 	}
-	
+
 	/**
 	 * Import data in module.xml format
 	 * @param int    $key
@@ -578,10 +578,10 @@ class importerAdminController extends importer {
 		$category_file = preg_replace('/index$/i', 'category.xml', $index_file);
 		if(file_exists($category_file)) {
 			$buff = FileHandler::readFile($category_file);
-			
+
 			// Create the xmlParser object
 			$xmlDoc = $this->oXmlParser->loadXmlFile($category_file);
-			
+
 			$categories = $xmlDoc->items->category;
 			if($categories) {
 				if(!is_array($categories)) $categories = array($categories);
@@ -589,15 +589,15 @@ class importerAdminController extends importer {
 				foreach($categories as $k => $v) {
 					$category = trim(base64_decode($v->body));
 					if(!$category || $category_titles[$category]) continue;
-					
+
 					$sequence = $v->attrs->sequence;
 					$parent = $v->attrs->parent;
-					
+
 					$obj = null;
 					$obj->title = $category;
 					$obj->module_srl = $module_srl;
 					if($parent) $obj->parent_srl = $match_sequence[$parent];
-					
+
 					$output = $oDocumentController->insertCategory($obj);
 					if($output->toBool()) $match_sequence[$sequence] = $output->get('category_srl');
 				}
@@ -606,17 +606,17 @@ class importerAdminController extends importer {
 			}
 			FileHandler::removeFile($category_file);
 		}
-		
+
 		$category_list = $category_titles = array();
 		$category_list = $oDocumentModel->getCategoryList($module_srl);
 		if(count($category_list)) foreach($category_list as $key => $val) $category_titles[$val->title] = $val->category_srl;
-		
+
 		$ek_args->module_srl = $module_srl;
 		$output = executeQueryArray('document.getDocumentExtraKeys', $ek_args);
 		if($output->data) {
 			foreach($output->data as $key => $val) $extra_keys[$val->eid] = true;
 		}
-		
+
 		if(!$cur) $cur = 0;
 		// Open an index file
 		$f = fopen($index_file, "r");
@@ -627,19 +627,19 @@ class importerAdminController extends importer {
 			if(feof($f)) break;
 			// Find a location
 			$target_file = trim(fgets($f, 1024));
-			
+
 			if(!file_exists($target_file)) continue;
 			// Importing data from now on
 			$fp = fopen($target_file, "r");
 			if(!$fp) continue;
-			
+
 			$obj = null;
 			$obj->module_srl = $module_srl;
 			$obj->document_srl = getNextSequence();
-			
+
 			$files = array();
 			$extra_vars = array();
-			
+
 			$started = false;
 			$buff = null;
 			// Start from the body data
@@ -665,17 +665,17 @@ class importerAdminController extends importer {
 					$extra_vars = $this->importExtraVars($fp);
 					continue;
 				}
-				
+
 				if($started) $buff .= $str;
 			}
-			
+
 			$xmlDoc = $this->oXmlParser->parse($buff);
-			
+
 			$category = base64_decode($xmlDoc->post->category->body);
 			if($category_titles[$category]) $obj->category_srl = $category_titles[$category];
-			
+
 			$obj->member_srl = 0;
-			
+
 			$obj->is_notice = base64_decode($xmlDoc->post->is_notice->body) == 'Y' ? 'Y' : 'N';
 			$obj->status = base64_decode($xmlDoc->post->is_secret->body) == 'Y' ? $oDocumentModel->getConfigStatus('secret') : $oDocumentModel->getConfigStatus('public');
 			$obj->title = base64_decode($xmlDoc->post->title->body);
@@ -720,9 +720,9 @@ class importerAdminController extends importer {
 					$obj->content = preg_replace('/(["\']?)files\/(.+)\/' . preg_quote($key) . '([^"\']+)(["\']?)/i', '"' . $val . '"', $obj->content);
 				}
 			}
-			
+
 			$output = executeQuery('document.insertDocument', $obj);
-			
+
 			if($output->toBool() && $obj->tags) {
 				$tag_list = explode(',', $obj->tags);
 				$tag_count = count($tag_list);
@@ -736,7 +736,7 @@ class importerAdminController extends importer {
 					if(!$args->tag) continue;
 					$output = executeQuery('tag.insertTag', $args);
 				}
-				
+
 			}
 			// Add extra variables
 			if(count($extra_vars)) {
@@ -762,22 +762,22 @@ class importerAdminController extends importer {
 						$output = executeQuery('document.insertDocumentExtraKey', $ek_args);
 						$extra_keys[$ek_args->eid] = true;
 					}
-					
+
 					$output = executeQuery('document.insertDocumentExtraVar', $e_args);
 				}
 			}
-			
+
 			fclose($fp);
 			FileHandler::removeFile($target_file);
 		}
-		
+
 		fclose($f);
 		// Sync category counts
 		if(count($category_list)) foreach($category_list as $key => $val) $oDocumentController->updateCategoryCount($module_srl, $val->category_srl);
-		
+
 		return $idx - 1;
 	}
-	
+
 	/**
 	 * Trackbacks
 	 * @param resource $fp
@@ -790,18 +790,18 @@ class importerAdminController extends importer {
 		$buff = null;
 		$cnt = 0;
 		while(!feof($fp)) {
-			
+
 			$str = fgets($fp, 1024);
 			// If </trackbacks> is, break
 			if(trim($str) == '</trackbacks>') break;
 			// If <trackback>, start importing
 			if(trim($str) == '<trackback>') $started = true;
-			
+
 			if($started) $buff .= $str;
 			// If </trackback>, insert to the DB
 			if(trim($str) == '</trackback>') {
 				$xmlDoc = $this->oXmlParser->parse($buff);
-				
+
 				$obj = null;
 				$obj->trackback_srl = getNextSequence();
 				$obj->module_srl = $module_srl;
@@ -815,14 +815,14 @@ class importerAdminController extends importer {
 				$obj->list_order = -1 * $obj->trackback_srl;
 				$output = executeQuery('trackback.insertTrackback', $obj);
 				if($output->toBool()) $cnt++;
-				
+
 				$buff = null;
 				$started = false;
 			}
 		}
 		return $cnt;
 	}
-	
+
 	/**
 	 * Comments
 	 * @param resource $fp
@@ -834,11 +834,11 @@ class importerAdminController extends importer {
 		$started = false;
 		$buff = null;
 		$cnt = 0;
-		
+
 		$sequences = array();
-		
+
 		while(!feof($fp)) {
-			
+
 			$str = fgets($fp, 1024);
 			// If </comments> is, break
 			if(trim($str) == '</comments>') break;
@@ -854,21 +854,21 @@ class importerAdminController extends importer {
 				$obj->uploaded_count = $this->importAttaches($fp, $module_srl, $obj->comment_srl, $files);
 				continue;
 			}
-			
+
 			if($started) $buff .= $str;
 			// If </comment> is, insert to the DB
 			if(trim($str) == '</comment>') {
 				$xmlDoc = $this->oXmlParser->parse($buff);
-				
+
 				$sequence = base64_decode($xmlDoc->comment->sequence->body);
 				$sequences[$sequence] = $obj->comment_srl;
 				$parent = base64_decode($xmlDoc->comment->parent->body);
-				
+
 				$obj->module_srl = $module_srl;
-				
+
 				if($parent) $obj->parent_srl = $sequences[$parent];
 				else $obj->parent_srl = 0;
-				
+
 				$obj->document_srl = $document_srl;
 				$obj->is_secret = base64_decode($xmlDoc->comment->is_secret->body) == 'Y' ? 'Y' : 'N';
 				$obj->notify_message = base64_decode($xmlDoc->comment->notify_message->body) == 'Y' ? 'Y' : 'N';
@@ -924,7 +924,7 @@ class importerAdminController extends importer {
 					// Return if parent comment doesn't exist
 					if(!$parent_output->toBool() || !$parent_output->data) continue;
 					$parent = $parent_output->data;
-					
+
 					$list_args->head = $parent->head;
 					$list_args->depth = $parent->depth + 1;
 					if($list_args->depth < 2) $list_args->arrange = $obj->comment_srl;
@@ -934,20 +934,20 @@ class importerAdminController extends importer {
 						if(!$output->toBool()) return $output;
 					}
 				}
-				
+
 				$output = executeQuery('comment.insertCommentList', $list_args);
 				if($output->toBool()) {
 					$output = executeQuery('comment.insertComment', $obj);
 					if($output->toBool()) $cnt++;
 				}
-				
+
 				$buff = null;
 				$started = false;
 			}
 		}
 		return $cnt;
 	}
-	
+
 	/**
 	 * Import attachment
 	 * @param resource $fp
@@ -958,10 +958,10 @@ class importerAdminController extends importer {
 	 */
 	function importAttaches($fp, $module_srl, $upload_target_srl, &$files) {
 		$uploaded_count = 0;
-		
+
 		$started = false;
 		$buff = null;
-		
+
 		$file_obj = new stdClass;
 		while(!feof($fp)) {
 			$str = trim(fgets($fp, 1024));
@@ -972,7 +972,7 @@ class importerAdminController extends importer {
 				$file_obj->file_srl = getNextSequence();
 				$file_obj->upload_target_srl = $upload_target_srl;
 				$file_obj->module_srl = $module_srl;
-				
+
 				$started = true;
 				$buff = null;
 				// If it starts with <file>, handle the attachement in xml file
@@ -980,15 +980,15 @@ class importerAdminController extends importer {
 				$file_obj->file = $this->saveTemporaryFile($fp);
 				continue;
 			}
-			
+
 			if($started) $buff .= $str;
 			// If it ends with </attach>, handle attachements
 			if(trim($str) == '</attach>') {
 				$xmlDoc = $this->oXmlParser->parse($buff . $str);
-				
+
 				$file_obj->source_filename = base64_decode($xmlDoc->attach->filename->body);
 				$file_obj->download_count = base64_decode($xmlDoc->attach->download_count->body);
-				
+
 				if(!$file_obj->file) {
 					$url = base64_decode($xmlDoc->attach->url->body);
 					$path = base64_decode($xmlDoc->attach->path->body);
@@ -998,7 +998,7 @@ class importerAdminController extends importer {
 						FileHandler::getRemoteFile($url, $file_obj->file);
 					}
 				}
-				
+
 				if(file_exists($file_obj->file)) {
 					$random = new Password();
 					// Set upload path by checking if the attachement is an image or other kind of file
@@ -1006,19 +1006,19 @@ class importerAdminController extends importer {
 						// Immediately remove the direct file if it has any kind of extensions for hacking
 						$file_obj->source_filename = preg_replace('/\.(php|phtm|html?|cgi|pl|exe|jsp|asp|inc)/i', '$0-x', $file_obj->source_filename);
 						$file_obj->source_filename = str_replace(array('<', '>'), array('%3C', '%3E'), $file_obj->source_filename);
-						
+
 						$path = sprintf("./files/attach/images/%s/%s", $module_srl, getNumberingPath($upload_target_srl, 3));
-						
+
 						$ext = substr(strrchr($file_obj->source_filename, '.'), 1);
 						$_filename = $random->createSecureSalt(32, 'hex') . '.' . $ext;
 						$filename = $path . $_filename;
-						
+
 						$idx = 1;
 						while(file_exists($filename)) {
 							$filename = $path . preg_replace('/\.([a-z0-9]+)$/i', '_' . $idx . '.$1', $_filename);
 							$idx++;
 						}
-						
+
 						$file_obj->direct_download = 'Y';
 					} else {
 						$path = sprintf("./files/attach/binaries/%s/%s", $module_srl, getNumberingPath($upload_target_srl, 3));
@@ -1027,7 +1027,7 @@ class importerAdminController extends importer {
 					}
 					// Create a directory
 					if(!FileHandler::makeDir($path)) continue;
-					
+
 					if(preg_match('/^\.\/files\/cache\/importer/i', $file_obj->file)) FileHandler::rename($file_obj->file, $filename);
 					else @copy($file_obj->file, $filename);
 					// Insert the file to the DB
@@ -1040,7 +1040,7 @@ class importerAdminController extends importer {
 						$file_obj->sid = $random->createSecureSalt(32, 'hex');
 						$file_obj->isvalid = 'Y';
 						$output = executeQuery('file.insertFile', $file_obj);
-						
+
 						if($output->toBool()) {
 							$uploaded_count++;
 							$tmp_obj = null;
@@ -1054,7 +1054,7 @@ class importerAdminController extends importer {
 		}
 		return $uploaded_count;
 	}
-	
+
 	/**
 	 * Return a filename to temporarily use
 	 * @return string
@@ -1066,7 +1066,7 @@ class importerAdminController extends importer {
 		if(file_exists($filename)) $filename .= rand(111, 999);
 		return $filename;
 	}
-	
+
 	/**
 	 * Read buff until key value comes out from a specific file point
 	 * @param resource $fp
@@ -1075,14 +1075,14 @@ class importerAdminController extends importer {
 	function saveTemporaryFile($fp) {
 		$temp_filename = $this->getTmpFilename();
 		$f = fopen($temp_filename, "w");
-		
+
 		$buff = '';
 		while(!feof($fp)) {
 			$str = trim(fgets($fp, 1024));
 			if(trim($str) == '</file>') break;
-			
+
 			$buff .= $str;
-			
+
 			if(substr($buff, -7) == '</buff>') {
 				fwrite($f, base64_decode(substr($buff, 6, -7)));
 				$buff = '';
@@ -1091,8 +1091,8 @@ class importerAdminController extends importer {
 		fclose($f);
 		return $temp_filename;
 	}
-	
-	
+
+
 	/**
 	 * Set extra variables
 	 * @param resource $fp
@@ -1105,12 +1105,12 @@ class importerAdminController extends importer {
 			if(trim($str) == '</extra_vars>') break;
 		}
 		if(!$buff) return array();
-		
+
 		$buff = '<extra_vars>' . $buff;
 		$oXmlParser = new XmlParser();
 		$xmlDoc = $this->oXmlParser->parse($buff);
 		if(!count($xmlDoc->extra_vars->key)) return array();
-		
+
 		$index = 1;
 		foreach($xmlDoc->extra_vars->key as $k => $v) {
 			unset($vobj);
@@ -1119,7 +1119,7 @@ class importerAdminController extends importer {
 				$vobj->lang_code = base64_decode($v->lang_code->body);
 				$vobj->value = base64_decode($v->value->body);
 				$vobj->eid = base64_decode($v->eid->body);
-				
+
 			} else if($v->body) {
 				$vobj->var_idx = $index;
 				$vobj->lang_code = Context::getLangType();
@@ -1131,5 +1131,5 @@ class importerAdminController extends importer {
 		}
 		return $extra_vars;
 	}
-	
+
 }
