@@ -521,7 +521,13 @@ function zgap(){
  * @return int
  **/
 function ztime($str){
-	if(!$str) return;
+	if(!$str){
+		return;
+	}
+	if (strlen($str) === 9 || (strlen($str) === 10 && $str <= 2147483647))	{
+ 		return intval($str);
+ 	}
+
 	$hour = (int)substr($str, 8, 2);
 	$min = (int)substr($str, 10, 2);
 	$sec = (int)substr($str, 12, 2);
@@ -629,7 +635,7 @@ function zdate($str, $format = 'Y-m-d H:i:s', $conversion = true){
 		$string = strtr($format, $trans);
 	}
 	else{
-		// if year value is greater than 1970, get unixtime by using ztime() for date() function's argument. 
+		// if year value is greater than 1970, get unixtime by using ztime() for date() function's argument.
 		$string = date($format, ztime($str));
 	}
 	// change day and am/pm for each language
