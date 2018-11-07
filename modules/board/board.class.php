@@ -52,7 +52,7 @@ class board extends ModuleObject {
 			$args->mid = 'board';
 			$args->module = 'board';
 			$args->browser_title = 'DAOL CMS';
-			$args->skin = 'daol_default';
+			$args->skin = 'default';
 			$args->site_srl = 0;
 			$output = $oModuleController->insertModule($args);
 

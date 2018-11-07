@@ -57,7 +57,7 @@ class boardMobile extends boardView {
 
 		$template_path = sprintf("%sm.skins/%s/", $this->module_path, $this->module_info->mskin);
 		if(!is_dir($template_path) || !$this->module_info->mskin) {
-			$this->module_info->mskin = 'daol_default';
+			$this->module_info->mskin = 'default';
 			$template_path = sprintf("%sm.skins/%s/", $this->module_path, $this->module_info->mskin);
 		}
 		$this->setTemplatePath($template_path);
