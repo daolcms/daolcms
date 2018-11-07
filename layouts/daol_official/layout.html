@@ -54,10 +54,10 @@ $banner_img_4 = $layout_info->banner_image_4 ? $layout_info->banner_image_4 : ".
 	      <div id="gnb_menu">
 			<ul class="gnb_ul">
 				<li loop="$main_menu->list=>$key1,$val1" class="active"|cond="$val1['selected']">
-					<a href="{$val1['href']}" target="_blank"|cond="$val1['open_window']=='Y'">{$val1['link']}</a>
+					<a href="{$val1['href']}" target="_blank"|cond="$val1['open_window']=='Y'">{$val1['link']|noescape}</a>
 					<ul class="sub" cond="$val1['list']">
 						<li loop="$val1['list']=>$key2,$val2" class="active"|cond="$val2['selected']">
-							<a href="{$val2['href']}" target="_blank"|cond="$val2['open_window']=='Y'">{$val2['link']}</a>
+							<a href="{$val2['href']}" target="_blank"|cond="$val2['open_window']=='Y'">{$val2['link']|noescape}</a>
 						</li>
 					</ul>
 				</li>
@@ -101,12 +101,12 @@ $banner_img_4 = $layout_info->banner_image_4 ? $layout_info->banner_image_4 : ".
 	<div class="container">
 		<div class="sub_menu">
 			<div loop="$main_menu->list=>$key1,$val1" class="sub_menu_top" cond="$val1['selected']">
-				<a href="{$val1['href']}" target="_blank"|cond="$val1['open_window']=='Y'">{$val1['link']}</a>
+				<a href="{$val1['href']}" target="_blank"|cond="$val1['open_window']=='Y'">{$val1['link']|noescape}</a>
 			</div>
 			<ul class="nav" loop="$main_menu->list=>$key1,$val1" cond="$val1['selected'] && $val1['list']">
-				<li loop="$val1['list']=>$key2,$val2" class="active"|cond="$val2['selected']"><a href="{$val2['href']}" target="_blank"|cond="$val2['open_window']=='Y'">{$val2['link']}</a>
+				<li loop="$val1['list']=>$key2,$val2" class="active"|cond="$val2['selected']"><a href="{$val2['href']}" target="_blank"|cond="$val2['open_window']=='Y'">{$val2['link']|noescape}</a>
 					<ul cond="$val2['list']">
-						<li loop="$val2['list']=>$key3,$val3" class="active"|cond="$val3['selected']"><a href="{$val3['href']}" target="_blank"|cond="$val3['open_window']=='Y'">{$val3['link']}</a></li>
+						<li loop="$val2['list']=>$key3,$val3" class="active"|cond="$val3['selected']"><a href="{$val3['href']}" target="_blank"|cond="$val3['open_window']=='Y'">{$val3['link']|noescape}</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -167,7 +167,7 @@ $banner_img_4 = $layout_info->banner_image_4 ? $layout_info->banner_image_4 : ".
 		</p>
 		<ul class="menu">
 		   <li loop="$footer_menu->list=>$key1,$val1" class="active"|cond="$val1['selected']">
-				<a href="{$val1['href']}" target="_blank"|cond="$val1['open_window']=='Y'">{$val1['link']}</a>
+				<a href="{$val1['href']}" target="_blank"|cond="$val1['open_window']=='Y'">{$val1['link']|noescape}</a>
 		   </li>
 		</ul>
 	</div>

@@ -19,14 +19,14 @@
 			<ul class="nav-gnb">
 				<li loop="$gnbUrlList=>$key,$value" class="activeOn"|cond="$parentSrl==$key"><a href="{getFullUrl('')}{$value['href']}"><span>{$value['text']}</span></a>
 					<ul cond="count($value['list'])">
-						<li loop="$value['list']=>$key2,$value2"><a href="{getFullUrl('')}{$value2['href']}">{$value2['text']}</a></li>
+						<li loop="$value['list']=>$key2,$value2"><a href="{getFullUrl('')}{$value2['href']|noescape}">{$value2['text']}</a></li>
 					</ul>
 				</li>
 			</ul>
 			<select class="mnv">
 			<block loop="$gnbUrlList=>$key,$value">
 				<optgroup label="{$value['text']}" cond="count($value['list']) > 0">
-					<option loop="$value['list']=>$key2,$value2" value="{getFullUrl('')}{$value2['href']}" selected="selected"|cond="$value2['text'] == $subMenuTitle">{$value2['text']}</option>
+					<option loop="$value['list']=>$key2,$value2" value="{getFullUrl('')}{$value2['href']|noescape}" selected="selected"|cond="$value2['text'] == $subMenuTitle">{$value2['text']}</option>
 				</optgroup>
 				<option cond="count($value['list']) == 0" value="{getFullUrl('')}{$value['href']}" selected="selected"|cond="!$subMenuTitle">{$value['text']}</option>
 			</block>
