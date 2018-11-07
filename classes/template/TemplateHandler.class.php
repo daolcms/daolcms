@@ -824,7 +824,7 @@ class TemplateHandler {
 		$dirTpl = '(addon|admin|adminlogging|autoinstall|board|comment|communication|counter|document|editor|file|importer|install|integration_search|krzip|layout|member|menu|message|module|page|point|poll|rss|seo|session|spamfilter|syndication|tag|trash|widget)';
 		$dirSkins = '(layouts\/daol_official|layouts\/user_layout|m\.layouts\/colorCode|m\.layouts\/default|m\.layouts\/simpleGray|modules\/board\/m\.skins\/default|modules\/board\/skins\/default|modules\/communication\/m\.skins\/default|modules\/communication\/skins\/default|modules\/editor\/skins\/ckeditor|modules\/editor\/skins\/xpresseditor|modules\/integration_search\/skins\/default|modules\/layout\/faceoff|modules\/member\/m\.skins\/default|modules\/member\/skins\/default|modules\/message\/m\.skins\/default|modules\/message\/skins\/default|modules\/page\/m\.skins\/default|modules\/page\/skins\/default|modules\/poll\/skins\/default|modules\/poll\/skins\/simple|widgets\/content\/skins\/admin_rss|widgets\/content\/skins\/default|widgets\/counter_status\/skins\/default|widgets\/language_select\/skins\/default|widgets\/login_info\/skins\/default|widgets\/mcontent\/skins\/default|widgetstyles\/simple)';
 
-		/ 'tpl'
+		// 'tpl'
 		if(preg_match('/^(\.\/)?(modules\/' . $dirTpl . '|common)\/tpl\//', $absPath)){
 			return true;
 		}
