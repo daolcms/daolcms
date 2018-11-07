@@ -21,6 +21,7 @@ class TemplateHandler {
 	private $config = NULL;
 	private $skipTags = NULL;
 	private $handler_mtime = 0;
+	private $autoescape = false;
 
 	/**
 	 * constructor
@@ -30,6 +31,22 @@ class TemplateHandler {
 		$this->xe_path = rtrim(preg_replace('/([^\.^\/]+)\.php$/i', '', $_SERVER['SCRIPT_NAME']), '/');
 		$this->compiled_path = _DAOL_PATH_ . $this->compiled_path;
 		$this->config = new stdClass();
+
+		$this->ignoreEscape = array(
+			'functions' => function($m){
+				$list = array(
+					'htmlspecialchars',
+					'nl2br',
+				);
+				return preg_match('/^(' . implode('|', $list) . ')\(/', $m[1]);
+			},
+			'lang' => function($m){
+				// 다국어
+				return preg_match('/^\$lang\-\>/', trim($m[1]));
+			}
+		);
+
+		$this->dbinfo = Context::getDBInfo();
 	}
 
 	/**
@@ -77,6 +94,8 @@ class TemplateHandler {
 		// get compiled file name
 		$hash = md5($this->file . __DAOL_VERSION__);
 		$this->compiled_file = "{$this->compiled_path}{$hash}.compiled.php";
+
+		$this->autoescape = $this->isAutoescape();
 
 		// compare various file's modified time for check changed
 		$this->handler_mtime = filemtime(__FILE__);
@@ -183,9 +202,19 @@ class TemplateHandler {
 		// reset config for this buffer (this step is necessary because we use a singleton for every template)
 		$previous_config = clone $this->config;
 		$this->config = new stdClass();
+		$this->config->autoescape = null;
 
-		// detect existence of autoescape config
-		$this->config->autoescape = (strpos($buff, ' autoescape="') === FALSE) ? NULL : 'off';
+		if(preg_match('/\<config( [^\>\/]+)/', $buff, $config_match)){
+			if(preg_match_all('@ (?<name>\w+)="(?<value>[^"]+)"@', $config_match[1], $config_matches, PREG_SET_ORDER)){
+				foreach($config_matches as $config_match){
+					if($config_match['name'] === 'autoescape'){
+						$this->config->autoescape = $config_match['value'];
+					}
+				}
+			}
+		}
+
+		if($this->config->autoescape === 'on') $this->autoescape = true;
 
 		// replace comments
 		$buff = preg_replace('@<!--//.*?-->@s', '', $buff);
@@ -444,7 +473,18 @@ class TemplateHandler {
 	 * @param array $m
 	 * @return string changed result
 	 **/
-	function _parseResource($m) {
+	private function _parseResource($m){
+		$escape_option = 'noescape';
+
+		if($this->autoescape){
+			$escape_option = 'autoescape';
+		}
+
+		// 템플릿에서 명시적으로 off이면 'noescape' 적용
+		if ($this->config->autoescape === 'off'){
+			$escape_option = 'noescape';
+		}
+
 		// {@ ... } or {$var} or {func(...)}
 		if($m[1]){
 			if(preg_match('@^(\w+)\(@', $m[1], $mm) && !function_exists($mm[1])){
@@ -457,11 +497,11 @@ class TemplateHandler {
 			}
 			else{
 				// Get escape options.
-				if($m[1] === '$content' && preg_match('@/layouts/.+/layout\.html$@', $this->file)){
-					$escape_option = 'noescape';
-				}
-				else{
-					$escape_option = $this->config->autoescape !== null ? 'auto' : 'noescape';
+				foreach ($this->ignoreEscape as $key => $value){
+					if($this->ignoreEscape[$key]($m)){
+						$escape_option = 'noescape';
+						break;
+					}
 				}
 
 				// Separate filters from variable.
@@ -504,15 +544,18 @@ class TemplateHandler {
 
 						case 'escapejs':
 							$var = "escape_js({$var})";
+							$escape_option = 'noescape';
 							break;
 
 						case 'json':
 							$var = "json_encode({$var})";
+							$escape_option = 'noescape';
 							break;
 
 						case 'strip':
 						case 'strip_tags':
 							$var = $filter_option ? "strip_tags({$var}, {$filter_option})" : "strip_tags({$var})";
+							$escape_option = 'noescape';
 							break;
 
 						case 'trim':
@@ -521,6 +564,7 @@ class TemplateHandler {
 
 						case 'urlencode':
 							$var = "rawurlencode({$var})";
+							$escape_option = 'noescape';
 							break;
 
 						case 'lower':
@@ -539,6 +583,7 @@ class TemplateHandler {
 
 						case 'join':
 							$var = $filter_option ? "implode({$filter_option}, {$var})" : "implode(', ', {$var})";
+							$escape_option = 'noescape';
 							break;
 
 						case 'date':
@@ -551,10 +596,10 @@ class TemplateHandler {
 							break;
 
 						case 'link':
-							$var = $this->_applyEscapeOption($var, $escape_option);
+							$var = $this->_applyEscapeOption($var, 'autoescape');
 							if ($filter_option)
 							{
-								$filter_option = $this->_applyEscapeOption($filter_option, $escape_option);
+								$filter_option = $this->_applyEscapeOption($filter_option, 'autoescape');
 								$var = "'<a href=\"' . {$filter_option} . '\">' . {$var} . '</a>'";
 							}
 							else
@@ -707,17 +752,17 @@ class TemplateHandler {
 	/**
  	 * Apply escape option to an expression.
  	 */
- 	private function _applyEscapeOption($str, $escape_option){
+ 	private function _applyEscapeOption($str, $escape_option = 'noescape'){
  		switch($escape_option){
  			case 'escape':
- 				return "htmlspecialchars({$str}, ENT_COMPAT, 'UTF-8', true)";
+ 				return "escape({$str}, true)";
  			case 'noescape':
  				return "{$str}";
  			case 'autoescape':
- 				return "htmlspecialchars({$str}, ENT_COMPAT, 'UTF-8', false)";
+ 				return "escape({$str}, false)";
  			case 'auto':
  			default:
- 				return "(\$this->config->autoescape === 'on' ? htmlspecialchars({$str}, ENT_COMPAT, 'UTF-8', false) : {$str})";
+ 				return "(\$this->config->autoescape === 'on' ? escape({$str}, false) : {$str})";
  		}
  	}
 
@@ -770,6 +815,30 @@ class TemplateHandler {
 	function _replaceVar($php) {
 		if(!strlen($php)) return '';
 		return preg_replace('@(?<!::|\\\\|(?<!eval\()\')\$([a-z]|_[a-z0-9])@i', '\$__Context->$1', $php);
+	}
+
+	function isAutoescape(){
+
+		$absPath = str_replace(_DAOL_PATH_, '', $this->path);
+		$absPath = str_replace(_XE_PATH_, '', $this->path);
+		$dirTpl = '(addon|admin|adminlogging|autoinstall|board|comment|communication|counter|document|editor|file|importer|install|integration_search|krzip|layout|member|menu|message|module|page|point|poll|rss|seo|session|spamfilter|syndication|tag|trash|widget)';
+		$dirSkins = '(layouts\/daol_official|layouts\/user_layout|m\.layouts\/colorCode|m\.layouts\/default|m\.layouts\/simpleGray|modules\/board\/m\.skins\/default|modules\/board\/skins\/default|modules\/communication\/m\.skins\/default|modules\/communication\/skins\/default|modules\/editor\/skins\/ckeditor|modules\/editor\/skins\/xpresseditor|modules\/integration_search\/skins\/default|modules\/layout\/faceoff|modules\/member\/m\.skins\/default|modules\/member\/skins\/default|modules\/message\/m\.skins\/default|modules\/message\/skins\/default|modules\/page\/m\.skins\/default|modules\/page\/skins\/default|modules\/poll\/skins\/default|modules\/poll\/skins\/simple|widgets\/content\/skins\/admin_rss|widgets\/content\/skins\/default|widgets\/counter_status\/skins\/default|widgets\/language_select\/skins\/default|widgets\/login_info\/skins\/default|widgets\/mcontent\/skins\/default|widgetstyles\/simple)';
+
+		/ 'tpl'
+		if(preg_match('/^(\.\/)?(modules\/' . $dirTpl . '|common)\/tpl\//', $absPath)){
+			return true;
+		}
+
+		// skin, layout
+		if(preg_match('/^(\.\/)?(' . $dirSkin . '\//', $absPath)){
+			return true;
+		}
+
+		return false;
+	}
+
+	public function setAutoescape($val = true){
+		$this->autoescape = $val;
 	}
 }
 
