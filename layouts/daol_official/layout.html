@@ -94,7 +94,7 @@ $banner_img_4 = $layout_info->banner_image_4 ? $layout_info->banner_image_4 : ".
 	<!--@if($layout_info->body_style=="main")-->
 	<div class="container">
 		<div class="main_page">
-			{$content}
+			{$content|noescape}
 		</div>
 	</div>
 	<!--@elseif($layout_info->body_style=="sub")-->
@@ -112,7 +112,7 @@ $banner_img_4 = $layout_info->banner_image_4 ? $layout_info->banner_image_4 : ".
 			</ul>
 		</div>
 		<div class="sub_page">
-			{$content}
+			{$content|noescape}
 		</div>
 	</div>
 	<!--@end-->

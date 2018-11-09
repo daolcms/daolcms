@@ -11,7 +11,7 @@
 		<input type="hidden" name="act" value="procMemberInsert" />
 		<div class="agreement" cond="$member_config->agreement">
 			<div class="text">
-				{$member_config->agreement}
+				{$member_config->agreement|noescape}
 			</div>
 			<div class="confirm">
 				<input type="checkbox" name="accept_agreement" value="Y" id="accept_agree" />
@@ -39,8 +39,8 @@
 				</p>
 			</li>
 			<li loop="$formTags=>$formTag" cond="$formTag->name != 'signature'">
-				<p class="q">{$formTag->title}</p>
-				<div class="a">{$formTag->inputTag}</div>
+				<p class="q">{$formTag->title|noescape}</p>
+				<div class="a">{$formTag->inputTag|noescape}</div>
 			</li>
 			<li>
 				<p class="q">{$lang->allow_mailing}</p>

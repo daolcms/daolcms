@@ -23,11 +23,11 @@
 			<dl class="xv">
 			<!--@foreach($_extra_vars as $key => $val)-->
 				<dt>{$val->name}</dt>
-				<dd>{$val->getValueHTML()}</dd>
+				<dd>{$val->getValueHTML()|noescape}</dd>
 			<!--@end-->
 			</dl>
 		<!--@end-->
-		{$oDocument->getContent(false)}
+		{$oDocument->getContent(false)|noescape}
 		<!--@end-->
 </div>
 <div id="skip_co"></div>
@@ -83,7 +83,7 @@
 		<li>
 			<label for="rText">{$lang->comment}</label>
 			<!--@if($module_info->mobile_use_editor === 'Y')-->
-				{$oDocument->getCommentEditor()}
+				{$oDocument->getCommentEditor()|noescape}
 			<!--@else-->
 				<textarea name="content" rows="8" cols="42" id="rText"></textarea>
 			<!--@endif-->
