@@ -762,7 +762,7 @@ class TemplateHandler {
  				return "escape({$str}, false)";
  			case 'auto':
  			default:
- 				return "(\$this->config->autoescape === 'on' ? escape({$str}, false) : {$str})";
+ 				return "(\$this->config->autoescape === 'on' ? escape({$str}, false) : ({$str}))";
  		}
  	}
 
