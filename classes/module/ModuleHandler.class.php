@@ -41,12 +41,10 @@ class ModuleHandler extends Handler {
 		}
 
 		$oContext = Context::getInstance();
-		if($oContext->isSuccessInit == false) {
-			$logged_info = Context::get('logged_info');
-			if($logged_info->is_admin != "Y") {
-				$this->error = 'msg_invalid_request';
-				return;
-			}
+		if($oContext->isSuccessInit == FALSE){
+			// @see https://github.com/xpressengine/xe-core/issues/2304
+			$this->error = 'msg_invalid_request';
+			return;
 		}
 
 		// Set variables from request arguments
