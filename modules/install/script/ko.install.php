@@ -19,7 +19,7 @@
 		$item_args = new stdClass;
 		$item_args->url = $url;
 		$item_args->name = $name;
-		$item_args->menu_srl = $menu_srl; 
+		$item_args->menu_srl = $menu_srl;
 		$item_args->menu_item_srl = getNextSequence();
 		$item_args->parent_srl = $parent_srl;
 		$item_args->listorder = -1 * $item_args->menu_item_srl;
@@ -27,32 +27,37 @@
 		return array($output, $item_args->menu_item_srl);
 	}
 
+	// Main Menu 생성
 	$outputs = insertMenu('Main Menu', 0);
 	if(!$outputs[0]->toBool()) return $outputs[0];
 	$menu_srl = $outputs[1];
-
+	// Main Menu->Welcome Pag 생성
 	$outputs = insertMenuItem('welcome_page', 'Welcome Page', $menu_srl);
 	if(!$outputs[0]->toBool()) return $outputs[0];
-
+	$outputs = insertMenuItem('welcome_page', 'Welcome Page', $menu_srl, $outputs[1]);
+	if(!$outputs[0]->toBool()) return $outputs[0];
+	// Main Menu->Board 생성
 	$outputs = insertMenuItem('board', 'Board', $menu_srl);
 	if(!$outputs[0]->toBool()) return $outputs[0];
-
 	$outputs = insertMenuItem('board', 'Board', $menu_srl, $outputs[1]);
 	if(!$outputs[0]->toBool()) return $outputs[0];
-
+	// Main Menu->Dashboard 생성
 	$outputs = insertMenuItem('admin', 'Dashboard', $menu_srl);
+	if(!$outputs[0]->toBool()) return $outputs[0];
+	$outputs = insertMenuItem('admin', 'Dashboard', $menu_srl, $outputs[1]);
 	if(!$outputs[0]->toBool()) return $outputs[0];
 
 	// XML 파일을 갱신
 	$oMenuAdminController->makeXmlFile($menu_srl);
 
 	// create Layout
-	//extra_vars init
+	// extra_vars init
 	$extra_vars = new stdClass;
 	$extra_vars->banner_style = 'y';
 	$extra_vars->body_style = 'main';
 	$extra_vars->main_menu = $menu_srl;
-	$extra_vars->bottom_menu = $menu_srl;
+	$extra_vars->sitemap_menu = $menu_srl;
+	$extra_vars->footer_menu = $menu_srl;
 	$extra_vars->menu_name_list = array();
 	$extra_vars->menu_name_list[$menu_srl] = 'Main Menu';
 
