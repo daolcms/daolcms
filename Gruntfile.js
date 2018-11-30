@@ -106,8 +106,8 @@ module.exports = function(grunt) {
 					//module/board
 					'modules/board/tpl/js/board.min.js': ['modules/board/tpl/js/board.js'],
 					'modules/board/tpl/js/board_admin.min.js': ['modules/board/tpl/js/board_admin.js'],
-					'modules/board/skins/daol_default/board.default.min.js': ['modules/board/skins/daol_default/board.default.js'],
-					'modules/board/m.skins/daol_default/js/mboard.min.js': ['modules/board/m.skins/daol_default/js/mboard.js'],
+					'modules/board/skins/default/board.default.min.js': ['modules/board/skins/default/board.default.js'],
+					'modules/board/m.skins/default/js/mboard.min.js': ['modules/board/m.skins/default/js/mboard.js'],
 					// editor-component-image-gallery
 					'modules/editor/components/image_gallery/tpl/gallery.min.js' : ['modules/editor/components/image_gallery/tpl/gallery.js'],
 					'modules/editor/components/image_gallery/tpl/list_gallery.min.js' : ['modules/editor/components/image_gallery/tpl/list_gallery.js'],
