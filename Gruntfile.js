@@ -154,8 +154,8 @@ module.exports = function(grunt) {
 					'modules/poll/skins/default/css/poll.min.css': ['modules/poll/skins/default/css/poll.css'],
 					'modules/poll/skins/simple/css/poll.min.css': ['modules/poll/skins/simple/css/poll.css'],
 					'modules/editor/skins/xpresseditor/css/default.min.css': ['modules/editor/skins/xpresseditor/css/default.css'],
-					'modules/board/skins/daol_default/board.default.min.css': ['modules/board/skins/default/board.default.css'],
-					'modules/board/m.skins/daol_default/css/mboard.min.css': ['modules/board/m.skins/default/css/mboard.css'],
+					'modules/board/skins/default/board.default.min.css': ['modules/board/skins/default/board.default.css'],
+					'modules/board/m.skins/default/css/mboard.min.css': ['modules/board/m.skins/default/css/mboard.css'],
 					// krzip
 					'modules/krzip/tpl/css/default.min.css': ['modules/krzip/tpl/css/default.css'],
 					'modules/krzip/tpl/css/popup.min.css': ['modules/krzip/tpl/css/popup.css'],
