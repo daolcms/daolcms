@@ -627,6 +627,8 @@ class documentModel extends document {
 	 * @return array
 	 */
 	function getCategoryList($module_srl, $columnList = array()) {
+		$module_srl = (int)$module_srl;
+
 		// Category of the target module file swollen
 		$filename = sprintf("./files/cache/document_category/%s.php", $module_srl);
 		// If the target file to the cache file regeneration category

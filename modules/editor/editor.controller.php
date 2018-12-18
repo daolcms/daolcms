@@ -408,46 +408,53 @@ class editorController extends editor {
 			if(file_exists($icon_file)) $component_list->{$component_name}->icon = true;
 			if(file_exists($component_icon_file)) $component_list->{$component_name}->component_icon = true;
 		}
+
 		// Return if it checks enabled only
-		if($filter_enabled) {
-			$cache_file = $oEditorModel->getCacheFile($filter_enabled, $site_srl);
-			$buff = sprintf('<?php if(!defined("__XE__")) exit(); $component_list = unserialize("%s"); ?>', str_replace('"', '\\"', serialize($component_list)));
-			FileHandler::writeFile($cache_file, $buff);
-			return $component_list;
+		if(!$filter_enabled){
+			// Get xml_info of downloaded list
+			foreach($downloaded_list as $component_name){
+				if(!is_dir(_DAOL_PATH_.'modules/editor/components/'.$component_name)) continue;
+				if(in_array($component_name, array('colorpicker_text','colorpicker_bg'))) continue;
+				// Pass if configured
+				if($component_list->{$component_name}) continue;
+				// Insert data into the DB
+				$oEditorController = getAdminController('editor');
+				$oEditorController->insertComponent($component_name, false, $site_srl);
+				// Add to component_list
+				unset($xml_info);
+				$xml_info = $oEditorModel->getComponentXmlInfo($component_name);
+				$xml_info->enabled = 'N';
+
+				$component_list->{$component_name} = $xml_info;
+			}
 		}
-		// Get xml_info of downloaded list
-		foreach($downloaded_list as $component_name){
-			if(!is_dir(_DAOL_PATH_.'modules/editor/components/'.$component_name)) continue;
-			if(in_array($component_name, array('colorpicker_text', 'colorpicker_bg'))) continue;
-			// Pass if configured
-			if($component_list->{$component_name}) continue;
-			// Insert data into the DB
-			$oEditorController = &getAdminController('editor');
-			$oEditorController->insertComponent($component_name, false, $site_srl);
-			// Add to component_list
-			unset($xml_info);
-			$xml_info = $oEditorModel->getComponentXmlInfo($component_name);
-			$xml_info->enabled = 'N';
-			
-			$component_list->{$component_name} = $xml_info;
+
+		$oCacheHandler = CacheHandler::getInstance('object', null, true);
+		if($oCacheHandler->isSupport()){
+			$cache_key = $oEditorModel->getComponentListCacheKey($filter_enabled, $site_srl);
+			$oCacheHandler->put($cache_key, $component_list);
 		}
-		
-		$cache_file = $oEditorModel->getCacheFile($filter_enabled, $site_srl);
-		$buff = sprintf('<?php if(!defined("__XE__")) exit(); $component_list = unserialize("%s"); ?>', str_replace('"', '\\"', serialize($component_list)));
-		FileHandler::writeFile($cache_file, $buff);
-		
+
 		return $component_list;
 	}
 	
 	/**
 	 * @brief Delete cache files
 	 **/
-	function removeCache($site_srl = 0) {
-		$oEditorModel = &getModel('editor');
+	function removeCache($site_srl = 0){
+		$oEditorModel = getModel('editor');
 		FileHandler::removeFile($oEditorModel->getCacheFile(true, $site_srl));
 		FileHandler::removeFile($oEditorModel->getCacheFile(false, $site_srl));
+
+		$oCacheHandler = CacheHandler::getInstance('object', null, true);
+		if($oCacheHandler->isSupport()){
+			$cache_key = $oEditorModel->getComponentListCacheKey(true, $site_srl);
+			$oCacheHandler->delete($cache_key);
+			$cache_key = $oEditorModel->getComponentListCacheKey(false, $site_srl);
+			$oCacheHandler->delete($cache_key);
+		}
 	}
-	
+
 	function triggerCopyModule(&$obj) {
 		$oModuleModel = &getModel('module');
 		$editorConfig = $oModuleModel->getModulePartConfig('editor', $obj->originModuleSrl);
