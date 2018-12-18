@@ -1053,16 +1053,15 @@ class Context {
 	 *
 	 * @return void
 	 */
-	function _setJSONRequestArgument() {
+	function _setJSONRequestArgument(){
 		if($this->getRequestMethod() != 'JSON') return;
 
 		$params = array();
 		parse_str($GLOBALS['HTTP_RAW_POST_DATA'], $params);
 
-		foreach($params as $key => $val) {
+		foreach($params as $key => $val){
 			$key = htmlentities($key);
-			$val = $this->_filterRequestVar($key, $val, 0);
-			$this->set($key, $val, true);
+			$this->set($key, $this->_filterRequestVar($key, $val, 1), TRUE);
 		}
 	}
 
