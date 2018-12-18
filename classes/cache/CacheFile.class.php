@@ -67,10 +67,13 @@ class CacheFile extends CacheBase {
 	 */
 	function put($key, $obj, $valid_time = 0) {
 		$cache_file = $this->getCacheFileName($key);
+		$data = serialize($obj);
+		$data = str_replace('\\', '\\\\', $data);
+		$data = str_replace('\'', '\\\'', $data);
 		$content = array();
 		$content[] = '<?php';
 		$content[] = 'if(!defined(\'__XE__\')) { exit(); }';
-		$content[] = 'return \'' . addslashes(serialize($obj)) . '\';';
+		$content[] = 'return \'' . $data . '\';';
 		FileHandler::writeFile($cache_file, implode(PHP_EOL, $content));
 		if(function_exists('opcache_invalidate')) {
 			@opcache_invalidate($cache_file, true);
@@ -118,7 +121,7 @@ class CacheFile extends CacheBase {
 
 		$content = include($cache_file);
 
-		return unserialize(stripslashes($content));
+		return unserialize($content);
 	}
 
 	/**
