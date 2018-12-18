@@ -1065,6 +1065,7 @@ class Context {
 		parse_str($GLOBALS['HTTP_RAW_POST_DATA'], $params);
 		
 		foreach($params as $key => $val) {
+			$key = htmlentities($key);
 			$val = $this->_filterRequestVar($key, $val, 0);
 			$this->set($key, $val, true);
 		}
