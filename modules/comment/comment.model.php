@@ -378,6 +378,12 @@ class commentModel extends comment {
 			$args->status = 1;
 		}
 
+		// call trigger (before)
+		$trigger_output = ModuleHandler::triggerCall('comment.getCommentList', 'before', $args);
+		if($trigger_output instanceof BaseObject && !$trigger_output->toBool()){
+			return $output;
+		}
+
 		$output = executeQueryArray('comment.getCommentPageList', $args);
 
 		// return if an error occurs in the query results
@@ -393,6 +399,12 @@ class commentModel extends comment {
 			{
 				return;
 			}
+		}
+
+		// call trigger (after)
+		$trigger_output = ModuleHandler::triggerCall('comment.getCommentList', 'after', $output);
+		if($trigger_output instanceof BaseObject && !$trigger_output->toBool()){
+			return $trigger_output;
 		}
 
 		return $output;
