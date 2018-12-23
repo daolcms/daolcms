@@ -395,8 +395,7 @@ class commentModel extends comment {
 		if(!$output->data){
 			$this->fixCommentList($oDocument->get('module_srl'), $document_srl);
 			$output = executeQueryArray('comment.getCommentPageList', $args);
-			if(!$output->toBool())
-			{
+			if(!$output->toBool()){
 				return;
 			}
 		}
