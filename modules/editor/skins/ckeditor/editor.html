@@ -29,17 +29,21 @@
 	<include target="file_upload.html" />
 </block>
 
+{@
+	$editorContentCssFilemtime = filemtime(_XE_PATH_ . $content_style_path . '/editor.css');
+}
+
 <script>
 (function($){
 	"use strict";
-
 	// editor
 	$(function(){
+		<!--@if(!FileHandler::exists('common/js/plugins/ckeditor/ckeditor/config.js'))-->CKEDITOR.config.customConfig = '';<!--@endif-->
 		var settings = {
 			ckeconfig: {
 				height: '{$editor_height}',
 				skin: '{$colorset}',
-				contentsCss: '{$content_style_path}/editor.css',
+				contentsCss: '{$content_style_path}/editor.css?{$editorContentCssFilemtime}',
 				xe_editor_sequence: {$editor_sequence},
 				toolbarCanCollapse: true,
 				language: "{str_replace('jp','ja',$lang_type)}"
@@ -82,7 +86,6 @@
 		<!--@if($css_content)-->CKEDITOR.addCss('{$css_content}');<!--@end-->
 
 		var ckeApp = $('#ckeditor_instance_{$editor_sequence}').XeCkEditor(settings);
-
 	});
 })(jQuery);
 </script>
