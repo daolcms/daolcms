@@ -250,8 +250,9 @@ class Context {
 
 		// set session handler
 		if(self::isInstalled() && $this->db_info->use_db_session == 'Y') {
-			$oSessionModel = &getModel('session');
-			$oSessionController = &getController('session');
+			$oSessionModel = getModel('session');
+			$oSessionController = getController('session');
+			ini_set('session.serialize_handler', 'php');
 			session_set_save_handler(
 				array(&$oSessionController, 'open'),
 				array(&$oSessionController, 'close'),
