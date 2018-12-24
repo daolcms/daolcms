@@ -73,8 +73,15 @@ class communicationController extends communication {
 		}
 		// send a message
 		$output = $this->sendMessage($logged_info->member_srl, $receiver_srl, $title, $content);
+
+		if(!$output->toBool()){
+			return $output;
+		}
+
+		$message_srl = $output->get('message_srl');
+
 		// send an e-mail
-		if($output->toBool() && $send_mail == 'Y') {
+		if($send_mail == 'Y'){
 			$view_url = Context::getRequestUri();
 			$content = sprintf("%s<br /><br />From : <a href=\"%s\" target=\"_blank\">%s</a>", $content, $view_url, $view_url);
 			$oMail = new Mail();
@@ -85,8 +92,8 @@ class communicationController extends communication {
 			$oMail->send();
 		}
 
-		if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))) {
-			if(Context::get('is_popup') != 'Y') {
+		if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))){
+			if(Context::get('is_popup') === 'Y'){
 				global $lang;
 				htmlHeader();
 				alertScript($lang->success_sended);
@@ -94,9 +101,10 @@ class communicationController extends communication {
 				htmlFooter();
 				Context::close();
 				exit;
-			} else {
+			}
+			else{
 				$this->setMessage('success_sended');
-				$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'act', 'dispCommunicationMessages', 'message_type', 'S', 'receiver_srl', $receiver_srl, 'message_srl', '');
+				$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('act', 'dispCommunicationMessages', 'message_type', 'S', 'message_srl', $message_srl);
 				$this->setRedirectUrl($returnUrl);
 			}
 		}
@@ -180,7 +188,7 @@ class communicationController extends communication {
 			$oDB->rollback();
 			return $trigger_output;
 		}
-		// create a flag that message is sent (in file format) 
+		// create a flag that message is sent (in file format)
 		$flag_path = './files/member_extra_info/new_message_flags/' . getNumberingPath($receiver_srl);
 		FileHandler::makeDir($flag_path);
 		$flag_file = sprintf('%s%s', $flag_path, $receiver_srl);
@@ -189,7 +197,10 @@ class communicationController extends communication {
 
 		$oDB->commit();
 
-		return new BaseObject(0, 'success_sended');
+		$result = new BaseObject(0, 'success_sended');
+		$result->add('message_srl', $message_srl);
+
+		return $result;
 	}
 
 	/**
