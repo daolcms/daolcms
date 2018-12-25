@@ -55,8 +55,8 @@
 		Her puanın seviyesini seçerek, kullanıcı isimlerinin başında puan simgesi gösterebilirsiniz.
 		Bu özellikleri mümkün kılmak için, puanlamayla alakalı eklentileri etkinleştirmeniz gerekmektedir.
 	</description>
-	<version>1.0</version>
-	<date>2016-05-17</date>
+	<version>1.1.0</version>
+	<date>2018-12-25</date>
 	<category>member</category>
 
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org/">

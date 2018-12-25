@@ -19,8 +19,8 @@
 	<description xml:lang="es">Módulo para el manejo de la instalación</description>
 	<description xml:lang="ru">Модуль для управления установкой</description>
 	<description xml:lang="tr">Kurulumu yönetmek için olan modüldür</description>
-	<version>1.0</version>
-	<date>2016-05-17</date>
+	<version>1.1.0</version>
+	<date>2018-12-25</date>
 	<category>system</category>
 
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org/">

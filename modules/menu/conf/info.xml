@@ -19,8 +19,8 @@
 	<description xml:lang="es">Este módulo es para crear/manejar los menús que que son conectados con los diseños o módulos.</description>
 	<description xml:lang="ru">Этот модуль служит для создания/управления меню, соединяюще лейауты и модули.</description>
 	<description xml:lang="tr">Bu modül, yerleşim düzenlerine ya da modüllere bağlı menüleri oluşturmak/yönetmek içindir.</description>
-	<version>1.0</version>
-	<date>2016-05-17</date>
+	<version>1.1.0</version>
+	<date>2018-12-25</date>
 	<category>construction</category>
 
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org/">

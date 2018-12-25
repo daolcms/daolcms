@@ -14,8 +14,8 @@
 	<description xml:lang="zh-TW">這個 Widget 可輸出討論板、評論，附加檔案等內容。</description>
 	<description xml:lang="jp">掲示板の書き込み、コメント、添付ファイルなどコンテンツを出力するウィジェットです。</description>
 	<description xml:lang="tr">Bu görsel bileşen, yazılar, yorumlar ve ekli dosyalar gibi İçerikleri görüntüler.</description>
-	<version>0.1</version>
-	<date>2009-03-16</date>
+	<version>1.1.0</version>
+	<date>2018-12-25</date>
 
 	<author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
 		<name xml:lang="ko">NAVER</name>

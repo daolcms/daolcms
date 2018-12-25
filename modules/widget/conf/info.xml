@@ -19,8 +19,8 @@
 	<description xml:lang="es">Módulo para el manejo de widgets.</description>
 	<description xml:lang="ru">Модуль для управления виджетами.</description>
 	<description xml:lang="tr">Widgetları yönetmek için kullanılan modüldür.</description>
-	<version>1.0</version>
-	<date>2016-05-17</date>
+	<version>1.1.0</version>
+	<date>2018-12-25</date>
 	<category>construction</category>
 
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org/">
