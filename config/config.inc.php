@@ -20,7 +20,7 @@ if(!defined('__XE__')) exit();
 /**
  * Display the version info of DAOL CMS.
  */
-define('__DAOL_VERSION__', '1.0.5.9');
+define('__DAOL_VERSION__', '1.1.0.0');
 
 /**
  * Display the version info of Based XE.
@@ -233,6 +233,18 @@ if(!defined('__DISABLE_DEFAULT_CSS__')){
 	define('__DISABLE_DEFAULT_CSS__', 0);
 }
 
+if(!defined('__AUTO_OPCACHE_INVALIDATE__')){
+	/**
+	 * Option to automatically invalidate OPcache when updating major files
+	 *
+	 * Automatically invalidate OPcache for major class files when DAOL CMS versions change.
+	 *
+	 * 0: Disabled
+	 * 1: Enabled (default)
+	 */
+	define('__AUTO_OPCACHE_INVALIDATE__', 1);
+}
+
 // Require specific files when using Firebug console output
 if(__DEBUG_OUTPUT__ == 2){
 	require _DAOL_PATH_ . 'libs/FirePHPCore/FirePHP.class.php';
@@ -342,7 +354,11 @@ $GLOBALS['__daol_autoload_file_map'] = array_change_key_case(array(
  * Invalidates a cached script of OPcache when version is changed.
  * @see https://github.com/daolcms/daolcms/issues/134
  **/
-if(!is_dir(_DAOL_PATH_ . 'files/cache/store/' . __DAOL_VERSION__) && function_exists('opcache_get_status') && function_exists('opcache_invalidate')){
+$cache_path = _DAOL_PATH_ . 'files/cache/store/' . __DAOL_VERSION__;
+if(__AUTO_OPCACHE_INVALIDATE__ === 1 && !is_dir($cache_path) && function_exists('opcache_get_status') && function_exists('opcache_invalidate')){
+	@mkdir($cache_path, 0755, TRUE);
+	@chmod($cache_path, 0755);
+
 	foreach($GLOBALS['__daol_autoload_file_map'] as $script){
 		opcache_invalidate(_DAOL_PATH_ . $script, true);
 	}

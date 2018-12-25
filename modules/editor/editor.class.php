@@ -6,7 +6,7 @@
  * @brief  high class of the editor odule
  **/
 class editor extends ModuleObject {
-	
+
 	/**
 	 * @brief Implement if additional tasks are necessary when installing
 	 **/
@@ -34,22 +34,22 @@ class editor extends ModuleObject {
 		$oModuleController->insertTrigger('module.dispAdditionSetup', 'editor', 'view', 'triggerDispEditorAdditionSetup', 'before');
 		// 2009. 04. 14 Add a trigger from compiled codes of the editor component
 		$oModuleController->insertTrigger('display', 'editor', 'controller', 'triggerEditorComponentCompile', 'before');
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * @brief a method to check if successfully installed
 	 **/
 	function checkUpdate() {
 		$oModuleModel = &getModel('module');
-		
+
 		$oDB = &DB::getInstance();
 		// 2009. 06. 15 Save module_srl when auto-saving
 		if(!$oDB->isColumnExists("editor_autosave", "module_srl")) return true;
 		if(!$oDB->isIndexExists("editor_autosave", "idx_module_srl")) return true;
-		
-		
+
+
 		// 2007. 10. 17 Add a trigger to delete automatically saved document whenever the document(insert or update) is modified
 		if(!$oModuleModel->getTrigger('document.insertDocument', 'editor', 'controller', 'triggerDeleteSavedDoc', 'after')) return true;
 		if(!$oModuleModel->getTrigger('document.updateDocument', 'editor', 'controller', 'triggerDeleteSavedDoc', 'after')) return true;
@@ -59,33 +59,33 @@ class editor extends ModuleObject {
 		if(!$oModuleModel->getTrigger('display', 'editor', 'controller', 'triggerEditorComponentCompile', 'before')) return true;
 		// 2009. 06. 19 Remove unused trigger
 		if($oModuleModel->getTrigger('file.getIsPermitted', 'editor', 'controller', 'triggerSrlSetting', 'before')) return true;
-		
+
 		// 2012. 08. 29 Add a trigger to copy additional setting when the module is copied 
 		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'editor', 'controller', 'triggerCopyModule', 'after')) return true;
-		
+
 		// 2018. 03. 06 Add column and index for autosave
 		// @see https://github.com/daolcms/daolcms/issues/137
 		if(!$oDB->isColumnExists('editor_autosave', 'certify_key')) return true;
 		if(!$oDB->isIndexExists('editor_autosave', 'idx_certify_key')) return true;
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * @brief Execute update
 	 **/
 	function moduleUpdate() {
 		$oModuleModel = &getModel('module');
 		$oModuleController = &getController('module');
-		
+
 		$oDB = &DB::getInstance();
 		// Save module_srl when auto-saving 15/06/2009
 		if(!$oDB->isColumnExists("editor_autosave", "module_srl"))
 			$oDB->addColumn("editor_autosave", "module_srl", "number", 11);
-		
+
 		// create an index on module_srl
 		if(!$oDB->isIndexExists("editor_autosave", "idx_module_srl")) $oDB->addIndex("editor_autosave", "idx_module_srl", "module_srl");
-		
+
 		// 2007. 10. 17 Add a trigger to delete automatically saved document whenever the document(insert or update) is modified
 		if(!$oModuleModel->getTrigger('document.insertDocument', 'editor', 'controller', 'triggerDeleteSavedDoc', 'after'))
 			$oModuleController->insertTrigger('document.insertDocument', 'editor', 'controller', 'triggerDeleteSavedDoc', 'after');
@@ -100,12 +100,12 @@ class editor extends ModuleObject {
 		// 2009. 06. 19 Remove unused trigger
 		if($oModuleModel->getTrigger('file.getIsPermitted', 'editor', 'controller', 'triggerSrlSetting', 'before'))
 			$oModuleController->deleteTrigger('file.getIsPermitted', 'editor', 'controller', 'triggerSrlSetting', 'before');
-		
+
 		// 2012. 08. 29 Add a trigger to copy additional setting when the module is copied 
 		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'editor', 'controller', 'triggerCopyModule', 'after')) {
 			$oModuleController->insertTrigger('module.procModuleAdminCopyModule', 'editor', 'controller', 'triggerCopyModule', 'after');
 		}
-		
+
 		// 2018. 03. 06 Add column and index for autosave
 		// @see https://github.com/daolcms/daolcms/issues/137
 		if(!$oDB->isColumnExists('editor_autosave','certify_key')){
@@ -114,10 +114,10 @@ class editor extends ModuleObject {
 		if(!$oDB->isIndexExists("editor_autosave","idx_certify_key")){
 			$oDB->addIndex("editor_autosave","idx_certify_key", "certify_key");
 		}
-		
+
 		return new BaseObject(0, 'success_updated');
 	}
-	
+
 	/**
 	 * @brief Re-generate the cache file
 	 **/

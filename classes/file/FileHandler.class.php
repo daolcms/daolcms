@@ -521,7 +521,7 @@ class FileHandler {
 				if($body)
 					$oRequest->setBody($body);
 			}
-			
+
 			if(method_exists($oRequest, 'setConfig')){
 				$oRequest->setConfig('timeout', $timeout);
 			}
@@ -575,10 +575,10 @@ class FileHandler {
 	function getRemoteFile($url, $target_filename, $body = null, $timeout = 3, $method = 'GET', $content_type = null, $headers = array(), $cookies = array(), $post_data = array(), $request_config = array()){
 		$target_filename = self::getRealPath($target_filename);
 		self::writeFile($target_filename, '');
-		
+
 		requirePear();
 		require_once('HTTP/Request2/Observer/Download.php');
-		
+
 		$request_config['store_body'] = false;
 		$request_config['observers'][] = new HTTP_Request2_Observer_Download($target_filename);
 		try{
@@ -729,7 +729,7 @@ class FileHandler {
 
 		if(function_exists('imagecolorallocatealpha') && $target_type == 'png' && $thumbnail_transparent){
 			imagefill($thumb, 0, 0, imagecolorallocatealpha($thumb, 0, 0, 0, 127));
-			
+
 			if(function_exists('imagesavealpha')){
 				imagesavealpha($thumb, TRUE);
 			}

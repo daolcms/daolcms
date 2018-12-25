@@ -35,7 +35,7 @@ class adminAdminController extends admin {
 			$cache_key = 'admin_menu_langs:' . Context::getLangType();
 			$oCacheHandler->delete($cache_key);
 		}
-		
+
 		$output = $oMenuAdminController->deleteMenu($menuSrl);
 		if(!$output->toBool()) return $output;
 

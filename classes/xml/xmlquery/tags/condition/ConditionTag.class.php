@@ -45,18 +45,18 @@ class ConditionTag {
 	 * @var QueryTag
 	 */
 	var $query;
-	
+
 	/**
 	 * constructor
 	 * @param object $condition
 	 * @return void
 	 */
-	function ConditionTag($condition) {
+	function __construct($condition) {
 		$this->operation = $condition->attrs->operation;
 		$this->pipe = $condition->attrs->pipe;
 		$dbParser = DB::getParser();
 		$this->column_name = $dbParser->parseExpression($condition->attrs->column);
-		
+
 		// If default value is column name, it should be escaped
 		if($isColumnName = (strpos($condition->attrs->default, '.') !== false
 			&& strpos($condition->attrs->default, '.') !== 0
@@ -64,7 +64,7 @@ class ConditionTag {
 		) {
 			$condition->attrs->default = $dbParser->parseExpression($condition->attrs->default);
 		}
-		
+
 		if($condition->node_name == 'query') {
 			$this->query = new QueryTag($condition, TRUE);
 			$this->default_column = $this->query->toString();
@@ -84,11 +84,11 @@ class ConditionTag {
 				} else {
 					$default_value_object = new DefaultValue($this->column_name, $condition->attrs->default);
 					$default_value = $default_value_object->toString();
-					
+
 					if($default_value_object->isStringFromFunction()) {
 						$default_value = '"\'".' . $default_value . '."\'"';
 					}
-					
+
 					if($default_value_object->isString() && !$isColumnName && !is_numeric($condition->attrs->default)) {
 						if(strpos($default_value, "'") !== FALSE)
 							$default_value = "\"" . $default_value . "\"";
@@ -101,11 +101,11 @@ class ConditionTag {
 				$this->default_column = "'" . $dbParser->parseColumnName($condition->attrs->var) . "'";
 		}
 	}
-	
+
 	function setPipe($pipe) {
 		$this->pipe = $pipe;
 	}
-	
+
 	function getArguments() {
 		$arguments = array();
 		if($this->query)
@@ -114,7 +114,7 @@ class ConditionTag {
 			$arguments[] = $this->argument;
 		return $arguments;
 	}
-	
+
 	function getConditionString() {
 		if($this->query) {
 			return sprintf("new ConditionSubquery('%s',%s,%s%s)"

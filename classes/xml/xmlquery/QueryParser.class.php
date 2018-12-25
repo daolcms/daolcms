@@ -12,14 +12,14 @@
  * @version 0.1
  */
 class QueryParser {
-	
+
 	/**
 	 * Property containing the associated QueryTag object
 	 *
 	 * @var QueryTag object
 	 */
 	var $queryTag;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -27,12 +27,12 @@ class QueryParser {
 	 * @param bool   $isSubQuery
 	 * @return void
 	 */
-	function QueryParser($query = NULL, $isSubQuery = FALSE) {
+	function __construct($query = NULL, $isSubQuery = FALSE) {
 		if($query) {
 			$this->queryTag = new QueryTag($query, $isSubQuery);
 		}
 	}
-	
+
 	/**
 	 * Returns table information
 	 *
@@ -46,7 +46,7 @@ class QueryParser {
 	function getTableInfo($query_id, $table_name) {
 		$column_type = array();
 		$module = '';
-		
+
 		$id_args = explode('.', $query_id);
 		if(count($id_args) == 2) {
 			$target = 'modules';
@@ -60,7 +60,7 @@ class QueryParser {
 			$module = $id_args[1];
 			$id = $id_args[2];
 		}
-		
+
 		// get column properties from the table
 		$table_file = sprintf('%s%s/%s/schemas/%s.xml', _DAOL_PATH_, 'modules', $module, $table_name);
 		if(!file_exists($table_file)) {
@@ -72,7 +72,7 @@ class QueryParser {
 					break;
 			}
 		}
-		
+
 		if(file_exists($table_file)) {
 			$table_xml = FileHandler::readFile($table_file);
 			$xml_parser = new XmlParser();
@@ -81,16 +81,16 @@ class QueryParser {
 				if(isset($table_obj->table->column) && !is_array($table_obj->table->column)) {
 					$table_obj->table->column = array($table_obj->table->column);
 				}
-				
+
 				foreach($table_obj->table->column as $k => $v) {
 					$column_type[$v->attrs->name] = $v->attrs->type;
 				}
 			}
 		}
-		
+
 		return $column_type;
 	}
-	
+
 	/**
 	 * Returns the contents for the query cache file
 	 *
@@ -101,7 +101,7 @@ class QueryParser {
 		. $this->queryTag->toString()
 		. 'return $query; ?>';
 	}
-	
+
 }
 
 ?>

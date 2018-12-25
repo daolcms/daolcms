@@ -7,45 +7,46 @@
  * admin model class of member module
  **/
 class memberAdminModel extends member {
-	
+
 	/**
 	 * info of member
 	 * @var object
 	 **/
 	var $member_info = NULL;
-	
+
 	/**
 	 * info of member groups
 	 * @var array
 	 **/
 	var $member_groups = NULL;
-	
+
 	/**
 	 * info of sign up form
 	 * @var array
 	 **/
 	var $join_form_list = NULL;
-	
+
 	/**
 	 * Initialization
 	 * @return void
 	 **/
-	function init() {
+	function init(){
 	}
-	
+
 	/**
 	 * Get a member list
 	 *
 	 * @return object|array (object : when member count is 1, array : when member count is more than 1)
 	 **/
-	function getMemberList() {
+	function getMemberList(){
 		// Search option
+		$args = new stdClass();
 		$args->is_admin = Context::get('is_admin') == 'Y' ? 'Y' : '';
 		$args->is_denied = Context::get('is_denied') == 'Y' ? 'Y' : '';
 		$args->selected_group_srl = Context::get('selected_group_srl');
-		
+
 		$filter = Context::get('filter_type');
-		switch($filter) {
+		switch($filter){
 			case 'super_admin' :
 				$args->is_admin = 'Y';
 				break;
@@ -59,12 +60,12 @@ class memberAdminModel extends member {
 				$args->is_denied = 'Y';
 				break;
 		}
-		
+
 		$search_target = trim(Context::get('search_target'));
 		$search_keyword = trim(Context::get('search_keyword'));
-		
-		if($search_target && $search_keyword) {
-			switch($search_target) {
+
+		if($search_target && $search_keyword){
+			switch($search_target){
 				case 'user_id' :
 					if($search_keyword) $search_keyword = str_replace(' ', '%', $search_keyword);
 					$args->s_user_id = $search_keyword;
@@ -108,30 +109,31 @@ class memberAdminModel extends member {
 					break;
 			}
 		}
-		
+
 		// Change the query id if selected_group_srl exists (for table join)
 		$sort_order = Context::get('sort_order');
 		$sort_index = Context::get('sort_index');
-		if(!$sort_index) {
+		if(!$sort_index){
 			$sort_index = "list_order";
 		}
-		
-		if(!$sort_order) {
+
+		if(!$sort_order){
 			$sort_order = 'asc';
 		}
-		
-		if($sort_order != 'asc') {
+
+		if($sort_order != 'asc'){
 			$sort_order = 'desc';
 		}
-		
-		if($args->selected_group_srl) {
+
+		if($args->selected_group_srl){
 			$query_id = 'member.getMemberListWithinGroup';
 			$args->sort_index = "member." . $sort_index;
-		} else {
+		}
+		else{
 			$query_id = 'member.getMemberList';
 			$args->sort_index = $sort_index;
 		}
-		
+
 		$args->sort_order = $sort_order;
 		Context::set('sort_order', $sort_order);
 		// Other variables
@@ -139,10 +141,10 @@ class memberAdminModel extends member {
 		$args->list_count = 40;
 		$args->page_count = 10;
 		$output = executeQuery($query_id, $args);
-		
+
 		return $output;
 	}
-	
+
 	/**
 	 * Get a memebr list for each site
 	 *
@@ -151,7 +153,7 @@ class memberAdminModel extends member {
 	 *
 	 * @return array
 	 **/
-	function getSiteMemberList($site_srl, $page = 1) {
+	function getSiteMemberList($site_srl, $page = 1){
 		$args->site_srl = $site_srl;
 		$args->page = $page;
 		$args->list_count = 40;
@@ -160,49 +162,49 @@ class memberAdminModel extends member {
 		$output = executeQueryArray($query_id, $args);
 		return $output;
 	}
-	
+
 	/**
 	 * Get member_srls lists about site admins
 	 *
 	 * @return array
 	 **/
-	function getSiteAdminMemberSrls() {
+	function getSiteAdminMemberSrls(){
 		$output = executeQueryArray('member.getSiteAdminMemberSrls');
 		if(!$output->toBool() || !$output->data) return array();
-		
+
 		$member_srls = array();
-		foreach($output->data as $member_info) {
+		foreach($output->data as $member_info){
 			$member_srls[] = $member_info->member_srl;
 		}
-		
+
 		return $member_srls;
 	}
-	
+
 	/**
 	 * Return colorset list of a skin in the member module
 	 *
 	 * @return void
 	 **/
-	function getMemberAdminColorset() {
+	function getMemberAdminColorset(){
 		$skin = Context::get('skin');
 		if(!$skin) $tpl = "";
-		else {
-			$oModuleModel = &getModel('module');
+		else{
+			$oModuleModel = getModel('module');
 			$skin_info = $oModuleModel->loadSkinInfo($this->module_path, $skin);
 			Context::set('skin_info', $skin_info);
-			
-			$oModuleModel = &getModel('module');
+
+			$oModuleModel = getModel('module');
 			$config = $oModuleModel->getModuleConfig('member');
 			if(!$config->colorset) $config->colorset = "white";
 			Context::set('config', $config);
-			
+
 			$oTemplate = &TemplateHandler::getInstance();
 			$tpl = $oTemplate->compile($this->module_path . 'tpl', 'colorset_list');
 		}
-		
+
 		$this->add('tpl', $tpl);
 	}
-	
+
 	/**
 	 * Return member count with date
 	 *
@@ -210,15 +212,16 @@ class memberAdminModel extends member {
 	 *
 	 * @return int
 	 **/
-	function getMemberCountByDate($date = '') {
+	function getMemberCountByDate($date = ''){
+		$args = new stdClass();
 		if($date) $args->regDate = date('Ymd', strtotime($date));
-		
+
 		$output = executeQuery('member.getMemberCountByDate', $args);
 		if(!$output->toBool()) return 0;
-		
+
 		return $output->data->count;
 	}
-	
+
 	/**
 	 * Return site join member count with date
 	 *
@@ -226,67 +229,68 @@ class memberAdminModel extends member {
 	 *
 	 * @return int
 	 **/
-	function getMemberGroupMemberCountByDate($date = '') {
+	function getMemberGroupMemberCountByDate($date = ''){
 		if($date) $args->regDate = date('Ymd', strtotime($date));
-		
+
 		$output = executeQuery('member.getMemberGroupMemberCountByDate', $args);
 		if(!$output->toBool()) return 0;
-		
+
 		return count($output->data);
 	}
-	
+
 	/**
 	 * Return add join Form
 	 *
 	 * @return void
 	 **/
-	function getMemberAdminInsertJoinForm() {
+	function getMemberAdminInsertJoinForm(){
 		$member_join_form_srl = Context::get('member_join_form_srl');
-		
+
+		$args = new stdClass();
 		$args->member_join_form_srl = $member_join_form_srl;
 		$output = executeQuery('member.getJoinForm', $args);
-		
-		if($output->toBool() && $output->data) {
+
+		if($output->toBool() && $output->data){
 			$formInfo = $output->data;
 			$default_value = $formInfo->default_value;
-			if($default_value) {
+			if($default_value){
 				$default_value = unserialize($default_value);
 				Context::set('default_value', $default_value);
 			}
 			Context::set('formInfo', $output->data);
 		}
-		
-		$oMemberModel = &getModel('member');
+
+		$oMemberModel = getModel('member');
 		$config = $oMemberModel->getMemberConfig();
-		foreach($config->signupForm as $item) {
+		foreach($config->signupForm as $item){
 			$list[] = $item->name;
 		}
-		
+
 		$id_list = implode(',', $list);
 		Context::set('id_list', $id_list);
-		
+
 		$oTemplate = &TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($this->module_path . 'tpl', 'insert_join_form');
-		
+
 		$this->add('tpl', str_replace("\n", " ", $tpl));
 	}
-	
-	
+
+
 	/**
 	 * check allowed target ip address when  login for admin.
 	 *
 	 * @return boolean (true : allowed, false : refuse)
 	 **/
-	function getMemberAdminIPCheck() {
-		
+	function getMemberAdminIPCheck(){
+
 		$db_info = Context::getDBInfo();
 		$admin_ip_list = $db_info->admin_ip_list;
 		$admin_ip_list = explode(",", $admin_ip_list);
-		$oMemberModel = &getModel('member');
+		$oMemberModel = getModel('member');
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$falg = false;
-		foreach($admin_ip_list as $admin_ip_list_key => $admin_ip_value) {
-			if(preg_match('/^\d{1,3}(?:.(\d{1,3}|\*)){3}\s*$/', $admin_ip_value, $matches) && $ip) {
+		foreach($admin_ip_list as $admin_ip_list_key => $admin_ip_value){
+			if(preg_match('/^\d{1,3}(?:.(\d{1,3}|\*)){3}\s*$/', $admin_ip_value, $matches) && $ip){
 				$admin_ip = $matches[0];
 				$admin_ip = str_replace('*', '', $admin_ip);
 				$admin_ip_patterns[] = preg_quote($admin_ip);
@@ -294,7 +298,7 @@ class memberAdminModel extends member {
 				if(preg_match($admin_ip_pattern, $ip, $matches)) return true;
 				$flag = true;
 			}
-			
+
 		}
 		if(!$flag) return true;
 		return false;

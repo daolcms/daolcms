@@ -9,7 +9,8 @@ class tagAdminController extends tag {
 	/**
 	 * @brief Delete all tags for a particular module
 	 **/
-	function deleteModuleTags($module_srl) {
+	function deleteModuleTags($module_srl){
+		$args = new stdClass();
 		$args->module_srl = $module_srl;
 		return executeQuery('tag.deleteModuleTags', $args);
 	}

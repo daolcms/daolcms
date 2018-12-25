@@ -5,7 +5,7 @@
  * @author NAVER (developers@xpressengine.com)
  **/
 class autoinstallView extends autoinstall {
-	
+
 	/**
 	 * Initialization
 	 *
@@ -13,7 +13,7 @@ class autoinstallView extends autoinstall {
 	 **/
 	function init() {
 	}
-	
+
 	/**
 	 * Test
 	 *

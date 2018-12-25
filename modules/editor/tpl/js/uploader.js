@@ -22,7 +22,7 @@ var defaultHandlers;
 
 function init(cfg, exe) {
 	var seq = cfg.editorSequence;
-	
+
 	if(!is_def(seq)) return;
 
 	cfg = $.extend({
@@ -400,7 +400,7 @@ function insertUploadedFile(editorSequence) {
 	var fileListAreaID = settings.fileListAreaID;
 	var fileListObj = get_by_id(fileListAreaID);
 	if(!fileListObj) return;
-	
+
 	var obj;
 
 	if(editorMode[editorSequence]=='preview') return;

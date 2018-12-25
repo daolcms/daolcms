@@ -106,8 +106,8 @@ module.exports = function(grunt) {
 					//module/board
 					'modules/board/tpl/js/board.min.js': ['modules/board/tpl/js/board.js'],
 					'modules/board/tpl/js/board_admin.min.js': ['modules/board/tpl/js/board_admin.js'],
-					'modules/board/skins/daol_default/board.default.min.js': ['modules/board/skins/daol_default/board.default.js'],
-					'modules/board/m.skins/daol_default/js/mboard.min.js': ['modules/board/m.skins/daol_default/js/mboard.js'],
+					'modules/board/skins/default/board.default.min.js': ['modules/board/skins/default/board.default.js'],
+					'modules/board/m.skins/default/js/mboard.min.js': ['modules/board/m.skins/default/js/mboard.js'],
 					// editor-component-image-gallery
 					'modules/editor/components/image_gallery/tpl/gallery.min.js' : ['modules/editor/components/image_gallery/tpl/gallery.js'],
 					'modules/editor/components/image_gallery/tpl/list_gallery.min.js' : ['modules/editor/components/image_gallery/tpl/list_gallery.js'],
@@ -131,9 +131,9 @@ module.exports = function(grunt) {
 			},
 			'layout': {
 				files: {
-					'layouts/daol_official/js/banner.min.js': ['layouts/daol_official/js/banner.js'],
 					'layouts/daol_official/js/layout.min.js': ['layouts/daol_official/js/layout.js'],
-					'layouts/daol_official/js/slides.min.js': ['layouts/daol_official/js/slides.js'],
+					'layouts/daol_official/js/slides/slides.min.js': ['layouts/daol_official/js/slides/slides.js'],
+					'layouts/daol_official/js/slides/slides_start.min.js': ['layouts/daol_official/js/slides/slides_start.js'],
 				}
 			},
 		},
@@ -154,8 +154,8 @@ module.exports = function(grunt) {
 					'modules/poll/skins/default/css/poll.min.css': ['modules/poll/skins/default/css/poll.css'],
 					'modules/poll/skins/simple/css/poll.min.css': ['modules/poll/skins/simple/css/poll.css'],
 					'modules/editor/skins/xpresseditor/css/default.min.css': ['modules/editor/skins/xpresseditor/css/default.css'],
-					'modules/board/skins/daol_default/board.default.min.css': ['modules/board/skins/default/board.default.css'],
-					'modules/board/m.skins/daol_default/css/mboard.min.css': ['modules/board/m.skins/default/css/mboard.css'],
+					'modules/board/skins/default/board.default.min.css': ['modules/board/skins/default/board.default.css'],
+					'modules/board/m.skins/default/css/mboard.min.css': ['modules/board/m.skins/default/css/mboard.css'],
 					// krzip
 					'modules/krzip/tpl/css/default.min.css': ['modules/krzip/tpl/css/default.css'],
 					'modules/krzip/tpl/css/popup.min.css': ['modules/krzip/tpl/css/popup.css'],

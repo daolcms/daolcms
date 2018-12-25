@@ -6,24 +6,24 @@
 
     <description xml:lang="ko">
         The XE Solid Enterprise skin for message module.
-        NHN (developers@xpressengine.com)
+        NAVER (developers@xpressengine.com)
     </description>
     <description xml:lang="en">
         The XE Solid Enterprise skin for message module.
-        NHN (developers@xpressengine.com)
+        NAVER (developers@xpressengine.com)
     </description>
     <description xml:lang="zh-CN">
         XE标准企业信息模块皮肤。
-        NHN (developers@xpressengine.com)
+        NAVER (developers@xpressengine.com)
     </description>
 
     <version>0.1</version>
     <date>2011-09-26</date>
 
     <author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
-        <name xml:lang="ko">NHN</name>
-        <name xml:lang="en">NHN</name>
-        <name xml:lang="zh-CN">NHN</name>
+        <name xml:lang="ko">NAVER</name>
+        <name xml:lang="en">NAVER</name>
+        <name xml:lang="zh-CN">NAVER</name>
     </author>
 
     <colorset>

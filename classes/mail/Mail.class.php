@@ -13,131 +13,131 @@ class Mail extends PHPMailer {
 	 * @var string
 	 */
 	var $sender_name = '';
-	
+
 	/**
 	 * Sender email address
 	 * @var string
 	 */
 	var $sender_email = '';
-	
+
 	/**
 	 * Receiptor name
 	 * @var string
 	 */
 	var $receiptor_name = '';
-	
+
 	/**
 	 * Receiptor email address
 	 * @var string
 	 */
 	var $receiptor_email = '';
-	
+
 	/**
 	 * Title of email
 	 * @var string
 	 */
 	var $title = '';
-	
+
 	/**
 	 * Content of email
 	 * @var string
 	 */
 	var $content = '';
-	
+
 	/**
 	 * Content type
 	 * @var string
 	 */
 	var $content_type = 'html';
-	
+
 	/**
 	 * Message id
 	 * @var string
 	 */
 	var $messageId = NULL;
-	
+
 	/**
 	 * Reply to
 	 * @var string
 	 */
 	var $replyTo = NULL;
-	
+
 	/**
 	 * BCC (Blind carbon copy)
 	 * @var string
 	 */
 	var $bcc = NULL;
-	
+
 	/**
 	 * Attachments
 	 * @var array
 	 */
 	var $attachments = array();
-	
+
 	/**
 	 * Content attachements
 	 * @var array
 	 */
 	var $cidAttachments = array();
-	
+
 	/**
 	 * ???
 	 * @var ???
 	 */
 	var $mainMailPart = NULL;
-	
+
 	/**
 	 * Raw body
 	 * @var string
 	 */
 	var $body = '';
-	
+
 	/**
 	 * Raw header
 	 * @var string
 	 */
 	var $header = '';
-	
+
 	/**
 	 * End of line
 	 * @var string
 	 */
 	var $eol = '';
-	
+
 	/**
 	 * Reference
 	 * @var string
 	 */
 	var $references = '';
-	
+
 	/**
 	 * Additional parameters
 	 * @var string
 	 */
 	var $additional_params = NULL;
-	
+
 	/**
 	 * Whether use or not use stmp
 	 * @var bool
 	 */
 	var $use_smtp = FALSE;
-	
+
 	/**
 	 * Constructor function
 	 *
 	 * @return void
 	 */
-	function Mail() {
+	function __construct() {
 		$smtp_info = Context::getSMTPInfo();
 		Context::set('smtp_info', $smtp_info);
-		
+
 		if($smtp_info->smtp_use == 'Y') {
 			$this->useSMTP(true, $smtp_info->smtp_host, $smtp_info->smtp_user, $smtp_info->smtp_password, $smtp_info->smtp_type, $smtp_info->smtp_port);
 		} else {
-			
+
 		}
 	}
-	
+
 	/**
 	 * Set parameters for using Gmail
 	 *
@@ -158,7 +158,7 @@ class Mail extends PHPMailer {
 		$this->Password = $account_passwd;
 		$this->IsSMTP();
 	}
-	
+
 	/**
 	 * Set parameters for using SMTP protocol
 	 *
@@ -177,11 +177,11 @@ class Mail extends PHPMailer {
 		$this->Username = $user;
 		$this->Password = $pass;
 		$this->Port = $port;
-		
+
 		if($secure == 'ssl' || $secure == 'tls') {
 			$this->SMTPSecure = $secure;
 		}
-		
+
 		if(($this->SMTPAuth !== NULL && $this->Host !== NULL && $this->Username !== NULL && $this->Password !== NULL) || ($this->SMTPAuth === NULL && $this->Host !== NULL)) {
 			$this->IsSMTP();
 			$this->AltBody = "To view the message, please use an HTML compatible email viewer!";
@@ -191,7 +191,7 @@ class Mail extends PHPMailer {
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * Set additional parameters
 	 *
@@ -201,7 +201,7 @@ class Mail extends PHPMailer {
 	function setAdditionalParams($additional_params) {
 		$this->additional_params = $additional_params;
 	}
-	
+
 	/**
 	 * Add file attachment
 	 *
@@ -212,7 +212,7 @@ class Mail extends PHPMailer {
 	function addAttachment($filename, $orgfilename) {
 		$this->attachments[$orgfilename] = $filename;
 	}
-	
+
 	/**
 	 * Add content attachment
 	 *
@@ -223,7 +223,7 @@ class Mail extends PHPMailer {
 	function addCidAttachment($filename, $cid) {
 		$this->cidAttachments[$cid] = $filename;
 	}
-	
+
 	/**
 	 * Set Sender (From:)
 	 *
@@ -239,7 +239,7 @@ class Mail extends PHPMailer {
 			$this->SetFrom($email, $name);
 		}
 	}
-	
+
 	/**
 	 * Get Sender (From:)
 	 *
@@ -251,7 +251,7 @@ class Mail extends PHPMailer {
 		}
 		return $this->sender_email;
 	}
-	
+
 	/**
 	 * Set Receiptor (TO:)
 	 *
@@ -267,7 +267,7 @@ class Mail extends PHPMailer {
 			$this->AddAddress($email, $name);
 		}
 	}
-	
+
 	/**
 	 * Get Receiptor (TO:)
 	 *
@@ -279,7 +279,7 @@ class Mail extends PHPMailer {
 		}
 		return $this->receiptor_email;
 	}
-	
+
 	/**
 	 * Set Email's Title
 	 *
@@ -293,7 +293,7 @@ class Mail extends PHPMailer {
 			$this->Subject = $title;
 		}
 	}
-	
+
 	/**
 	 * Get Email's Title
 	 *
@@ -302,7 +302,7 @@ class Mail extends PHPMailer {
 	function getTitle() {
 		return '=?utf-8?b?' . base64_encode($this->title) . '?=';
 	}
-	
+
 	/**
 	 * Set BCC
 	 *
@@ -316,7 +316,7 @@ class Mail extends PHPMailer {
 			$this->AddBCC($bcc);
 		}
 	}
-	
+
 	/**
 	 * Set Message ID
 	 *
@@ -326,7 +326,7 @@ class Mail extends PHPMailer {
 	function setMessageID($messageId) {
 		$this->messageId = $messageId;
 	}
-	
+
 	/**
 	 * Set references
 	 *
@@ -336,7 +336,7 @@ class Mail extends PHPMailer {
 	function setReferences($references) {
 		$this->references = $references;
 	}
-	
+
 	/**
 	 * Set ReplyTo param
 	 *
@@ -350,7 +350,7 @@ class Mail extends PHPMailer {
 			$this->AddReplyTo($replyTo);
 		}
 	}
-	
+
 	/**
 	 * Set message content
 	 *
@@ -365,7 +365,7 @@ class Mail extends PHPMailer {
 			$this->MsgHTML($content);
 		}
 	}
-	
+
 	/**
 	 * Replace resourse path of the files
 	 *
@@ -376,7 +376,7 @@ class Mail extends PHPMailer {
 	function replaceResourceRealPath($matches) {
 		return preg_replace('/src=(["\']?)files/i', 'src=$1' . Context::getRequestUri() . 'files', $matches[0]);
 	}
-	
+
 	/**
 	 * Get the Plain content of body message
 	 *
@@ -385,7 +385,7 @@ class Mail extends PHPMailer {
 	function getPlainContent() {
 		return chunk_split(base64_encode(str_replace(array("<", ">", "&"), array("&lt;", "&gt;", "&amp;"), $this->content)));
 	}
-	
+
 	/**
 	 * Get the HTML content of body message
 	 *
@@ -394,7 +394,7 @@ class Mail extends PHPMailer {
 	function getHTMLContent() {
 		return chunk_split(base64_encode($this->content_type != 'html' ? nl2br($this->content) : $this->content));
 	}
-	
+
 	/**
 	 * Set the type of body's content
 	 *
@@ -404,7 +404,7 @@ class Mail extends PHPMailer {
 	function setContentType($mode = 'html') {
 		$this->content_type = $mode == 'html' ? 'html' : '';
 	}
-	
+
 	/**
 	 * Process the images from attachments
 	 *
@@ -451,7 +451,7 @@ class Mail extends PHPMailer {
 			}
 		}
 	}
-	
+
 	/**
 	 * Process the images from body content. This functions is used if Mailer is set as mail not as SMTP
 	 *
@@ -491,7 +491,7 @@ class Mail extends PHPMailer {
 			$this->body .= "--" . $boundary . "--";
 		}
 	}
-	
+
 	/**
 	 * Send email
 	 *
@@ -546,7 +546,7 @@ class Mail extends PHPMailer {
 			return parent::Send();
 		}
 	}
-	
+
 	/**
 	 * Check if DNS of param is real or fake
 	 *
@@ -567,7 +567,7 @@ class Mail extends PHPMailer {
 		}
 		return TRUE;
 	}
-	
+
 	/**
 	 * Check if param is a valid email or not
 	 *
@@ -581,7 +581,7 @@ class Mail extends PHPMailer {
 			return '';
 		}
 	}
-	
+
 	/**
 	 * Gets the MIME type of param
 	 *

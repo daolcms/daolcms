@@ -23,19 +23,19 @@ class TablesTag {
 	 * @var array
 	 */
 	var $tables;
-	
+
 	/**
 	 * constructor
 	 * @param object $xml_tables_tag
 	 * @param object $xml_index_hints_tag
 	 * @return void
 	 */
-	function TablesTag($xml_tables_tag, $xml_index_hints_tag = NULL) {
+	function __construct($xml_tables_tag, $xml_index_hints_tag = NULL) {
 		$this->tables = array();
-		
+
 		$xml_tables = $xml_tables_tag->table;
 		if(!is_array($xml_tables)) $xml_tables = array($xml_tables);
-		
+
 		if($xml_index_hints_tag) {
 			$index_nodes = $xml_index_hints_tag->index;
 			if(!is_array($index_nodes)) $index_nodes = array($index_nodes);
@@ -47,7 +47,7 @@ class TablesTag {
 				$indexes[$index_node->attrs->table][$count]->type = $index_node->attrs->type;
 			}
 		}
-		
+
 		foreach($xml_tables as $tag) {
 			if($tag->attrs->query == 'true') {
 				$this->tables[] = new QueryTag($tag, true);
@@ -59,11 +59,11 @@ class TablesTag {
 			}
 		}
 	}
-	
+
 	function getTables() {
 		return $this->tables;
 	}
-	
+
 	function toString() {
 		$output_tables = 'array(' . PHP_EOL;
 		foreach($this->tables as $table) {
@@ -76,7 +76,7 @@ class TablesTag {
 		$output_tables .= ')';
 		return $output_tables;
 	}
-	
+
 	function getArguments() {
 		$arguments = array();
 		foreach($this->tables as $table)

@@ -24,7 +24,7 @@ class IpFilter {
 		}
 		return false;
 	}
-	
+
 	/* public function filter2($ip_list, $ip){
 		$long_ip = ip2long($ip);
 		foreach($ip_list as $filter_ip){
@@ -33,16 +33,16 @@ class IpFilter {
 				$range[1] = str_replace('*', '255', $range[0]);
 				$range[0] = str_replace('*', '0', $range[0]);
 			}
-			
+
 			if(ip2long($range[0]) <= $long_ip && ip2long($range[1]) >= $long_ip){
 				return true;
 			}
 		}
-		
+
 		return false;
 	} */
-	
-	
+
+
 	public function validate($ip_list = array()) {
 		/* 사용가능한 표현
 			192.168.2.10 - 4자리의 정확한 ip주소
@@ -65,15 +65,15 @@ class IpFilter {
 				)
 			$/";
 		$regex = str_replace(array("\r\n", "\n", "\r", "\t", " "), '', $regex);
-		
+
 		foreach($ip_list as $i => $ip) {
 			preg_match($regex, $ip, $matches);
 			if(!count($matches)) return false;
 		}
-		
+
 		return true;
 	}
-	
+
 }
 
 /* End of file : IpFilter.class.php */

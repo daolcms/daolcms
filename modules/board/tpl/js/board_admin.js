@@ -138,7 +138,7 @@ function doSaveListConfig(module_srl)
 	var list = [];
 	for(var i=0;i<sel_obj.options.length;i++) list[list.length] = sel_obj.options[i].value;
 	if(list.length<1) return;
-	
+
 	var params = {};
 	params.module_srl = module_srl;
 	params.list = list.join(',');

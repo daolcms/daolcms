@@ -14,7 +14,7 @@ class InsertColumnTag extends ColumnTag {
 	 * @var QueryArgument object
 	 */
 	var $argument;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -22,13 +22,13 @@ class InsertColumnTag extends ColumnTag {
 	 *
 	 * @return void
 	 */
-	function InsertColumnTag($column) {
-		parent::ColumnTag($column->attrs->name);
+	function __construct($column) {
+		parent::__construct($column->attrs->name);
 		$dbParser = DB::getParser();
 		$this->name = $dbParser->parseColumnName($this->name);
 		$this->argument = new QueryArgument($column);
 	}
-	
+
 	/**
 	 * Returns the string to be output in the cache file
 	 * used for instantiating an InsertExpression when a
@@ -41,7 +41,7 @@ class InsertColumnTag extends ColumnTag {
 			, $this->name
 			, $this->argument->argument_name);
 	}
-	
+
 	/**
 	 * Returns the QueryArgument object associated with this INSERT statement
 	 *
@@ -50,7 +50,7 @@ class InsertColumnTag extends ColumnTag {
 	function getArgument() {
 		return $this->argument;
 	}
-	
+
 }
 
 ?>

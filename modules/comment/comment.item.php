@@ -19,38 +19,38 @@ class commentItem extends BaseObject {
 	 * @var array
 	 */
 	var $columnList = array();
-	
+
 	/**
 	 * Constructor
 	 * @param int   $comment_srl
 	 * @param array $columnList
 	 * @return void
 	 */
-	function commentItem($comment_srl = 0, $columnList = array()) {
+	function __construct($comment_srl = 0, $columnList = array()) {
 		$this->comment_srl = $comment_srl;
 		$this->columnList = $columnList;
 		$this->_loadFromDB();
 	}
-	
+
 	function setComment($comment_srl) {
 		$this->comment_srl = $comment_srl;
 		$this->_loadFromDB();
 	}
-	
+
 	/**
 	 * Load comment data from DB and set to commentItem object
 	 * @return void
 	 */
 	function _loadFromDB() {
 		if(!$this->comment_srl) return;
-		
+
 		$args = new stdClass();
 		$args->comment_srl = $this->comment_srl;
 		$output = executeQuery('comment.getComment', $args, $this->columnList);
-		
+
 		$this->setAttribute($output->data);
 	}
-	
+
 	/**
 	 * Comment attribute set to Object object
 	 * @return void
@@ -65,67 +65,67 @@ class commentItem extends BaseObject {
 		// define vars on the object for backward compatibility of skins
 		if(count($attribute)) foreach($attribute as $key => $val) $this->{$key} = $val;
 	}
-	
+
 	function isExists() {
 		return $this->comment_srl ? true : false;
 	}
-	
+
 	function isGranted() {
 		if($_SESSION['own_comment'][$this->comment_srl]) return true;
-		
+
 		if(!Context::get('is_logged')) return false;
-		
+
 		$logged_info = Context::get('logged_info');
 		if($logged_info->is_admin == 'Y') return true;
-		
+
 		$grant = Context::get('grant');
 		if($grant->manager) return true;
-		
+
 		if($this->get('member_srl') && ($this->get('member_srl') == $logged_info->member_srl || $this->get('member_srl') * -1 == $logged_info->member_srl)) return true;
-		
+
 		return false;
 	}
-	
+
 	function setGrant() {
 		$_SESSION['own_comment'][$this->comment_srl] = true;
 		$this->is_granted = true;
 	}
-	
+
 	function setAccessible() {
 		$_SESSION['accessibled_comment'][$this->comment_srl] = true;
 	}
-	
+
 	function isEditable() {
 		if($this->isGranted() || !$this->get('member_srl')) return true;
 		return false;
 	}
-	
+
 	function isSecret() {
 		return $this->get('is_secret') == 'Y' ? true : false;
 	}
-	
+
 	function isAccessible() {
 		if($_SESSION['accessibled_comment'][$this->comment_srl]) return true;
-		
+
 		if($this->isGranted() || !$this->isSecret()) {
 			$this->setAccessible();
 			return true;
 		}
-		
+
 		$oDocumentModel = &getModel('document');
 		$oDocument = $oDocumentModel->getDocument($this->get('document_srl'));
 		if($oDocument->isGranted()) {
 			$this->setAccessible();
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	function useNotify() {
 		return $this->get('notify_message') == 'Y' ? true : false;
 	}
-	
+
 	/**
 	 * Notify to comment owner
 	 * @return void
@@ -151,63 +151,63 @@ class commentItem extends BaseObject {
 		$oCommunicationController = &getController('communication');
 		$oCommunicationController->sendMessage($sender_member_srl, $receiver_srl, $title, $content, false);
 	}
-	
+
 	function getIpAddress() {
 		if($this->isGranted()) return $this->get('ipaddress');
 		return preg_replace('/([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)/', '*.$2.$3.$4', $this->get('ipaddress'));
 	}
-	
+
 	function isExistsHomepage() {
 		if(trim($this->get('homepage'))) return true;
 		return false;
 	}
-	
+
 	function getHomepageUrl() {
 		$url = trim($this->get('homepage'));
 		if(!$url) return;
-		
+
 		if(!preg_match("/^http:\/\//i", $url)) $url = "http://" . $url;
-		
+
 		return htmlspecialchars($url);
 	}
-	
+
 	function getMemberSrl() {
 		return $this->get('member_srl');
 	}
-	
+
 	function getUserID() {
 		return htmlspecialchars($this->get('user_id'));
 	}
-	
+
 	function getUserName() {
 		return htmlspecialchars($this->get('user_name'));
 	}
-	
+
 	function getNickName() {
 		return htmlspecialchars($this->get('nick_name'));
 	}
-	
+
 	/**
 	 * Return content with htmlspecialchars
 	 * @return string
 	 */
 	function getContentText($strlen = 0) {
 		if($this->isSecret() && !$this->isAccessible()) return Context::getLang('msg_is_secret');
-		
+
 		$content = $this->get('content');
-		
+
 		if($strlen) return cut_str(strip_tags($content), $strlen, '...');
-		
+
 		return htmlspecialchars($content);
 	}
-	
+
 	/**
 	 * Return content after filter
 	 * @return string
 	 */
 	function getContent($add_popup_menu = true, $add_content_info = true, $add_xe_content_class = true) {
 		if($this->isSecret() && !$this->isAccessible()) return Context::getLang('msg_is_secret');
-		
+
 		$content = $this->get('content');
 		stripEmbedTagForAdmin($content, $this->get('member_srl'));
 		// when displaying the comment on the pop-up menu
@@ -235,10 +235,10 @@ class commentItem extends BaseObject {
 		} else {
 			if($add_xe_content_class) $content = sprintf('<div class="xe_content">%s</div>', $content);
 		}
-		
+
 		return $content;
 	}
-	
+
 	/**
 	 * Return summary content
 	 * @return string
@@ -259,14 +259,14 @@ class commentItem extends BaseObject {
 		$content = trim(cut_str($content, $str_size, $tail));
 		// restore >, <, , "\
 		$content = str_replace(array('<', '>', '"'), array('&lt;', '&gt;', '&quot;'), $content);
-		
+
 		return $content;
 	}
-	
+
 	function getRegdate($format = 'Y.m.d H:i:s') {
 		return zdate($this->get('regdate'), $format);
 	}
-	
+
 	function getRegdateTime() {
 		$regdate = $this->get('regdate');
 		$year = substr($regdate, 0, 4);
@@ -277,20 +277,20 @@ class commentItem extends BaseObject {
 		$sec = substr($regdate, 12, 2);
 		return mktime($hour, $min, $sec, $month, $day, $year);
 	}
-	
+
 	function getRegdateGM() {
 		return $this->getRegdate('D, d M Y H:i:s') . ' ' . $GLOBALS['_time_zone'];
 	}
-	
+
 	function getUpdate($format = 'Y.m.d H:i:s') {
 		return zdate($this->get('last_update'), $format);
 	}
-	
+
 	function getPermanentUrl() {
 		return getFullUrl('', 'mid', $this->getCommentMid(), 'document_srl', $this->get('document_srl')) . '#comment_' . $this->get('comment_srl');
 	}
-	
-	
+
+
 	function getUpdateTime() {
 		$year = substr($this->get('last_update'), 0, 4);
 		$month = substr($this->get('last_update'), 4, 2);
@@ -300,25 +300,25 @@ class commentItem extends BaseObject {
 		$sec = substr($this->get('last_update'), 12, 2);
 		return mktime($hour, $min, $sec, $month, $day, $year);
 	}
-	
+
 	function getUpdateGM() {
 		return gmdate("D, d M Y H:i:s", $this->getUpdateTime());
 	}
-	
+
 	function hasUploadedFiles() {
 		if(($this->isSecret() && !$this->isAccessible()) && !$this->isGranted()) return false;
 		return $this->get('uploaded_count') ? true : false;
 	}
-	
+
 	function getUploadedFiles() {
 		if(($this->isSecret() && !$this->isAccessible()) && !$this->isGranted()) return;
 		if(!$this->get('uploaded_count')) return;
-		
+
 		$oFileModel = &getModel('file');
 		$file_list = $oFileModel->getFiles($this->comment_srl, array(), 'file_srl', true);
 		return $file_list;
 	}
-	
+
 	/**
 	 * Return the editor html
 	 * @return string
@@ -329,7 +329,7 @@ class commentItem extends BaseObject {
 		$oEditorModel = &getModel('editor');
 		return $oEditorModel->getModuleEditor('comment', $module_srl, $this->comment_srl, 'comment_srl', 'content');
 	}
-	
+
 	/**
 	 * Return author's profile image
 	 * @return object
@@ -339,10 +339,10 @@ class commentItem extends BaseObject {
 		$oMemberModel = &getModel('member');
 		$profile_info = $oMemberModel->getProfileImage($this->get('member_srl'));
 		if(!$profile_info) return;
-		
+
 		return $profile_info->src;
 	}
-	
+
 	/**
 	 * Return author's signiture
 	 * @return string
@@ -361,23 +361,23 @@ class commentItem extends BaseObject {
 		}
 		$max_signature_height = $GLOBALS['__member_signature_max_height'];
 		if($max_signature_height) $signature = sprintf('<div style="max-height:%dpx;overflow:auto;overflow-x:hidden;height:expression(this.scrollHeight > %d ? \'%dpx\': \'auto\')">%s</div>', $max_signature_height, $max_signature_height, $max_signature_height, $signature);
-		
+
 		return $signature;
 	}
-	
+
 	function thumbnailExists($width = 80, $height = 0, $type = '') {
 		if(!$this->comment_srl) return false;
 		if(!$this->getThumbnail($width, $height, $type)) return false;
 		return true;
 	}
-	
+
 	function getThumbnail($width = 80, $height = 0, $thumbnail_type = '') {
 		// return false if no doc exists
 		if(!$this->comment_srl) return;
 		if($this->isSecret() && !$this->isGranted()) return;
 		// If signiture height setting is omitted, create a square
 		if(!$height) $height = $width;
-		
+
 		$content = $this->get('content');
 		if(!$this->hasUploadedFiles()) {
 			if(!$content) {
@@ -389,10 +389,10 @@ class commentItem extends BaseObject {
 					$this->add('content', $content);
 				}
 			}
-			
+
 			if(!preg_match("!<img!is", $content)) return;
 		}
-		
+
 		// get thumbail generation info on the doc module configuration.
 		if(!in_array($thumbnail_type, array('crop', 'ratio'))) $thumbnail_type = 'crop';
 		// Define thumbnail information
@@ -409,14 +409,14 @@ class commentItem extends BaseObject {
 				return $thumbnail_url . '?' . date('YmdHis', filemtime($thumbnail_file));
 			}
 		}
-		
+
 		// Create lockfile to prevent race condition
 		FileHandler::writeFile($thumbnail_lockfile, '', 'w');
-		
+
 		// Target file
 		$source_file = null;
 		$is_tmp_file = false;
-		
+
 		// find an image file among attached files
 		if($this->hasUploadedFiles()) {
 			$file_list = $this->getUploadedFiles();
@@ -438,58 +438,58 @@ class commentItem extends BaseObject {
 				$source_file = $first_image;
 			}
 		}
-		
+
 		// get an image file from the doc content if no file attached. 
 		$is_tmp_file = false;
 		if(!$source_file) {
 			$random = new Password();
-			
+
 			preg_match_all("!<img[^>]*src=(?:\"|\')([^\"\']*?)(?:\"|\')!is", $content, $matches, PREG_SET_ORDER);
-			
+
 			foreach($matches as $target_image) {
 				$target_src = trim($target_image[1]);
 				if(preg_match('/\/(common|modules|widgets|addons|layouts|m\.layouts)\//i', $target_src)) continue;
-				
+
 				if(!preg_match('/^(http|https):\/\//i', $target_src)) {
 					$target_src = Context::getRequestUri() . $target_src;
 				}
-				
+
 				$target_src = htmlspecialchars_decode($target_src);
-				
+
 				$tmp_file = _DAOL_PATH_ . 'files/cache/tmp/' . $random->createSecureSalt(32, 'hex');
 				FileHandler::getRemoteFile($target_src, $tmp_file);
 				if(!file_exists($tmp_file)) continue;
-				
+
 				$imageinfo = getimagesize($tmp_file);
 				list($_w, $_h) = $imageinfo;
 				if($imageinfo === false || ($_w < ($width * 0.3) && $_h < ($height * 0.3))) {
 					FileHandler::removeFile($tmp_file);
 					continue;
 				}
-				
+
 				$source_file = $tmp_file;
 				$is_tmp_file = true;
 				break;
 			}
 		}
-		
+
 		$output = FileHandler::createImageFile($source_file, $thumbnail_file, $width, $height, 'jpg', $thumbnail_type);
-		
+
 		// Remove source file if it was temporary
 		if($is_tmp_file) {
 			FileHandler::removeFile($source_file);
 		}
 		// Remove lockfile
 		FileHandler::removeFile($thumbnail_lockfile);
-		
+
 		// create an empty file not to attempt to generate the thumbnail afterwards
 		if(!$output){
 			FileHandler::writeFile($thumbnail_file, '', 'w');
 		}
-		
+
 		return $thumbnail_url . '?' . date('YmdHis', filemtime($thumbnail_file));
 	}
-	
+
 	function isCarted() {
 		return $_SESSION['comment_management'][$this->comment_srl];
 	}

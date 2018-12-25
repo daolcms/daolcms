@@ -246,7 +246,7 @@ $('form.siteMap')
 			var midListByCategory = {};
 			var x;
 			var midObject;
-			
+
 			for(x in midList)
 			{
 				if(!midList.hasOwnProperty(x)){
@@ -313,7 +313,7 @@ $('form.siteMap')
 		$this.closest('.siteMap').toggleClass('fold');
 		setCookie('sitemap_toggle_'+$this.attr('href'), toggleStatus);
 		setTimeout(function(){ tgMapBtn(); }, 250);
-		
+
 		return false;
 	});
 });

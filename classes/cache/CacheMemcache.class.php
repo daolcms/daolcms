@@ -12,13 +12,13 @@ class CacheMemcache extends CacheBase {
 	 * @var int
 	 */
 	var $valid_time = 36000;
-	
+
 	/**
 	 * instance of Memcahe
 	 * @var Memcahe
 	 */
 	var $Memcache;
-	
+
 	/**
 	 * Get instance of CacheMemcache
 	 *
@@ -31,7 +31,7 @@ class CacheMemcache extends CacheBase {
 		}
 		return $GLOBALS['__CacheMemcache__'];
 	}
-	
+
 	/**
 	 * Construct
 	 *
@@ -39,17 +39,17 @@ class CacheMemcache extends CacheBase {
 	 * @param string $url url of memcache
 	 * @return void
 	 */
-	function CacheMemcache($url) {
+	function __construct($url) {
 		//$config['url'] = array('memcache://localhost:11211');
 		$config['url'] = is_array($url) ? $url : array($url);
 		$this->Memcache = new Memcache;
-		
+
 		foreach($config['url'] as $url) {
 			$info = parse_url($url);
 			$this->Memcache->addServer($info['host'], $info['port']);
 		}
 	}
-	
+
 	/**
 	 * Return whether support or not support cache
 	 *
@@ -64,7 +64,7 @@ class CacheMemcache extends CacheBase {
 		}
 		return $GLOBALS['XE_MEMCACHE_SUPPORT'];
 	}
-	
+
 	/**
 	 * Get unique key of given key by path of XE
 	 *
@@ -74,7 +74,7 @@ class CacheMemcache extends CacheBase {
 	function getKey($key) {
 		return md5(_DAOL_PATH_ . $key);
 	}
-	
+
 	/**
 	 * Store data at the server
 	 *
@@ -97,10 +97,10 @@ class CacheMemcache extends CacheBase {
 	 */
 	function put($key, $buff, $valid_time = 0) {
 		if($valid_time == 0) $valid_time = $this->valid_time;
-		
+
 		return $this->Memcache->set($this->getKey($key), array(time(), $buff), MEMCACHE_COMPRESSED, $valid_time);
 	}
-	
+
 	/**
 	 * Return whether cache is valid or invalid
 	 *
@@ -111,19 +111,19 @@ class CacheMemcache extends CacheBase {
 	 */
 	function isValid($key, $modified_time = 0) {
 		$_key = $this->getKey($key);
-		
+
 		$obj = $this->Memcache->get($_key);
 		if(!$obj || !is_array($obj)) return false;
 		unset($obj[1]);
-		
+
 		if($modified_time > 0 && $modified_time > $obj[0]) {
 			$this->_delete($_key);
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Retrieve item from the server
 	 *
@@ -140,17 +140,17 @@ class CacheMemcache extends CacheBase {
 		$_key = $this->getKey($key);
 		$obj = $this->Memcache->get($_key);
 		if(!$obj || !is_array($obj)) return false;
-		
+
 		if($modified_time > 0 && $modified_time > $obj[0]) {
 			$this->_delete($_key);
 			return false;
 		}
-		
+
 		unset($obj[0]);
-		
+
 		return $obj[1];
 	}
-	
+
 	/**
 	 * Delete item from the server
 	 *
@@ -163,7 +163,7 @@ class CacheMemcache extends CacheBase {
 		$_key = $this->getKey($key);
 		$this->_delete($_key);
 	}
-	
+
 	/**
 	 * Delete item from the server(private)
 	 *
@@ -174,7 +174,7 @@ class CacheMemcache extends CacheBase {
 	function _delete($_key) {
 		$this->Memcache->delete($_key);
 	}
-	
+
 	/**
 	 * Flush all existing items at the server
 	 *

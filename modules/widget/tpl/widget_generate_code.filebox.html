@@ -38,7 +38,7 @@
 	<script type="text/javascript">
 		xe.lang.cmd_delete = '{$lang->cmd_delete}';
 		function addRow(tableID){
-			
+
 			var table = document.getElementById(tableID);
 		    var rowCount = table.rows.length;
 		    var initial = table.rows(0);
@@ -47,7 +47,7 @@
 		    var addrow = table.rows(rowCount-2).cells(2).children(0);
 		    var deleteLink = table.rows(rowCount-2).cells(3).children(0).cloneNode(true);
 		    var row = table.insertRow(rowCount-1);
-		    
+
 			//cell for attribute name
 		    var cell0= row.insertCell(0)
 		    var element0 = document.createElement("label");
@@ -59,7 +59,7 @@
 		    element1.name="attribute_name"+rowCount;
 		    element1.id="attribute_name"+rowCount;
 		    cell0.appendChild(element1);
-		    
+
 			//cell for attribute value
 		    var cell1 = row.insertCell(1);
 		    var element2 = document.createElement("label");
@@ -71,11 +71,11 @@
 		    element3.id="attribute_value"+rowCount;
 		    element3.name="attribute_value"+rowCount;
 		    cell1.appendChild(element3);
-		    
+
 		    //cell for addrow link
 		    var cell2 = row.insertCell(2);
 		    cell2.appendChild(addrow);
-		    
+
 		    //cell for delete link
 		    var cell3 = row.insertCell(3);
 		    deleteLink.href = "javascript:clearRow('attributes',"+rowCount+")";

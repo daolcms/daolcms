@@ -6,14 +6,14 @@
  * @Adaptor DAOL Project (developer@daolcms.org)
  **/
 class fileModel extends file {
-	
+
 	/**
 	 * Initialization
 	 * @return void
 	 **/
 	function init() {
 	}
-	
+
 	/**
 	 * Return a file list attached in the document
 	 *
@@ -24,12 +24,12 @@ class fileModel extends file {
 	 **/
 	function getFileList() {
 		$oModuleModel = getModel('module');
-		
+
 		$mid = Context::get('mid');
 		$editor_sequence = Context::get('editor_sequence');
 		$upload_target_srl = Context::get('upload_target_srl');
 		if(!$upload_target_srl) $upload_target_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
-		
+
 		if($upload_target_srl){
 			$oDocumentModel = getModel('document');
 			$oCommentModel = getModel('comment');
@@ -88,7 +88,7 @@ class fileModel extends file {
 		$upload_status = $this->getUploadStatus($attached_size);
 		// Check remained file size until upload complete
 		//$config = $oModuleModel->getModuleInfoByMid($mid);	//perhaps config varialbles not used
-		
+
 		$file_config = $this->getUploadConfig();
 		$left_size = $file_config->allowed_attach_size * 1024 * 1024 - $attached_size;
 		// Settings of required information
@@ -106,7 +106,7 @@ class fileModel extends file {
 		$this->add('allowed_filesize', $allowed_filesize);
 		$this->add('allowed_filetypes', $allowed_filetypes);
 	}
-	
+
 	/**
 	 * Return number of attachments which belongs to a specific document
 	 *
@@ -119,7 +119,7 @@ class fileModel extends file {
 		$output = executeQuery('file.getFilesCount', $args);
 		return (int)$output->data->count;
 	}
-	
+
 	/**
 	 * Get a download path
 	 *
@@ -130,7 +130,7 @@ class fileModel extends file {
 	function getDownloadUrl($file_srl, $sid, $module_srl = "") {
 		return sprintf('?module=%s&amp;act=%s&amp;file_srl=%s&amp;sid=%s&amp;module_srl=%s', 'file', 'procFileDownload', $file_srl, $sid, $module_srl);
 	}
-	
+
 	/**
 	 * Get file configurations
 	 *
@@ -141,12 +141,12 @@ class fileModel extends file {
 	function getFileConfig($module_srl = null) {
 		// Get configurations (using module model object)
 		$oModuleModel = getModel('module');
-		
+
 		$file_module_config = $oModuleModel->getModuleConfig('file');
-		
+
 		if($module_srl) $file_config = $oModuleModel->getModulePartConfig('file', $module_srl);
 		if(!$file_config) $file_config = $file_module_config;
-		
+
 		$config = new stdClass();
 		if($file_config) {
 			$config->allowed_filesize = $file_config->allowed_filesize;
@@ -171,23 +171,23 @@ class fileModel extends file {
 		if(!$config->allowed_filetypes) $config->allowed_filetypes = '*.*';
 		if(!$config->allow_outlink) $config->allow_outlink = 'Y';
 		if(!$config->download_grant) $config->download_grant = array();
-		
+
 		$size = ini_get('upload_max_filesize');
 		$unit = strtolower($size[strlen($size) - 1]);
 		$size = (float)$size;
 		if($unit == 'g') $size *= 1024;
 		if($unit == 'k') $size /= 1024;
-		
+
 		if($config->allowed_filesize > $size) {
 			$config->allowed_filesize = $size;
 		}
 		if($config->allowed_attach_size > $size) {
 			$config->allowed_attach_size = $size;
 		}
-		
+
 		return $config;
 	}
-	
+
 	/**
 	 * Get file information
 	 *
@@ -201,16 +201,16 @@ class fileModel extends file {
 		$args->file_srl = $file_srl;
 		$output = executeQueryArray('file.getFile', $args, $columnList);
 		if(!$output->toBool()) return $output;
-		
+
 		// old version compatibility
 		if(count($output->data) == 1) {
 			$file = $output->data[0];
 			$file->download_url = $this->getDownloadUrl($file->file_srl, $file->sid);
-			
+
 			return $file;
 		} else {
 			$fileList = array();
-			
+
 			if(is_array($output->data)) {
 				foreach($output->data as $key => $value) {
 					$file = $value;
@@ -221,7 +221,7 @@ class fileModel extends file {
 			return $fileList;
 		}
 	}
-	
+
 	/**
 	 * Return all files which belong to a specific document
 	 *
@@ -236,7 +236,7 @@ class fileModel extends file {
 		$oCommentModel = getModel('comment');
 		$logged_info = Context::get('logged_info');
 		$oDocument = $oDocumentModel->getDocument($upload_target_srl);
-		
+
 		// comment 권한 확인
 		if(!$oDocument->isExists()){
 			$oComment = $oCommentModel->getComment($upload_target_srl);
@@ -245,12 +245,12 @@ class fileModel extends file {
 			}
 			$oDocument = $oDocumentModel->getDocument($oComment->get('document_srl'));
 		}
-		
+
 		// document 권한 확인
 		if($oDocument->isExists() && $oDocument->isSecret() && !$oDocument->isGranted()){
 			return $this->stop('msg_not_permitted');
 		}
-		
+
 		// 모듈 권한 확인
 		if($oDocument->isExists()){
 			$grant = $oModuleModel->getGrant($oModuleModel->getModuleInfoByModuleSrl($oDocument->get('module_srl')), $logged_info);
@@ -258,18 +258,18 @@ class fileModel extends file {
 				return $this->stop('msg_not_permitted');
 			}
 		}
-		
+
 		$args = new stdClass();
 		$args->upload_target_srl = $upload_target_srl;
 		$args->sort_index = $sortIndex;
 		if($ckValid) $args->isvalid = 'Y';
 		$output = executeQuery('file.getFiles', $args, $columnList);
 		if(!$output->data) return;
-		
+
 		$file_list = $output->data;
-		
+
 		if($file_list && !is_array($file_list)) $file_list = array($file_list);
-		
+
 		$file_count = count($file_list);
 		for($i = 0; $i < $file_count; $i++) {
 			$file = $file_list[$i];
@@ -278,10 +278,10 @@ class fileModel extends file {
 			$file->download_url = $this->getDownloadUrl($file->file_srl, $file->sid, $file->module_srl);
 			$file_list[$i] = $file;
 		}
-		
+
 		return $file_list;
 	}
-	
+
 	/**
 	 * Return configurations of the attachement (it automatically checks if an administrator is)
 	 *
@@ -289,7 +289,7 @@ class fileModel extends file {
 	 *                allow all file types.
 	 **/
 	function getUploadConfig() {
-		
+
 		$module_srl = Context::get('module_srl');
 		// Get the current module if module_srl doesn't exist
 		if(!$module_srl) {
@@ -297,7 +297,7 @@ class fileModel extends file {
 			$module_srl = $current_module_info->module_srl;
 		}
 		$file_config = $this->getFileConfig($module_srl);
-		
+
 		$logged_info = Context::get('logged_info');
 		if($logged_info->is_admin == 'Y') {
 			$iniPostMaxSize = FileHandler::returnbytes(ini_get('post_max_size'));
@@ -309,7 +309,7 @@ class fileModel extends file {
 		}
 		return $file_config;
 	}
-	
+
 	/**
 	 * Return messages for file upload and it depends whether an admin is or not
 	 *
@@ -331,7 +331,7 @@ class fileModel extends file {
 		);
 		return $upload_status;
 	}
-	
+
 	/**
 	 * Return file configuration of the module
 	 *
@@ -341,7 +341,7 @@ class fileModel extends file {
 	function getFileModuleConfig($module_srl) {
 		return $this->getFileConfig($module_srl);
 	}
-	
+
 	/**
 	 * Returns a grant of file
 	 *
@@ -351,21 +351,21 @@ class fileModel extends file {
 	 */
 	function getFileGrant($file_info, $member_info) {
 		if(!$file_info) return null;
-		
+
 		if($_SESSION['__XE_UPLOADING_FILES_INFO__'][$file_info->file_srl]) {
 			$file_grant->is_deletable = true;
 			return $file_grant;
 		}
-		
+
 		$oModuleModel = &getModel('module');
 		$grant = $oModuleModel->getGrant($oModuleModel->getModuleInfoByModuleSrl($file_info->module_srl), $member_info);
-		
+
 		$oDocumentModel = &getModel('document');
 		$oDocument = $oDocumentModel->getDocument($file_info->upload_target_srl);
 		if($oDocument->isExists()) $document_grant = $oDocument->isGranted();
-		
+
 		$file_grant->is_deletable = ($document_grant || $member_info->is_admin == 'Y' || $member_info->member_srl == $file_info->member_srl || $grant->manager);
-		
+
 		return $file_grant;
 	}
 }

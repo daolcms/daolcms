@@ -80,24 +80,24 @@
 		<table width="100%" border="1" cellspacing="0">
 			<caption>{$group}</caption>
 		<!--@end-->
-	
+
 		<tr>
 			<th scope="row">{$val->title}</th>
 			<td >
 				<!--@if($val->type=="text")-->
 					<!--@if(!$val->value)-->{@ $val->value = $val->default}<!--@endif-->
 					<input type="text" name="{$val->name}" value="{$val->value}" />
-	
+
 				<!--@elseif($val->type=="textarea")-->
 					<textarea name="{$val->name}" rows="8" cols="42">{$val->value}</textarea>
-	
+
 				<!--@elseif($val->type=="select")-->
 					<select name="{$val->name}">
 						<!--@foreach($val->options as $k=>$v)-->
 						<option value="{$v->value}" <!--@if($v->value == $val->value)-->selected="selected"<!--@end-->>{$v->title}</option>
 						<!--@end-->
 					</select>
-	
+
 				<!--@elseif($val->type=="checkbox")-->
 					<!--@foreach($val->default as $k=>$v)-->
 					<span>
@@ -105,7 +105,7 @@
 						<label for="ch_{$key}_{$k}">{$v}</label>
 					</span>
 					<!--@end-->
-	
+
 				<!--@elseif($val->type=="radio")-->
 					<!--@foreach($val->default as $k=>$v)-->
 					<span>
@@ -113,7 +113,7 @@
 						<label for="ch_{$key}_{$k}">{$v}</label>
 					</span>
 					<!--@end-->
-	
+
 				<!--@elseif($val->type=="image")-->
 					<!--@if($val->value)-->
 					<div>
@@ -122,17 +122,17 @@
 						<label for="del_{$val->name}">{$lang->cmd_delete}</label>
 					</div>
 					<!--@end-->
-	
+
 					<input type="file" name="{$val->name}" value="" />
 				<!--@end-->
-	
+
 				<!--@if($val->description)-->
 				<p>{nl2br(trim($val->description))}</p>
 				<!--@end-->
 			</td>
 		</tr>
 		<!--@end-->
-	
+
 		<!--@if($group)-->
 		</table>
 	</div>

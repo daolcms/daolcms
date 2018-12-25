@@ -14,7 +14,7 @@ class HintTableTag extends TableTag {
 	 * @var array
 	 */
 	var $index;
-	
+
 	/**
 	 * constructor
 	 * Initialises Table Tag properties
@@ -22,15 +22,15 @@ class HintTableTag extends TableTag {
 	 * @param array  $index
 	 * @return void
 	 */
-	function HintTableTag($table, $index) {
-		parent::TableTag($table);
+	function __construct($table, $index) {
+		parent::__construct($table);
 		$this->index = $index;
 	}
-	
+
 	function getTableString() {
 		$dbParser = DB::getParser();
 		$dbType = ucfirst(Context::getDBType());
-		
+
 		$result = sprintf('new %sTableWithHint(\'%s\'%s, array('
 			, !strncasecmp($dbType, 'Mysql', 5) ? 'Mysql' : $dbType
 			, $dbParser->escape($this->name)
@@ -45,7 +45,7 @@ class HintTableTag extends TableTag {
 		$result .= '))';
 		return $result;
 	}
-	
+
 	function getArguments() {
 		if(!isset($this->conditionsTag)) return array();
 		return $this->conditionsTag->getArguments();

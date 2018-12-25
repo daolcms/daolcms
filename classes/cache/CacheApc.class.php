@@ -12,7 +12,7 @@ class CacheApc extends CacheBase {
 	 * @var int
 	 */
 	var $valid_time = 36000;
-	
+
 	/**
 	 * Get instance of CacheApc
 	 *
@@ -25,15 +25,15 @@ class CacheApc extends CacheBase {
 		}
 		return $GLOBALS['__CacheApc__'];
 	}
-	
+
 	/**
 	 * Constructor
 	 *
 	 * @return void
 	 */
-	function CacheApc() {
+	function __construct() {
 	}
-	
+
 	/**
 	 * Return whether support or not support cache
 	 *
@@ -42,7 +42,7 @@ class CacheApc extends CacheBase {
 	function isSupport() {
 		return function_exists('apc_add');
 	}
-	
+
 	/**
 	 * Cache a variable in the data store
 	 *
@@ -59,7 +59,7 @@ class CacheApc extends CacheBase {
 		if($valid_time == 0) $valid_time = $this->valid_time;
 		return apc_store(md5(_DAOL_PATH_ . $key), array(time(), $buff), $valid_time);
 	}
-	
+
 	/**
 	 * Return whether cache is valid or invalid
 	 *
@@ -73,15 +73,15 @@ class CacheApc extends CacheBase {
 		$obj = apc_fetch($_key, $success);
 		if(!$success || !is_array($obj)) return false;
 		unset($obj[1]);
-		
+
 		if($modified_time > 0 && $modified_time > $obj[0]) {
 			$this->delete($key);
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Fetch a stored variable from the cache
 	 *
@@ -95,16 +95,16 @@ class CacheApc extends CacheBase {
 		$_key = md5(_DAOL_PATH_ . $key);
 		$obj = apc_fetch($_key, $success);
 		if(!$success || !is_array($obj)) return false;
-		
+
 		if($modified_time > 0 && $modified_time > $obj[0]) {
 			$this->delete($key);
 			return false;
 		}
-		
+
 		return $obj[1];
 	}
-	
-	
+
+
 	/**
 	 * Delete variable from the cache
 	 *
@@ -115,7 +115,7 @@ class CacheApc extends CacheBase {
 		$_key = md5(_DAOL_PATH_ . $key);
 		return apc_delete($_key);
 	}
-	
+
 	/**
 	 * Truncate all existing variables at the cache
 	 *

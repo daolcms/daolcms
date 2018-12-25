@@ -6,7 +6,7 @@
 		<input type="hidden" name="dummy_content" />
 		<input type="hidden" name="dummy_key" value="1" />
 
-		<p>{$editor}</p>
+		<p>{$editor|noescape}</p>
 	</form><br />
 	<h2 class="h3">{$lang->comment_editor}</h2>
 	<form onSubmit="return false">

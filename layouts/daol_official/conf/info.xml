@@ -8,13 +8,17 @@
 	<date>2017-09-30</date>
 
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org">
-		<name xml:lang="ko">DAOL</name>
-		<name xml:lang="en">DAOL</name>
+		<name xml:lang="ko">DAOL CMS</name>
+		<name xml:lang="en">DAOL CMS</name>
 	</author>
 	<menus>
 		<menu name="main_menu" maxdepth="1" default="true">
 			<title xml:lang="ko">메뉴</title>
 			<title xml:lang="en">Menu</title>
+		</menu>
+		<menu name="sitemap_menu" maxdepth="1" default="true">
+			<title xml:lang="ko">사이트맵 메뉴</title>
+			<title xml:lang="en">Sitemap menu</title>
 		</menu>
 		<menu name="footer_menu" maxdepth="1" default="true">
 			<title xml:lang="ko">하단 메뉴</title>
@@ -22,103 +26,123 @@
 		</menu>
 	</menus>
 	<extra_vars>
-	    <var name="body_style" type="select">
-			<title xml:lang="ko">레이아웃 스타일</title>
-			<title xml:lang="en">Layout Style</title>
-			<description xml:lang="ko">레이아웃 스타일을 선택하세요.</description>
-			<description xml:lang="en">Select Layout Style.</description>
-			<options value="main">
-				<title xml:lang="ko">메인페이지</title>
-				<title xml:lang="en">Main Page</title>
-				<value>home</value>
-				</options>	
-			<options value="sub">
-				<title xml:lang="ko">서브페이지</title>
-				<title xml:lang="en">Sub Page</title>
-				<value>sub</value>
-			</options>
-		</var>
-		<var name="header_logo_image" type="image">
-			<title xml:lang="ko">헤더 로고 이미지</title>
-			<title xml:lang="en">Header Logo Image</title>
-			<description xml:lang="ko">헤더에 출력될 로고 이미지입니다. 200px*69px 크기의 이미지를 권장합니다.</description>
-			<description xml:lang="en">Header Logo Image. 200px*69px image recommend.</description>
-		</var>
-		<var name="header_logo_url" type="text">
-			<title xml:lang="ko">헤더 로고 주소</title>
-			<title xml:lang="en">Header Logo URL</title>
-			<description xml:lang="ko">이미지 로고를 클릭하면 이동될 주소입니다.</description>
-			<description xml:lang="en">The domain address of the header logo.</description>
-		</var>
-		<var name="footer_copy" type="text">
-			<title xml:lang="ko">푸터 저작권</title>
-			<title xml:lang="en">Footer Copyright Info</title>
-			<description xml:lang="ko">푸터에 들어갈 저작권 정보를 입력하세요.</description>
-			<description xml:lang="en">Enter your copyright information.</description>
-		</var>
-		<var name="banner_style" type="select">
-			<title xml:lang="ko">배너 출력</title>
-			<title xml:lang="en">Banner Setting</title>
-			<description xml:lang="ko">배너 출력 여부를 선택하세요.</description>
-			<description xml:lang="en">Choose whether the output banner.</description>
-			<options value="y">
-				<title xml:lang="ko">예, 출력합니다</title>
-				<title xml:lang="en">Yes, Ouput</title>
-				<value>y</value>
-			</options>
-			<options value="n">
-				<title xml:lang="ko">아니오, 출력하지 않습니다</title>
-				<title xml:lang="en">No, Does not output</title>
-				<value>n</value>
-			</options>
-		</var>
-		<var name="banner_image_1" type="image">
-			<title xml:lang="ko">배너 이미지 1</title>
-			<title xml:lang="en">Banner Image 1</title>
-			<description xml:lang="ko">배너 1번 슬라이드에 출력될 이미지 입니다. 958*250 크기의 이미지를 권장합니다.</description>
-			<description xml:lang="en">Banner image to output on slide 1. 958*250 image recommend.</description>
-		</var>
-		<var name="banner_url_1" type="text">
-			<title xml:lang="ko">배너 주소 1</title>
-			<title xml:lang="en">Banner URL 1</title>
-			<description xml:lang="ko">배너 1번 슬라이드를 클릭하면 이동될 주소입니다.</description>
-			<description xml:lang="en">The domain address of the banner slide 1.</description>
-		</var>
-		<var name="banner_image_2" type="image">
-			<title xml:lang="ko">배너 이미지 2</title>
-			<title xml:lang="en">Banner Image 2</title>
-			<description xml:lang="ko">배너 2번 슬라이드에 출력될 이미지 입니다. 958*250 크기의 이미지를 권장합니다.</description>
-			<description xml:lang="en">Banner image to output on slide 2. 958*250 image recommend.</description>
-		</var>
-		<var name="banner_url_2" type="text">
-			<title xml:lang="ko">배너 주소 2</title>
-			<title xml:lang="en">Banner URL 2</title>
-			<description xml:lang="ko">배너 2번 슬라이드를 클릭하면 이동될 주소입니다.</description>
-			<description xml:lang="en">The domain address of the banner slide 2.</description>
-		</var>
-		<var name="banner_image_3" type="image">
-			<title xml:lang="ko">배너 이미지 3</title>
-			<title xml:lang="en">Banner Image 3</title>
-			<description xml:lang="ko">배너 3번 슬라이드에 출력될 이미지 입니다. 958*250 크기의 이미지를 권장합니다.</description>
-			<description xml:lang="en">Banner image to output on slide 3. 958*250 image recommend.</description>
-		</var>
-		<var name="banner_url_3" type="text">
-			<title xml:lang="ko">배너 주소 3</title>
-			<title xml:lang="en">Banner URL 3</title>
-			<description xml:lang="ko">배너 3번 슬라이드를 클릭하면 이동될 주소입니다.</description>
-			<description xml:lang="en">The domain address of the banner slide 3.</description>
-		</var>
-		<var name="banner_image_4" type="image">
-			<title xml:lang="ko">배너 이미지 4</title>
-			<title xml:lang="en">Banner Image 4</title>
-			<description xml:lang="ko">배너 4번 슬라이드에 출력될 이미지 입니다. 958*250 크기의 이미지를 권장합니다.</description>
-			<description xml:lang="en">Banner image to output on slide 4. 958*250 image recommend.</description>
-		</var>
-		<var name="banner_url_4" type="text">
-			<title xml:lang="ko">배너 주소 4</title>
-			<title xml:lang="en">Banner URL 4</title>
-			<description xml:lang="ko">배너 4번 슬라이드를 클릭하면 이동될 주소입니다.</description>
-			<description xml:lang="en">The domain address of the banner slide 4.</description>
-		</var>
+		<group>
+			<title xml:lang="ko">레이아웃 설정</title>
+			<title xml:lang="en">Layout Settings</title>
+			<var name="body_style" type="select">
+				<title xml:lang="ko">레이아웃 스타일</title>
+				<title xml:lang="en">Layout Style</title>
+				<description xml:lang="ko">레이아웃 스타일을 선택하세요.</description>
+				<description xml:lang="en">Select Layout Style.</description>
+				<options value="main">
+					<title xml:lang="ko">메인페이지</title>
+					<title xml:lang="en">Main Page</title>
+					<value>home</value>
+					</options>	
+				<options value="sub">
+					<title xml:lang="ko">서브페이지</title>
+					<title xml:lang="en">Sub Page</title>
+					<value>sub</value>
+				</options>
+			</var>
+			<var name="header_logo_image" type="image">
+				<title xml:lang="ko">헤더 로고 이미지</title>
+				<title xml:lang="en">Header Logo Image</title>
+				<description xml:lang="ko">헤더에 출력될 로고 이미지입니다. 여백을 포함한 250px*75px 크기의 이미지를 권장합니다.</description>
+				<description xml:lang="en">Header Logo Image. 250px*75px with margins image recommend.</description>
+			</var>
+			<var name="header_logo_url" type="text">
+				<title xml:lang="ko">헤더 로고 주소</title>
+				<title xml:lang="en">Header Logo URL</title>
+				<description xml:lang="ko">이미지 로고를 클릭하면 이동될 주소입니다.</description>
+				<description xml:lang="en">The domain address of the header logo.</description>
+			</var>
+			<var name="footer_logo_image" type="image">
+				<title xml:lang="ko">푸터 로고 이미지</title>
+				<title xml:lang="en">Footer Logo Image</title>
+				<description xml:lang="ko">푸터에 출력될 로고 이미지입니다. 여백을 포함한 250px*75px 크기의 이미지를 권장합니다.</description>
+				<description xml:lang="en">Footer Logo Image. 250px*75px with margins image recommend.</description>
+			</var>
+			<var name="footer_logo_url" type="text">
+				<title xml:lang="ko">푸터 로고 주소</title>
+				<title xml:lang="en">Footer Logo URL</title>
+				<description xml:lang="ko">이미지 로고를 클릭하면 이동될 주소입니다.</description>
+				<description xml:lang="en">The domain address of the header logo.</description>
+			</var>
+			<var name="footer_copy" type="text">
+				<title xml:lang="ko">푸터 저작권</title>
+				<title xml:lang="en">Footer Copyright Info</title>
+				<description xml:lang="ko">푸터에 들어갈 저작권 정보를 입력하세요.</description>
+				<description xml:lang="en">Enter your copyright information.</description>
+			</var>
+		</group>
+		<group>
+			<title xml:lang="ko">배너 설정</title>
+			<title xml:lang="en">Banner Settings</title>
+			<var name="banner_style" type="select">
+				<title xml:lang="ko">배너 출력</title>
+				<title xml:lang="en">Banner Setting</title>
+				<description xml:lang="ko">배너 출력 여부를 선택하세요.</description>
+				<description xml:lang="en">Choose whether the output banner.</description>
+				<options value="y">
+					<title xml:lang="ko">예, 출력합니다</title>
+					<title xml:lang="en">Yes, Ouput</title>
+					<value>y</value>
+				</options>
+				<options value="n">
+					<title xml:lang="ko">아니오, 출력하지 않습니다</title>
+					<title xml:lang="en">No, Does not output</title>
+					<value>n</value>
+				</options>
+			</var>
+			<var name="banner_image_1" type="image">
+				<title xml:lang="ko">배너 이미지 1</title>
+				<title xml:lang="en">Banner Image 1</title>
+				<description xml:lang="ko">배너 1번 슬라이드에 출력될 이미지 입니다. 958*250 크기의 이미지를 권장합니다.</description>
+				<description xml:lang="en">Banner image to output on slide 1. 958*250 image recommend.</description>
+			</var>
+			<var name="banner_url_1" type="text">
+				<title xml:lang="ko">배너 주소 1</title>
+				<title xml:lang="en">Banner URL 1</title>
+				<description xml:lang="ko">배너 1번 슬라이드를 클릭하면 이동될 주소입니다.</description>
+				<description xml:lang="en">The domain address of the banner slide 1.</description>
+			</var>
+			<var name="banner_image_2" type="image">
+				<title xml:lang="ko">배너 이미지 2</title>
+				<title xml:lang="en">Banner Image 2</title>
+				<description xml:lang="ko">배너 2번 슬라이드에 출력될 이미지 입니다. 958*250 크기의 이미지를 권장합니다.</description>
+				<description xml:lang="en">Banner image to output on slide 2. 958*250 image recommend.</description>
+			</var>
+			<var name="banner_url_2" type="text">
+				<title xml:lang="ko">배너 주소 2</title>
+				<title xml:lang="en">Banner URL 2</title>
+				<description xml:lang="ko">배너 2번 슬라이드를 클릭하면 이동될 주소입니다.</description>
+				<description xml:lang="en">The domain address of the banner slide 2.</description>
+			</var>
+			<var name="banner_image_3" type="image">
+				<title xml:lang="ko">배너 이미지 3</title>
+				<title xml:lang="en">Banner Image 3</title>
+				<description xml:lang="ko">배너 3번 슬라이드에 출력될 이미지 입니다. 958*250 크기의 이미지를 권장합니다.</description>
+				<description xml:lang="en">Banner image to output on slide 3. 958*250 image recommend.</description>
+			</var>
+			<var name="banner_url_3" type="text">
+				<title xml:lang="ko">배너 주소 3</title>
+				<title xml:lang="en">Banner URL 3</title>
+				<description xml:lang="ko">배너 3번 슬라이드를 클릭하면 이동될 주소입니다.</description>
+				<description xml:lang="en">The domain address of the banner slide 3.</description>
+			</var>
+			<var name="banner_image_4" type="image">
+				<title xml:lang="ko">배너 이미지 4</title>
+				<title xml:lang="en">Banner Image 4</title>
+				<description xml:lang="ko">배너 4번 슬라이드에 출력될 이미지 입니다. 958*250 크기의 이미지를 권장합니다.</description>
+				<description xml:lang="en">Banner image to output on slide 4. 958*250 image recommend.</description>
+			</var>
+			<var name="banner_url_4" type="text">
+				<title xml:lang="ko">배너 주소 4</title>
+				<title xml:lang="en">Banner URL 4</title>
+				<description xml:lang="ko">배너 4번 슬라이드를 클릭하면 이동될 주소입니다.</description>
+				<description xml:lang="en">The domain address of the banner slide 4.</description>
+			</var>
+		</group>
 	</extra_vars>
 </layout>

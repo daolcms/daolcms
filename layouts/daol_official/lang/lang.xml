@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lang>
+	<item name="daol_official_welcome_member">
+		<value xml:lang="ko"><![CDATA[%s님, 환영합니다 !]]></value>
+		<value xml:lang="en"><![CDATA[Welcome, %s !]]></value>
+		<value xml:lang="jp"><![CDATA[%s 、ようこそ！]]></value>
+	</item>
+	<item name="daol_official_welcome_visitor">
+		<value xml:lang="ko"><![CDATA[방문자님, 환영합니다 !]]></value>
+		<value xml:lang="en"><![CDATA[Welcome, Visitor !]]></value>
+		<value xml:lang="jp"><![CDATA[訪問者さん、ようこそ！]]></value>
+	</item>
+</lang>

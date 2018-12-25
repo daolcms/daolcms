@@ -6,7 +6,8 @@
 <form ruleset="sendMessage" action="./" method="post">
 	<input type="hidden" name="module" value="communication" />
 	<input type="hidden" name="act" value="procCommunicationSendMessage" />
-	<input type="hidden" name="content" value="{htmlspecialchars($source_message->content)}" />
+	<input type="hidden" name="is_popup" value="Y" />
+	<input type="hidden" name="content" value="{$source_message->content|autoescape}" />
 	<input type="hidden" name="receiver_srl" value="{$receiver_info->member_srl}" />
 	<div class="table">
 		<table width="100%" border="1" cellspacing="0" class="form">
@@ -23,7 +24,7 @@
 				<td><input type="checkbox" value="Y" name="send_mail" /> {$lang->cmd_send_mail}</td>
 			</tr>
 		</table>
-		{$editor}
+		{$editor|noescape}
 	</div>
 	<div class="btnArea">
 		<span class="btn"><input type="submit" value="{$lang->cmd_send_message}" /></span>

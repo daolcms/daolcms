@@ -1,5 +1,5 @@
 jQuery(function ($){
-	
+
 	$('a.modalAnchor._member').bind('before-open.mw', function(){
 		var $memberList = $('._memberList input[name=user]:checked');
 		if ($memberList.length == 0){

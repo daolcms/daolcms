@@ -14,35 +14,35 @@ class SelectColumnTag extends ColumnTag {
 	 * @var string
 	 */
 	var $alias;
-	
+
 	/**
 	 * Click count status
 	 *
 	 * @var bool
 	 */
 	var $click_count;
-	
+
 	/**
 	 * Constructor
 	 *
 	 * @param string|object $column
 	 * @return void
 	 */
-	function SelectColumnTag($column) {
+	function __construct($column) {
 		if($column == "*" || $column->attrs->name == '*') {
-			parent::ColumnTag(NULL);
+			parent::__construct(NULL);
 			$this->name = "*";
 		} else {
-			parent::ColumnTag($column->attrs->name);
+			parent::__construct($column->attrs->name);
 			$dbParser = new DB();
 			$dbParser = &$dbParser->getParser();
 			$this->name = $dbParser->parseExpression($this->name);
-			
+
 			$this->alias = $column->attrs->alias;
 			$this->click_count = $column->attrs->click_count;
 		}
 	}
-	
+
 	/**
 	 * Returns the string to be output in the cache file
 	 *

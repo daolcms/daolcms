@@ -7,9 +7,9 @@
  * @brief   model class of the editor odule
  **/
 class editorModel extends editor {
-	
+
 	var $loaded_component_list = array();
-	
+
 	/**
 	 * @brief Return the editor
 	 *
@@ -20,7 +20,7 @@ class editorModel extends editor {
 	 * upload
 	 *
 	 **/
-	
+
 	/**
 	 * @brief Return editor setting for each module
 	 **/
@@ -31,12 +31,12 @@ class editorModel extends editor {
 			$GLOBALS['__editor_module_config__'][$module_srl] = $oModuleModel->getModulePartConfig('editor', $module_srl);
 		}
 		$editor_config = $GLOBALS['__editor_module_config__'][$module_srl];
-		
+
 		$oModuleModel = &getModel('module');
 		$editor_default_config = $oModuleModel->getModuleConfig('editor');
-		
+
 		if(!is_object($editor_config)) $editor_config = new stdClass();
-		
+
 		if($editor_config->enable_autosave != 'N') $editor_config->enable_autosave = 'Y';
 		if(!is_array($editor_config->enable_html_grant)) $editor_config->enable_html_grant = array();
 		if(!is_array($editor_config->enable_comment_html_grant)) $editor_config->enable_comment_html_grant = array();
@@ -78,13 +78,13 @@ class editorModel extends editor {
 		}
 		return $editor_config;
 	}
-	
+
 	function loadDrComponents() {
 		$drComponentPath = './modules/editor/skins/dreditor/drcomponents/';
 		$drComponentList = FileHandler::readDir($drComponentPath);
-		
+
 		$oTemplate = &TemplateHandler::getInstance();
-		
+
 		$drComponentInfo = array();
 		if($drComponentList) {
 			foreach($drComponentList as $i => $drComponent) {
@@ -98,12 +98,12 @@ class editorModel extends editor {
 		}
 		Context::set('drComponentList', $drComponentInfo);
 	}
-	
+
 	function getDrComponentXmlInfo($drComponentName) {
 		$lang_type = Context::getLangType();
 		// Get the xml file path of requested component
 		$component_path = sprintf('%s/skins/dreditor/drcomponents/%s/', $this->module_path, $drComponentName);
-		
+
 		$xml_file = sprintf('%sinfo.xml', $component_path);
 		$cache_file = sprintf('./files/cache/editor/dr_%s.%s.php', $drComponentName, $lang_type);
 		// Return information after including it after cached xml file exists
@@ -114,7 +114,7 @@ class editorModel extends editor {
 		// Return after parsing and caching if the cached file does not exist
 		$oParser = new XmlParser();
 		$xml_doc = $oParser->loadXmlFile($xml_file);
-		
+
 		$component_info->component_name = $drComponentName;
 		$component_info->title = $xml_doc->component->title->body;
 		$component_info->description = str_replace('\n', "\n", $xml_doc->component->description->body);
@@ -123,7 +123,7 @@ class editorModel extends editor {
 		$component_info->homepage = $xml_doc->component->link->body;
 		$component_info->license = $xml_doc->component->license->body;
 		$component_info->license_link = $xml_doc->component->license->attrs->link;
-		
+
 		$buff = '<?php if(!defined("__XE__")) exit(); ';
 		$buff .= sprintf('$xml_info->component_name = "%s";', $component_info->component_name);
 		$buff .= sprintf('$xml_info->title = "%s";', $component_info->title);
@@ -133,17 +133,17 @@ class editorModel extends editor {
 		$buff .= sprintf('$xml_info->homepage = "%s";', $component_info->homepage);
 		$buff .= sprintf('$xml_info->license = "%s";', $component_info->license);
 		$buff .= sprintf('$xml_info->license_link = "%s";', $component_info->license_link);
-		
+
 		// Author information
 		if(!is_array($xml_doc->component->author)) $author_list[] = $xml_doc->component->author;
 		else $author_list = $xml_doc->component->author;
-		
+
 		for($i = 0; $i < count($author_list); $i++) {
 			$buff .= sprintf('$xml_info->author[' . $i . ']->name = "%s";', $author_list[$i]->name->body);
 			$buff .= sprintf('$xml_info->author[' . $i . ']->email_address = "%s";', $author_list[$i]->attrs->email_address);
 			$buff .= sprintf('$xml_info->author[' . $i . ']->homepage = "%s";', $author_list[$i]->attrs->link);
 		}
-		
+
 		// List extra variables (text type only in the editor component)
 		$extra_vars = $xml_doc->component->extra_vars->var;
 		if($extra_vars) {
@@ -155,21 +155,21 @@ class editorModel extends editor {
 				$description = $val->description->body;
 				$xml_info->extra_vars->{$key}->title = $title;
 				$xml_info->extra_vars->{$key}->description = $description;
-				
+
 				$buff .= sprintf('$xml_info->extra_vars->%s->%s = "%s";', $key, 'title', $title);
 				$buff .= sprintf('$xml_info->extra_vars->%s->%s = "%s";', $key, 'description', $description);
 			}
 		}
-		
+
 		$buff .= ' ?>';
-		
+
 		FileHandler::writeFile($cache_file, $buff, "w");
-		
+
 		unset($xml_info);
 		include($cache_file);
 		return $xml_info;
 	}
-	
+
 	/**
 	 * @brief Return the editor template
 	 * You can call upload_target_srl when modifying content
@@ -194,7 +194,7 @@ class editorModel extends editor {
 		// Default font setting
 		Context::set('content_font', $option->content_font);
 		Context::set('content_font_size', $option->content_font_size);
-		
+
 		// Option setting to allow auto-save
 		if(!$option->enable_autosave) $enable_autosave = false;
 		elseif(Context::get($option->primary_key_name)) $enable_autosave = false;
@@ -215,21 +215,24 @@ class editorModel extends editor {
 		// Set Height
 		if(!$option->height) $editor_height = 400;
 		else $editor_height = $option->height;
-		
+		if(Mobile::isFromMobilePhone()){
+			$editor_height = 150;
+		}
+
 		// Skin Setting
 		$skin = $option->skin;
 		if(!$skin) $skin = 'ckeditor';
-		
+
 		$colorset = $option->colorset;
 		if(!$colorset) $colorset = 'moono-lisa';
 		Context::set('colorset', $colorset);
 		Context::set('skin', $skin);
 		Context::set('module_type', $option->module_type);
-		
+
 		if($skin == 'dreditor') {
 			$this->loadDrComponents();
 		}
-		
+
 		/**
 		 * Check the automatic backup feature (do not use if the post is edited)
 		 **/
@@ -240,7 +243,7 @@ class editorModel extends editor {
 			Context::set('saved_doc', $saved_doc);
 		}
 		Context::set('enable_autosave', $enable_autosave);
-		
+
 		/**
 		 * Extract editor's unique number (in order to display multiple editors on a single page)
 		 **/
@@ -249,7 +252,7 @@ class editorModel extends editor {
 			if(!$_SESSION['_editor_sequence_']) $_SESSION['_editor_sequence_'] = 1;
 			$editor_sequence = $_SESSION['_editor_sequence_']++;
 		}
-		
+
 		/**
 		 * Upload setting by using configuration of the file module internally
 		 **/
@@ -260,7 +263,7 @@ class editorModel extends editor {
 			$file_config = $oFileModel->getUploadConfig();
 			$file_config->allowed_attach_size = $file_config->allowed_attach_size * 1024 * 1024;
 			$file_config->allowed_filesize = $file_config->allowed_filesize * 1024 * 1024;
-			
+
 			Context::set('file_config', $file_config);
 			// Configure upload status such as file size
 			$upload_status = $oFileModel->getUploadStatus();
@@ -272,7 +275,7 @@ class editorModel extends editor {
 			if($upload_target_srl) $files_count = $oFileModel->getFilesCount($upload_target_srl);
 		}
 		Context::set('files_count', (int)$files_count);
-		
+
 		Context::set('allow_fileupload', $allow_fileupload);
 		// Set editor_sequence value
 		Context::set('editor_sequence', $editor_sequence);
@@ -283,8 +286,8 @@ class editorModel extends editor {
 		Context::set('editor_primary_key_name', $option->primary_key_name);
 		// Set content column name to sync contents
 		Context::set('editor_content_key_name', $option->content_key_name);
-		
-		
+
+
 		/**
 		 * Check editor component
 		 **/
@@ -298,38 +301,38 @@ class editorModel extends editor {
 		}
 		Context::set('enable_component', $enable_component);
 		Context::set('enable_default_component', $enable_default_component);
-		
+
 		/**
 		 * Variable setting if html_mode is available
 		 **/
 		Context::set('html_mode', $html_mode);
-		
+
 		/**
 		 * Set a height of editor
 		 **/
 		Context::set('editor_height', $editor_height);
 		// Check an option whether to start the editor manually
 		Context::set('editor_manual_start', $option->manual_start);
-		
+
 		/**
 		 * Set a skin path to pre-compile the template
 		 * ?**/
 		$tpl_path = sprintf('%sskins/%s/', $this->module_path, $skin);
 		$tpl_file = 'editor.html';
-		
+
 		if(!file_exists($tpl_path . $tpl_file)) {
 			$skin = 'ckeditor';
 			$tpl_path = sprintf('%sskins/%s/', $this->module_path, $skin);
 		}
 		Context::set('editor_path', $tpl_path);
-		
+
 		// load editor skin lang
 		Context::loadLang($tpl_path . 'lang');
 		// Return the compiled result from tpl file
 		$oTemplate = new TemplateHandler();
 		return $oTemplate->compile($tpl_path, $tpl_file);
 	}
-	
+
 	/**
 	 * @brief Return editor template which contains settings of each module
 	 * Result of getModuleEditor() is as same as getEditor(). But getModuleEditor()uses additional settings of each
@@ -341,10 +344,10 @@ class editorModel extends editor {
 	function getModuleEditor($type = 'document', $module_srl, $upload_target_srl, $primary_key_name, $content_key_name) {
 		// Get editor settings of the module
 		$editor_config = $this->getEditorConfig($module_srl);
-		
+
 		$config = new stdClass();
 		$config->module_type = $type;
-		
+
 		// Configurations listed according to a type
 		if($type == 'document') {
 			$config->editor_skin = $editor_config->editor_skin;
@@ -430,7 +433,7 @@ class editorModel extends editor {
 				}
 			}
 		} else $enable_html = true;
-		
+
 		if($enable_html) $option->disable_html = false;
 		else $option->disable_html = true;
 		// Set Height
@@ -440,23 +443,23 @@ class editorModel extends editor {
 		// Other settings
 		$option->primary_key_name = $primary_key_name;
 		$option->content_key_name = $content_key_name;
-		
+
 		return $this->getEditor($upload_target_srl, $option);
 	}
-	
+
 	/**
 	 * @brief Get information which has been auto-saved
 	 **/
 	function getSavedDoc($upload_target_srl) {
 		$auto_save_args = new stdClass();
 		$auto_save_args->module_srl = Context::get('module_srl');
-		
+
 		// Get the current module if module_srl doesn't exist
 		if(!$auto_save_args->module_srl) {
 			$current_module_info = Context::get('current_module_info');
 			$auto_save_args->module_srl = $current_module_info->module_srl;
 		}
-		
+
 		// Find a document by using member_srl for logged-in user and ipaddress for non-logged user
 		if(Context::get('is_logged')) {
 			$logged_info = Context::get('logged_info');
@@ -467,18 +470,18 @@ class editorModel extends editor {
 			// 변경 이전에 작성된 게시물 호환성 유지
 			if(!$auto_save_args->certify_key) $auto_save_args->ipaddress = $_SERVER['REMOTE_ADDR'];
 		}
-		
+
 		// Extract auto-saved data from the DB
 		$output = executeQuery('editor.getSavedDocument', $auto_save_args);
 		$saved_doc = $output->data;
 		// Return null if no result is auto-saved
 		if(!$saved_doc) return;
-		
+
 		// @see https://github.com/daolcms/daolcms/issues/137
 		if($saved_doc->certify_key && !isset($auto_save_args->certify_key)){
 			return;
 		}
-		
+
 		// Check if the auto-saved document already exists
 		$oDocumentModel = &getModel('document');
 		$oSaved = $oDocumentModel->getDocument($saved_doc->document_srl);
@@ -490,24 +493,24 @@ class editorModel extends editor {
 			$oFileController = &getController('file');
 			$oFileController->moveFile($saved_doc->document_srl, $saved_doc->module_srl, $upload_target_srl);
 		} else if($upload_target_srl) $saved_doc->document_srl = $upload_target_srl;
-		
+
 		// Change auto-saved data
 		$saved_doc->certify_key = $auto_save_args->certify_key;
 		$oEditorController = &getController('editor');
 		$oEditorController->deleteSavedDoc(false);
 		$oEditorController->doSaveDoc($saved_doc);
-		
+
 		setUserSequence($saved_doc->document_srl);
-		
+
 		return $saved_doc;
 	}
-	
+
 	/**
 	 * @brief create objects of the component
 	 **/
 	function getComponentObject($component, $editor_sequence = 0, $site_srl = 0) {
 		if(!preg_match('/^[a-zA-Z0-9_-]+$/', $component) || !preg_match('/^[0-9]+$/', $editor_sequence . $site_srl)) return;
-		
+
 		if(!$this->loaded_component_list[$component][$editor_sequence]) {
 			// Create an object of the component and execute
 			$class_path = sprintf('%scomponents/%s/', $this->module_path, $component);
@@ -522,17 +525,17 @@ class editorModel extends editor {
 			$oComponent->setInfo($component_info);
 			$this->loaded_component_list[$component][$editor_sequence] = $oComponent;
 		}
-		
+
 		return $this->loaded_component_list[$component][$editor_sequence];
 	}
-	
+
 	/**
 	 * @brief Return a list of the editor skin
 	 **/
 	function getEditorSkinList() {
 		return FileHandler::readDir('./modules/editor/skins');
 	}
-	
+
 	/**
 	 * @brief Return the cache file name of editor component list
 	 **/
@@ -582,7 +585,7 @@ class editorModel extends editor {
 		} else {
 			$group_list = array();
 		}
-		
+
 		if(count($component_list)) {
 			foreach($component_list as $key => $val) {
 				if(!trim($key)) continue;
@@ -616,18 +619,18 @@ class editorModel extends editor {
 					continue;
 				}
 			}
-			
+
 		}
 		return $component_list;
 	}
-	
+
 	/**
 	 * @brief Get xml and db information of the component
 	 **/
 	function getComponent($component_name, $site_srl = 0) {
 		$args = new stdClass();
 		$args->component_name = $component_name;
-		
+
 		if($site_srl) {
 			$args->site_srl = $site_srl;
 			$output = executeQuery('editor.getSiteComponent', $args);
@@ -637,41 +640,41 @@ class editorModel extends editor {
 		$component = $output->data;
 
 		if(!$output->data) return false;
-		
+
 		$component_name = $component->component_name;
-		
+
 		unset($xml_info);
 		$xml_info = $this->getComponentXmlInfo($component_name);
 		$xml_info->enabled = $component->enabled;
-		
+
 		$xml_info->target_group = array();
-		
+
 		$xml_info->mid_list = array();
-		
+
 		if($component->extra_vars) {
 			$extra_vars = unserialize($component->extra_vars);
-			
+
 			if($extra_vars->target_group) {
 				$xml_info->target_group = $extra_vars->target_group;
 				unset($extra_vars->target_group);
 			}
-			
+
 			if($extra_vars->mid_list) {
 				$xml_info->mid_list = $extra_vars->mid_list;
 				unset($extra_vars->mid_list);
 			}
-			
-			
+
+
 			if($xml_info->extra_vars) {
 				foreach($xml_info->extra_vars as $key => $val) {
 					$xml_info->extra_vars->{$key}->value = $extra_vars->{$key};
 				}
 			}
 		}
-		
+
 		return $xml_info;
 	}
-	
+
 	/**
 	 * @brief Read xml information of the component
 	 **/
@@ -679,7 +682,7 @@ class editorModel extends editor {
 		$lang_type = Context::getLangType();
 		// Get xml file path of the requested components
 		$component_path = sprintf('%s/components/%s/', $this->module_path, $component);
-		
+
 		$xml_file = sprintf('%sinfo.xml', $component_path);
 		$cache_file = sprintf('./files/cache/editor/%s.%s.php', $component, $lang_type);
 		// Include and return xml file information if cached file exists
@@ -700,7 +703,7 @@ class editorModel extends editor {
 			$component_info->homepage = $xml_doc->component->link->body;
 			$component_info->license = $xml_doc->component->license->body;
 			$component_info->license_link = $xml_doc->component->license->attrs->link;
-			
+
 			$buff = '<?php if(!defined("__XE__")) exit(); ';
 			$buff .= sprintf('$xml_info->component_name = "%s";', $component_info->component_name);
 			$buff .= sprintf('$xml_info->title = "%s";', $component_info->title);
@@ -713,7 +716,7 @@ class editorModel extends editor {
 			// Author information
 			if(!is_array($xml_doc->component->author)) $author_list[] = $xml_doc->component->author;
 			else $author_list = $xml_doc->component->author;
-			
+
 			for($i = 0; $i < count($author_list); $i++) {
 				$buff .= sprintf('$xml_info->author[' . $i . ']->name = "%s";', $author_list[$i]->name->body);
 				$buff .= sprintf('$xml_info->author[' . $i . ']->email_address = "%s";', $author_list[$i]->attrs->email_address);
@@ -730,7 +733,7 @@ class editorModel extends editor {
 			$xml_info->author->name = $xml_doc->component->author->name->body;
 			$xml_info->author->email_address = $xml_doc->component->author->attrs->email_address;
 			$xml_info->author->homepage = $xml_doc->component->author->attrs->link;
-			
+
 			$buff = '<?php if(!defined("__XE__")) exit(); ';
 			$buff .= sprintf('$xml_info->component_name = "%s";', $xml_info->component_name);
 			$buff .= sprintf('$xml_info->title = "%s";', $xml_info->title);
@@ -752,16 +755,16 @@ class editorModel extends editor {
 				$description = $val->description->body;
 				$xml_info->extra_vars->{$key}->title = $title;
 				$xml_info->extra_vars->{$key}->description = $description;
-				
+
 				$buff .= sprintf('$xml_info->extra_vars->%s->%s = "%s";', $key, 'title', $title);
 				$buff .= sprintf('$xml_info->extra_vars->%s->%s = "%s";', $key, 'description', $description);
 			}
 		}
-		
+
 		$buff .= ' ?>';
-		
+
 		FileHandler::writeFile($cache_file, $buff, "w");
-		
+
 		unset($xml_info);
 		include($cache_file);
 		return $xml_info;

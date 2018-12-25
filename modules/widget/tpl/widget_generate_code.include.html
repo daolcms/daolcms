@@ -119,7 +119,7 @@
 				jQuery(function($){
 					$('.moduleSearch1').bind('moduleSelect', function(e, aSelected){
 						var sType, sName, sSrl;
-						
+
 						for(var i=0, nLen=aSelected.length; i<nLen; i++){
 							sType = aSelected[i].type;
 							sName = aSelected[i].browser_title;
@@ -205,7 +205,7 @@
 				<!--// new module search -->
 				<div class="finder" style="display: none;">
 					<div class="a">
-						
+
 						<input type="text" class="site_keyword" /> <a href="#suggestion_{$suggestion_id}" class="tgAnchor findSite">{$lang->find_site}</a>
 						<div id="suggestion_{$suggestion_id}" class="tgContent suggestion">
 							<ul>
@@ -218,7 +218,7 @@
 				<script type="text/javascript">
 					xe.registerApp(new xe.MidManager('{$id}'));
 				</script>
-				
+
 
 			</block>
 			<block cond="$var->type == 'filebox'">

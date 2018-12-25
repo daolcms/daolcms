@@ -11,7 +11,7 @@
  */
 
 class HTMLPurifier_Lexer_PH5P extends HTMLPurifier_Lexer_DOMLex {
-    
+
     public function tokenizeHTML($html, $config, $context) {
         $new_html = $this->normalize($html, $config, $context);
         $new_html = $this->wrapHTML($new_html, $config, $context);
@@ -32,7 +32,7 @@ class HTMLPurifier_Lexer_PH5P extends HTMLPurifier_Lexer_DOMLex {
             , $tokens);
         return $tokens;
     }
-    
+
 }
 
 /*
@@ -2608,7 +2608,7 @@ class HTML5TreeConstructer {
                             for($x = count($this->stack) - $n; $x >= $n; $x--) {
                                 array_pop($this->stack);
                             }
-                                    
+
                         } else {
                             $category = $this->getElementCategory($node);
 
@@ -3544,7 +3544,7 @@ class HTML5TreeConstructer {
             // In theory, this should ever be needed, but just in case
             if ($token['name'] === '') $token['name'] = 'span'; // arbitrary generic choice
         }
-        
+
         $el = $this->dom->createElement($token['name']);
 
         foreach($token['attr'] as $attr) {

@@ -12,13 +12,13 @@ class CacheHandler extends Handler {
 	 * @var CacheBase
 	 */
 	var $handler = null;
-	
+
 	/**
 	 * Version of key group
 	 * @var int
 	 */
 	var $keyGroupVersions = null;
-	
+
 	/**
 	 * Get a instance of CacheHandler(for singleton)
 	 *
@@ -34,7 +34,7 @@ class CacheHandler extends Handler {
 		}
 		return $GLOBALS['__XE_CACHE_HANDLER__'][$cache_handler_key];
 	}
-	
+
 	/**
 	 * Constructor.
 	 *
@@ -46,12 +46,12 @@ class CacheHandler extends Handler {
 	 * @param boolean $always_use_file If set true, use a file cache always
 	 * @return void
 	 */
-	function CacheHandler($target, $info = null, $always_use_file = false) {
+	function __construct($target, $info = null, $always_use_file = false) {
 		if(!$info) $info = Context::getDBInfo();
 		if($info) {
 			$type = "";
 			$url = "";
-			
+
 			if($target == 'object') {
 				if($info->use_object_cache == 'apc') {
 					$type = 'apc';
@@ -75,7 +75,7 @@ class CacheHandler extends Handler {
 					$type = 'wincache';
 				}
 			}
-			
+
 			if($type) {
 				$class = 'Cache' . ucfirst($type);
 				include_once sprintf('%sclasses/cache/%s.class.php', _DAOL_PATH_, $class);
@@ -88,7 +88,7 @@ class CacheHandler extends Handler {
 			}
 		}
 	}
-	
+
 	/**
 	 * Return whether support or not support cache
 	 *
@@ -98,7 +98,7 @@ class CacheHandler extends Handler {
 		if($this->handler && $this->handler->isSupport()) return true;
 		return false;
 	}
-	
+
 	/**
 	 * Get cached data
 	 *
@@ -112,7 +112,7 @@ class CacheHandler extends Handler {
 		if(!$this->handler) return false;
 		return $this->handler->get($key, $modified_time);
 	}
-	
+
 	/**
 	 * Put data into cache
 	 *
@@ -128,7 +128,7 @@ class CacheHandler extends Handler {
 		if(!$this->handler) return false;
 		return $this->handler->put($key, $obj, $valid_time);
 	}
-	
+
 	/**
 	 * Delete Cache
 	 *
@@ -139,7 +139,7 @@ class CacheHandler extends Handler {
 		if(!$this->handler) return false;
 		return $this->handler->delete($key);
 	}
-	
+
 	/**
 	 * Return whether cache is valid or invalid
 	 *
@@ -152,7 +152,7 @@ class CacheHandler extends Handler {
 		if(!$this->handler) return false;
 		return $this->handler->isValid($key, $modified_time);
 	}
-	
+
 	/**
 	 * Truncate all cache
 	 *
@@ -162,7 +162,7 @@ class CacheHandler extends Handler {
 		if(!$this->handler) return false;
 		return $this->handler->truncate();
 	}
-	
+
 	/**
 	 * Function used for generating keys for similar objects.
 	 *
@@ -184,10 +184,10 @@ class CacheHandler extends Handler {
 			$this->keyGroupVersions[$keyGroupName] = 1;
 			$this->handler->put('key_group_versions', $this->keyGroupVersions, 0);
 		}
-		
+
 		return $this->keyGroupVersions[$keyGroupName] . ':' . $keyGroupName . ':' . $key;
 	}
-	
+
 	/**
 	 * Make invalid group key (like delete group key)
 	 *
@@ -206,7 +206,7 @@ class CacheHandler extends Handler {
  * @author NHN (developer@xpressengine.com)
  */
 class CacheBase {
-	
+
 	/**
 	 * Get cached data
 	 *
@@ -219,7 +219,7 @@ class CacheBase {
 	function get($key, $modified_time = 0) {
 		return false;
 	}
-	
+
 	/**
 	 * Put data into cache
 	 *
@@ -234,7 +234,7 @@ class CacheBase {
 	function put($key, $obj, $valid_time = 0) {
 		return false;
 	}
-	
+
 	/**
 	 * Return whether cache is valid or invalid
 	 *
@@ -246,7 +246,7 @@ class CacheBase {
 	function isValid($key, $modified_time = 0) {
 		return false;
 	}
-	
+
 	/**
 	 * Return whether support or not support cache
 	 *
@@ -255,7 +255,7 @@ class CacheBase {
 	function isSupport() {
 		return false;
 	}
-	
+
 	/**
 	 * Truncate all cache
 	 *

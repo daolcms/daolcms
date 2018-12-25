@@ -14,7 +14,7 @@
 			<td class="title">{htmlspecialchars($message->title)}</td>
 		</tr>
 		<tr>
-			<td colspan="2" class="xe_content">{$message->content}</td>
+			<td colspan="2" class="xe_content">{$message->content|noescape}</td>
 		</tr>
 	</table>
 </div>

@@ -35,7 +35,7 @@ function completeArticleDocumentInserted(ret_obj){
 	alert(message);
 
 	var url = '';
-	
+
 	if(is_mobile == 'Y')
 		url = current_url.setQuery('act', 'dispPageAdminMobileContent').setQuery('mid', mid);
 	else

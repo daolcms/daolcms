@@ -5,14 +5,14 @@
  * @author NAVER (developers@xpressengine.com)
  **/
 class fileView extends file {
-	
+
 	/**
 	 * Initialization
 	 * @return void
 	 **/
 	function init() {
 	}
-	
+
 	/**
 	 * This is for additional configuration for service module
 	 * It only receives file configurations
@@ -23,7 +23,7 @@ class fileView extends file {
 	function triggerDispFileAdditionSetup(&$obj) {
 		$current_module_srl = Context::get('module_srl');
 		$current_module_srls = Context::get('module_srls');
-		
+
 		if(!$current_module_srl && !$current_module_srls) {
 			// Get information of the current module
 			$current_module_info = Context::get('current_module_info');
@@ -43,7 +43,7 @@ class fileView extends file {
 		$oTemplate = &TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($this->module_path . 'tpl', 'file_module_config');
 		$obj .= $tpl;
-		
+
 		return new BaseObject();
 	}
 }

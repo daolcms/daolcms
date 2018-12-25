@@ -46,19 +46,19 @@ class Argument {
 	 * @var mixed
 	 */
 	var $_value; // 
-	
+
 	/**
 	 * constructor
 	 * @param string $name
 	 * @param mixed  $value
 	 * @return void
 	 */
-	function Argument($name, $value) {
+	function __construct($name, $value) {
 		$this->value = $value;
 		$this->name = $name;
 		$this->isValid = true;
 	}
-	
+
 	function getType() {
 		if(isset($this->type)) {
 			return $this->type;
@@ -67,19 +67,19 @@ class Argument {
 			return 'column_name';
 		return 'number';
 	}
-	
+
 	function setColumnType($value) {
 		$this->type = $value;
 	}
-	
+
 	function setColumnOperation($operation) {
 		$this->column_operation = $operation;
 	}
-	
+
 	function getName() {
 		return $this->name;
 	}
-	
+
 	function getValue() {
 		if(!isset($this->_value)) {
 			$value = $this->getEscapedValue();
@@ -87,20 +87,20 @@ class Argument {
 		}
 		return $this->_value;
 	}
-	
+
 	function getColumnOperation() {
 		return $this->column_operation;
 	}
-	
+
 	function getEscapedValue() {
 		return $this->escapeValue($this->value);
 	}
-	
+
 	function getUnescapedValue() {
 		if($this->value === 'null') return null;
 		return $this->value;
 	}
-	
+
 	/**
 	 * mixed value to string
 	 * @param mixed $value
@@ -116,7 +116,7 @@ class Argument {
 		}
 		return $value;
 	}
-	
+
 	/**
 	 * escape value
 	 * @param mixed $value
@@ -130,7 +130,7 @@ class Argument {
 		}
 		if(!isset($value))
 			return null;
-		
+
 		$columnTypeList = array('date' => 1, 'varchar' => 1, 'char' => 1, 'text' => 1, 'bigtext' => 1);
 		if(isset($columnTypeList[$column_type])) {
 			if(!is_array($value))
@@ -153,10 +153,10 @@ class Argument {
 				$value = (int)$value;
 			}
 		}
-		
+
 		return $value;
 	}
-	
+
 	/**
 	 * escape string value
 	 * @param string $value
@@ -165,13 +165,13 @@ class Argument {
 	function _escapeStringValue($value) {
 		// Remove non-utf8 chars.
 		$regex = '@((?:[\x00-\x7F]|[\xC0-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF]{2}){1,100})|([\xF0-\xF7][\x80-\xBF]{3})|([\x80-\xBF])|([\xC0-\xFF])@x';
-		
+
 		$value = preg_replace_callback($regex, array($this, 'utf8Replacer'), $value);
 		$db = &DB::getInstance();
 		$value = $db->addQuotes($value);
 		return '\'' . $value . '\'';
 	}
-	
+
 	function utf8Replacer($captures) {
 		if(!empty($captures[1])) {
 			// Valid byte sequence. Return unmodified.
@@ -181,17 +181,17 @@ class Argument {
 			if("\xF3\xB0\x80\x80" <= $captures[2]) {
 				return;
 			}
-			
+
 			return $captures[2];
 		} else {
 			return;
 		}
 	}
-	
+
 	function isValid() {
 		return $this->isValid;
 	}
-	
+
 	function isColumnName() {
 		$type = $this->getType();
 		$value = $this->getUnescapedValue();
@@ -200,18 +200,18 @@ class Argument {
 		if($type == 'number' && !is_numeric($value) && $this->uses_default_value) return true;
 		return false;
 	}
-	
+
 	function getErrorMessage() {
 		return $this->errorMessage;
 	}
-	
+
 	function ensureDefaultValue($default_value) {
 		if(!isset($this->value) || $this->value == '') {
 			$this->value = $default_value;
 			$this->uses_default_value = true;
 		}
 	}
-	
+
 	/**
 	 * check filter by filter type
 	 * @param string $filter_type
@@ -267,7 +267,7 @@ class Argument {
 			}
 		}
 	}
-	
+
 	function checkMaxLength($length) {
 		if($this->value && (strlen($this->value) > $length)) {
 			global $lang;
@@ -276,7 +276,7 @@ class Argument {
 			$this->errorMessage = new BaseObject(-1, sprintf($lang->filter->outofrange, $lang->{$key} ? $lang->{$key} : $key));
 		}
 	}
-	
+
 	function checkMinLength($length) {
 		if($this->value && (strlen($this->value) < $length)) {
 			global $lang;
@@ -285,7 +285,7 @@ class Argument {
 			$this->errorMessage = new BaseObject(-1, sprintf($lang->filter->outofrange, $lang->{$key} ? $lang->{$key} : $key));
 		}
 	}
-	
+
 	function checkNotNull() {
 		if(!isset($this->value)) {
 			global $lang;
@@ -294,7 +294,7 @@ class Argument {
 			$this->errorMessage = new BaseObject(-1, sprintf($lang->filter->isnull, $lang->{$key} ? $lang->{$key} : $key));
 		}
 	}
-	
+
 }
 
 ?>

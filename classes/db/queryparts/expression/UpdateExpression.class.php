@@ -13,18 +13,18 @@ class UpdateExpression extends Expression {
 	 * @var object
 	 */
 	var $argument;
-	
+
 	/**
 	 * constructor
 	 * @param string $column_name
 	 * @param object $argument
 	 * @return void
 	 */
-	function UpdateExpression($column_name, $argument) {
-		parent::Expression($column_name);
+	function __construct($column_name, $argument) {
+		parent::__construct($column_name);
 		$this->argument = $argument;
 	}
-	
+
 	/**
 	 * Return column expression, ex) column = value
 	 * @return string
@@ -34,7 +34,7 @@ class UpdateExpression extends Expression {
 			return $this->getExpressionWithValue();
 		return $this->getExpressionWithoutValue();
 	}
-	
+
 	/**
 	 * Return column expression, ex) column = value
 	 * @return string
@@ -46,7 +46,7 @@ class UpdateExpression extends Expression {
 			return "$this->column_name = $this->column_name $operation $value";
 		return "$this->column_name = $value";
 	}
-	
+
 	/**
 	 * Return column expression, ex) column = ?
 	 * Can use prepare statement
@@ -58,25 +58,25 @@ class UpdateExpression extends Expression {
 			return "$this->column_name = $this->column_name $operation ?";
 		return "$this->column_name = ?";
 	}
-	
+
 	function getValue() {
 		// TODO Escape value according to column type instead of variable type
 		$value = $this->argument->getValue();
 		if(!is_numeric($value)) return "'" . $value . "'";
 		return $value;
 	}
-	
+
 	function show() {
 		if(!$this->argument) return false;
 		$value = $this->argument->getValue();
 		if(!isset($value)) return false;
 		return true;
 	}
-	
+
 	function getArgument() {
 		return $this->argument;
 	}
-	
+
 	function getArguments() {
 		if($this->argument)
 			return array($this->argument);

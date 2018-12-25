@@ -11,37 +11,37 @@ class FrontEndFileHandler extends Handler {
 	 * @var array
 	 */
 	var $cssMap = array();
-	
+
 	/**
 	 * Map for Javascript at head
 	 * @var array
 	 */
 	var $jsHeadMap = array();
-	
+
 	/**
 	 * Map for Javascript at body
 	 * @var array
 	 */
 	var $jsBodyMap = array();
-	
+
 	/**
 	 * Index for css
 	 * @var array
 	 */
 	var $cssMapIndex = array();
-	
+
 	/**
 	 * Index for javascript at head
 	 * @var array
 	 */
 	var $jsHeadMapIndex = array();
-	
+
 	/**
 	 * Index for javascript at body
 	 * @var array
 	 */
 	var $jsBodyMapIndex = array();
-	
+
 	/**
 	 * Check SSL
 	 *
@@ -50,16 +50,16 @@ class FrontEndFileHandler extends Handler {
 	 */
 	function isSsl() {
 		if($GLOBAL['__XE_IS_SSL__']) return $GLOBAL['__XE_IS_SSL__'];
-		
+
 		$url_info = parse_url(Context::getRequestUrl());
 		if($url_info['scheme'] == 'https')
 			$GLOBAL['__XE_IS_SSL__'] = true;
 		else
 			$GLOBAL['__XE_IS_SSL__'] = false;
-		
+
 		return $GLOBAL['__XE_IS_SSL__'];
 	}
-	
+
 	/**
 	 * Load front end file
 	 *
@@ -276,7 +276,7 @@ class FrontEndFileHandler extends Handler {
 	function getJsFileList($type = 'head'){
 		$ignore = array('modernizr.js', 'common.js', 'js_app.js', 'xml2json.js', 'xml_handler.js', 'xml_js_filter.js');
 		$pathCommonJs = getScriptPath() . 'common/js';
-		
+
 		if($type == 'head'){
 			$map = &$this->jsHeadMap;
 			$mapIndex = &$this->jsHeadMapIndex;
@@ -316,7 +316,7 @@ class FrontEndFileHandler extends Handler {
 
 		return $result;
 	}
-	
+
 	/**
 	 * Sort a map
 	 *
@@ -327,7 +327,7 @@ class FrontEndFileHandler extends Handler {
 	function _sortMap(&$map, &$index) {
 		ksort($map);
 	}
-	
+
 	/**
 	 * Normalize File path
 	 *
@@ -340,16 +340,16 @@ class FrontEndFileHandler extends Handler {
 		} elseif(!strncmp($path, '//', 2)) {
 			return preg_replace('#^//+#', '//', $path);
 		}
-		
+
 		$path = preg_replace('@/\./|(?<!:)\/\/@', '/', $path);
-		
+
 		while(strpos($path, '/../')) {
 			$path = preg_replace('/\/([^\/]+)\/\.\.\//s', '/', $path, 1);
 		}
-		
+
 		return $path;
 	}
-	
+
 	/**
 	 * Get absolute file url
 	 *
@@ -359,7 +359,7 @@ class FrontEndFileHandler extends Handler {
 	function _getAbsFileUrl($path) {
 		$path = $this->_normalizeFilePath($path);
 		$script_path = getScriptPath();
-		
+
 		if(strpos($path, './') === 0) {
 			if($script_path == '/' || $script_path == '\\') {
 				$path = '/' . substr($path, 2);
@@ -369,10 +369,10 @@ class FrontEndFileHandler extends Handler {
 		} else if(strpos($file, '../') === 0) {
 			$path = $this->_normalizeFilePath($script_path . $path);
 		}
-		
+
 		return $path;
 	}
-	
+
 	/**
 	 * Arrage css index
 	 *
@@ -384,10 +384,10 @@ class FrontEndFileHandler extends Handler {
 		if($file->index !== 0) {
 			return;
 		}
-		
+
 		$dirName = str_replace('./', '', $dirName);
 		$tmp = explode('/', $dirName);
-		
+
 		$cssSortList = array('common' => -100000, 'layouts' => -90000, 'modules' => -80000, 'widgets' => -70000, 'addons' => -60000);
 		$file->index = $cssSortList[$tmp[0]];
 	}

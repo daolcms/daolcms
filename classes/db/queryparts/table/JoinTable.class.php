@@ -19,7 +19,7 @@ class JoinTable extends Table {
 	 * @var array
 	 */
 	var $conditions;
-	
+
 	/**
 	 * constructor
 	 * @param string $name
@@ -28,12 +28,12 @@ class JoinTable extends Table {
 	 * @param array  $conditions
 	 * @return void
 	 */
-	function JoinTable($name, $alias, $join_type, $conditions) {
-		parent::Table($name, $alias);
+	function __construct($name, $alias, $join_type, $conditions) {
+		parent::__construct($name, $alias);
 		$this->join_type = $join_type;
 		$this->conditions = $conditions;
 	}
-	
+
 	function toString($with_value = true) {
 		$part = $this->join_type . ' ' . $this->name;
 		$part .= $this->alias ? ' as ' . $this->alias : '';
@@ -42,18 +42,18 @@ class JoinTable extends Table {
 			$part .= $conditionGroup->toString($with_value);
 		return $part;
 	}
-	
+
 	function isJoinTable() {
 		return true;
 	}
-	
+
 	function getArguments() {
 		$args = array();
 		foreach($this->conditions as $conditionGroup)
 			$args = array_merge($args, $conditionGroup->getArguments());
 		return $args;
 	}
-	
+
 }
 
 ?>

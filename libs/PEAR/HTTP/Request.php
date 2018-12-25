@@ -138,7 +138,7 @@ class HTTP_Request
     * @var string
     */
     var $_user;
-    
+
     /**
     * Basic Auth Password
     * @var string
@@ -150,25 +150,25 @@ class HTTP_Request
     * @var Net_Socket
     */
     var $_sock;
-    
+
     /**
     * Proxy server
     * @var string
     */
     var $_proxy_host;
-    
+
     /**
     * Proxy port
     * @var integer
     */
     var $_proxy_port;
-    
+
     /**
     * Proxy username
     * @var string
     */
     var $_proxy_user;
-    
+
     /**
     * Proxy password
     * @var string
@@ -204,25 +204,25 @@ class HTTP_Request
     * @var float
     */
     var $_timeout;
-    
+
     /**
     * HTTP_Response object
     * @var HTTP_Response
     */
     var $_response;
-    
+
     /**
     * Whether to allow redirects
     * @var boolean
     */
     var $_allowRedirects;
-    
+
     /**
     * Maximum redirects allowed
     * @var integer
     */
     var $_maxRedirects;
-    
+
     /**
     * Current number of redirects
     * @var integer
@@ -337,7 +337,7 @@ class HTTP_Request
             $this->addHeader('Accept-Encoding', 'gzip');
         }
     }
-    
+
     /**
     * Generates a Host header for HTTP/1.1 requests
     *
@@ -354,14 +354,14 @@ class HTTP_Request
 
         } elseif ($this->_url->port == 443 AND strcasecmp($this->_url->protocol, 'https') == 0 AND strpos($this->_url->url, ':443') !== false) {
             $host = $this->_url->host . ':' . $this->_url->port;
-        
+
         } else {
             $host = $this->_url->host;
         }
 
         return $host;
     }
-    
+
     /**
     * Resets the object to its initial state (DEPRECATED).
     * Takes the same parameters as the constructor.
@@ -400,7 +400,7 @@ class HTTP_Request
             $this->_url->path = '/';
         } 
     }
-    
+
    /**
     * Returns the current request URL  
     *
@@ -506,7 +506,7 @@ class HTTP_Request
     {
         $this->_url->addQueryString($name, $value, $preencoded);
     }    
-    
+
     /**
     * Sets the querystring to literally what you supply
     *
@@ -637,7 +637,7 @@ class HTTP_Request
         $cookies = isset($this->_requestHeaders['cookie']) ? $this->_requestHeaders['cookie']. '; ' : '';
         $this->addHeader('Cookie', $cookies . $name . '=' . $value);
     }
-    
+
     /**
     * Clears any cookies that have been added (DEPRECATED). 
     * 
@@ -756,7 +756,7 @@ class HTTP_Request
             AND $this->getResponseCode() < 399
             AND !empty($this->_response->_headers['location'])) {
 
-            
+
             $redirect = $this->_response->_headers['location'];
 
             // Absolute URL
@@ -766,7 +766,7 @@ class HTTP_Request
             // Absolute path
             } elseif ($redirect{0} == '/') {
                 $this->_url->path = $redirect;
-            
+
             // Relative path
             } elseif (substr($redirect, 0, 3) == '../' OR substr($redirect, 0, 2) == './') {
                 if (substr($this->_url->path, -1) == '/') {
@@ -776,7 +776,7 @@ class HTTP_Request
                 }
                 $redirect = Net_URL::resolvePath($redirect);
                 $this->_url->path = $redirect;
-                
+
             // Filename, no path
             } else {
                 if (substr($this->_url->path, -1) == '/') {
@@ -968,7 +968,7 @@ class HTTP_Request
                         "\r\n\r\n";
             $request .= $this->_body;
         }
-        
+
         return $request;
     }
 
@@ -1088,13 +1088,13 @@ class HTTP_Response
     * @var string
     */
     var $_protocol;
-    
+
     /**
     * Return code
     * @var string
     */
     var $_code;
-    
+
     /**
     * Response headers
     * @var array
@@ -1249,7 +1249,7 @@ class HTTP_Response
         list($headername, $headervalue) = explode(':', $header, 2);
         $headername  = strtolower($headername);
         $headervalue = ltrim($headervalue);
-        
+
         if ('set-cookie' != $headername) {
             if (isset($this->_headers[$headername])) {
                 $this->_headers[$headername] .= ',' . $headervalue;

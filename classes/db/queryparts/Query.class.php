@@ -21,7 +21,7 @@ class Query extends BaseObject {
 	 * @var string
 	 */
 	var $priority;
-	
+
 	/**
 	 * column list
 	 * @var string|array
@@ -52,25 +52,25 @@ class Query extends BaseObject {
 	 * @var int
 	 */
 	var $limit;
-	
+
 	/**
 	 * argument list
 	 * @var array
 	 */
 	var $arguments = NULL;
-	
+
 	/**
 	 * column list
 	 * @var array
 	 */
 	var $columnList = NULL;
-	
+
 	/**
 	 * order by text
 	 * @var string
 	 */
 	var $_orderByString;
-	
+
 	/**
 	 * constructor
 	 * @param string       $queryID
@@ -84,7 +84,7 @@ class Query extends BaseObject {
 	 * @param string       $priority
 	 * @return void
 	 */
-	function Query($queryID = NULL
+	function __construct($queryID = NULL
 		, $action = NULL
 		, $columns = NULL
 		, $tables = NULL
@@ -96,7 +96,7 @@ class Query extends BaseObject {
 		$this->queryID = $queryID;
 		$this->action = $action;
 		$this->priority = $priority;
-		
+
 		if(!isset($tables)) return;
 		$this->columns = $this->setColumns($columns);
 		$this->tables = $this->setTables($tables);
@@ -105,29 +105,29 @@ class Query extends BaseObject {
 		$this->orderby = $this->setOrder($orderby);
 		$this->limit = $this->setLimit($limit);
 	}
-	
+
 	function show() {
 		return TRUE;
 	}
-	
+
 	function setQueryId($queryID) {
 		$this->queryID = $queryID;
 	}
-	
+
 	function setAction($action) {
 		$this->action = $action;
 	}
-	
+
 	function setPriority($priority) {
 		$this->priority = $priority;
 	}
-	
+
 	function setColumnList($columnList) {
 		$this->columnList = $columnList;
 		if(count($this->columnList) > 0) {
 			$selectColumns = array();
 			$dbParser = DB::getParser();
-			
+
 			foreach($this->columnList as $columnName) {
 				$columnName = $dbParser->escapeColumn($columnName);
 				$selectColumns[] = new SelectExpression($columnName);
@@ -136,63 +136,63 @@ class Query extends BaseObject {
 			$this->columns = $selectColumns;
 		}
 	}
-	
+
 	function setColumns($columns) {
 		if(!isset($columns) || count($columns) === 0) {
 			$this->columns = array(new StarExpression());
 			return;
 		}
-		
+
 		if(!is_array($columns)) $columns = array($columns);
-		
+
 		$this->columns = $columns;
 	}
-	
+
 	function setTables($tables) {
 		if(!isset($tables) || count($tables) === 0) {
 			$this->setError(TRUE);
 			$this->setMessage("You must provide at least one table for the query.");
 			return;
 		}
-		
+
 		if(!is_array($tables)) $tables = array($tables);
-		
+
 		$this->tables = $tables;
 	}
-	
+
 	function setSubquery($subquery) {
 		$this->subquery = $subquery;
 	}
-	
+
 	function setConditions($conditions) {
 		$this->conditions = array();
 		if(!isset($conditions) || count($conditions) === 0) return;
 		if(!is_array($conditions)) $conditions = array($conditions);
-		
+
 		foreach($conditions as $conditionGroup) {
 			if($conditionGroup->show()) $this->conditions[] = $conditionGroup;
 		}
 	}
-	
+
 	function setGroups($groups) {
 		if(!isset($groups) || count($groups) === 0) return;
 		if(!is_array($groups)) $groups = array($groups);
-		
+
 		$this->groups = $groups;
 	}
-	
+
 	function setOrder($order) {
 		if(!isset($order) || count($order) === 0) return;
 		if(!is_array($order)) $order = array($order);
-		
+
 		$this->orderby = $order;
 	}
-	
+
 	function setLimit($limit = NULL) {
 		if(!isset($limit)) return;
 		$this->limit = $limit;
 	}
-	
+
 	// START Fluent interface
 	/**
 	 * seleect set
@@ -204,7 +204,7 @@ class Query extends BaseObject {
 		$this->setColumns($columns);
 		return $this;
 	}
-	
+
 	/**
 	 * from set
 	 * @param string|array $tables
@@ -214,7 +214,7 @@ class Query extends BaseObject {
 		$this->setTables($tables);
 		return $this;
 	}
-	
+
 	/**
 	 * where set
 	 * @param string|array $conditions
@@ -224,7 +224,7 @@ class Query extends BaseObject {
 		$this->setConditions($conditions);
 		return $this;
 	}
-	
+
 	/**
 	 * groupBy set
 	 * @param string|array $groups
@@ -234,7 +234,7 @@ class Query extends BaseObject {
 		$this->setGroups($groups);
 		return $this;
 	}
-	
+
 	/**
 	 * orderBy set
 	 * @param string|array $order
@@ -244,7 +244,7 @@ class Query extends BaseObject {
 		$this->setOrder($order);
 		return $this;
 	}
-	
+
 	/**
 	 * limit set
 	 * @param int $limit
@@ -254,17 +254,17 @@ class Query extends BaseObject {
 		$this->setLimit($limit);
 		return $this;
 	}
-	
+
 	// END Fluent interface
-	
+
 	function getAction() {
 		return $this->action;
 	}
-	
+
 	function getPriority() {
 		return $this->priority ? 'LOW_PRIORITY' : '';
 	}
-	
+
 	/**
 	 * Check if current query uses the click count attribute
 	 * For CUBRID, this statement uses the click count feature.
@@ -274,7 +274,7 @@ class Query extends BaseObject {
 	function usesClickCount() {
 		return count($this->getClickCountColumns()) > 0;
 	}
-	
+
 	function getClickCountColumns() {
 		$click_count_columns = array();
 		foreach($this->columns as $column) {
@@ -283,7 +283,7 @@ class Query extends BaseObject {
 		}
 		return $click_count_columns;
 	}
-	
+
 	/**
 	 * Return select sql
 	 * @param boolean $with_values
@@ -300,7 +300,7 @@ class Query extends BaseObject {
 		}
 		return trim(implode($select, ', '));
 	}
-	
+
 	/**
 	 * Return update sql
 	 * @param boolean $with_values
@@ -313,7 +313,7 @@ class Query extends BaseObject {
 		}
 		return trim(implode($update, ', '));
 	}
-	
+
 	/**
 	 * Return insert sql
 	 * @param boolean $with_values
@@ -322,19 +322,19 @@ class Query extends BaseObject {
 	function getInsertString($with_values = TRUE) {
 		$columnsList = '';
 		if($this->subquery) { // means we have insert-select
-			
+
 			foreach($this->columns as $column) {
 				$columnsList .= $column->getColumnName() . ', ';
 			}
 			$columnsList = substr($columnsList, 0, -2);
-			
+
 			$selectStatement = $this->subquery->toString($with_values);
 			$selectStatement = substr($selectStatement, 1, -1);
-			
+
 			return "($columnsList) \n $selectStatement";
 		}
-		
-		
+
+
 		$valuesList = '';
 		foreach($this->columns as $column) {
 			if($column->show()) {
@@ -344,14 +344,14 @@ class Query extends BaseObject {
 		}
 		$columnsList = substr($columnsList, 0, -2);
 		$valuesList = substr($valuesList, 0, -2);
-		
+
 		return "($columnsList) \n VALUES ($valuesList)";
 	}
-	
+
 	function getTables() {
 		return $this->tables;
 	}
-	
+
 	/**
 	 * from table_a
 	 * from table_a inner join table_b on x=y
@@ -366,15 +366,15 @@ class Query extends BaseObject {
 		foreach($this->tables as $table) {
 			if($table->isJoinTable() || !$simple_table_count) $from .= $table->toString($with_values) . ' ';
 			else $from .= ', ' . $table->toString($with_values) . ' ';
-			
+
 			if(is_a($table, 'Subquery')) $from .= $table->getAlias() ? ' as ' . $table->getAlias() . ' ' : ' ';
-			
+
 			$simple_table_count++;
 		}
 		if(trim($from) == '') return '';
 		return $from;
 	}
-	
+
 	/**
 	 * Return where sql
 	 * @param boolean $with_values
@@ -384,7 +384,7 @@ class Query extends BaseObject {
 	function getWhereString($with_values = TRUE, $with_optimization = TRUE) {
 		$where = '';
 		$condition_count = 0;
-		
+
 		foreach($this->conditions as $conditionGroup) {
 			if($condition_count === 0) {
 				$conditionGroup->setPipe("");
@@ -393,14 +393,14 @@ class Query extends BaseObject {
 			$where .= $condition_string;
 			$condition_count++;
 		}
-		
+
 		if($with_optimization &&
 			(strstr($this->getOrderByString(), 'list_order') || strstr($this->getOrderByString(), 'update_order'))
 		) {
-			
+
 			if($condition_count !== 0)
 				$where = '(' . $where . ') ';
-			
+
 			foreach($this->orderby as $order) {
 				$colName = $order->getColumnName();
 				if(strstr($colName, 'list_order') || strstr($colName, 'update_order')) {
@@ -412,10 +412,10 @@ class Query extends BaseObject {
 				}
 			}
 		}
-		
+
 		return trim($where);
 	}
-	
+
 	/**
 	 * Return groupby sql
 	 * @return string
@@ -426,7 +426,7 @@ class Query extends BaseObject {
 			$groupBy = implode(', ', $this->groups);
 		return $groupBy;
 	}
-	
+
 	/**
 	 * Return orderby sql
 	 * @return string
@@ -443,11 +443,11 @@ class Query extends BaseObject {
 		}
 		return $this->_orderByString;
 	}
-	
+
 	function getLimit() {
 		return $this->limit;
 	}
-	
+
 	/**
 	 * Return limit sql
 	 * @return string
@@ -460,11 +460,11 @@ class Query extends BaseObject {
 		}
 		return $limit;
 	}
-	
+
 	function getFirstTableName() {
 		return $this->tables[0]->getName();
 	}
-	
+
 	/**
 	 * Return argument list
 	 * @return array
@@ -472,7 +472,7 @@ class Query extends BaseObject {
 	function getArguments() {
 		if(!isset($this->arguments)) {
 			$this->arguments = array();
-			
+
 			// Join table arguments
 			if(count($this->tables) > 0) {
 				foreach($this->tables as $table) {
@@ -482,7 +482,7 @@ class Query extends BaseObject {
 					}
 				}
 			}
-			
+
 			// Column arguments
 			if(count($this->columns) > 0) { // The if is for delete statements, all others must have columns
 				foreach($this->columns as $column) {
@@ -492,14 +492,14 @@ class Query extends BaseObject {
 					}
 				}
 			}
-			
+
 			// Condition arguments
 			if(count($this->conditions) > 0)
 				foreach($this->conditions as $conditionGroup) {
 					$args = $conditionGroup->getArguments();
 					if(count($args) > 0) $this->arguments = array_merge($this->arguments, $args);
 				}
-			
+
 			// Navigation arguments
 			if(count($this->orderby) > 0)
 				foreach($this->orderby as $order) {

@@ -16,14 +16,14 @@ class importerAdminView extends importer {
 	 */
 	function init() {
 	}
-	
+
 	/**
 	 * Display a form to upload the xml file
 	 * @return void
 	 */
 	function dispImporterAdminContent() {
 		$this->setTemplatePath($this->module_path . 'tpl');
-		
+
 		$source_type = Context::get('source_type');
 		switch($source_type) {
 			case 'member' :
@@ -33,14 +33,14 @@ class importerAdminView extends importer {
 				$oModuleModel = &getModel('module');
 				//$mid_list = $oModuleModel->getMidList();	//perhaps mid_list variables not use
 				//Context::set('mid_list', $mid_list);
-				
+
 				$template_filename = "ttxml";
 				break;
 			case 'module' :
 				$oModuleModel = &getModel('module');
 				//$mid_list = $oModuleModel->getMidList();	//perhaps mid_list variables not use
 				//Context::set('mid_list', $mid_list);
-				
+
 				$template_filename = "module";
 				break;
 			case 'message' :
@@ -53,19 +53,19 @@ class importerAdminView extends importer {
 				$template_filename = "index";
 				break;
 		}
-		
+
 		$this->setTemplateFile($template_filename);
 	}
-	
+
 	/**
 	 * Display a form to upload the xml file
 	 * @return void
 	 */
 	function dispImporterAdminImportForm() {
 		$oDocumentModel = &getModel('document');    //for document lang use in this page
-		
+
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile('index');
 	}
-	
+
 }

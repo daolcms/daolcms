@@ -107,7 +107,7 @@ class boardAPI extends board {
 		$output = new stdClass;
 		if($content){
 			$output = $content->gets('document_srl','category_srl','member_srl','nick_name','title','content','tags','readed_count','voted_count','blamed_count','comment_count','regdate','last_update','extra_vars','status');
-			
+
 			$output->content = $content->getContent(false, false, true, false, true);
 
 			$t_width  = Context::get('thumbnail_width');

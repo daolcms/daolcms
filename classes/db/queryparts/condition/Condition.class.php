@@ -24,12 +24,12 @@ class Condition {
 	 * @var string
 	 */
 	var $pipe;
-	
+
 	var $_value;
-	
+
 	var $_show;
 	var $_value_to_string;
-	
+
 	/**
 	 * constructor
 	 * @param string $column_name
@@ -38,18 +38,18 @@ class Condition {
 	 * @param string $pipe
 	 * @return void
 	 */
-	function Condition($column_name, $argument, $operation, $pipe) {
+	function __construct($column_name, $argument, $operation, $pipe) {
 		$this->column_name = $column_name;
 		$this->argument = $argument;
 		$this->operation = $operation;
 		$this->pipe = $pipe;
-		
+
 	}
-	
+
 	function getArgument() {
 		return null;
 	}
-	
+
 	/**
 	 * value to string
 	 * @param boolean $withValue
@@ -67,7 +67,7 @@ class Condition {
 		}
 		return $this->_value_to_string;
 	}
-	
+
 	/**
 	 * change string without value
 	 * @return string
@@ -75,7 +75,7 @@ class Condition {
 	function toStringWithoutValue() {
 		return $this->pipe . ' ' . $this->getConditionPart($this->_value);
 	}
-	
+
 	/**
 	 * change string with value
 	 * @return string
@@ -83,11 +83,11 @@ class Condition {
 	function toStringWithValue() {
 		return $this->pipe . ' ' . $this->getConditionPart($this->_value);
 	}
-	
+
 	function setPipe($pipe) {
 		$this->pipe = $pipe;
 	}
-	
+
 	/**
 	 * @return boolean
 	 */
@@ -152,7 +152,7 @@ class Condition {
 		}
 		return $this->_show;
 	}
-	
+
 	/**
 	 * Return condition string
 	 * @param int|string|array $value
@@ -161,7 +161,7 @@ class Condition {
 	function getConditionPart($value) {
 		$name = $this->column_name;
 		$operation = $this->operation;
-		
+
 		switch($operation) {
 			case 'equal' :
 				return $name . ' = ' . $value;

@@ -6,15 +6,15 @@
  * @Adaptor DAOL Project (developer@daolcms.org)
  **/
 class fileController extends file {
-	
+
 	/**
 	 * Initialization
 	 * @return void
 	 **/
 	function init() {
 	}
-	
-	
+
+
 	/**
 	 * Upload attachments in the editor
 	 *
@@ -27,10 +27,10 @@ class fileController extends file {
 	function procFileUpload() {
 		Context::setRequestMethod('JSON');
 		$file_info = Context::get('Filedata');
-		
+
 		// An error appears if not a normally uploaded file
 		if(!is_uploaded_file($file_info['tmp_name'])) exit();
-		
+
 		// Basic variables setting
 		$oFileModel = &getModel('file');
 		$editor_sequence = Context::get('editor_sequence');
@@ -43,8 +43,8 @@ class fileController extends file {
 		if(!$upload_target_srl) $upload_target_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
 		// Create if upload_target_srl is not defined in the session information
 		if(!$upload_target_srl) $_SESSION['upload_info'][$editor_sequence]->upload_target_srl = $upload_target_srl = getNextSequence();
-		
-		
+
+
 		$output = $this->insertFile($file_info, $module_srl, $upload_target_srl);
 		Context::setResponseMethod('JSON');
 		$this->add('file_srl',$output->get('file_srl'));
@@ -55,8 +55,8 @@ class fileController extends file {
 		$this->add('upload_target_srl',$output->get('upload_target_srl'));
 		if($output->error != '0') $this->stop($output->message);
 	}
-	
-	
+
+
 	/**
 	 * Iframe upload attachments
 	 *
@@ -69,7 +69,7 @@ class fileController extends file {
 		$module_srl = $this->module_srl;
 		$upload_target_srl = intval(Context::get('uploadTargetSrl'));
 		if(!$upload_target_srl) $upload_target_srl = intval(Context::get('upload_target_srl'));
-		
+
 		// Exit a session if there is neither upload permission nor information
 		if(!$_SESSION['upload_info'][$editor_sequence]->enabled) exit();
 		// Extract from session information if upload_target_srl is not specified
@@ -87,21 +87,21 @@ class fileController extends file {
 				$this->deleteFile($file_srl);
 			}
 		}
-		
+
 		$file_info = Context::get('Filedata');
 		// An error appears if not a normally uploaded file
 		if(is_uploaded_file($file_info['tmp_name'])) {
 			$output = $this->insertFile($file_info, $module_srl, $upload_target_srl);
 			Context::set('uploaded_fileinfo', $output);
 		}
-		
+
 		Context::set('layout', 'none');
-		
+
 		$this->setTemplatePath($this->module_path . 'tpl');
 		$this->setTemplateFile('iframe');
-		
+
 	}
-	
+
 	/**
 	 * Image resize
 	 *
@@ -111,24 +111,24 @@ class fileController extends file {
 		$file_srl = Context::get('file_srl');
 		$width = Context::get('width');
 		$height = Context::get('height');
-		
+
 		if(!$file_srl || !$width) {
 			return new BaseObject(-1, 'msg_invalid_request');
 		}
-		
+
 		$oFileModel = getModel('file');
 		$fileInfo = $oFileModel->getFile($file_srl);
 		if(!$fileInfo || $fileInfo->direct_download != 'Y') {
 			return new BaseObject(-1, 'msg_invalid_request');
 		}
-		
+
 		$source_src = $fileInfo->uploaded_filename;
 		$output_src = $source_src . '.resized' . strrchr($source_src, '.');
-		
+
 		if(!$height) {
 			$height = $width - 1;
 		}
-		
+
 		if(FileHandler::createImageFile($source_src, $output_src, $width, $height, '', 'ratio')) {
 			$output = new stdClass();
 			$output->info = getimagesize($output_src);
@@ -136,11 +136,11 @@ class fileController extends file {
 		} else {
 			return new BaseObject(-1, 'msg_invalid_request');
 		}
-		
+
 		$this->add('resized_info', $output);
 	}
-	
-	
+
+
 	/**
 	 * Download Attachment
 	 *
@@ -174,9 +174,9 @@ class fileController extends file {
 	 **/
 	function procFileDownload() {
 		$oFileModel = &getModel('file');
-		
+
 		if(isset($this->grant->access) && $this->grant->access !== true) return new BaseObject(-1, 'msg_not_permitted');
-		
+
 		$file_srl = Context::get('file_srl');
 		$sid = Context::get('sid');
 		$logged_info = Context::get('logged_info');
@@ -197,7 +197,7 @@ class fileController extends file {
 				$allow_outlink_format_array = array();
 				$allow_outlink_format_array = explode(',', $file_module_config->allow_outlink_format);
 				if(!is_array($allow_outlink_format_array)) $allow_outlink_format_array[0] = $file_module_config->allow_outlink_format;
-				
+
 				foreach($allow_outlink_format_array as $val) {
 					$val = trim($val);
 					if(preg_match("/\.{$val}$/i", $filename)) {
@@ -214,7 +214,7 @@ class fileController extends file {
 						$allow_outlink_site_array = array();
 						$allow_outlink_site_array = explode("\n", $file_module_config->allow_outlink_site);
 						if(!is_array($allow_outlink_site_array)) $allow_outlink_site_array[0] = $file_module_config->allow_outlink_site;
-						
+
 						foreach($allow_outlink_site_array as $val) {
 							$site = parse_url(trim($val));
 							if($site['host'] == $referer['host']) {
@@ -227,27 +227,27 @@ class fileController extends file {
 			}
 			if($file_module_config->allow_outlink != 'Y') return $this->stop('msg_not_allowed_outlink');
 		}
-		
+
 		// Check if a permission for file download is granted
 		$downloadGrantCount = 0;
 		if(is_array($file_module_config->download_grant)) {
 			foreach($file_module_config->download_grant AS $value)
 				if($value) $downloadGrantCount++;
 		}
-		
+
 		if(is_array($file_module_config->download_grant) && $downloadGrantCount > 0) {
 			if(!Context::get('is_logged')) return $this->stop('msg_not_permitted_download');
 			$logged_info = Context::get('logged_info');
 			if($logged_info->is_admin != 'Y') {
-				
+
 				$oModuleModel =& getModel('module');
 				$columnList = array('module_srl', 'site_srl');
 				$module_info = $oModuleModel->getModuleInfoByModuleSrl($file_obj->module_srl, $columnList);
-				
+
 				if(!$oModuleModel->isSiteAdmin($logged_info, $module_info->site_srl)) {
 					$oMemberModel =& getModel('member');
 					$member_groups = $oMemberModel->getMemberGroups($logged_info->member_srl, $module_info->site_srl);
-					
+
 					$is_permitted = false;
 					for($i = 0; $i < count($file_module_config->download_grant); $i++) {
 						$group_srl = $file_module_config->download_grant[$i];
@@ -263,45 +263,45 @@ class fileController extends file {
 		// Call a trigger (before)
 		$output = ModuleHandler::triggerCall('file.downloadFile', 'before', $file_obj);
 		if(!$output->toBool()) return $this->stop(($output->message) ? $output->message : 'msg_not_permitted_download');
-		
+
 		// Increase download_count
 		$args = new stdClass();
 		$args->file_srl = $file_srl;
 		executeQuery('file.updateFileDownloadCount', $args);
-		
+
 		// Call a trigger (after)
 		$output = ModuleHandler::triggerCall('file.downloadFile', 'after', $file_obj);
-		
+
 		$random = new Password();
 		$file_key = $_SESSION['__XE_FILE_KEY__'][$file_srl] = $random->createSecureSalt(32, 'hex');
 		header('Location: ' . getNotEncodedUrl('', 'act', 'procFileOutput', 'file_srl', $file_srl, 'file_key', $file_key));
 		Context::close();
 		exit();
 	}
-	
+
 	function procFileOutput() {
 		$oFileModel = getModel('file');
 		$file_srl = Context::get('file_srl');
 		$file_key = Context::get('file_key');
 		if(strstr($_SERVER['HTTP_USER_AGENT'], "Android")) $is_android = true;
-		
+
 		if($is_android && $_SESSION['__XE_FILE_KEY_AND__'][$file_srl]) $session_key = '__XE_FILE_KEY_AND__';
 		else $session_key = '__XE_FILE_KEY__';
 		$columnList = array('source_filename', 'uploaded_filename', 'file_size');
 		$file_obj = $oFileModel->getFile($file_srl, $columnList);
-		
+
 		$uploaded_filename = $file_obj->uploaded_filename;
-		
+
 		if(!file_exists($uploaded_filename)) return $this->stop('msg_file_not_found');
-		
+
 		if(!$file_key || $_SESSION[$session_key][$file_srl] != $file_key) {
 			unset($_SESSION[$session_key][$file_srl]);
 			return $this->stop('msg_invalid_request');
 		}
-		
+
 		$file_size = $file_obj->file_size;
 		$filename = $file_obj->source_filename;
-		
+
 		if(preg_match('#(?:Chrome|Edge)/(\d+)\.#', $_SERVER['HTTP_USER_AGENT'], $matches) && $matches[1] >= 11) {
 			if($is_android && preg_match('#\bwv\b|(?:Version|Browser)/\d+#', $_SERVER['HTTP_USER_AGENT'])) {
 				$filename_param = 'filename="' . $filename . '"';
@@ -316,27 +316,27 @@ class fileController extends file {
 		} else {
 			$filename_param = 'filename="' . $filename . '"';
 		}
-		
+
 		if($is_android) {
 			if($_SESSION['__XE_FILE_KEY__'][$file_srl]) $_SESSION['__XE_FILE_KEY_AND__'][$file_srl] = $file_key;
 		}
-		
+
 		unset($_SESSION[$session_key][$file_srl]);
-		
+
 		Context::close();
-		
+
 		$fp = fopen($uploaded_filename, 'rb');
 		if(!$fp) return $this->stop('msg_file_not_found');
-		
+
 		header("Cache-Control: ");
 		header("Pragma: ");
 		header("Content-Type: application/octet-stream");
 		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-		
+
 		header("Content-Length: " . (string)($file_size));
 		header('Content-Disposition: attachment; ' . $filename_param);
 		header("Content-Transfer-Encoding: binary\n");
-		
+
 		// if file size is lager than 10MB, use fread function (#18675748)
 		if($file_size > 1024 * 1024) {
 			while(!feof($fp)) echo fread($fp, 1024);
@@ -344,10 +344,10 @@ class fileController extends file {
 		} else {
 			fpassthru($fp);
 		}
-		
+
 		exit();
 	}
-	
+
 	/**
 	 * Delete an attachment from the editor
 	 *
@@ -361,36 +361,36 @@ class fileController extends file {
 		if($file_srls) $file_srl = $file_srls;
 		// Exit a session if there is neither upload permission nor information
 		if(!$_SESSION['upload_info'][$editor_sequence]->enabled) exit();
-		
+
 		$upload_target_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
-		
+
 		$logged_info = Context::get('logged_info');
 		$oFileModel = &getModel('file');
-		
+
 		$srls = explode(',', $file_srl);
 		if(!count($srls)) return;
-		
+
 		for($i = 0; $i < count($srls); $i++) {
 			$srl = (int)$srls[$i];
 			if(!$srl) continue;
-			
+
 			$args = null;
 			$args->file_srl = $srl;
 			$output = executeQuery('file.getFile', $args);
 			if(!$output->toBool()) continue;
-			
+
 			$file_info = $output->data;
 			if(!$file_info) continue;
-			
+
 			$file_grant = $oFileModel->getFileGrant($file_info, $logged_info);
-			
+
 			if(!$file_grant->is_deletable) continue;
-			
+
 			if($upload_target_srl && $file_srl) $output = $this->deleteFile($file_srl);
 		}
-		
+
 	}
-	
+
 	/**
 	 * get file list
 	 *
@@ -398,23 +398,23 @@ class fileController extends file {
 	 **/
 	function procFileGetList() {
 		if(!Context::get('is_logged')) return new BaseObject(-1, 'msg_not_permitted');
-		
+
 		$oModuleModel = getModel('module');
-		
+
 		$logged_info = Context::get('logged_info');
 		if($logged_info->is_admin !== 'Y' && !$oModuleModel->isSiteAdmin($logged_info)) {
 			return new BaseObject(-1, 'msg_not_permitted');
 		}
-		
+
 		$fileSrls = Context::get('file_srls');
 		if($fileSrls) $fileSrlList = explode(',', $fileSrls);
-		
+
 		global $lang;
 		if(count($fileSrlList) > 0) {
 			$oFileModel = &getModel('file');
 			$fileList = $oFileModel->getFile($fileSrlList);
 			if(!is_array($fileList)) $fileList = array($fileList);
-			
+
 			if(is_array($fileList)) {
 				foreach($fileList AS $key => $value) {
 					$value->human_file_size = FileHandler::filesize($value->file_size);
@@ -426,10 +426,10 @@ class fileController extends file {
 			$fileList = array();
 			$this->setMessage($lang->no_files);
 		}
-		
+
 		$this->add('file_list', $fileList);
 	}
-	
+
 	/**
 	 * A trigger to return numbers of attachments in the upload_target_srl (document_srl)
 	 *
@@ -442,10 +442,10 @@ class fileController extends file {
 		// Get numbers of attachments
 		$oFileModel = &getModel('file');
 		$obj->uploaded_count = $oFileModel->getFilesCount($document_srl);
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * A trigger to link the attachment with the upload_target_srl (document_srl)
 	 *
@@ -455,13 +455,13 @@ class fileController extends file {
 	function triggerAttachFiles(&$obj) {
 		$document_srl = $obj->document_srl;
 		if(!$document_srl) return new BaseObject();
-		
+
 		$output = $this->setFilesValid($document_srl);
 		if(!$output->toBool()) return $output;
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * A trigger to delete the attachment in the upload_target_srl (document_srl)
 	 *
@@ -471,11 +471,11 @@ class fileController extends file {
 	function triggerDeleteAttached(&$obj) {
 		$document_srl = $obj->document_srl;
 		if(!$document_srl) return new BaseObject();
-		
+
 		$output = $this->deleteFiles($document_srl);
 		return $output;
 	}
-	
+
 	/**
 	 * A trigger to return numbers of attachments in the upload_target_srl (comment_srl)
 	 *
@@ -488,10 +488,10 @@ class fileController extends file {
 		// Get numbers of attachments
 		$oFileModel = &getModel('file');
 		$obj->uploaded_count = $oFileModel->getFilesCount($comment_srl);
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * A trigger to link the attachment with the upload_target_srl (comment_srl)
 	 *
@@ -502,13 +502,13 @@ class fileController extends file {
 		$comment_srl = $obj->comment_srl;
 		$uploaded_count = $obj->uploaded_count;
 		if(!$comment_srl || !$uploaded_count) return new BaseObject();
-		
+
 		$output = $this->setFilesValid($comment_srl);
 		if(!$output->toBool()) return $output;
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * A trigger to delete the attachment in the upload_target_srl (comment_srl)
 	 *
@@ -518,13 +518,13 @@ class fileController extends file {
 	function triggerCommentDeleteAttached(&$obj) {
 		$comment_srl = $obj->comment_srl;
 		if(!$comment_srl) return new BaseObject();
-		
+
 		if($obj->isMoveToTrash) return new BaseObject();
-		
+
 		$output = $this->deleteFiles($comment_srl);
 		return $output;
 	}
-	
+
 	/**
 	 * A trigger to delete all the attachements when deleting the module
 	 *
@@ -534,11 +534,11 @@ class fileController extends file {
 	function triggerDeleteModuleFiles(&$obj) {
 		$module_srl = $obj->module_srl;
 		if(!$module_srl) return new BaseObject();
-		
+
 		$oFileController = &getAdminController('file');
 		return $oFileController->deleteModuleFiles($module_srl);
 	}
-	
+
 	/**
 	 * Upload enabled
 	 *
@@ -553,7 +553,7 @@ class fileController extends file {
 		$_SESSION['upload_info'][$editor_sequence]->enabled = true;
 		$_SESSION['upload_info'][$editor_sequence]->upload_target_srl = $upload_target_srl;
 	}
-	
+
 	/**
 	 * Set the attachements of the upload_target_srl to be valid
 	 * By changing its state to valid when a document is inserted, it prevents from being considered as a unnecessary
@@ -567,7 +567,7 @@ class fileController extends file {
 		$args->upload_target_srl = $upload_target_srl;
 		return executeQuery('file.updateFileValid', $args);
 	}
-	
+
 	/**
 	 * Add an attachement
 	 *
@@ -605,19 +605,19 @@ class fileController extends file {
 		$trigger_obj->upload_target_srl = $upload_target_srl;
 		$output = ModuleHandler::triggerCall('file.insertFile', 'before', $trigger_obj);
 		if(!$output->toBool()) return $output;
-		
+
 		// A workaround for Firefox upload bug
 		if(preg_match('/^=\?UTF-8\?B\?(.+)\?=$/i', $file_info['name'], $match)) {
 			$file_info['name'] = base64_decode(strtr($match[1], ':', '/'));
 		}
-		
+
 		if(!$manual_insert) {
 			// Get the file configurations
 			$logged_info = Context::get('logged_info');
 			if($logged_info->is_admin != 'Y') {
 				$oFileModel = &getModel('file');
 				$config = $oFileModel->getFileConfig($module_srl);
-				
+
 				// check file type
 				if(isset($config->allowed_filetypes) && $config->allowed_filetypes !== '*.*') {
 					$filetypes = explode(';', $config->allowed_filetypes);
@@ -632,7 +632,7 @@ class fileController extends file {
 						return $this->stop('msg_not_allowed_filetype');
 					}
 				}
-				
+
 				$allowed_filesize = $config->allowed_filesize * 1024 * 1024;
 				$allowed_attach_size = $config->allowed_attach_size * 1024 * 1024;
 				// An error appears if file size exceeds a limit
@@ -644,20 +644,20 @@ class fileController extends file {
 				if($attached_size > $allowed_attach_size) return new BaseObject(-1, 'msg_exceeds_limit_size');
 			}
 		}
-		
+
 		// https://github.com/xpressengine/xe-core/issues/1713
 		$file_info['name'] = preg_replace('/\.(php|phtm|phar|html?|cgi|pl|exe|jsp|asp|inc)/i', '$0-x', $file_info['name']);
 		$file_info['name'] = removeHackTag($file_info['name']);
 		$file_info['name'] = str_replace(array('<', '>'), array('%3C', '%3E'), $file_info['name']);
 		$file_info['name'] = str_replace('&amp;', '&', $file_info['name']);
-		
+
 		// Get random number generator
 		$random = new Password();
-		
+
 		// Set upload path by checking if the attachement is an image or other kinds of file
 		if(preg_match("/\.(jpe?g|gif|png|wm[va]|mpe?g|avi|flv|mp[1-4]|as[fx]|wav|midi?|moo?v|qt|r[am]{1,2}|m4v)$/i", $file_info['name'])){
 			$path = sprintf("./files/attach/images/%s/%s", $module_srl, getNumberingPath($upload_target_srl, 3));
-			
+
 			// special character to '_'
 			// change to hash file name. because window php bug. window php is not recognize unicode character file name - by cherryfilter
 			$ext = substr(strrchr($file_info['name'], '.'), 1);
@@ -707,16 +707,16 @@ class fileController extends file {
 		$args->comment = NULL;
 		$args->member_srl = $member_srl;
 		$args->sid = $random->createSecureSalt(32, 'hex');
-		
+
 		$output = executeQuery('file.insertFile', $args);
 		if(!$output->toBool()) return $output;
 		// Call a trigger (after)
 		$trigger_output = ModuleHandler::triggerCall('file.insertFile', 'after', $args);
 		if(!$trigger_output->toBool()) return $trigger_output;
-		
-		
+
+
 		$_SESSION['__XE_UPLOADING_FILES_INFO__'][$args->file_srl] = true;
-		
+
 		$output->add('file_srl', $args->file_srl);
 		$output->add('file_size', $args->file_size);
 		$output->add('sid', $args->sid);
@@ -726,7 +726,7 @@ class fileController extends file {
 		$output->add('uploaded_filename', $args->uploaded_filename);
 		return $output;
 	}
-	
+
 	/**
 	 * Delete the attachment
 	 *
@@ -756,22 +756,22 @@ class fileController extends file {
 	 **/
 	function deleteFile($file_srl) {
 		if(!$file_srl) return;
-		
+
 		$srls = explode(',', $file_srl);
 		if(!count($srls)) return;
-		
+
 		for($i = 0, $c = count($srls); $i < $c; $i++) {
 			$srl = (int)$srls[$i];
 			if(!$srl) continue;
-			
+
 			$args = new stdClass();
 			$args->file_srl = $srl;
 			$output = executeQuery('file.getFile', $args);
 			if(!$output->toBool()) continue;
-			
+
 			$file_info = $output->data;
 			if(!$file_info) continue;
-			
+
 			$source_filename = $output->data->source_filename;
 			$uploaded_filename = $output->data->uploaded_filename;
 			// Call a trigger (before)
@@ -787,10 +787,10 @@ class fileController extends file {
 			// If successfully deleted, remove the file
 			FileHandler::removeFile($uploaded_filename);
 		}
-		
+
 		return $output;
 	}
-	
+
 	/**
 	 * Delete all attachments of a particular document
 	 *
@@ -804,32 +804,32 @@ class fileController extends file {
 		$file_list = $oFileModel->getFiles($upload_target_srl, $columnList);
 		// Success returned if no attachement exists
 		if(!is_array($file_list) || !count($file_list)) return new BaseObject();
-		
+
 		// Delete the file
 		$path = array();
 		$file_count = count($file_list);
 		for($i = 0; $i < $file_count; $i++) {
 			$this->deleteFile($file_list[$i]->file_srl);
-			
+
 			$uploaded_filename = $file_list[$i]->uploaded_filename;
 			$path_info = pathinfo($uploaded_filename);
 			if(!in_array($path_info['dirname'], $path)) $path[] = $path_info['dirname'];
 		}
-		
+
 		// Remove from the DB
 		$args = new stdClass();
 		$args->upload_target_srl = $upload_target_srl;
 		$output = executeQuery('file.deleteFiles', $args);
 		if(!$output->toBool()) return $output;
-		
+
 		// Remove a file directory of the document
 		for($i = 0, $c = count($path); $i < $c; $i++) {
 			FileHandler::removeBlankDir($path[$i]);
 		}
-		
+
 		return $output;
 	}
-	
+
 	/**
 	 * Move an attachement to the other document
 	 *
@@ -840,15 +840,15 @@ class fileController extends file {
 	 **/
 	function moveFile($source_srl, $target_module_srl, $target_srl) {
 		if($source_srl == $target_srl) return;
-		
+
 		$oFileModel = &getModel('file');
 		$file_list = $oFileModel->getFiles($source_srl);
 		if(!$file_list) return;
-		
+
 		$file_count = count($file_list);
-		
+
 		for($i = 0; $i < $file_count; $i++) {
-			
+
 			unset($file_info);
 			$file_info = $file_list[$i];
 			$old_file = $file_info->uploaded_filename;
@@ -876,7 +876,7 @@ class fileController extends file {
 			executeQuery('file.updateFile', $args);
 		}
 	}
-	
+
 	function procFileSetCoverImage() {
 		$vars = Context::getRequestVars();
 		$logged_info = Context::get('logged_info');
@@ -907,12 +907,12 @@ class fileController extends file {
 		}
 		$oDB->commit();
 		$this->add('is_cover',$args->cover_image);
-		
+
 		// Delete the thumbnail
 		$thumbnail_path = sprintf('files/thumbnails/%s', getNumberingPath($upload_target_srl, 3));
 		Filehandler::removeFilesInDir($thumbnail_path);
 	}
-	
+
 	/**
 	 * Find the attachment where a key is upload_target_srl and then return java script code
 	 *
@@ -924,11 +924,11 @@ class fileController extends file {
 	function printUploadedFileList($editor_sequence, $upload_target_srl) {
 		return;
 	}
-	
+
 	function triggerCopyModule(&$obj) {
 		$oModuleModel = &getModel('module');
 		$fileConfig = $oModuleModel->getModulePartConfig('file', $obj->originModuleSrl);
-		
+
 		$oModuleController = &getController('module');
 		if(is_array($obj->moduleSrlList)) {
 			foreach($obj->moduleSrlList AS $key => $moduleSrl) {

@@ -15,7 +15,7 @@ class commentView extends comment {
 	 */
 	function init() {
 	}
-	
+
 	/**
 	 * Add a form fot comment setting on the additional setting of module
 	 * @param string $obj
@@ -24,7 +24,7 @@ class commentView extends comment {
 	function triggerDispCommentAdditionSetup(&$obj) {
 		$current_module_srl = Context::get('module_srl');
 		$current_module_srls = Context::get('module_srls');
-		
+
 		if(!$current_module_srl && !$current_module_srls) {
 			// get information of the selected module
 			$current_module_info = Context::get('current_module_info');
@@ -43,7 +43,7 @@ class commentView extends comment {
 		$oTemplate = &TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($this->module_path . 'tpl', 'comment_module_config');
 		$obj .= $tpl;
-		
+
 		return new BaseObject();
 	}
 }

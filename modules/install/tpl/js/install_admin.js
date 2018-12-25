@@ -122,7 +122,7 @@ function completeGetFtpInfo(ret_obj)
 		target = arr.join("/");
 		list = list + "<li><a href='#ftpSetup' style='color:#fff; text-decoration:underline;' onclick=\"getFTPList('"+target+"')\">../</a></li>";
 	}
-	
+
 	for(var i=0;i<ret_obj['list']['item'].length;i++)
 	{   
 		var v = ret_obj['list']['item'][i];

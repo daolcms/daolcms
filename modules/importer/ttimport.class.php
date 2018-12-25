@@ -16,7 +16,7 @@ class ttimport {
 	 * @var XmlParser
 	 */
 	var $oXmlParser = null;
-	
+
 	/**
 	 * Import data in module.xml format
 	 * @param int    $key
@@ -48,18 +48,18 @@ class ttimport {
 				$categories = array();
 				$idx = 0;
 				$this->arrangeCategory($xmlDoc->categories, $categories, $idx, 0);
-				
+
 				$match_sequence = array();
 				foreach($categories as $k => $v) {
 					$category = $v->name;
 					if(!$category || $category_titles[$category]) continue;
-					
+
 					$obj = null;
 					$obj->title = $category;
 					$obj->module_srl = $module_srl;
 					if($v->parent) $obj->parent_srl = $match_sequence[$v->parent];
 					$output = $oDocumentController->insertCategory($obj);
-					
+
 					if($output->toBool()) $match_sequence[$v->sequence] = $category_titles[$category] = $output->get('category_srl');
 				}
 				$oDocumentController->makeCategoryFile($module_srl);
@@ -73,7 +73,7 @@ class ttimport {
 		$oMemberModel = &getModel('member');
 		$member_info = $oMemberModel->getMemberInfoByUserID($user_id);
 		$author_xml_id = 0;
-		
+
 		if(!$cur) $cur = 0;
 		// Open an index file
 		$f = fopen($index_file, "r");
@@ -84,19 +84,19 @@ class ttimport {
 			if(feof($f)) break;
 			// Find a location
 			$target_file = trim(fgets($f, 1024));
-			
+
 			if(!file_exists($target_file)) continue;
 			// Start importing data
 			$fp = fopen($target_file, "r");
 			if(!$fp) continue;
-			
+
 			$obj = null;
 			$obj->module_srl = $module_srl;
 			$obj->document_srl = getNextSequence();
 			$obj->uploaded_count = 0;
-			
+
 			$files = array();
-			
+
 			$started = false;
 			$buff = null;
 			// Start importing from the body data
@@ -111,21 +111,21 @@ class ttimport {
 					if($this->importAttaches($fp, $module_srl, $obj->document_srl, $files, $str)) $obj->uploaded_count++;
 					continue;
 				}
-				
+
 				if($started) $buff .= $str;
 			}
-			
+
 			$xmlDoc = $this->oXmlParser->parse('<post>' . $buff);
-			
+
 			$author_xml_id = $xmlDoc->post->author->body;
-			
-			
+
+
 			if($xmlDoc->post->category->body) {
 				$tmp_arr = explode('/', $xmlDoc->post->category->body);
 				$category = trim($tmp_arr[count($tmp_arr) - 1]);
 				if($category_titles[$category]) $obj->category_srl = $category_titles[$category];
 			}
-			
+
 			$obj->is_notice = 'N';
 			$obj->status = in_array($xmlDoc->post->visibility->body, array('public', 'syndicated')) ? $oDocumentModel->getConfigStatus('public') : $oDocumentModel->getConfigStatus('secret');
 			$obj->title = $xmlDoc->post->title->body;
@@ -138,7 +138,7 @@ class ttimport {
 			$obj->regdate = date("YmdHis", $xmlDoc->post->published->body);
 			$obj->last_update = date("YmdHis", $xmlDoc->post->modified->body);
 			if(!$obj->last_update) $obj->last_update = $obj->regdate;
-			
+
 			$tag = null;
 			$tmp_tags = null;
 			$tag = $xmlDoc->post->tag;
@@ -147,7 +147,7 @@ class ttimport {
 				foreach($tag as $key => $val) $tmp_tags[] = $val->body;
 				$obj->tags = implode(',', $tmp_tags);
 			}
-			
+
 			$obj->readed_count = 0;
 			$obj->voted_count = 0;
 			$obj->nick_name = $member_info->nick_name;
@@ -166,9 +166,9 @@ class ttimport {
 					$obj->content = preg_replace('/(src|href)\=(["\']?)' . preg_quote($key) . '(["\']?)/i', '$1="' . $val->url . '"', $obj->content);
 				}
 			}
-			
+
 			$obj->content = preg_replace_callback('!\[##_Movie\|([^\|]*)\|(.*?)_##\]!is', array($this, '_replaceTTMovie'), $obj->content);
-			
+
 			if(count($files)) {
 				$this->files = $files;
 				$obj->content = preg_replace_callback('!\[##_([a-z0-9]+)\|([^\|]*)\|([^\|]*)\|(.*?)_##\]!is', array($this, '_replaceTTAttach'), $obj->content);
@@ -204,7 +204,7 @@ class ttimport {
 				foreach($comment as $key => $val) {
 					$parent_srl = $this->insertComment($val, $module_srl, $obj->document_srl, $member_info, 0, $author_xml_id);
 					if($parent_srl === false) continue;
-					
+
 					$obj->comment_count++;
 					if($val->comment) {
 						$child_comment = $val->comment;
@@ -216,7 +216,7 @@ class ttimport {
 					}
 				}
 			}
-			
+
 			if($module_name == 'textyle') {
 				$args->document_srl = $obj->document_srl;
 				$args->module_srl = $obj->module_srl;
@@ -231,7 +231,7 @@ class ttimport {
 			}
 			// Document
 			$output = executeQuery('document.insertDocument', $obj);
-			
+
 			if($output->toBool()) {
 				// Tags
 				if($obj->tags) {
@@ -249,13 +249,13 @@ class ttimport {
 					}
 				}
 			}
-			
+
 			fclose($fp);
 			FileHandler::removeFile($target_file);
 		}
-		
+
 		fclose($f);
-		
+
 		if(count($category_list)) foreach($category_list as $key => $val) $oDocumentController->updateCategoryCount($module_srl, $val->category_srl);
 		// Guestbook information
 		$guestbook_file = preg_replace('/index$/i', 'guestbook.xml', $index_file);
@@ -266,11 +266,11 @@ class ttimport {
 			if($guestbook_module_srl && $xmlDoc->guestbook->comment) {
 				$comment = $xmlDoc->guestbook->comment;
 				if(!is_array($comment)) $comment = array($comment);
-				
+
 				if($module_name == 'textyle') {
 					foreach($comment as $key => $val) {
 						$textyle_guestbook_srl = getNextSequence();
-						
+
 						if($val->comment) {
 							$child_comment = $val->comment;
 							if(!is_array($child_comment)) $child_comment = array($child_comment);
@@ -278,7 +278,7 @@ class ttimport {
 								$result = $this->insertTextyleGuestbookItem($v, $module_srl, $member_info, 0, $textyle_guestbook_srl, $author_xml_id);
 							}
 						}
-						
+
 						$result = $this->insertTextyleGuestbookItem($val, $module_srl, $member_info, $textyle_guestbook_srl, 0, $author_xml_id);
 					}
 				} else {
@@ -290,11 +290,11 @@ class ttimport {
 						$obj->is_notice = 'N';
 						$obj->status = $val->secret->body == '1' ? $oDocumentModel->getConfigStatus('secret') : $oDocumentModel->getConfigStatus('public');
 						$obj->content = nl2br($val->content->body);
-						
+
 						// Extract a title form the bocy
 						$obj->title = cut_str(strip_tags($obj->content), 20, '...');
 						if($obj->title == '') $obj->title = 'Untitled';
-						
+
 						$obj->commentStatus = 'ALLOW';
 						$obj->allow_trackback = 'N';
 						$obj->regdate = date("YmdHis", $val->written->body);
@@ -321,7 +321,7 @@ class ttimport {
 						$obj->list_order = $obj->update_order = $obj->document_srl * -1;
 						$obj->notify_message = 'N';
 						$obj->trackback_count = 0;
-						
+
 						$obj->comment_count = 0;
 						if($val->comment) {
 							$child_comment = $val->comment;
@@ -331,7 +331,7 @@ class ttimport {
 								if($result !== false) $obj->comment_count++;
 							}
 						}
-						
+
 						// Document
 						$output = executeQuery('document.insertDocument', $obj);
 					}
@@ -339,10 +339,10 @@ class ttimport {
 			}
 			FileHandler::removeFile($guestbook_file);
 		}
-		
+
 		return $idx - 1;
 	}
-	
+
 	/**
 	 * Insert textyle guest book
 	 * @param object $val
@@ -379,21 +379,21 @@ class ttimport {
 		}
 		$tobj->last_update = $tobj->regdate = date("YmdHis", $val->written->body);
 		$tobj->ipaddress = $val->commenter->ip->body;
-		
+
 		if($parent_srl > 0) {
 			$tobj->parent_srl = $parent_srl;
 			$tobj->list_order = $tobj->parent_srl * -1;
 		} else {
 			$tobj->list_order = $tobj->textyle_guestbook_srl * -1;
 		}
-		
+
 		$output = executeQuery('textyle.insertTextyleGuestbook', $tobj);
-		
+
 		if($output->toBool()) return $tobj->textyle_guestbook_srl;
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * Attachment
 	 * @param resource $fp
@@ -405,12 +405,12 @@ class ttimport {
 	 */
 	function importAttaches($fp, $module_srl, $upload_target_srl, &$files, $buff) {
 		$uploaded_count = 0;
-		
+
 		$file_obj = null;
 		$file_obj->file_srl = getNextSequence();
 		$file_obj->upload_target_srl = $upload_target_srl;
 		$file_obj->module_srl = $module_srl;
-		
+
 		while(!feof($fp)) {
 			$str = fgets($fp, 1024);
 			// If it ends with </attaches>, break
@@ -420,15 +420,15 @@ class ttimport {
 				$file_obj->file = $this->saveTemporaryFile($fp, $str);
 				continue;
 			}
-			
+
 			$buff .= $str;
 		}
 		if(!file_exists($file_obj->file)) return false;
-		
+
 		$buff .= '</attachment>';
-		
+
 		$xmlDoc = $this->oXmlParser->parse($buff);
-		
+
 		$file_obj->source_filename = $xmlDoc->attachment->label->body;
 		$file_obj->download_count = $xmlDoc->attachment->downloads->body;
 		$name = $xmlDoc->attachment->name->body;
@@ -444,7 +444,7 @@ class ttimport {
 		}
 		// Create a directory
 		if(!FileHandler::makeDir($path)) return;
-		
+
 		FileHandler::rename($file_obj->file, $filename);
 		// Insert to the DB
 		unset($file_obj->file);
@@ -455,7 +455,7 @@ class ttimport {
 		$file_obj->sid = md5(rand(rand(1111111, 4444444), rand(4444445, 9999999)));
 		$file_obj->isvalid = 'Y';
 		$output = executeQuery('file.insertFile', $file_obj);
-		
+
 		if($output->toBool()) {
 			$uploaded_count++;
 			$tmp_obj = null;
@@ -465,10 +465,10 @@ class ttimport {
 			$files[$name]->source_filename = $file_obj->source_filename;
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Return a filename to temporarily use
 	 * @return string
@@ -480,7 +480,7 @@ class ttimport {
 		if(file_exists($filename)) $filename .= rand(111, 999);
 		return $filename;
 	}
-	
+
 	/**
 	 * Read buff until key value comes out from a specific file point
 	 * @param resource $fp
@@ -490,21 +490,21 @@ class ttimport {
 	function saveTemporaryFile($fp, $buff) {
 		$temp_filename = $this->getTmpFilename();
 		$buff = substr($buff, 9);
-		
+
 		while(!feof($fp)) {
 			$str = trim(fgets($fp, 1024));
 			$buff .= $str;
 			if(substr($str, -10) == '</content>') break;
 		}
-		
+
 		$buff = substr($buff, 0, -10);
-		
+
 		$f = fopen($temp_filename, "w");
 		fwrite($f, base64_decode($buff));
 		fclose($f);
 		return $temp_filename;
 	}
-	
+
 	/**
 	 * Replace img tag in the ttxml
 	 * @param array $matches
@@ -513,7 +513,7 @@ class ttimport {
 	function _replaceTTAttach($matches) {
 		$name = $matches[2];
 		if(!$name) return $matches[0];
-		
+
 		$obj = $this->files[$name];
 		// If multimedia file is,
 		if($obj->direct_download == 'Y') {
@@ -529,7 +529,7 @@ class ttimport {
 			return sprintf('<a href="%s">%s</a>', $obj->url, $obj->source_filename);
 		}
 	}
-	
+
 	/**
 	 * Convert the video file
 	 * @return string
@@ -537,7 +537,7 @@ class ttimport {
 	function _replaceTTMovie($matches) {
 		$key = $matches[1];
 		if(!$key) return $matches[0];
-		
+
 		return
 			'<object type="application/x-shockwave-flash" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="100%" height="402">' .
 			'<param name="movie" value="http://flvs.daum.net/flvPlayer.swf?vid=' . urlencode($key) . '"/>' .
@@ -547,7 +547,7 @@ class ttimport {
 			'<embed src="http://flvs.daum.net/flvPlayer.swf?vid=' . urlencode($key) . '" width="100%" height="402" allowscriptaccess="always" allowfullscreen="true" type="application/x-shockwave-flash" bgcolor="#000000"/>' .
 			'</object>';
 	}
-	
+
 	/**
 	 * Comment
 	 * @param object $val
@@ -604,7 +604,7 @@ class ttimport {
 			// Return if parent comment doesn't exist
 			if(!$parent_output->toBool() || !$parent_output->data) return false;
 			$parent = $parent_output->data;
-			
+
 			$list_args->head = $parent->head;
 			$list_args->depth = $parent->depth + 1;
 			if($list_args->depth < 2) $list_args->arrange = $tobj->comment_srl;
@@ -614,7 +614,7 @@ class ttimport {
 				if(!$output->toBool()) return $output;
 			}
 		}
-		
+
 		$output = executeQuery('comment.insertCommentList', $list_args);
 		if($output->toBool()) {
 			$output = executeQuery('comment.insertComment', $tobj);
@@ -622,7 +622,7 @@ class ttimport {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * List category
 	 * @param object $obj
@@ -644,9 +644,9 @@ class ttimport {
 			$obj->name = $name;
 			$obj->sequence = $idx;
 			$obj->parent = $parent;
-			
+
 			$category[$idx] = $obj;
-			
+
 			$this->arrangeCategory($val, $category, $idx, $idx);
 		}
 	}

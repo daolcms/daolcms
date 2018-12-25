@@ -49,7 +49,7 @@ class extract {
 	 * @var string
 	 */
 	var $itemEndTag = '';
-	
+
 	/**
 	 * File resource
 	 * @var string
@@ -60,7 +60,7 @@ class extract {
 	 * @var string
 	 */
 	var $index_fd = null;
-	
+
 	/**
 	 * Start tag open status
 	 * @var bool
@@ -71,19 +71,19 @@ class extract {
 	 * @var bool
 	 */
 	var $isFinished = true;
-	
+
 	/**
 	 * Buffer
 	 * @var string
 	 */
 	var $buff = 0;
-	
+
 	/**
 	 * File count
 	 * @var int
 	 */
 	var $index = 0;
-	
+
 	/**
 	 * Get arguments for constructor, file name, start tag, end tag, tag name for each item
 	 * @param string $filename
@@ -95,22 +95,22 @@ class extract {
 	 */
 	function set($filename, $startTag, $endTag, $itemTag, $itemEndTag) {
 		$this->filename = $filename;
-		
+
 		$this->startTag = $startTag;
 		if($endTag) $this->endTag = $endTag;
 		$this->itemStartTag = $itemTag;
 		$this->itemEndTag = $itemEndTag;
-		
+
 		$this->key = md5($filename);
-		
+
 		$this->cache_path = './files/cache/importer/' . $this->key;
 		$this->cache_index_file = $this->cache_path . '/index';
-		
+
 		if(!is_dir($this->cache_path)) FileHandler::makeDir($this->cache_path);
-		
+
 		return $this->openFile();
 	}
-	
+
 	/**
 	 * Open an indicator of the file
 	 * @return BaseObject
@@ -127,7 +127,7 @@ class extract {
 			$url_info = parse_url($this->filename);
 			if(!$url_info['port']) $url_info['port'] = 80;
 			if(!$url_info['path']) $url_info['path'] = '/';
-			
+
 			$this->fd = @fsockopen($url_info['host'], $url_info['port']);
 			if(!$this->fd) return new BaseObject(-1, 'msg_no_xml_file');
 			// If the file name contains Korean, do urlencode(iconv required)
@@ -141,7 +141,7 @@ class extract {
 				$path = implode('/', $path_list);
 				$url_info['path'] = $path;
 			}
-			
+
 			$header = sprintf("GET %s?%s HTTP/1.0\r\nHost: %s\r\nReferer: %s://%s\r\nConnection: Close\r\n\r\n", $url_info['path'], $url_info['query'], $url_info['host'], $url_info['scheme'], $url_info['host']);
 			@fwrite($this->fd, $header);
 			$buff = '';
@@ -151,7 +151,7 @@ class extract {
 			}
 			if(preg_match('/404 Not Found/i', $buff)) return new BaseObject(-1, 'msg_no_xml_file');
 		}
-		
+
 		if($this->startTag) {
 			while(!feof($this->fd)) {
 				$str = fgets($this->fd, 1024);
@@ -167,10 +167,10 @@ class extract {
 			$this->isStarted = true;
 			$this->isFinished = false;
 		}
-		
+
 		return new BaseObject();
 	}
-	
+
 	/**
 	 * Close an indicator of the file
 	 * @return void
@@ -180,11 +180,11 @@ class extract {
 		fclose($this->fd);
 		fclose($this->index_fd);
 	}
-	
+
 	function isFinished() {
 		return $this->isFinished || !$this->fd || feof($this->fd);
 	}
-	
+
 	/**
 	 * Save item
 	 * @return void
@@ -196,39 +196,39 @@ class extract {
 			$this->getItem();
 		}
 	}
-	
+
 	/**
 	 * Merge item
 	 * @return void
 	 */
 	function mergeItems($filename) {
 		$this->saveItems();
-		
+
 		$filename = sprintf('%s/%s', $this->cache_path, $filename);
-		
+
 		$index_fd = fopen($this->cache_index_file, "r");
 		$fd = fopen($filename, 'w');
-		
+
 		fwrite($fd, '<items>');
 		while(!feof($index_fd)) {
 			$target_file = trim(fgets($index_fd, 1024));
 			if(!file_exists($target_file)) continue;
 			$buff = FileHandler::readFile($target_file);
 			fwrite($fd, FileHandler::readFile($target_file));
-			
+
 			FileHandler::removeFile($target_file);
 		}
 		fwrite($fd, '</items>');
 		fclose($fd);
 	}
-	
+
 	/**
 	 * Get item. Put data to buff
 	 * @return void
 	 */
 	function getItem() {
 		if($this->isFinished()) return;
-		
+
 		while(!feof($this->fd)) {
 			$startPos = strpos($this->buff, $this->itemStartTag);
 			if($startPos !== false) {
@@ -244,18 +244,18 @@ class extract {
 			}
 			$this->buff .= fgets($this->fd, 1024);
 		}
-		
+
 		$startPos = strpos($this->buff, $this->itemStartTag);
 		if($startPos === false) {
 			$this->closeFile();
 			return;
 		}
-		
+
 		$filename = sprintf('%s/%s.xml', $this->cache_path, $this->index++);
 		fwrite($this->index_fd, $filename . "\r\n");
-		
+
 		$fd = fopen($filename, 'w');
-		
+
 		while(!feof($this->fd)) {
 			$endPos = strpos($this->buff, $this->itemEndTag);
 			if($endPos !== false) {
@@ -266,20 +266,20 @@ class extract {
 				$this->buff = substr($this->buff, $endPos);
 				break;
 			}
-			
+
 			fwrite($fd, $this->_addTagCRTail($this->buff));
 			$this->buff = fgets($this->fd, 1024);
 		}
 	}
-	
+
 	function getTotalCount() {
 		return $this->index;
 	}
-	
+
 	function getKey() {
 		return $this->key;
 	}
-	
+
 	function _addTagCRTail($str) {
 		$str = preg_replace('/<\/([^>]*)></i', "</$1>\r\n<", $str);
 		return $str;

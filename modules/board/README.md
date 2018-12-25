@@ -1,2 +1,0 @@
-# DAOL BOARD
-DAOL BOARD Module

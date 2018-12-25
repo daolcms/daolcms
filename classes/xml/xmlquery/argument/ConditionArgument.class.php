@@ -12,8 +12,8 @@ class ConditionArgument extends Argument {
 	 * @var string
 	 */
 	var $operation;
-	
-	
+
+
 	/**
 	 * constructor
 	 * @param string $name
@@ -21,27 +21,27 @@ class ConditionArgument extends Argument {
 	 * @param string $operation
 	 * @return void
 	 */
-	function ConditionArgument($name, $value, $operation) {
+	function __construct($name, $value, $operation) {
 		$operationList = array('in' => 1, 'notin' => 1, 'not_in' => 1, 'between' => 1);
 		if(isset($value) && isset($operationList[$operation]) && !is_array($value) && $value != '') {
 			$value = str_replace(' ', '', $value);
 			$value = str_replace('\'', '', $value);
 			$value = explode(',', $value);
 		}
-		parent::Argument($name, $value);
+		parent::__construct($name, $value);
 		$this->operation = $operation;
 	}
-	
+
 	/**
 	 * create condition value. set $this->value
 	 * @return void
 	 */
 	function createConditionValue() {
 		if(!isset($this->value)) return;
-		
+
 		$operation = $this->operation;
 		$value = $this->value;
-		
+
 		switch($operation) {
 			case 'like_prefix' :
 				if(defined('__CUBRID_VERSION__')
@@ -85,7 +85,7 @@ class ConditionArgument extends Argument {
 				break;
 		}
 	}
-	
+
 	/**
 	 * Since ConditionArgument is used in WHERE clause,
 	 * where the argument value is compared to a table column,
@@ -106,14 +106,14 @@ class ConditionArgument extends Argument {
 			return '';
 		}
 	}
-	
+
 	function setColumnType($column_type) {
 		if(!isset($this->value)) return;
 		if($column_type === '') return;
-		
+
 		$this->type = $column_type;
 	}
-	
+
 }
 
 ?>

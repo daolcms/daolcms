@@ -35,12 +35,12 @@
 			<tr>
 				<td>{$no}</td>
 				<td>
-					{$oDocument->getTitle()}
-					
+					{$oDocument->getTitle()|noescape}
+
 					<!--@if($oDocument->getCommentCount())-->
 					[{$oDocument->getCommentCount()}]
 					<!--@end-->
-					
+
 					<!--@if($oDocument->getTrackbackCount())-->
 					[{$oDocument->getTrackbackCount()}]
 					<!--@end-->

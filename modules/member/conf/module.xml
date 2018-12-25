@@ -31,21 +31,21 @@
 		<permission action="procMemberDeleteSavedDocument" target="member" />
 	</permissions>
 	<actions>
-		<action name="dispMemberInfo" type="view" standalone="true" />
-		<action name="dispMemberSignUpForm" type="view" standalone="true" />
-		<action name="dispMemberModifyEmailAddress" type="view" />
-		<action name="dispMemberModifyInfo" type="view" standalone="true" />
-		<action name="dispMemberModifyPassword" type="view" standalone="true" />
-		<action name="dispMemberLoginForm" type="view" standalone="true" />
-		<action name="dispMemberLogout" type="view" standalone="true" />
-		<action name="dispMemberLeave" type="view" standalone="true" />
-		<action name="dispMemberOwnDocument" type="view" standalone="true" />
-		<action name="dispMemberScrappedDocument" type="view" standalone="true" />
-		<action name="dispMemberSavedDocument" type="view" standalone="true" />
-		<action name="dispMemberFindAccount" type="view" standalone="true" />
-		<action name="dispMemberGetTempPassword" type="view" standalone="true" />
-		<action name="dispMemberResendAuthMail" type="view" standalone="true" />
-		<action name="dispSavedDocumentList" type="view" standalone="true" />
+		<action name="dispMemberInfo" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispMemberSignUpForm" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispMemberModifyEmailAddress" type="view" meta-noindex="true" />
+		<action name="dispMemberModifyInfo" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispMemberModifyPassword" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispMemberLoginForm" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispMemberLogout" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispMemberLeave" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispMemberOwnDocument" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispMemberScrappedDocument" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispMemberSavedDocument" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispMemberFindAccount" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispMemberGetTempPassword" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispMemberResendAuthMail" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispSavedDocumentList" type="view" standalone="true" meta-noindex="true" />
 
 		<!-- admin -->
 		<action name="dispMemberAdminList" type="view" standalone="true" index="true" admin_index="true" menu_name="userList" menu_index="true"/>

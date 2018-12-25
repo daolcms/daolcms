@@ -14,13 +14,13 @@ class XmlGenerator {
 	 */
 	function obj2xml($xml) {
 		$buff = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
-		
+
 		foreach($xml as $nodeName => $nodeItem) {
 			$buff .= $this->_makexml($nodeItem);
 		}
 		return $buff;
 	}
-	
+
 	/**
 	 * object change to xml
 	 * @param object $node node in xml object

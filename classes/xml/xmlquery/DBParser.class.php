@@ -25,7 +25,7 @@ class DBParser {
 	 * @var string
 	 */
 	var $escape_char_left;
-	
+
 	/**
 	 * Character for escape target value on the right
 	 *
@@ -37,7 +37,7 @@ class DBParser {
 	 * @var string
 	 */
 	var $escape_char_right;
-	
+
 	/**
 	 * Table prefix string
 	 *
@@ -46,7 +46,7 @@ class DBParser {
 	 * @var string
 	 */
 	var $table_prefix;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -56,13 +56,13 @@ class DBParser {
 	 *
 	 * @return void
 	 */
-	function DBParser($escape_char_left, $escape_char_right = "", $table_prefix = "xe_") {
+	function __construct($escape_char_left, $escape_char_right = "", $table_prefix = "xe_") {
 		$this->escape_char_left = $escape_char_left;
 		if($escape_char_right !== "") $this->escape_char_right = $escape_char_right;
 		else $this->escape_char_right = $escape_char_left;
 		$this->table_prefix = $table_prefix;
 	}
-	
+
 	/**
 	 * Get escape character
 	 *
@@ -73,7 +73,7 @@ class DBParser {
 		if($leftOrRight === 'left') return $this->escape_char_left;
 		else return $this->escape_char_right;
 	}
-	
+
 	/**
 	 * Escape the value
 	 *
@@ -83,7 +83,7 @@ class DBParser {
 	function escape($name) {
 		return $this->escape_char_left . $name . $this->escape_char_right;
 	}
-	
+
 	/**
 	 * Escape the string value
 	 *
@@ -93,7 +93,7 @@ class DBParser {
 	function escapeString($name) {
 		return "'" . $this->escapeStringValue($name) . "'";
 	}
-	
+
 	/**
 	 * Escape the string value
 	 *
@@ -105,7 +105,7 @@ class DBParser {
 		if(is_string($value)) return $value = str_replace("'", "''", $value);
 		return $value;
 	}
-	
+
 	/**
 	 * Return table full name
 	 *
@@ -116,7 +116,7 @@ class DBParser {
 	function parseTableName($name) {
 		return $this->table_prefix . $name;
 	}
-	
+
 	/**
 	 * Return column name after escape
 	 *
@@ -127,7 +127,7 @@ class DBParser {
 	function parseColumnName($name) {
 		return $this->escapeColumn($name);
 	}
-	
+
 	/**
 	 * Escape column name
 	 *
@@ -144,7 +144,7 @@ class DBParser {
 			//return $this->escape($this->parseTableName($table)).'.'.$this->escape($column);
 		}
 	}
-	
+
 	/**
 	 * Checks to see if a given column name is unqualified
 	 *
@@ -158,7 +158,7 @@ class DBParser {
 		if(strpos($column_name, '.') === FALSE && strpos($column_name, '(') === FALSE) return TRUE;
 		return FALSE;
 	}
-	
+
 	/**
 	 * Checks to see if a given column name is qualified
 	 *
@@ -172,7 +172,7 @@ class DBParser {
 		if(strpos($column_name, '.') !== FALSE && strpos($column_name, '(') === FALSE) return TRUE;
 		return FALSE;
 	}
-	
+
 	/**
 	 * Escapes a query expression
 	 *
@@ -218,7 +218,7 @@ class DBParser {
 		}
 		return implode('', $functions);
 	}
-	
+
 	/**
 	 * Checks if a given argument is an asterisk
 	 *
@@ -229,7 +229,7 @@ class DBParser {
 		if(substr($column_name, -1) == '*') return TRUE;
 		return FALSE;
 	}
-	
+
 	/**
 	 * Checks to see if expression is an aggregate star function
 	 * like count(*)
@@ -241,7 +241,7 @@ class DBParser {
 		if(strpos($column_name, "(*)") !== FALSE) return TRUE;
 		return FALSE;
 	}
-	
+
 	/**
 	 * Return column name after escape
 	 * @param string $column_name
@@ -257,4 +257,4 @@ class DBParser {
 	}
 }
 
-	
+

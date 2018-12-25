@@ -7,7 +7,7 @@
  * @Adaptor DAOL Project (developer@daolcms.org)
  **/
 class counterController extends counter {
-	
+
 	/**
 	 * Initialization
 	 *
@@ -15,7 +15,7 @@ class counterController extends counter {
 	 **/
 	function init() {
 	}
-	
+
 	/**
 	 * Counter logs.
 	 * If want use below function, you can use 'counterExecute' function instead this function
@@ -24,7 +24,7 @@ class counterController extends counter {
 	 **/
 	function procCounterExecute() {
 	}
-	
+
 	/**
 	 * Counter logs
 	 *
@@ -33,7 +33,7 @@ class counterController extends counter {
 	function counterExecute() {
 		$oDB = &DB::getInstance();
 		$oDB->begin();
-		
+
 		$site_module_info = Context::get('site_module_info');
 		$site_srl = (int)$site_module_info->site_srl;
 		// Check the logs
@@ -54,10 +54,10 @@ class counterController extends counter {
 				$this->insertPageView($site_srl);
 			}
 		}
-		
+
 		$oDB->commit();
 	}
-	
+
 	/**
 	 * Leave logs
 	 *
@@ -71,7 +71,7 @@ class counterController extends counter {
 		$args->site_srl = $site_srl;
 		return executeQuery('counter.insertCounterLog', $args);
 	}
-	
+
 	/**
 	 * Register the unique visitor
 	 *
@@ -93,7 +93,7 @@ class counterController extends counter {
 			$output = executeQuery('counter.updateCounterUnique', $args);
 		}
 	}
-	
+
 	/**
 	 * Register pageview
 	 *
@@ -115,7 +115,7 @@ class counterController extends counter {
 			executeQuery('counter.updateCounterPageview', $args);
 		}
 	}
-	
+
 	/**
 	 * Add the total counter status
 	 *
@@ -132,7 +132,7 @@ class counterController extends counter {
 			executeQuery('counter.insertTodayStatus', $args);
 		}
 	}
-	
+
 	/**
 	 * Add today's counter status
 	 *
@@ -147,7 +147,7 @@ class counterController extends counter {
 		if($site_srl) {
 			$args->site_srl = $site_srl;
 			$query_id = 'counter.insertSiteTodayStatus';
-			
+
 			$u_args->site_srl = $site_srl; // /< when inserting a daily row, attempt to inser total rows(where regdate=0) together
 			executeQuery($query_id, $u_args);
 		} else {
@@ -160,7 +160,7 @@ class counterController extends counter {
 		// Register unique and pageview
 		$this->insertUniqueVisitor($site_srl);
 	}
-	
+
 	/**
 	 * Delete counter logs of the specific virtual site
 	 *

@@ -26,7 +26,7 @@ class Limit {
 	 * @var int
 	 */
 	var $page;
-	
+
 	/**
 	 * constructor
 	 * @param int $list_count
@@ -35,7 +35,7 @@ class Limit {
 	 * @param int $offset
 	 * @return void
 	 */
-	function Limit($list_count, $page = NULL, $page_count = NULL, $offset = NULL){
+	function __construct($list_count, $page = NULL, $page_count = NULL, $offset = NULL){
 		$this->list_count = $list_count;
 		if($page) {
 			$list_count_value = $list_count->getValue();
@@ -48,7 +48,7 @@ class Limit {
 			$this->start = $offset->getValue();
 		}
 	}
-	
+
 	/**
 	 * In case you choose to use query limit in other cases than page select
 	 * @return boolean
@@ -57,15 +57,15 @@ class Limit {
 		if($this->page) return true;
 		else return false;
 	}
-	
+
 	function getOffset() {
 		return $this->start;
 	}
-	
+
 	function getLimit() {
 		return $this->list_count->getValue();
 	}
-	
+
 	function toString() {
 		if($this->page || $this->start){
 			return $this->start . ' , ' . $this->list_count->getValue();

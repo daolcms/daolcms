@@ -9,33 +9,33 @@
  *
  **/
 class pointView extends point {
-	
+
 	/**
 	 * @brief Initialization
 	 **/
-	function init() {
+	function init(){
 	}
-	
+
 	/**
 	 * @brief Additional configurations for a service module
 	 * Receive the form for the form used by point
 	 **/
-	function triggerDispPointAdditionSetup(&$obj) {
+	function triggerDispPointAdditionSetup(&$obj){
 		$current_module_srl = Context::get('module_srl');
 		$current_module_srls = Context::get('module_srls');
-		
-		if(!$current_module_srl && !$current_module_srls) {
+
+		if(!$current_module_srl && !$current_module_srls){
 			$current_module_info = Context::get('current_module_info');
 			$current_module_srl = $current_module_info->module_srl;
 			if(!$current_module_srl) return new BaseObject();
 		}
 		// Get the configuration information
-		$oModuleModel = &getModel('module');
-		
-		if($current_module_srl) {
+		$oModuleModel = getModel('module');
+		$config = $oModuleModel->getModuleConfig('point');
+
+		if($current_module_srl){
 			$module_config = $oModuleModel->getModulePartConfig('point', $current_module_srl);
-			if(!$module_config) {
-				$config = $oModuleModel->getModuleConfig('point');
+			if(!$module_config){
 				$module_config['insert_document'] = $config->insert_document;
 				$module_config['insert_comment'] = $config->insert_comment;
 				$module_config['upload_file'] = $config->upload_file;
@@ -45,7 +45,7 @@ class pointView extends point {
 				$module_config['blamed'] = $config->blamed;
 			}
 		}
-		
+
 		$module_config['module_srl'] = $current_module_srl;
 		$module_config['point_name'] = $config->point_name;
 		Context::set('module_config', $module_config);
@@ -53,7 +53,7 @@ class pointView extends point {
 		$oTemplate = &TemplateHandler::getInstance();
 		$tpl = $oTemplate->compile($this->module_path . 'tpl', 'point_module_config');
 		$obj .= $tpl;
-		
+
 		return new BaseObject();
 	}
 }

@@ -80,7 +80,7 @@ $('form.siteMap')
 
 					diff = {x:position.x-event.pageX, y:position.y-event.pageY};
 					nTop = offset.top - diff.y;
-					
+
 					for(i=0,c=offsets.length; i < c; i++) {
 						t = nTop;
 						o = offsets[i];

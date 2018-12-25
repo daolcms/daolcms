@@ -1,4 +1,4 @@
-{'<?xml version="1.0" encoding="UTF-8" ?>'}
+{'<?xml version="1.0" encoding="UTF-8" ?>'|noescape}
 
 <feed xmlns="http://www.w3.org/2005/Atom">
    <title type="text">{$info->title}</title>
@@ -31,7 +31,7 @@
 	  <!--@foreach($oDocument->get('tag_list') as $tag)-->
 	  <category term="{str_replace('\'', '&apos;', htmlspecialchars($tag))}"/>
 	  <!--@end-->
-	  
+
    </entry>
 <!--@end-->
 </feed> 

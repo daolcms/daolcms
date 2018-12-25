@@ -168,7 +168,7 @@ function xEvent(evt) // object prototype
     this.offsetY = this.pageY - xPageY(this.target);
   }
   // End Section A
-  
+
   if (e.keyCode) { this.keyCode = e.keyCode; } // for moz/fb, if keyCode==0 use which
   else if (xDef(e.which) && e.type.indexOf('key')!=-1) { this.keyCode = e.which; }
 

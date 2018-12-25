@@ -18,28 +18,28 @@ class ConditionGroupTag {
 	 * @var string
 	 */
 	var $pipe;
-	
+
 	/**
 	 * constructor
 	 * @param string|array $conditions
 	 * @param string       $pipe
 	 * @return void
 	 */
-	function ConditionGroupTag($conditions, $pipe = "") {
+	function __construct($conditions, $pipe = "") {
 		$this->pipe = $pipe;
-		
+
 		if(!is_array($conditions)) $conditions = array($conditions);
-		
+
 		foreach($conditions as $condition) {
 			//if($condition->node_name === 'query') $this->conditions[] = new QueryTag($condition, true);
 			$this->conditions[] = new ConditionTag($condition);
 		}
 	}
-	
+
 	function getConditions() {
 		return $this->conditions;
 	}
-	
+
 	/**
 	 * ConditionTag object to string
 	 * @return string
@@ -51,10 +51,10 @@ class ConditionGroupTag {
 		}
 		$conditions_string = substr($conditions_string, 0, -2);//remove ','
 		$conditions_string .= ')';
-		
+
 		return sprintf("new ConditionGroup(%s%s)", $conditions_string, $this->pipe ? ',\'' . $this->pipe . '\'' : '');
 	}
-	
+
 	function getArguments() {
 		$arguments = array();
 		foreach($this->conditions as $condition) {
@@ -62,7 +62,7 @@ class ConditionGroupTag {
 		}
 		return $arguments;
 	}
-	
+
 }
 
 ?>

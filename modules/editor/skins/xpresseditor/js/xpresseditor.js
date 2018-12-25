@@ -1369,7 +1369,7 @@ xe.XpressRange = $.Class({
 			oNode = aAllNodes[i];
 
 			if(!oNode || oNode.nodeType != 3 || oNode.nodeValue == '') continue;
-			
+
 			oParentNode = xe.DOMFix.parentNode(oNode);
 
 			if(oParentNode.tagName == "SPAN"){
@@ -1379,7 +1379,7 @@ xe.XpressRange = $.Class({
 				oTmpNode = this._getVeryFirstRealChild(oParentNode);
 				if(oTmpNode == oNode) iSIdx = 1;
 				else iSIdx = parentText.indexOf(oTmpNode);
-				
+
 				if(iSIdx != -1){
 					oTmpNode = this._getVeryLastRealChild(oParentNode);
 					if(oTmpNode == oNode) iEIdx = 1;
@@ -5072,7 +5072,7 @@ xe.XE_Editorresize = $.Class({
 		if(this.oCheckBox.checked == true){
 			if(this._prevHeight == undefined)
 				this._prevHeight = this.inputArea.style.height;
-			
+
 			this.oVerticalResizer.style.display = 'none';
 			this.oApp.registerBrowserEvent(this.oIframeBody, 'keydown', 'XE_EDITOR_RESIZE');
 
@@ -5204,7 +5204,7 @@ xe.XE_XHTMLFormatter = $.Class({
 			closing = closing || '';
 			tag     = tag.toLowerCase();
 			attrs   = $.trim(attrs || '');
-			
+
 			if(replace_tags[tag]!=undefined) tag = replace_tags[tag];
 
 			if (!closing) {
@@ -5870,7 +5870,7 @@ function editorStart_xe(editor_sequence, primary_key, content_key, editor_height
 	oEditor.getContent = function(){
 		editorGetContentTextarea_xe(editor_sequence);
 	}
-	
+
 	var content = form[content_key].value;
 	if(xFF && !content) content = '<br />';
 
@@ -6062,7 +6062,7 @@ function editorGetAutoSavedDoc(form) {
 	  var response_tags = new Array("error","message","editor_sequence","title","content","document_srl");
 	  exec_xml('editor',"procEditorLoadSavedDocument", param, function(a,b,c) { editorRelKeys[param['editor_sequence']]['primary'].value = a['document_srl']; if(typeof(uploadSettingObj[param['editor_sequence']]) == 'object') editorUploadInit(uploadSettingObj[param['editor_sequence']], true); }, response_tags);
 	}, 0);
-	
+
 }
 
 // WYSIWYG 모드를 저장하는 확장기능

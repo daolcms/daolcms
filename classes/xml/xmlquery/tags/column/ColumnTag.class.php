@@ -16,13 +16,13 @@ class ColumnTag {
 	 * @var string
 	 */
 	var $name;
-	
+
 	/**
 	 * Constructor
 	 * @param string $name
 	 * @return void
 	 */
-	function ColumnTag($name) {
+	function __construct($name) {
 		$this->name = $name;
 	}
 }

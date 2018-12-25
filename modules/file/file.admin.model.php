@@ -6,14 +6,14 @@
  * @Adaptor DAOL Project (developer@daolcms.org)
  **/
 class fileAdminModel extends file {
-	
+
 	/**
 	 * Initialization
 	 * @return void
 	 **/
 	function init() {
 	}
-	
+
 	/**
 	 * Get all the attachments in order by time descending (for administrators)
 	 *
@@ -65,7 +65,7 @@ class fileAdminModel extends file {
 	function getFileList($obj, $columnList = array()) {
 		$args = new stdClass();
 		$this->_makeSearchParam($obj, $args);
-		
+
 		// Set valid/invalid state
 		if($obj->isvalid == 'Y') $args->isvalid = 'Y';
 		elseif($obj->isvalid == 'N') $args->isvalid = 'N';
@@ -83,20 +83,20 @@ class fileAdminModel extends file {
 		$output = executeQuery('file.getFileList', $args, $columnList);
 		// Return if no result or an error occurs
 		if(!$output->toBool() || !count($output->data)) return $output;
-		
+
 		$oFileModel = &getModel('file');
-		
+
 		foreach($output->data as $key => $file) {
 			if($_SESSION['file_management'][$file->file_srl]) $file->isCarted = true;
 			else $file->isCarted = false;
-			
+
 			$file->download_url = $oFileModel->getDownloadUrl($file->file_srl, $file->sid, $file->module_srl);
 			$output->data[$key] = $file;
 		}
-		
+
 		return $output;
 	}
-	
+
 	/**
 	 * Return number of attachments which belongs to a specific document
 	 *
@@ -116,11 +116,11 @@ class fileAdminModel extends file {
 	 **/
 	function getFilesCountByGroupValid($obj = '') {
 		//$this->_makeSearchParam($obj, $args);
-		
+
 		$output = executeQueryArray('file.getFilesCountByGroupValid', $args);
 		return $output->data;
 	}
-	
+
 	/**
 	 * Return number of attachments which belongs to a specific date
 	 *
@@ -129,13 +129,13 @@ class fileAdminModel extends file {
 	 **/
 	function getFilesCountByDate($date = '') {
 		if($date) $args->regDate = date('Ymd', strtotime($date));
-		
+
 		$output = executeQuery('file.getFilesCount', $args);
 		if(!$output->toBool()) return 0;
-		
+
 		return $output->data->count;
 	}
-	
+
 	/**
 	 * Make search parameters from object(private)
 	 *
@@ -147,7 +147,7 @@ class fileAdminModel extends file {
 		// Search options
 		$search_target = $obj->search_target ? $obj->search_target : trim(Context::get('search_target'));
 		$search_keyword = $obj->search_keyword ? $obj->search_keyword : trim(Context::get('search_keyword'));
-		
+
 		if($search_target && $search_keyword) {
 			switch($search_target) {
 				case 'filename' :

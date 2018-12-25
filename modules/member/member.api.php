@@ -6,7 +6,7 @@
  * API Processing of View Action in the member module
  **/
 class memberAPI extends member {
-	
+
 	/**
 	 * Content List
 	 *
@@ -14,12 +14,12 @@ class memberAPI extends member {
 	 *
 	 * @return void
 	 **/
-	function dispSavedDocumentList(&$oModule) {
+	function dispSavedDocumentList(&$oModule){
 		$document_list = $this->arrangeContentList(Context::get('document_list'));
 		$oModule->add('document_list', $document_list);
 		$oModule->add('page_navigation', Context::get('page_navigation'));
 	}
-	
+
 	/**
 	 * Arrange Contents
 	 *
@@ -27,14 +27,14 @@ class memberAPI extends member {
 	 *
 	 * @return array
 	 **/
-	function arrangeContentList($content_list) {
+	function arrangeContentList($content_list){
 		$output = array();
-		if(count($content_list)) {
+		if(count($content_list)){
 			foreach($content_list as $key => $val) $output[] = $this->arrangeContent($val);
 		}
 		return $output;
 	}
-	
+
 	/**
 	 * Arrange Contents
 	 *
@@ -42,9 +42,9 @@ class memberAPI extends member {
 	 *
 	 * @return array
 	 **/
-	function arrangeContent($content) {
+	function arrangeContent($content){
 		$output = null;
-		if($content) {
+		if($content){
 			$output = $content->gets('document_srl', 'category_srl', 'nick_name', 'user_id', 'user_name', 'title', 'content', 'tags', 'voted_count', 'blamed_count', 'comment_count', 'regdate', 'last_update', 'extra_vars', 'status');
 		}
 		return $output;

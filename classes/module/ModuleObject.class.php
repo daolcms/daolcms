@@ -7,32 +7,32 @@
  * base class of ModuleHandler
  **/
 class ModuleObject extends BaseObject {
-	
+
 	var $mid = NULL; ///< string to represent run-time instance of Module (XE Module)
 	var $module = NULL; ///< Class name of Xe Module that is identified by mid
 	var $module_srl = NULL; ///< integer value to represent a run-time instance of Module (XE Module)
 	var $module_info = NULL; ///< an object containing the module information
 	var $origin_module_info = NULL;
 	var $xml_info = NULL; ///< an object containing the module description extracted from XML file
-	
+
 	var $module_path = NULL; ///< a path to directory where module source code resides
-	
+
 	var $act = NULL; ///< a string value to contain the action name
-	
+
 	var $template_path = NULL; ///< a path of directory where template files reside
 	var $template_file = NULL; ///< name of template file
-	
+
 	var $layout_path = ''; ///< a path of directory where layout files reside
 	var $layout_file = ''; ///< name of layout file
 	var $edited_layout_file = ''; ///< name of temporary layout files that is modified in an admin mode
-	
+
 	var $stop_proc = FALSE; ///< a flag to indicating whether to stop the execution of code.
-	
+
 	var $module_config = NULL;
 	var $ajaxRequestMethod = array('XMLRPC', 'JSON');
-	
+
 	var $gzhandler_enable = TRUE;
-	
+
 	/**
 	 * setter to set the name of module
 	 * @param string $module name of module
@@ -41,7 +41,7 @@ class ModuleObject extends BaseObject {
 	function setModule($module) {
 		$this->module = $module;
 	}
-	
+
 	/**
 	 * setter to set the name of module path
 	 * @param string $path the directory path to a module directory
@@ -51,7 +51,7 @@ class ModuleObject extends BaseObject {
 		if(substr($path, -1) != '/') $path .= '/';
 		$this->module_path = $path;
 	}
-	
+
 	/**
 	 * setter to set an url for redirection
 	 * @param string $url url for redirection
@@ -63,12 +63,12 @@ class ModuleObject extends BaseObject {
 		if(!isset($ajaxRequestMethod[Context::getRequestMethod()])) {
 			$this->add('redirect_url', $url);
 		}
-		
+
 		if($output !== NULL && is_object($output)) {
 			return $output;
 		}
 	}
-	
+
 	/**
 	 * get url for redirection
 	 * @return string redirect_url
@@ -76,7 +76,7 @@ class ModuleObject extends BaseObject {
 	function getRedirectUrl() {
 		return $this->get('redirect_url');
 	}
-	
+
 	/**
 	 * set message
 	 * @param string $message a message string
@@ -87,7 +87,7 @@ class ModuleObject extends BaseObject {
 		parent::setMessage($message);
 		$this->setMessageType($type);
 	}
-	
+
 	/**
 	 * set type of message
 	 * @param string $type type of message (error, info, update)
@@ -96,7 +96,7 @@ class ModuleObject extends BaseObject {
 	function setMessageType($type) {
 		$this->add('message_type', $type);
 	}
-	
+
 	/**
 	 * get type of message
 	 * @return string $type
@@ -109,7 +109,7 @@ class ModuleObject extends BaseObject {
 		}
 		return $type;
 	}
-	
+
 	/**
 	 * sett to set the template path for refresh.html
 	 * refresh.html is executed as a result of method execution
@@ -120,8 +120,8 @@ class ModuleObject extends BaseObject {
 		$this->setTemplatePath('./common/tpl');
 		$this->setTemplateFile('refresh');
 	}
-	
-	
+
+
 	/**
 	 * sett to set the action name
 	 * @param string $act
@@ -130,7 +130,7 @@ class ModuleObject extends BaseObject {
 	function setAct($act) {
 		$this->act = $act;
 	}
-	
+
 	/**
 	 * sett to set module information
 	 * @param object $module_info object containing module information
@@ -187,14 +187,14 @@ class ModuleObject extends BaseObject {
 		}
 		// permission variable settings
 		$this->grant = $grant;
-		
+
 		Context::set('grant', $grant);
-		
+
 		$this->module_config = $oModuleModel->getModuleConfig($this->module, $module_info->site_srl);
-		
+
 		if(method_exists($this, 'init')) $this->init();
 	}
-	
+
 	/**
 	 * set the stop_proc and approprate message for msg_code
 	 * @param string $msg_code an error code
@@ -212,13 +212,13 @@ class ModuleObject extends BaseObject {
 		$oMessageObject->setError(-1);
 		$oMessageObject->setMessage($msg_code);
 		$oMessageObject->dispMessage();
-		
+
 		$this->setTemplatePath($oMessageObject->getTemplatePath());
 		$this->setTemplateFile($oMessageObject->getTemplateFile());
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * set the file name of the template file
 	 * @param string name of file
@@ -228,7 +228,7 @@ class ModuleObject extends BaseObject {
 		if(substr($filename, -5) != '.html') $filename .= '.html';
 		$this->template_file = $filename;
 	}
-	
+
 	/**
 	 * retrieve the directory path of the template directory
 	 * @return string
@@ -236,7 +236,7 @@ class ModuleObject extends BaseObject {
 	function getTemplateFile() {
 		return $this->template_file;
 	}
-	
+
 	/**
 	 * set the directory path of the template directory
 	 * @param string path of template directory.
@@ -247,7 +247,7 @@ class ModuleObject extends BaseObject {
 		if(substr($path, -1) != '/') $path .= '/';
 		$this->template_path = $path;
 	}
-	
+
 	/**
 	 * retrieve the directory path of the template directory
 	 * @return string
@@ -255,7 +255,7 @@ class ModuleObject extends BaseObject {
 	function getTemplatePath() {
 		return $this->template_path;
 	}
-	
+
 	/**
 	 * set the file name of the temporarily modified by admin
 	 * @param string name of file
@@ -265,7 +265,7 @@ class ModuleObject extends BaseObject {
 		if(substr($filename, -5) != '.html') $filename .= '.html';
 		$this->edited_layout_file = $filename;
 	}
-	
+
 	/**
 	 * retreived the file name of edited_layout_file
 	 * @return string
@@ -273,7 +273,7 @@ class ModuleObject extends BaseObject {
 	function getEditedLayoutFile() {
 		return $this->edited_layout_file;
 	}
-	
+
 	/**
 	 * set the file name of the layout file
 	 * @param string name of file
@@ -283,7 +283,7 @@ class ModuleObject extends BaseObject {
 		if(substr($filename, -5) != '.html') $filename .= '.html';
 		$this->layout_file = $filename;
 	}
-	
+
 	/**
 	 * get the file name of the layout file
 	 * @return string
@@ -291,7 +291,7 @@ class ModuleObject extends BaseObject {
 	function getLayoutFile() {
 		return $this->layout_file;
 	}
-	
+
 	/**
 	 * set the directory path of the layout directory
 	 * @param string path of layout directory.
@@ -301,7 +301,7 @@ class ModuleObject extends BaseObject {
 		if(substr($path, -1) != '/') $path .= '/';
 		$this->layout_path = $path;
 	}
-	
+
 	/**
 	 * set the directory path of the layout directory
 	 * @return string
@@ -309,7 +309,7 @@ class ModuleObject extends BaseObject {
 	function getLayoutPath($layout_name = "", $layout_type = "P") {
 		return $this->layout_path;
 	}
-	
+
 	/**
 	 * excute the member method specified by $act variable
 	 * @return boolean true : success false : fail
@@ -317,7 +317,7 @@ class ModuleObject extends BaseObject {
 	function proc() {
 		// pass if stop_proc is true
 		if($this->stop_proc) return FALSE;
-		
+
 		// trigger call
 		$triggerOutput = ModuleHandler::triggerCall('moduleObject.proc', 'before', $this);
 		if(!$triggerOutput->toBool()) {
@@ -325,13 +325,13 @@ class ModuleObject extends BaseObject {
 			$this->setMessage($triggerOutput->getMessage());
 			return FALSE;
 		}
-		
+
 		// execute an addon(call called_position as before_module_proc)
 		$called_position = 'before_module_proc';
 		$oAddonController = &getController('addon');
 		$addon_file = $oAddonController->getCacheFilePath(Mobile::isFromMobilePhone() ? "mobile" : "pc");
 		if(is_readable($addon_file)) include($addon_file);
-		
+
 		if(isset($this->xml_info->action->{$this->act}) && method_exists($this, $this->act)) {
 			// Check permissions
 			if($this->module_srl && !$this->grant->access) {
@@ -347,7 +347,7 @@ class ModuleObject extends BaseObject {
 		} else {
 			return FALSE;
 		}
-		
+
 		// trigger call
 		$triggerOutput = ModuleHandler::triggerCall('moduleObject.proc', 'after', $this);
 		if(!$triggerOutput->toBool()) {
@@ -355,17 +355,17 @@ class ModuleObject extends BaseObject {
 			$this->setMessage($triggerOutput->getMessage());
 			return FALSE;
 		}
-		
+
 		// execute an addon(call called_position as after_module_proc)
 		$called_position = 'after_module_proc';
 		$oAddonController = &getController('addon');
 		$addon_file = $oAddonController->getCacheFilePath(Mobile::isFromMobilePhone() ? "mobile" : "pc");
 		if(is_readable($addon_file)) include($addon_file);
-		
+
 		if(is_a($output, 'Object') || is_subclass_of($output, 'Object')) {
 			$this->setError($output->getError());
 			$this->setMessage($output->getMessage());
-			
+
 			if(!$output->toBool()) return FALSE;
 		}
 		// execute api methos of the module if view action is and result is XMLRPC or JSON

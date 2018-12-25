@@ -76,7 +76,7 @@ jQuery(function($){
 							   		.end()
 							   .next('td')
 							   .find(':input[value=Y]').removeAttr('disabled').attr('checked', 'checked');
-				
+
 			} else {
 				$i.parent('td').next('td')
 							   .find(':radio, :text').attr('disabled','disabled').removeAttr('checked')
@@ -97,7 +97,7 @@ jQuery(function($){
 			'getMemberAdminInsertJoinForm',
 			{member_join_form_srl:memberFormSrl},
 			function(ret){
-				var tpl = ret.tpl.replace(/<enter>/g, '\n');
+				var tpl = ret.tpl.replace(/\|@\|/g, '\n');
 				$('#extendForm').html(tpl);
 
 				if (checked)$('#extendForm #radio_'+checked).attr('checked', 'checked');
@@ -106,7 +106,7 @@ jQuery(function($){
 		);
 
 	});
-	
+
 	$('a._extendFormDelete').click(function(event){
 		event.preventDefault();
 		if (!confirm(xe.lang.msg_delete_extend_form)) return;
@@ -132,7 +132,7 @@ jQuery(function($){
 			$('#prohibited_id').focus();
 			return;
 		}
-		
+
 
 		ids = ids.replace(/\n/g, ',');
 
@@ -161,7 +161,7 @@ jQuery(function($){
 			$('#prohibited_nick_name').focus();
 			return;
 		}
-		
+
 
 		ids = ids.replace(/\n/g, ',');
 

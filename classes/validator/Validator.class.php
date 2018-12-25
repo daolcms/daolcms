@@ -180,7 +180,7 @@ class Validator {
 			if(isset($title)){
 				$fieldsNames[$name] = $title;
 			}
-			
+
 			unset($filter['name']);
 
 			// conditional statement

@@ -45,9 +45,9 @@
 			</p>
 		</li>
 		<li loop="$formTags=>$formTag">
-			<p class="q">{$formTag->title}</p>
-			<div class="a" cond="$formTag->name != 'signature'">{$formTag->inputTag}</div>
-			<div class="a" cond="$formTag->name =='signature'">{$editor}</div>
+			<p class="q">{$formTag->title|noescape}</p>
+			<div class="a" cond="$formTag->name != 'signature'">{$formTag->inputTag|noescape}</div>
+			<div class="a" cond="$formTag->name =='signature'">{$editor|noescape}</div>
 		</li>
 		<li>
 			<p class="q">{$lang->allow_mailing}</p>

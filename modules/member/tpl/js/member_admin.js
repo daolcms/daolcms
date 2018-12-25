@@ -355,5 +355,5 @@ jQuery(function($) {
 				e.preventDefault();
 			})
 		.end()
-			
+
 });

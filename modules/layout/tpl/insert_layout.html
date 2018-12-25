@@ -14,13 +14,13 @@
 				<td>
 					<select name="layout">
 						<option value="faceoff">faceoff</option>
-						
+
 						<optgroup label="{$lang->downloaded_list}">
 						<!--@foreach($layout_list as $key => $val)-->
 						<option value="{$val->layout}" <!--@if($layout == $val->layout)-->selected="selected"<!--@end-->> <!--@if($val->title)-->{$val->title} ({$val->layout})<!--@else-->{$val->layout}<!--@end--></option>
 						<!--@end-->
 						</optgroup>
-						
+
 					</select>
 				</td>
 			</tr>

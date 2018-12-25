@@ -7,19 +7,19 @@
  * @Adaptor DAOL Project (developer@daolcms.org)
  **/
 class ExtraVar {
-	
+
 	/**
 	 * sequence of module
 	 * @var int
 	 */
 	var $module_srl = null;
-	
+
 	/**
 	 * Current module's Set of ExtraItem
 	 * @var ExtraItem[]
 	 */
 	var $keys = null;
-	
+
 	/**
 	 * Get instance of ExtraVar (singleton)
 	 *
@@ -29,17 +29,17 @@ class ExtraVar {
 	function &getInstance($module_srl) {
 		return new ExtraVar($module_srl);
 	}
-	
+
 	/**
 	 * Constructor
 	 *
 	 * @param int $module_srl Sequence of module
 	 * @return void
 	 **/
-	function ExtraVar($module_srl) {
+	function __construct($module_srl) {
 		$this->module_srl = $module_srl;
 	}
-	
+
 	/**
 	 * Register a key of extra variable
 	 *
@@ -55,7 +55,7 @@ class ExtraVar {
 			$this->keys[$val->idx] = $obj;
 		}
 	}
-	
+
 	/**
 	 * Returns an array of ExtraItem
 	 *
@@ -77,61 +77,61 @@ class ExtraItem {
 	 * @var int
 	 */
 	var $module_srl = 0;
-	
+
 	/**
 	 * Index of extra variable
 	 * @var int
 	 */
 	var $idx = 0;
-	
+
 	/**
 	 * Name of extra variable
 	 * @var string
 	 */
 	var $name = 0;
-	
+
 	/**
 	 * Type of extra variable
 	 * @var string text, homepage, email_address, tel, textarea, checkbox, date, select, radio, kr_zip
 	 */
 	var $type = 'text';
-	
+
 	/**
 	 * Default values
 	 * @var string[]
 	 */
 	var $default = null;
-	
+
 	/**
 	 * Description
 	 * @var string
 	 */
 	var $desc = '';
-	
+
 	/**
 	 * Whether required or not requred this extra variable
 	 * @var string Y, N
 	 */
 	var $is_required = 'N';
-	
+
 	/**
 	 * Whether can or can not search this extra variable
 	 * @var string Y, N
 	 */
 	var $search = 'N';
-	
+
 	/**
 	 * Value
 	 * @var string
 	 */
 	var $value = null;
-	
+
 	/**
 	 * Unique id of extra variable in module
 	 * @var string
 	 */
 	var $eid = '';
-	
+
 	/**
 	 * Constructor
 	 *
@@ -147,7 +147,7 @@ class ExtraItem {
 	 * @param string   $eid         Unique id of extra variable in module
 	 * @return void
 	 **/
-	function ExtraItem($module_srl, $idx, $name, $type = 'text', $default = null, $desc = '', $is_required = 'N', $search = 'N', $value = null, $eid = '') {
+	function __construct($module_srl, $idx, $name, $type = 'text', $default = null, $desc = '', $is_required = 'N', $search = 'N', $value = null, $eid = '') {
 		if(!$idx) return;
 		$this->module_srl = $module_srl;
 		$this->idx = $idx;
@@ -160,7 +160,7 @@ class ExtraItem {
 		$this->value = $value;
 		$this->eid = $eid;
 	}
-	
+
 	/**
 	 * Sets Value
 	 *
@@ -170,7 +170,7 @@ class ExtraItem {
 	function setValue($value) {
 		$this->value = $value;
 	}
-	
+
 	/**
 	 * Returns a given value converted based on its type
 	 *
@@ -190,12 +190,12 @@ class ExtraItem {
 				if(is_array($value)) $values = $value;
 				elseif(strpos($value, '|@|') !== false) $values = explode('|@|', $value);
 				elseif(strpos($value, ',') !== false) $values = explode(',', $value);
-				
+
 				$values = array_values($values);
 				for($i = 0, $c = count($values); $i < $c; $i++) {
 					$values[$i] = trim(htmlspecialchars($values[$i], ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
 				}
-				
+
 				return $values;
 			case 'checkbox' :
 			case 'radio' :
@@ -210,12 +210,12 @@ class ExtraItem {
 				if(is_array($value)) $values = $value;
 				elseif(strpos($value, '|@|') !== false) $values = explode('|@|', $value);
 				else $values = array($value);
-				
+
 				$values = array_values($values);
 				for($i = 0, $c = count($values); $i < $c; $i++) {
 					$values[$i] = trim(htmlspecialchars($values[$i], ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
 				}
-				
+
 				return $values;
 			//case 'date' :
 			//case 'email_address' :
@@ -226,7 +226,7 @@ class ExtraItem {
 				break;
 		}
 	}
-	
+
 	/**
 	 * Returns a value for HTML
 	 *
@@ -235,7 +235,7 @@ class ExtraItem {
 	function getValue() {
 		return $this->_getTypeValue($this->type, $this->value);
 	}
-	
+
 	/**
 	 * Returns a value for HTML
 	 *
@@ -276,7 +276,7 @@ class ExtraItem {
 				return $value;
 		}
 	}
-	
+
 	/**
 	 * Returns a form based on its type
 	 *
@@ -284,14 +284,14 @@ class ExtraItem {
 	 **/
 	function getFormHTML() {
 		static $id_num = 1000;
-		
+
 		$type = $this->type;
 		$name = $this->name;
 		$value = $this->_getTypeValue($this->type, $this->value);
 		$default = $this->_getTypeValue($this->type, $this->default);
 		$column_name = 'extra_vars' . $this->idx;
 		$tmp_id = $column_name . '-' . $id_num++;
-		
+
 		$buff = '';
 		switch($type) {
 			// Homepage
@@ -309,7 +309,7 @@ class ExtraItem {
 					'<input type="text" name="' . $column_name . '[]" value="' . $value[1] . '" size="4" maxlength="4" class="tel" />' .
 					'<input type="text" name="' . $column_name . '[]" value="' . $value[2] . '" size="4" maxlength="4" class="tel" />';
 				break;
-			
+
 			// textarea
 			case 'textarea' :
 				$buff .= '<textarea name="' . $column_name . '" rows="8" cols="42">' . $value . '</textarea>';
@@ -320,10 +320,10 @@ class ExtraItem {
 				foreach($default as $v) {
 					if($value && in_array(trim($v), $value)) $checked = ' checked="checked"';
 					else $checked = '';
-					
+
 					// Temporary ID for labeling
 					$tmp_id = $column_name . '-' . $id_num++;
-					
+
 					$buff .= '<li><input type="checkbox" name="' . $column_name . '[]" id="' . $tmp_id . '" value="' . htmlspecialchars($v) . '" ' . $checked . ' /><label for="' . $tmp_id . '">' . $v . '</label></li>';
 				}
 				$buff .= '</ul>';
@@ -338,17 +338,17 @@ class ExtraItem {
 				}
 				$buff .= '</select>';
 				break;
-			
+
 			// radio
 			case 'radio' :
 				$buff .= '<ul>';
 				foreach($default as $v) {
 					if($value && in_array($v, $value)) $checked = ' checked="checked"';
 					else $checked = '';
-					
+
 					// Temporary ID for labeling
 					$tmp_id = $column_name . '-' . $id_num++;
-					
+
 					$buff .= '<li><input type="radio" name="' . $column_name . '" id="' . $tmp_id . '" ' . $checked . ' value="' . $v . '"  class="radio" /><label for="' . $tmp_id . '">' . $v . '</label></li>';
 				}
 				$buff .= '</ul>';
@@ -357,7 +357,7 @@ class ExtraItem {
 			case 'date' :
 				// datepicker javascript plugin load
 				Context::loadJavascriptPlugin('ui.datepicker');
-				
+
 				$buff .=
 					'<input type="hidden" name="' . $column_name . '" value="' . $value . '" />' .
 					'<input type="text" id="date_' . $column_name . '" value="' . zdate($value, 'Y-m-d') . '" class="date" /> <input type="button" value="' . Context::getLang('cmd_delete') . '" id="dateRemover_' . $column_name . '" />' . "\n" .

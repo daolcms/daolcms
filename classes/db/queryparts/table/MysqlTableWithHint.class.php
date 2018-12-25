@@ -21,7 +21,7 @@ class MysqlTableWithHint extends Table {
 	 * @var array
 	 */
 	var $index_hints_list;
-	
+
 	/**
 	 * constructor
 	 * @param string $name
@@ -29,14 +29,14 @@ class MysqlTableWithHint extends Table {
 	 * @param string $index_hints_list
 	 * @return void
 	 */
-	function MysqlTableWithHint($name, $alias = NULL, $index_hints_list) {
-		parent::Table($name, $alias);
+	function __construct($name, $alias = NULL, $index_hints_list) {
+		parent::__construct($name, $alias);
 		$this->index_hints_list = $index_hints_list;
 	}
-	
+
 	function toString() {
 		$result = parent::toString();
-		
+
 		$use_index_hint = '';
 		$force_index_hint = '';
 		$ignore_index_hint = '';
