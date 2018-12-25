@@ -8,8 +8,8 @@
 	<date>2017-09-30</date>
 
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org">
-		<name xml:lang="ko">DAOL</name>
-		<name xml:lang="en">DAOL</name>
+		<name xml:lang="ko">DAOL CMS</name>
+		<name xml:lang="en">DAOL CMS</name>
 	</author>
 	<menus>
 		<menu name="main_menu" maxdepth="1" default="true">
