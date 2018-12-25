@@ -8,8 +8,8 @@
 	<description xml:lang="en">This is the basic board skin of DAOL.</description>
 	<description xml:lang="zh-TW">DAOL 基本討論板面板。</description>
 	<description xml:lang="tr">DAOL'nin temel pano dış görünümüdür</description>
-	<version>0.1</version>
-	<date>2010-06-10</date>
+	<version>1.1.0</version>
+	<date>2018-12-25</date>
 
 	<author email_address="developer@daolcms.org" link="http://www.daolcms.org/">
 		<name xml:lang="ko">DAOL</name>

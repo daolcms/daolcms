@@ -12,8 +12,8 @@
 	<description xml:lang="zh-CN">投票系统简易皮肤。</description>
 	<description xml:lang="zh-TW">投票系統簡單面板。</description>
 	<description xml:lang="tr">Oylama Sistemi Dış Görünümü</description>
-	<version>0.2</version>
-	<date>2008-04-16</date>
+	<version>1.1.0</version>
+	<date>2018-12-25</date>
 
 	<author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
 		<name xml:lang="ko">NHN</name>

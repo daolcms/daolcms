@@ -14,8 +14,8 @@
 	<description xml:lang="en">The Default Skin of the Integrated Search Module</description>
 	<description xml:lang="zh-TW">預設綜合搜尋面板。</description>
 	<description xml:lang="tr">Birleşik aramanın varsayılan dış görünümü</description>
-	<version>0.1</version>
-	<date>2007-07-24</date>
+	<version>1.1.0</version>
+	<date>2018-12-25</date>
 
 	<author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
 		<name xml:lang="ko">NHN</name>
