@@ -8,7 +8,7 @@
  **/
 class memberController extends member {
 
-	/**
+/**
 	 * Info of selected member
 	 *
 	 * @var object
@@ -23,7 +23,7 @@ class memberController extends member {
 	function init(){
 	}
 
-	/**
+/**
 	 * Log-in by checking user_id and password
 	 *
 	 * @param string $user_id
@@ -2456,7 +2456,7 @@ class memberController extends member {
 		$output = executeQuery('member.updateMemberEmailAddress', $args);
 		if(!$output->toBool()) return $this->stop($output->getMessage());
 
-		// Remove all values having the member_srl and new_password equal to 'XE_change_emaill_address' from authentication table
+	// Remove all values having the member_srl and new_password equal to 'XE_change_emaill_address' from authentication table
 		executeQuery('member.deleteAuthChangeEmailAddress', $args);
 
 		// Notify the result
