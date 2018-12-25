@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <skin version="0.1">
-    <title xml:lang="ko">CKEditor 스킨</title>
-    <description xml:lang="ko">CKEditor</description>
-    <version>1.0.0</version>
-    <date>2016-11-25</date>
+	<title xml:lang="ko">CKEditor 스킨</title>
+	<title xml:lang="en">CKEditor Skin</title>
+	<description xml:lang="ko">CKEditor</description>
+	<description xml:lang="en">CKEditor</description>
+	<version>1.0.0</version>
+	<date>2016-11-25</date>
 
-    <author email_address="developers@xpressengine.com" link="https://www.xpressengine.com">
-        <name xml:lang="ko">NAVER</name>
-    </author>
+	<author email_address="developer@daolcms.org" link="http://www.daolcms.org">
+		<name xml:lang="ko">DAOL CMS</name>
+		<name xml:lang="en">DAOL CMS</name>
+	</author>
 
-    <colorset>
-        <color name="moono">
-            <title xml:lang="ko">Moono</title>
-            <title xml:lang="en">Moono</title>
-        </color>
-        <color name="moono-dark">
-            <title xml:lang="ko">Moono Dark</title>
-            <title xml:lang="en">Moono Dark</title>
-        </color>
-        <color name="moono-lisa">
-            <title xml:lang="ko">Moono Lisa</title>
-            <title xml:lang="en">Moono Lisa</title>
-        </color>
-    </colorset>
+	<colorset>
+		<color name="moono">
+			<title xml:lang="ko">Moono</title>
+			<title xml:lang="en">Moono</title>
+		</color>
+		<color name="moono-dark">
+			<title xml:lang="ko">Moono Dark</title>
+			<title xml:lang="en">Moono Dark</title>
+		</color>
+		<color name="moono-lisa">
+			<title xml:lang="ko">Moono Lisa</title>
+			<title xml:lang="en">Moono Lisa</title>
+		</color>
+	</colorset>
 </skin>
