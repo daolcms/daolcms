@@ -21,7 +21,7 @@ RewriteRule ^(.+)/files/(member_extra_info|attach|cache|faceOff)/(.*) ./files/$2
 RewriteCond %{SCRIPT_FILENAME} !-f
 RewriteRule ^(.+)/(files|modules|widgets|widgetstyles|layouts|m.layouts|addons)/(.*) ./$2/$3 [L]
 
-# rss , blogAPI
+# rss, blogAPI
 RewriteRule ^(rss|atom)$ ./index.php?module=rss&act=$1 [L]
 RewriteRule ^([a-zA-Z0-9_]+)/(rss|atom|api)$ ./index.php?mid=$1&act=$2 [L]
 RewriteRule ^([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/(rss|atom|api)$ ./index.php?vid=$1&mid=$2&act=$3 [L]
