@@ -1,9 +1,7 @@
 language: php
 matrix:
   allow_failures:
-  - php: 7.0
-  - php: 7.1
-  - php: 7.2
+  - php: 7.3
   include:
   - php: 5.3
     dist: precise
@@ -18,6 +16,8 @@ matrix:
   - php: 7.1
     dist: trusty
   - php: 7.2
+    dist: trusty
+  - php: 7.3
     dist: trusty
 sudo: false
 before_script:
