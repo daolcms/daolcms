@@ -3,7 +3,7 @@
 	<table width="100%" border="1" cellspacing="0">
 		<tr loop="$displayDatas => $item">
 			<th scope="row" >{$item->title} <em style="color:red" cond="$item->required || $item->mustRequired">*</em></th>
-			<td class="text">{$item->value}</td>
+			<td class="text"><!--@if($memberInfo['profile_image'] || $memberInfo['image_name'] || $memberInfo['image_mark'])-->{$item->value|noescape}<!--@else-->{$item->value}<!--@end--></td>
 		</tr>
 		<tr>
 			<th scope="row">{$lang->member_group}</th>
