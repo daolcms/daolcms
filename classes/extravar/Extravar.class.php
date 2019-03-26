@@ -183,37 +183,56 @@ class ExtraItem {
 		if(!isset($value)) return;
 		switch($type) {
 			case 'homepage' :
-				if($value && !preg_match('/^([a-z]+):\/\//i', $value)) $value = 'http://' . $value;
-				return htmlspecialchars($value);
-				break;
+				if($value && !preg_match('/^([a-z]+):\/\//i', $value)) {
+					$value = 'http://' . $value;
+				}
+
+				return escape($value, false);
 			case 'tel' :
-				if(is_array($value)) $values = $value;
-				elseif(strpos($value, '|@|') !== false) $values = explode('|@|', $value);
-				elseif(strpos($value, ',') !== false) $values = explode(',', $value);
+				if(is_array($value)) {
+					$values = $value;
+				} elseif(strpos($value, '|@|') !== false) {
+					$values = explode('|@|', $value);
+				} elseif(strpos($value, ',') !== false) {
+					$values = explode(',', $value);
+				}
 
 				$values = array_values($values);
 				for($i = 0, $c = count($values); $i < $c; $i++) {
-					$values[$i] = trim(htmlspecialchars($values[$i], ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
+					$values[$i] = trim(escape($values[$i], false));
 				}
 
 				return $values;
 			case 'checkbox' :
 			case 'radio' :
 			case 'select' :
-				if(is_array($value)) $values = $value;
-				elseif(strpos($value, '|@|') !== false) $values = explode('|@|', $value);
-				elseif(strpos($value, ',') !== false) $values = explode(',', $value);
-				else $values = array($value);
-				for($i = 0; $i < count($values); $i++) $values[$i] = trim(htmlspecialchars($values[$i], ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
+				if(is_array($value)) {
+					$values = $value;
+				} elseif(strpos($value, '|@|') !== false) {
+					$values = explode('|@|', $value);
+				} elseif(strpos($value, ',') !== false) {
+					$values = explode(',', $value);
+				} else {
+					$values = array($value);
+				}
+
+				for($i = 0; $i < count($values); $i++) {
+					$values[$i] = trim(escape($values[$i], false));
+				}
+
 				return $values;
 			case 'kr_zip' :
-				if(is_array($value)) $values = $value;
-				elseif(strpos($value, '|@|') !== false) $values = explode('|@|', $value);
-				else $values = array($value);
+				if(is_array($value)) {
+					$values = $value;
+				} elseif(strpos($value, '|@|') !== false) {
+					$values = explode('|@|', $value);
+				} else {
+					$values = array($value);
+				}
 
 				$values = array_values($values);
 				for($i = 0, $c = count($values); $i < $c; $i++) {
-					$values[$i] = trim(htmlspecialchars($values[$i], ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
+					$values[$i] = trim(escape($values[$i], false));
 				}
 
 				return $values;
@@ -221,8 +240,8 @@ class ExtraItem {
 			//case 'email_address' :
 			//case 'text' :
 			//case 'textarea' :
-			default :
-				return htmlspecialchars($value);
+			default:
+				return escape($value, false);
 				break;
 		}
 	}
@@ -245,9 +264,9 @@ class ExtraItem {
 		$value = $this->_getTypeValue($this->type, $this->value);
 		switch($this->type) {
 			case 'homepage' :
-				return ($value) ? (sprintf('<a href="%s" target="_blank">%s</a>', $value, strlen($value) > 60 ? substr($value, 0, 40) . '...' . substr($value, -10) : $value)) : "";
+				return ($value) ? (sprintf('<a href="%s" target="_blank">%s</a>', escape($value, false), strlen($value) > 60 ? substr($value, 0, 40) . '...' . substr($value, -10) : $value)) : "";
 			case 'email_address' :
-				return ($value) ? sprintf('<a href="mailto:%s">%s</a>', $value, $value) : "";
+				return ($value) ? sprintf('<a href="mailto:%s">%s</a>', escape($value, false), $value) : "";
 				break;
 			case 'tel' :
 				return sprintf('%s-%s-%s', $value[0], $value[1], $value[2]);

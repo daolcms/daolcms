@@ -133,12 +133,12 @@ class commentItem extends BaseObject {
 	function notify($type, $content) {
 		// return if not useNotify
 		if(!$this->useNotify()) return;
-		// pass if the author is not logged-in user 
+		// pass if the author is not logged-in user
 		if(!$this->get('member_srl')) return;
 		// return if the currently logged-in user is an author of the comment.
 		$logged_info = Context::get('logged_info');
 		if($logged_info->member_srl == $this->get('member_srl')) return;
-		// get where the comment belongs to 
+		// get where the comment belongs to
 		$oDocumentModel = &getModel('document');
 		$oDocument = $oDocumentModel->getDocument($this->get('document_srl'));
 		// Variables
@@ -168,7 +168,7 @@ class commentItem extends BaseObject {
 
 		if(!preg_match("/^http:\/\//i", $url)) $url = "http://" . $url;
 
-		return htmlspecialchars($url);
+		return escape($url, false);
 	}
 
 	function getMemberSrl() {
@@ -176,15 +176,15 @@ class commentItem extends BaseObject {
 	}
 
 	function getUserID() {
-		return htmlspecialchars($this->get('user_id'));
+		return escape($this->get('user_id'), false);
 	}
 
 	function getUserName() {
-		return htmlspecialchars($this->get('user_name'));
+		return escape($this->get('user_name'), false);
 	}
 
 	function getNickName() {
-		return htmlspecialchars($this->get('nick_name'));
+		return escape($this->get('nick_name'), false);
 	}
 
 	/**
@@ -198,7 +198,7 @@ class commentItem extends BaseObject {
 
 		if($strlen) return cut_str(strip_tags($content), $strlen, '...');
 
-		return htmlspecialchars($content);
+		return escape($content, false);
 	}
 
 	/**
@@ -251,7 +251,7 @@ class commentItem extends BaseObject {
 		$content = str_replace(array('</p>', '</div>', '</li>'), ' ', $content);
 		// Remove tags
 		$content = preg_replace('!<([^>]*?)>!is', '', $content);
-		// replace < , >, " 
+		// replace < , >, "
 		$content = str_replace(array('&lt;', '&gt;', '&quot;', '&nbsp;'), array('<', '>', '"', ' '), $content);
 		// delete a series of blanks
 		$content = preg_replace('/ ( +)/is', ' ', $content);
@@ -439,7 +439,7 @@ class commentItem extends BaseObject {
 			}
 		}
 
-		// get an image file from the doc content if no file attached. 
+		// get an image file from the doc content if no file attached.
 		$is_tmp_file = false;
 		if(!$source_file) {
 			$random = new Password();

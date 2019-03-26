@@ -51,9 +51,18 @@ class fileController extends file {
 		$this->add('file_size',$output->get('file_size'));
 		$this->add('direct_download',$output->get('direct_download'));
 		$this->add('source_filename',$output->get('source_filename'));
-		$this->add('download_url',$output->get('uploaded_filename'));
 		$this->add('upload_target_srl',$output->get('upload_target_srl'));
-		if($output->error != '0') $this->stop($output->message);
+		$this->add('download_url',$output->get('uploaded_filename'));
+
+		if($output->get('direct_download') === 'Y') {
+			$this->add('download_url',$output->get('uploaded_filename'));
+		} else {
+			$this->add('download_url',$oFileModel->getDownloadUrl($output->get('file_srl'), $output->get('sid'), $module_srl));
+		}
+
+		if($output->error != '0') {
+			$this->stop($output->message);
+		}
 	}
 
 
@@ -646,7 +655,7 @@ class fileController extends file {
 		}
 
 		// https://github.com/xpressengine/xe-core/issues/1713
-		$file_info['name'] = preg_replace('/\.(php|phtm|phar|html?|cgi|pl|exe|jsp|asp|inc)/i', '$0-x', $file_info['name']);
+		$file_info['name'] = preg_replace('/\.((ph(p|t|ar)?[0-9]?|p?html?|cgi|pl|exe|(?:a|j)sp|inc).*)$/i', '$0-x',$file_info['name']);
 		$file_info['name'] = removeHackTag($file_info['name']);
 		$file_info['name'] = str_replace(array('<', '>'), array('%3C', '%3E'), $file_info['name']);
 		$file_info['name'] = str_replace('&amp;', '&', $file_info['name']);
@@ -678,7 +687,7 @@ class fileController extends file {
 		// Create a directory
 		if(!FileHandler::makeDir($path)) return new BaseObject(-1, 'msg_not_permitted_create');
 		// Check uploaded file
-		if(!$manual_insert && !checkUploadedFile($file_info['tmp_name'])) return new BaseObject(-1, 'msg_file_upload_error');
+		if(!$manual_insert && !checkUploadedFile($file_info['tmp_name'], $file_info['name'])) return new BaseObject(-1, 'msg_file_upload_error');
 		// Move the file
 		if($manual_insert) {
 			@copy($file_info['tmp_name'], $filename);

@@ -187,7 +187,12 @@ class commentController extends comment {
 			if($document_srl != $oDocument->document_srl) return new BaseObject(-1, 'msg_invalid_document');
 			if($oDocument->isLocked()) return new BaseObject(-1, 'msg_invalid_request');
 
-			if($obj->homepage && !preg_match('/^[a-z]+:\/\//i', $obj->homepage)) $obj->homepage = 'http://' . $obj->homepage;
+			if($obj->homepage) {
+				$obj->homepage = escape($obj->homepage, false);
+				if(!preg_match('/^[a-z]+:\/\//i', $obj->homepage) {
+					$obj->homepage = 'http://' . $obj->homepage;
+				}
+			}
 			// input the member's information if logged-in
 			if(Context::get('is_logged')) {
 				$logged_info = Context::get('logged_info');
@@ -490,7 +495,7 @@ class commentController extends comment {
 			$obj->password = getModel('member')->hashPassword($obj->password);
 		}
 		if($obj->homepage) {
-			$obj->homepage = removeHackTag($obj->homepage);
+			$obj->homepage = escape($obj->homepage, false);
 			if(!preg_match('/^[a-z]+:\/\//i', $obj->homepage)) {
 				$obj->homepage = 'http://' . $obj->homepage;
 			}

@@ -136,16 +136,20 @@ class memberModel extends member {
 			}
 			// Send an email only if email address is public
 			if(($logged_info->is_admin == 'Y' || $email_config->isPublic == 'Y') && $member_info->email_address){
-				$url = 'mailto:' . htmlspecialchars($member_info->email_address);
+				$url = 'mailto:'.escape($member_info->email_address, false);
 				$oMemberController->addMemberPopupMenu($url, 'cmd_send_email', $icon_path);
 			}
 		}
 		// View homepage info
-		if($member_info->homepage)
-			$oMemberController->addMemberPopupMenu(htmlspecialchars($member_info->homepage), 'homepage', '', 'blank');
+		if($member_info->homepage) {
+			$oMemberController->addMemberPopupMenu(escape($member_info->homepage, false), 'homepage', '', 'blank');
+		}
+
 		// View blog info
-		if($member_info->blog)
-			$oMemberController->addMemberPopupMenu(htmlspecialchars($member_info->blog), 'blog', '', 'blank');
+		if($member_info->blog) {
+			$oMemberController->addMemberPopupMenu(escape($member_info->blog, false), 'blog', '', 'blank');
+		}
+		
 		// Call a trigger (after)
 		ModuleHandler::triggerCall('member.getMemberMenu', 'after', $null);
 		// Display a menu for editting member info to a top administrator
@@ -625,7 +629,7 @@ class memberModel extends member {
 	function getCombineJoinForm($member_info){
 		$extend_form_list = $this->getJoinFormlist();
 		if(!$extend_form_list) return;
-		// Member info is open only to an administrator and him/herself when is_private is true. 
+		// Member info is open only to an administrator and him/herself when is_private is true.
 		$logged_info = Context::get('logged_info');
 
 		foreach($extend_form_list as $srl => $item){
@@ -932,7 +936,7 @@ class memberModel extends member {
 				break;
 			case 'low':
 				if($length < 4) return false;
-				break; 
+				break;
 		}
 
 		return true;
