@@ -37,12 +37,12 @@ class UploadFileFilter {
 			return false;
 		}
 
-		if (in_array($ext, array('jpg', 'jpeg', 'png', 'gif')) && $mimetype !== 'image') {
+		if(in_array($ext, array('jpg', 'jpeg', 'png', 'gif')) && $mimetype !== 'image'){
 			return false;
 		}
 
-		if (preg_match("/(wm[va]|mpe?g|avi|flv|mp[1-4]|as[fx]|wav|midi?|moo?v|qt|r[am]{1,2}|m4v)$/i", $file)) {
-			if ($mimetype !== 'video' && $mimetype !== 'audio') {
+		if(preg_match("/(wm[va]|mpe?g|avi|flv|mp[1-4]|as[fx]|wav|midi?|moo?v|qt|r[am]{1,2}|m4v)$/i", $file)){
+			if($mimetype !== 'video' && $mimetype !== 'audio'){
 				return false;
 			}
 		}
@@ -54,7 +54,7 @@ class UploadFileFilter {
 		}
 
 		// Check HTML files.
-		if (($ext === 'html' || $ext === 'shtml' || $ext === 'xhtml' || $ext === 'phtml') && !$is_xml && !self::_checkHTML($fp, 0, $filesize)) {
+		if(($ext === 'html' || $ext === 'shtml' || $ext === 'xhtml' || $ext === 'phtml') && !$is_xml && !self::_checkHTML($fp, 0, $filesize)){
 			fclose($fp);
 			return false;
 		}
@@ -76,7 +76,7 @@ class UploadFileFilter {
 		if(self::_matchStream('/<script|<handler\b|xlink:href\s*=\s*"(?!data:)/i', $fp, $from, $to)){
 			return false;
 		}
-		if(self::_matchStream('/\b(?:ev:(?:event|listener|observer)|on[a-z]+)\s*=/i', $fp, $from, $to))	{
+		if(self::_matchStream('/\b(?:ev:(?:event|listener|observer)|on[a-z]+)\s*=/i', $fp, $from, $to)){
 			return false;
 		}
 
@@ -133,9 +133,8 @@ class UploadFileFilter {
 	 */
 	protected static function _matchStream($regexp, $fp, $from, $to, $block_size = 16384, $overlap_size = 1024){
 		fseek($fp, $position = $from);
-		while (strlen($content = fread($fp, $block_size + $overlap_size)) > 0){
-			if(preg_match($regexp, $content))
-			{
+		while(strlen($content = fread($fp, $block_size + $overlap_size)) > 0){
+			if(preg_match($regexp, $content)){
 				return true;
 			}
 			fseek($fp, min($to, $position += $block_size));
@@ -143,11 +142,11 @@ class UploadFileFilter {
 		return false;
 	}
 
-	protected static function _getMimetype($file, $trim_subtype = false) {
+	protected static function _getMimetype($file, $trim_subtype = false){
 		$finfo = finfo_open(FILEINFO_MIME_TYPE);
 		$mime_type = finfo_file($finfo, $file);
 		finfo_close($finfo);
-		if($trim_subtype) {
+		if($trim_subtype){
 			$mime_type = strstr($mime_type, '/', true);
 		}
 		return $mime_type;

@@ -13,14 +13,14 @@ class commentAdminView extends comment {
 	 * Initialization
 	 * @return void
 	 */
-	function init() {
+	function init(){
 	}
 
 	/**
 	 * Display the list(for administrators)
 	 * @return void
 	 */
-	function dispCommentAdminList() {
+	function dispCommentAdminList(){
 		// option to get a list
 		$args = new stdClass();
 		$args->page = Context::get('page'); // /< Page
@@ -65,17 +65,17 @@ class commentAdminView extends comment {
 		$oModuleModel = getModel('module');
 		$module_list = array();
 		$mod_srls = array();
-		foreach($output->data as $oDocument) {
+		foreach($output->data as $oDocument){
 			$mod_srls[] = $val->module_srl;
 		}
 		$mod_srls = array_unique($mod_srls);
 		// Module List
 		$mod_srls_count = count($mod_srls);
-		if($mod_srls_count) {
+		if($mod_srls_count){
 			$columnList = array('module_srl', 'mid', 'browser_title');
 			$module_output = $oModuleModel->getModulesInfo($mod_srls, $columnList);
-			if($module_output && is_array($module_output)) {
-				foreach($module_output as $module) {
+			if($module_output && is_array($module_output)){
+				foreach($module_output as $module){
 					$module_list[$module->module_srl] = $module;
 				}
 			}
@@ -94,7 +94,7 @@ class commentAdminView extends comment {
 	 * Show the blacklist of comments in the admin page
 	 * @return void
 	 */
-	function dispCommentAdminDeclared() {
+	function dispCommentAdminDeclared(){
 		// option to get a blacklist
 		$args = new stdClass();
 		$args->page = Context::get('page'); // /< Page
@@ -107,11 +107,11 @@ class commentAdminView extends comment {
 		// get a list
 		$declared_output = executeQuery('comment.getDeclaredList', $args);
 
-		if($declared_output->data && count($declared_output->data)) {
+		if($declared_output->data && count($declared_output->data)){
 			$comment_list = array();
 
 			$oCommentModel = &getModel('comment');
-			foreach($declared_output->data as $key => $comment) {
+			foreach($declared_output->data as $key => $comment){
 				$comment_list[$key] = new commentItem();
 				$comment_list[$key]->setAttribute($comment);
 			}

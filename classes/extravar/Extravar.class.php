@@ -26,7 +26,7 @@ class ExtraVar {
 	 * @param int $module_srl Sequence of module
 	 * @return ExtraVar
 	 **/
-	function &getInstance($module_srl) {
+	function &getInstance($module_srl){
 		return new ExtraVar($module_srl);
 	}
 
@@ -36,7 +36,7 @@ class ExtraVar {
 	 * @param int $module_srl Sequence of module
 	 * @return void
 	 **/
-	function __construct($module_srl) {
+	function __construct($module_srl){
 		$this->module_srl = $module_srl;
 	}
 
@@ -47,9 +47,9 @@ class ExtraVar {
 	 *                             name, default, desc, is_required, search, value, eid.
 	 * @return void
 	 **/
-	function setExtraVarKeys($extra_keys) {
+	function setExtraVarKeys($extra_keys){
 		if(!is_array($extra_keys) || !count($extra_keys)) return;
-		foreach($extra_keys as $key => $val) {
+		foreach($extra_keys as $key => $val){
 			$obj = null;
 			$obj = new ExtraItem($val->module_srl, $val->idx, $val->name, $val->type, $val->default, $val->desc, $val->is_required, $val->search, $val->value, $val->eid);
 			$this->keys[$val->idx] = $obj;
@@ -61,7 +61,7 @@ class ExtraVar {
 	 *
 	 * @return ExtraItem[]
 	 **/
-	function getExtraVars() {
+	function getExtraVars(){
 		return $this->keys;
 	}
 }
@@ -147,7 +147,7 @@ class ExtraItem {
 	 * @param string   $eid         Unique id of extra variable in module
 	 * @return void
 	 **/
-	function __construct($module_srl, $idx, $name, $type = 'text', $default = null, $desc = '', $is_required = 'N', $search = 'N', $value = null, $eid = '') {
+	function __construct($module_srl, $idx, $name, $type = 'text', $default = null, $desc = '', $is_required = 'N', $search = 'N', $value = null, $eid = ''){
 		if(!$idx) return;
 		$this->module_srl = $module_srl;
 		$this->idx = $idx;
@@ -167,7 +167,7 @@ class ExtraItem {
 	 * @param string $value The value to set
 	 * @return void
 	 **/
-	function setValue($value) {
+	function setValue($value){
 		$this->value = $value;
 	}
 
@@ -178,27 +178,29 @@ class ExtraItem {
 	 * @param string $value Value
 	 * @return string Returns a converted value
 	 **/
-	function _getTypeValue($type, $value) {
+	function _getTypeValue($type, $value){
 		$value = trim($value);
 		if(!isset($value)) return;
-		switch($type) {
+		switch($type){
 			case 'homepage' :
-				if($value && !preg_match('/^([a-z]+):\/\//i', $value)) {
+				if($value && !preg_match('/^([a-z]+):\/\//i', $value)){
 					$value = 'http://' . $value;
 				}
 
 				return escape($value, false);
 			case 'tel' :
-				if(is_array($value)) {
+				if(is_array($value)){
 					$values = $value;
-				} elseif(strpos($value, '|@|') !== false) {
+				}
+				elseif(strpos($value, '|@|') !== false){
 					$values = explode('|@|', $value);
-				} elseif(strpos($value, ',') !== false) {
+				}
+				elseif(strpos($value, ',') !== false){
 					$values = explode(',', $value);
 				}
 
 				$values = array_values($values);
-				for($i = 0, $c = count($values); $i < $c; $i++) {
+				for($i = 0, $c = count($values); $i < $c; $i++){
 					$values[$i] = trim(escape($values[$i], false));
 				}
 
@@ -206,32 +208,37 @@ class ExtraItem {
 			case 'checkbox' :
 			case 'radio' :
 			case 'select' :
-				if(is_array($value)) {
+				if(is_array($value)){
 					$values = $value;
-				} elseif(strpos($value, '|@|') !== false) {
+				}
+				elseif(strpos($value, '|@|') !== false){
 					$values = explode('|@|', $value);
-				} elseif(strpos($value, ',') !== false) {
+				}
+				elseif(strpos($value, ',') !== false){
 					$values = explode(',', $value);
-				} else {
+				}
+				else{
 					$values = array($value);
 				}
 
-				for($i = 0; $i < count($values); $i++) {
+				for($i = 0; $i < count($values); $i++){
 					$values[$i] = trim(escape($values[$i], false));
 				}
 
 				return $values;
 			case 'kr_zip' :
-				if(is_array($value)) {
+				if(is_array($value)){
 					$values = $value;
-				} elseif(strpos($value, '|@|') !== false) {
+				}
+				elseif(strpos($value, '|@|') !== false){
 					$values = explode('|@|', $value);
-				} else {
+				}
+				else{
 					$values = array($value);
 				}
 
 				$values = array_values($values);
-				for($i = 0, $c = count($values); $i < $c; $i++) {
+				for($i = 0, $c = count($values); $i < $c; $i++){
 					$values[$i] = trim(escape($values[$i], false));
 				}
 
@@ -251,7 +258,7 @@ class ExtraItem {
 	 *
 	 * @return string Returns a value expressed in HTML.
 	 **/
-	function getValue() {
+	function getValue(){
 		return $this->_getTypeValue($this->type, $this->value);
 	}
 
@@ -260,9 +267,9 @@ class ExtraItem {
 	 *
 	 * @return string Returns a value expressed in HTML.
 	 **/
-	function getValueHTML() {
+	function getValueHTML(){
 		$value = $this->_getTypeValue($this->type, $this->value);
-		switch($this->type) {
+		switch($this->type){
 			case 'homepage' :
 				return ($value) ? (sprintf('<a href="%s" target="_blank">%s</a>', escape($value, false), strlen($value) > 60 ? substr($value, 0, 40) . '...' . substr($value, -10) : $value)) : "";
 			case 'email_address' :
@@ -301,7 +308,7 @@ class ExtraItem {
 	 *
 	 * @return string Returns a form html.
 	 **/
-	function getFormHTML() {
+	function getFormHTML(){
 		static $id_num = 1000;
 
 		$type = $this->type;
@@ -312,7 +319,7 @@ class ExtraItem {
 		$tmp_id = $column_name . '-' . $id_num++;
 
 		$buff = '';
-		switch($type) {
+		switch($type){
 			// Homepage
 			case 'homepage' :
 				$buff .= '<input type="text" name="' . $column_name . '" value="' . $value . '" class="homepage" />';
@@ -336,7 +343,7 @@ class ExtraItem {
 			// multiple choice
 			case 'checkbox' :
 				$buff .= '<ul>';
-				foreach($default as $v) {
+				foreach($default as $v){
 					if($value && in_array(trim($v), $value)) $checked = ' checked="checked"';
 					else $checked = '';
 
@@ -350,7 +357,7 @@ class ExtraItem {
 			// single choice
 			case 'select' :
 				$buff .= '<select name="' . $column_name . '" class="select">';
-				foreach($default as $v) {
+				foreach($default as $v){
 					if($value && in_array($v, $value)) $selected = ' selected="selected"';
 					else $selected = '';
 					$buff .= '<option value="' . $v . '" ' . $selected . '>' . $v . '</option>';
@@ -361,7 +368,7 @@ class ExtraItem {
 			// radio
 			case 'radio' :
 				$buff .= '<ul>';
-				foreach($default as $v) {
+				foreach($default as $v){
 					if($value && in_array($v, $value)) $checked = ' checked="checked"';
 					else $checked = '';
 
@@ -389,7 +396,7 @@ class ExtraItem {
 					'        $.extend(option,$.datepicker.regional[\'' . Context::getLangType() . '\']);' . "\n" .
 					'        $("#date_' . $column_name . '").datepicker(option);' . "\n" .
 					'        $("#date_' . $column_name . '").datepicker("option", "dateFormat", "yy-mm-dd");' . "\n" .
-					'		$("#dateRemover_' . $column_name . '").click(function(){' . "\n" .
+					'        $("#dateRemover_' . $column_name . '").click(function(){' . "\n" .
 					'			$(this).siblings("input").val("");' . "\n" .
 					'			return false;' . "\n" .
 					'		})' . "\n" .
@@ -407,7 +414,7 @@ class ExtraItem {
 				$buff .= ' <input type="text" name="' . $column_name . '" value="' . ($value ? $value : $default) . '" class="text" />';
 				break;
 		}
-		if($this->desc) {
+		if($this->desc){
 			$oModuleController = getController('module');
 			$oModuleController->replaceDefinedLangCode($this->desc);
 			$buff .= '<p>' . htmlspecialchars($this->desc, ENT_COMPAT | ENT_HTML401, 'UTF-8', false) . '</p>';

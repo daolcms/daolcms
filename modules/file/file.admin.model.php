@@ -11,7 +11,7 @@ class fileAdminModel extends file {
 	 * Initialization
 	 * @return void
 	 **/
-	function init() {
+	function init(){
 	}
 
 	/**
@@ -62,7 +62,7 @@ class fileAdminModel extends file {
 	 * @param array  $columnList Column list to get from DB
 	 * @return BaseObject Object contains query result
 	 **/
-	function getFileList($obj, $columnList = array()) {
+	function getFileList($obj, $columnList = array()){
 		$args = new stdClass();
 		$this->_makeSearchParam($obj, $args);
 
@@ -86,7 +86,7 @@ class fileAdminModel extends file {
 
 		$oFileModel = &getModel('file');
 
-		foreach($output->data as $key => $file) {
+		foreach($output->data as $key => $file){
 			if($_SESSION['file_management'][$file->file_srl]) $file->isCarted = true;
 			else $file->isCarted = false;
 
@@ -114,7 +114,7 @@ class fileAdminModel extends file {
 	 * @param object $obj Search options (not used...)
 	 * @return array
 	 **/
-	function getFilesCountByGroupValid($obj = '') {
+	function getFilesCountByGroupValid($obj = ''){
 		//$this->_makeSearchParam($obj, $args);
 
 		$output = executeQueryArray('file.getFilesCountByGroupValid', $args);
@@ -127,7 +127,7 @@ class fileAdminModel extends file {
 	 * @param string $date Date string
 	 * @return int
 	 **/
-	function getFilesCountByDate($date = '') {
+	function getFilesCountByDate($date = ''){
 		if($date) $args->regDate = date('Ymd', strtotime($date));
 
 		$output = executeQuery('file.getFilesCount', $args);
@@ -143,13 +143,13 @@ class fileAdminModel extends file {
 	 * @param object $args Result searach options
 	 * @return void
 	 */
-	function _makeSearchParam(&$obj, &$args) {
+	function _makeSearchParam(&$obj, &$args){
 		// Search options
 		$search_target = $obj->search_target ? $obj->search_target : trim(Context::get('search_target'));
 		$search_keyword = $obj->search_keyword ? $obj->search_keyword : trim(Context::get('search_keyword'));
 
-		if($search_target && $search_keyword) {
-			switch($search_target) {
+		if($search_target && $search_keyword){
+			switch($search_target){
 				case 'filename' :
 					if($search_keyword) $search_keyword = str_replace(' ', '%', $search_keyword);
 					$args->s_filename = $search_keyword;

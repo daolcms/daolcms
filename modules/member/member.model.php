@@ -141,12 +141,12 @@ class memberModel extends member {
 			}
 		}
 		// View homepage info
-		if($member_info->homepage) {
+		if($member_info->homepage){
 			$oMemberController->addMemberPopupMenu(escape($member_info->homepage, false), 'homepage', '', 'blank');
 		}
 
 		// View blog info
-		if($member_info->blog) {
+		if($member_info->blog){
 			$oMemberController->addMemberPopupMenu(escape($member_info->blog, false), 'blog', '', 'blank');
 		}
 		

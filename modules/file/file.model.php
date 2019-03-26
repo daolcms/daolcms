@@ -11,7 +11,7 @@ class fileModel extends file {
 	 * Initialization
 	 * @return void
 	 **/
-	function init() {
+	function init(){
 	}
 
 	/**
@@ -22,7 +22,7 @@ class fileModel extends file {
 	 *
 	 * @return void
 	 **/
-	function getFileList() {
+	function getFileList(){
 		$oModuleModel = getModel('module');
 
 		$mid = Context::get('mid');
@@ -113,7 +113,7 @@ class fileModel extends file {
 	 * @param int $upload_target_srl The sequence to get a number of files
 	 * @return int Returns a number of files
 	 **/
-	function getFilesCount($upload_target_srl) {
+	function getFilesCount($upload_target_srl){
 		$args = new stdClass();
 		$args->upload_target_srl = $upload_target_srl;
 		$output = executeQuery('file.getFilesCount', $args);
@@ -127,7 +127,7 @@ class fileModel extends file {
 	 * @param string $sid
 	 * @return string Returns a url
 	 **/
-	function getDownloadUrl($file_srl, $sid, $module_srl = "") {
+	function getDownloadUrl($file_srl, $sid, $module_srl = ""){
 		return sprintf('?module=%s&amp;act=%s&amp;file_srl=%s&amp;sid=%s&amp;module_srl=%s', 'file', 'procFileDownload', $file_srl, $sid, $module_srl);
 	}
 
@@ -138,7 +138,7 @@ class fileModel extends file {
 	 *                        configuration.
 	 * @return object Returns configuration.
 	 **/
-	function getFileConfig($module_srl = null) {
+	function getFileConfig($module_srl = null){
 		// Get configurations (using module model object)
 		$oModuleModel = getModel('module');
 
@@ -148,7 +148,7 @@ class fileModel extends file {
 		if(!$file_config) $file_config = $file_module_config;
 
 		$config = new stdClass();
-		if($file_config) {
+		if($file_config){
 			$config->allowed_filesize = $file_config->allowed_filesize;
 			$config->allowed_attach_size = $file_config->allowed_attach_size;
 			$config->allowed_filetypes = $file_config->allowed_filetypes;
@@ -178,10 +178,10 @@ class fileModel extends file {
 		if($unit == 'g') $size *= 1024;
 		if($unit == 'k') $size /= 1024;
 
-		if($config->allowed_filesize > $size) {
+		if($config->allowed_filesize > $size){
 			$config->allowed_filesize = $size;
 		}
-		if($config->allowed_attach_size > $size) {
+		if($config->allowed_attach_size > $size){
 			$config->allowed_attach_size = $size;
 		}
 
@@ -196,23 +196,23 @@ class fileModel extends file {
 	 * @return BaseObject|object|array If error returns an instance of Object. If result set is one returns a object that
 	 *                             contins file information. If result set is more than one returns array of object.
 	 **/
-	function getFile($file_srl, $columnList = array()) {
+	function getFile($file_srl, $columnList = array()){
 		$args = new stdClass();
 		$args->file_srl = $file_srl;
 		$output = executeQueryArray('file.getFile', $args, $columnList);
 		if(!$output->toBool()) return $output;
 
 		// old version compatibility
-		if(count($output->data) == 1) {
+		if(count($output->data) == 1){
 			$file = $output->data[0];
 			$file->download_url = $this->getDownloadUrl($file->file_srl, $file->sid);
 
 			return $file;
-		} else {
+		} else{
 			$fileList = array();
 
-			if(is_array($output->data)) {
-				foreach($output->data as $key => $value) {
+			if(is_array($output->data)){
+				foreach($output->data as $key => $value){
 					$file = $value;
 					$file->download_url = $this->getDownloadUrl($file->file_srl, $file->sid, $file->module_srl);
 					array_push($fileList, $file);
@@ -230,7 +230,7 @@ class fileModel extends file {
 	 * @param string $sortIndex         The column that used as sort index
 	 * @return array Returns array of object that contains file information. If no result returns null.
 	 **/
-	function getFiles($upload_target_srl, $columnList = array(), $sortIndex = 'file_srl', $ckValid = false) {
+	function getFiles($upload_target_srl, $columnList = array(), $sortIndex = 'file_srl', $ckValid = false){
 		$oModuleModel = getModel('module');
 		$oDocumentModel = getModel('document');
 		$oCommentModel = getModel('comment');
@@ -271,7 +271,7 @@ class fileModel extends file {
 		if($file_list && !is_array($file_list)) $file_list = array($file_list);
 
 		$file_count = count($file_list);
-		for($i = 0; $i < $file_count; $i++) {
+		for($i = 0; $i < $file_count; $i++){
 			$file = $file_list[$i];
 			$file->source_filename = stripslashes($file->source_filename);
 			$file->source_filename = htmlspecialchars($file->source_filename);
@@ -288,18 +288,18 @@ class fileModel extends file {
 	 * @return object Returns a file configuration of current module. If user is admin, returns PHP's max file size and
 	 *                allow all file types.
 	 **/
-	function getUploadConfig() {
+	function getUploadConfig(){
 
 		$module_srl = Context::get('module_srl');
 		// Get the current module if module_srl doesn't exist
-		if(!$module_srl) {
+		if(!$module_srl){
 			$current_module_info = Context::get('current_module_info');
 			$module_srl = $current_module_info->module_srl;
 		}
 		$file_config = $this->getFileConfig($module_srl);
 
 		$logged_info = Context::get('logged_info');
-		if($logged_info->is_admin == 'Y') {
+		if($logged_info->is_admin == 'Y'){
 			$iniPostMaxSize = FileHandler::returnbytes(ini_get('post_max_size'));
 			$iniUploadMaxSize = FileHandler::returnbytes(ini_get('upload_max_filesize'));
 			$size = min($iniPostMaxSize, $iniUploadMaxSize) / 1048576;
@@ -316,7 +316,7 @@ class fileModel extends file {
 	 * @param int $attached_size
 	 * @return string
 	 **/
-	function getUploadStatus($attached_size = 0) {
+	function getUploadStatus($attached_size = 0){
 		$file_config = $this->getUploadConfig();
 		// Display upload status
 		$upload_status = sprintf(
@@ -338,7 +338,7 @@ class fileModel extends file {
 	 * @param int $module_srl The sequence of module to get configuration
 	 * @return object
 	 **/
-	function getFileModuleConfig($module_srl) {
+	function getFileModuleConfig($module_srl){
 		return $this->getFileConfig($module_srl);
 	}
 
@@ -349,10 +349,10 @@ class fileModel extends file {
 	 * @param object $member_info The member information to get grant
 	 * @return object Returns a grant of file
 	 */
-	function getFileGrant($file_info, $member_info) {
+	function getFileGrant($file_info, $member_info){
 		if(!$file_info) return null;
 
-		if($_SESSION['__XE_UPLOADING_FILES_INFO__'][$file_info->file_srl]) {
+		if($_SESSION['__XE_UPLOADING_FILES_INFO__'][$file_info->file_srl]){
 			$file_grant->is_deletable = true;
 			return $file_grant;
 		}

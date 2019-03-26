@@ -13,7 +13,7 @@ class commentView extends comment {
 	 * Initialization
 	 * @return void
 	 */
-	function init() {
+	function init(){
 	}
 
 	/**
@@ -21,11 +21,11 @@ class commentView extends comment {
 	 * @param string $obj
 	 * @return string
 	 */
-	function triggerDispCommentAdditionSetup(&$obj) {
+	function triggerDispCommentAdditionSetup(&$obj){
 		$current_module_srl = Context::get('module_srl');
 		$current_module_srls = Context::get('module_srls');
 
-		if(!$current_module_srl && !$current_module_srls) {
+		if(!$current_module_srl && !$current_module_srls){
 			// get information of the selected module
 			$current_module_info = Context::get('current_module_info');
 			$current_module_srl = $current_module_info->module_srl;
