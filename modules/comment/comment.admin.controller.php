@@ -25,7 +25,8 @@ class commentAdminController extends comment {
 		$cart = Context::get('cart');
 		if(!is_array($cart)){
 			$comment_srl_list = explode('|@|', $cart);
-		} else{
+		}
+		else{
 			$comment_srl_list = $cart;
 		}
 
@@ -49,7 +50,8 @@ class commentAdminController extends comment {
 		}
 		if(!is_array($cart)){
 			$comment_srl_list = explode('|@|', $cart);
-		} else{
+		}
+		else{
 			$comment_srl_list = $cart;
 		}
 
@@ -59,7 +61,8 @@ class commentAdminController extends comment {
 		$output = executeQuery('comment.updatePublishedStatus', $args);
 		if(!$output->toBool()){
 			return $output;
-		} else{
+		}
+		else{
 			//update comment count for document
 			$updated_documents_arr = array();
 			// create the controller object of the document

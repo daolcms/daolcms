@@ -151,17 +151,20 @@ class commentController extends comment {
 			$logged_info = Context::get('logged_info');
 			if($logged_info->is_admin == 'Y'){
 				$is_admin = true;
-			} else{
+			}
+			else{
 				$is_admin = false;
 			}
 		}
 
 		if(!$using_validation){
 			$obj->status = 1;
-		} else{
+		}
+		else{
 			if($is_admin){
 				$obj->status = 1;
-			} else{
+			}
+			else{
 				$obj->status = 0;
 			}
 		}
@@ -244,7 +247,8 @@ class commentController extends comment {
 			$list_args->head = $list_args->arrange = $obj->comment_srl;
 			$list_args->depth = 0;
 			// If parent comment exists, get information of the parent comment
-		} else{
+		}
+		else{
 			// get information of the parent comment posting
 			$parent_args = new stdClass();
 			$parent_args->comment_srl = $obj->parent_srl;
@@ -259,7 +263,8 @@ class commentController extends comment {
 			if($list_args->depth < 2){
 				$list_args->arrange = $obj->comment_srl;
 				// if the depth of comments is greater than 2, execute update.
-			} else{
+			}
+			else{
 				// get the top listed comment among those in lower depth and same head with parent's.
 				$p_args = new stdClass();
 				$p_args->head = $parent->head;
@@ -270,7 +275,8 @@ class commentController extends comment {
 				if($output->data->arrange){
 					$list_args->arrange = $output->data->arrange;
 					$output = executeQuery('comment.updateCommentListArrange', $list_args);
-				} else{
+				}
+				else{
 					$list_args->arrange = $obj->comment_srl;
 				}
 
@@ -294,7 +300,8 @@ class commentController extends comment {
 		// Update the number of comments in the post
 		if(!$using_validation){
 			$output = $oDocumentController->updateCommentCount($document_srl, $comment_count, $obj->nick_name, true);
-		} else{
+		}
+		else{
 			if($is_admin){
 				$output = $oDocumentController->updateCommentCount($document_srl, $comment_count, $obj->nick_name, true);
 			}
@@ -353,7 +360,8 @@ class commentController extends comment {
 		$oMemberModel = &getModel("member");
 		if(isset($obj->member_srl) && !is_null($obj->member_srl)){
 			$member_info = $oMemberModel->getMemberInfoByMemberSrl($obj->member_srl);
-		} else{
+		}
+		else{
 			$member_info = new stdClass();
 			$member_info->is_admin = "N";
 			$member_info->nick_name = $obj->nick_name;
@@ -393,7 +401,8 @@ class commentController extends comment {
 					<br /><a href=\"" . getFullUrl('', 'module', 'admin', 'act', 'dispCommentAdminList', 'search_target', 'module', 'search_keyword', $obj->module_srl) . "\">" . getFullUrl('', 'module', 'admin', 'act', 'dispCommentAdminList', 'search_target', 'module', 'search_keyword', $obj->module_srl) . "</a>
 				";
 				$oMail->setContent($mail_content);
-			} else{
+			}
+			else{
 				$mail_content = "
 					Author: " . $member_info->nick_name . "
 					<br />Author e-mail: " . $member_info->email_address . "
@@ -602,7 +611,8 @@ class commentController extends comment {
 
 			if(!$deleteAllComment){
 				return new BaseObject(-1, 'fail_to_delete_have_children');
-			} else{
+			}
+			else{
 				foreach($childs as $val){
 					$output = $this->deleteComment($val->comment_srl, $is_admin, $isMoveToTrash);
 					if(!$output->toBool()) return $output;
@@ -647,7 +657,8 @@ class commentController extends comment {
 		if(!$isMoveToTrash){
 			$this->_deleteDeclaredComments($args);
 			$this->_deleteVotedComments($args);
-		} else{
+		}
+		else{
 			$args = new stdClass();
 			$args->upload_target_srl = $comment_srl;
 			$args->isvalid = 'N';
@@ -691,7 +702,8 @@ class commentController extends comment {
 		if(is_object($obj)){
 			$oDocument = new documentItem();
 			$oDocument->setAttribute($obj);
-		} else{
+		}
+		else{
 			$oDocument = $oDocumentModel->getDocument($document_srl);
 		}
 		if(!$oDocument->isExists() || !$oDocument->isGranted()) return new BaseObject(-1, 'msg_not_permitted');
@@ -764,7 +776,8 @@ class commentController extends comment {
 		if($point > 0){
 			$failed_voted = 'failed_voted';
 			$success_message = 'success_voted';
-		} else{
+		}
+		else{
 			$failed_voted = 'failed_blamed';
 			$success_message = 'success_blamed';
 		}
@@ -794,7 +807,8 @@ class commentController extends comment {
 		$args = new stdClass();
 		if($member_srl){
 			$args->member_srl = $member_srl;
-		} else{
+		}
+		else{
 			$args->ipaddress = $_SERVER['REMOTE_ADDR'];
 		}
 		$args->comment_srl = $comment_srl;
@@ -897,7 +911,8 @@ class commentController extends comment {
 		// If logged-in, use the member_srl. otherwise use the ipaddress.
 		if($member_srl){
 			$args->member_srl = $member_srl;
-		} else{
+		}
+		else{
 			$args->ipaddress = $_SERVER['REMOTE_ADDR'];
 		}
 		$args->comment_srl = $comment_srl;
@@ -1007,7 +1022,8 @@ class commentController extends comment {
 					$value->content = strip_tags($value->content);
 				}
 			}
-		} else{
+		}
+		else{
 			global $lang;
 			$commentList = array();
 			$this->setMessage($lang->no_documents);

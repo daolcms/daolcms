@@ -208,7 +208,8 @@ class fileModel extends file {
 			$file->download_url = $this->getDownloadUrl($file->file_srl, $file->sid);
 
 			return $file;
-		} else{
+		}
+		else{
 			$fileList = array();
 
 			if(is_array($output->data)){
