@@ -13,15 +13,15 @@ DAOL Core is the base frame of DAOL CMS. DAOL CMS is a web CMS program, branched
 * Creative Tree : http://www.creativetree.co.kr/
 * SourceForge : https://sourceforge.net/projects/daolcms/
 
+## Installation Environment
+DAOL CMS requires PHP 5.3 or higher MySQL 5.0 or higher, PHP 5.6 or higher MySQL 5.6 or higher is recommended.  
+다올 CMS는 PHP 5.3 이상 MySQL 5.0 이상 버전이 필요하며, PHP 5.6 이상 MySQL 5.6 이상 버전이 권장됩니다.
+
 ## Maintainers
 @daolproject, @dorami, @Web-Engine, @YJSoft
 
 ## Contributors
 @bjrambo, @gonapps
-
-## Installation Environment
-DAOL CMS requires PHP 5.3 or higher MySQL 5.0 or higher, PHP 5.6 or higher MySQL 5.6 or higher is recommended.  
-다올 CMS는 PHP 5.3 이상 MySQL 5.0 이상 버전이 필요하며, PHP 5.6 이상 MySQL 5.6 이상 버전이 권장됩니다.
 
 ## Contribution Guide
 Please refer to the `CONTRIBUTING.md` file.  
