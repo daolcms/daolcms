@@ -11,7 +11,7 @@ class fileAdminController extends file {
 	 * Initialization
 	 * @return void
 	 **/
-	function init() {
+	function init(){
 	}
 
 	/**
@@ -20,7 +20,7 @@ class fileAdminController extends file {
 	 * @param int $module_srl Sequence of module to delete files
 	 * @return BaseObject
 	 **/
-	function deleteModuleFiles($module_srl) {
+	function deleteModuleFiles($module_srl){
 		// Get a full list of attachments
 		$args = new stdClass();
 		$args->module_srl = $module_srl;
@@ -38,7 +38,7 @@ class fileAdminController extends file {
 		// Remove the file list obtained from the DB
 		$path = array();
 		$cnt = count($files);
-		for($i = 0; $i < $cnt; $i++) {
+		for($i = 0; $i < $cnt; $i++){
 			$uploaded_filename = $files[$i]->uploaded_filename;
 			FileHandler::removeFile($uploaded_filename);
 
@@ -56,7 +56,7 @@ class fileAdminController extends file {
 	 *
 	 * @return BaseObject
 	 **/
-	function procFileAdminDeleteChecked() {
+	function procFileAdminDeleteChecked(){
 		// An error appears if no document is selected
 		$cart = Context::get('cart');
 		if(!$cart) return $this->stop('msg_cart_is_null');
@@ -67,7 +67,7 @@ class fileAdminController extends file {
 
 		$oFileController = &getController('file');
 		// Delete the post
-		for($i = 0; $i < $file_count; $i++) {
+		for($i = 0; $i < $file_count; $i++){
 			$file_srl = trim($file_srl_list[$i]);
 			if(!$file_srl) continue;
 
@@ -85,7 +85,7 @@ class fileAdminController extends file {
 	 *
 	 * @return BaseObject
 	 **/
-	function procFileAdminInsertConfig() {
+	function procFileAdminInsertConfig(){
 		// Get configurations (using module model object)
 		$config = new stdClass();
 		$config->allowed_filesize = Context::get('allowed_filesize');
@@ -107,7 +107,7 @@ class fileAdminController extends file {
 	 *
 	 * @return void
 	 **/
-	function procFileAdminInsertModuleConfig() {
+	function procFileAdminInsertModuleConfig(){
 		// Get variables
 		$module_srl = Context::get('target_module_srl');
 		// In order to configure multiple modules at once
@@ -138,7 +138,7 @@ class fileAdminController extends file {
 			return new BaseObject(-1, 'input size over than config in php.ini');
 
 		$oModuleController = &getController('module');
-		for($i = 0; $i < count($module_srl); $i++) {
+		for($i = 0; $i < count($module_srl); $i++){
 			$srl = trim($module_srl[$i]);
 			if(!$srl) continue;
 			$oModuleController->insertModulePartConfig('file', $srl, $file_config);
@@ -156,7 +156,7 @@ class fileAdminController extends file {
 	 *
 	 * @return BaseObject
 	 **/
-	function procFileAdminAddCart() {
+	function procFileAdminAddCart(){
 		$file_srl = (int)Context::get('file_srl');
 		//$fileSrlList = array(500, 502);
 
@@ -164,7 +164,7 @@ class fileAdminController extends file {
 		$output = $oFileModel->getFile($file_srl);
 		//$output = $oFileModel->getFile($fileSrlList);
 
-		if($output->file_srl) {
+		if($output->file_srl){
 			if($_SESSION['file_management'][$output->file_srl]) unset($_SESSION['file_management'][$output->file_srl]);
 			else $_SESSION['file_management'][$output->file_srl] = true;
 		}

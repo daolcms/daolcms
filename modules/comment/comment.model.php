@@ -13,7 +13,7 @@ class commentModel extends comment {
 	 * Initialization
 	 * @return void
 	 */
-	function init() {
+	function init(){
 	}
 
 	/**
@@ -21,7 +21,7 @@ class commentModel extends comment {
 	 * Print, scrap, vote-up(recommen), vote-down(non-recommend), report features added
 	 * @return void
 	 */
-	function getCommentMenu() {
+	function getCommentMenu(){
 		// get the post's id number and the current login information
 		$comment_srl = Context::get('target_srl');
 		$mid = Context::get('cur_mid');
@@ -35,7 +35,7 @@ class commentModel extends comment {
 
 		$oCommentController = &getController('comment');
 		// feature that only member can do
-		if($logged_info->member_srl) {
+		if($logged_info->member_srl){
 
 			$oCommentModel = &getModel('comment');
 			$columnList = array('comment_srl', 'module_srl', 'member_srl', 'ipaddress');
@@ -45,12 +45,12 @@ class commentModel extends comment {
 
 			$oModuleModel = &getModel('module');
 			$comment_config = $oModuleModel->getModulePartConfig('document', $module_srl);
-			if($comment_config->use_vote_up != 'N' && $member_srl != $logged_info->member_srl) {
+			if($comment_config->use_vote_up != 'N' && $member_srl != $logged_info->member_srl){
 				// Add a vote-up button for positive feedback
 				$url = sprintf("doCallModuleAction('comment','procCommentVoteUp','%s')", $comment_srl);
 				$oCommentController->addCommentPopupMenu($url, 'cmd_vote', '', 'javascript');
 			}
-			if($comment_config->use_vote_down != 'N' && $member_srl != $logged_info->member_srl) {
+			if($comment_config->use_vote_down != 'N' && $member_srl != $logged_info->member_srl){
 				// Add a vote-down button for negative feedback
 				$url = sprintf("doCallModuleAction('comment','procCommentVoteDown','%s')", $comment_srl);
 				$oCommentController->addCommentPopupMenu($url, 'cmd_vote_down', '', 'javascript');
@@ -63,11 +63,11 @@ class commentModel extends comment {
 		// call a trigger (after)
 		ModuleHandler::triggerCall('comment.getCommentMenu', 'after', $menu_list);
 		// find a comment by IP matching if an administrator.
-		if($logged_info->is_admin == 'Y') {
+		if($logged_info->is_admin == 'Y'){
 			$oCommentModel = &getModel('comment');
 			$oComment = $oCommentModel->getComment($comment_srl);
 
-			if($oComment->isExists()) {
+			if($oComment->isExists()){
 				// Find a post of the corresponding ip address
 				$url = getUrl('', 'module', 'admin', 'act', 'dispCommentAdminList', 'search_target', 'ipaddress', 'search_keyword', $oComment->getIpAddress());
 				$oCommentController->addCommentPopupMenu($url, 'cmd_search_by_ipaddress', $icon_path, 'TraceByIpaddress');
@@ -79,7 +79,7 @@ class commentModel extends comment {
 		// Changing a language of pop-up menu
 		$menus = Context::get('comment_popup_menu_list');
 		$menus_count = count($menus);
-		for($i = 0; $i < $menus_count; $i++) {
+		for($i = 0; $i < $menus_count; $i++){
 			$menus[$i]->str = Context::getLang($menus[$i]->str);
 		}
 		// get a list of final organized pop-up menus
@@ -93,7 +93,7 @@ class commentModel extends comment {
 	 * @param int $comment_srl
 	 * @return bool
 	 */
-	function isGranted($comment_srl) {
+	function isGranted($comment_srl){
 		return $_SESSION['own_comment'][$comment_srl];
 	}
 
@@ -102,7 +102,7 @@ class commentModel extends comment {
 	 * @param int $comment_srl
 	 * @return int
 	 */
-	function getChildCommentCount($comment_srl) {
+	function getChildCommentCount($comment_srl){
 		$args = new stdClass();
 		$args->comment_srl = $comment_srl;
 		$output = executeQuery('comment.getChildCommentCount', $args, NULL, 'master');
@@ -114,7 +114,7 @@ class commentModel extends comment {
 	 * @param int $comment_srl
 	 * @return int
 	 */
-	function getChildComments($comment_srl) {
+	function getChildComments($comment_srl){
 		$args = new stdClass();
 		$args->comment_srl = $comment_srl;
 		$output = executeQueryArray('comment.getChildComments', $args, NULL, 'master');
@@ -128,7 +128,7 @@ class commentModel extends comment {
 	 * @param array $columnList
 	 * @return commentItem
 	 */
-	function getComment($comment_srl = 0, $is_admin = false, $columnList = array()) {
+	function getComment($comment_srl = 0, $is_admin = false, $columnList = array()){
 		$oComment = new commentItem($comment_srl, $columnList);
 		if($is_admin) $oComment->setGrant();
 
@@ -141,7 +141,7 @@ class commentModel extends comment {
 	 * @param array        $columnList
 	 * @return array
 	 */
-	function getComments($comment_srl_list, $columnList = array()) {
+	function getComments($comment_srl_list, $columnList = array()){
 		if(is_array($comment_srl_list)) $comment_srls = implode(',', $comment_srl_list);
 		// fetch from a database
 		$args = new stdClass();
@@ -153,7 +153,7 @@ class commentModel extends comment {
 		if(!is_array($comment_list)) $comment_list = array($comment_list);
 
 		$comment_count = count($comment_list);
-		foreach($comment_list as $key => $attribute) {
+		foreach($comment_list as $key => $attribute){
 			if(!$attribute->comment_srl) continue;
 			$oComment = null;
 			$oComment = new commentItem();
@@ -170,7 +170,7 @@ class commentModel extends comment {
 	 * @param int $document_srl
 	 * @return int
 	 */
-	function getCommentCount($document_srl) {
+	function getCommentCount($document_srl){
 		$args = new stdClass();
 		$args->document_srl = $document_srl;
 
@@ -185,7 +185,7 @@ class commentModel extends comment {
 		//check if module is using validation system
 		$oCommentController = &getController('comment');
 		$using_validation = $oCommentController->isModuleUsingPublishValidation($module_srl);
-		if($using_validation) {
+		if($using_validation){
 			$args->status = 1;
 		}
 
@@ -200,7 +200,7 @@ class commentModel extends comment {
 	 * @param array  $moduleSrlList
 	 * @return int
 	 */
-	function getCommentCountByDate($date = '', $moduleSrlList = array()) {
+	function getCommentCountByDate($date = '', $moduleSrlList = array()){
 		if($date) $args->regDate = date('Ymd', strtotime($date));
 		if(count($moduleSrlList) > 0) $args->module_srl = $moduleSrlList;
 
@@ -216,21 +216,23 @@ class commentModel extends comment {
 	 * @param bool $published
 	 * @return int
 	 */
-	function getCommentAllCount($module_srl, $published = null) {
+	function getCommentAllCount($module_srl, $published = null){
 		$args = new stdClass();
 		$args->module_srl = $module_srl;
 
-		if(is_null($published)) {
+		if(is_null($published)){
 			// check if module is using comment validation system
 			$oCommentController = &getController("comment");
 			$is_using_validation = $oCommentController->isModuleUsingPublishValidation($module_srl);
-			if($is_using_validation) {
+			if($is_using_validation){
 				$args->status = 1;
 			}
-		} else {
-			if($published) {
+		}
+		else{
+			if($published){
 				$args->status = 1;
-			} else {
+			}
+			else{
 				$args->status = 0;
 			}
 		}
@@ -244,13 +246,13 @@ class commentModel extends comment {
 	 * Get the module info without duplication
 	 * @return array
 	 */
-	function getDistinctModules() {
+	function getDistinctModules(){
 		$output = executeQuery('comment.getDistinctModules');
 		$module_srls = $output->data;
 		$oModuleModel = &getModel('module');
 		$result = array();
-		if($module_srls) {
-			foreach($module_srls as $module) {
+		if($module_srls){
+			foreach($module_srls as $module){
 				$module_info = $oModuleModel->getModuleInfoByModuleSrl($module->module_srl);
 				$result[$module->module_srl] = $module_info->mid;
 			}
@@ -265,8 +267,8 @@ class commentModel extends comment {
 	 * @param array  $columnList
 	 * @return array
 	 */
-	function getNewestCommentList($obj, $columnList = array()) {
-		if($obj->mid) {
+	function getNewestCommentList($obj, $columnList = array()){
+		if($obj->mid){
 			$oModuleModel = &getModel('module');
 			$obj->module_srl = $oModuleModel->getModuleSrlByMid($obj->mid);
 			unset($obj->mid);
@@ -279,18 +281,18 @@ class commentModel extends comment {
 		$args->list_count = $obj->list_count;
 		// cache controll
 		$oCacheHandler = &CacheHandler::getInstance('object');
-		if($oCacheHandler->isSupport()) {
+		if($oCacheHandler->isSupport()){
 			$object_key = 'object_newest_comment_list:' . $obj->module_srl;
 			$cache_key = $oCacheHandler->getGroupKey('newestCommentsList', $object_key);
 			$output = $oCacheHandler->get($cache_key);
 		}
-		if(!$output) {
-			if(strpos($args->module_srl, ",") === false) {
-				if($args->module_srl) {
+		if(!$output){
+			if(strpos($args->module_srl, ",") === false){
+				if($args->module_srl){
 					// check if module is using comment validation system
 					$oCommentController = &getController("comment");
 					$is_using_validation = $oCommentController->isModuleUsingPublishValidation($obj->module_srl);
-					if($is_using_validation) {
+					if($is_using_validation){
 						$args->status = 1;
 					}
 				}
@@ -301,10 +303,10 @@ class commentModel extends comment {
 		if(!$output->toBool()) return $output;
 
 		$comment_list = $output->data;
-		if($comment_list) {
+		if($comment_list){
 			if(!is_array($comment_list)) $comment_list = array($comment_list);
 			$comment_count = count($comment_list);
-			foreach($comment_list as $key => $attribute) {
+			foreach($comment_list as $key => $attribute){
 				if(!$attribute->comment_srl) continue;
 				$oComment = null;
 				$oComment = new commentItem();
@@ -416,7 +418,7 @@ class commentModel extends comment {
 	 * @param int $document_srl
 	 * @return void
 	 */
-	function fixCommentList($module_srl, $document_srl) {
+	function fixCommentList($module_srl, $document_srl){
 		// create a lock file to prevent repeated work when performing a batch job
 		$lock_file = "./files/cache/tmp/lock." . $document_srl;
 		if(file_exists($lock_file) && filemtime($lock_file) + 60 * 60 * 10 < time()) return;
@@ -439,23 +441,24 @@ class commentModel extends comment {
 		// get the log-in information for logged-in users
 		$logged_info = Context::get('logged_info');
 		// generate a hierarchical structure of comments for loop
-		for($i = $comment_count - 1; $i >= 0; $i--) {
+		for($i = $comment_count - 1; $i >= 0; $i--){
 			$comment_srl = $source_list[$i]->comment_srl;
 			$parent_srl = $source_list[$i]->parent_srl;
 			if(!$comment_srl) continue;
 			// generate a list
 			$list[$comment_srl] = $source_list[$i];
 
-			if($parent_srl) {
+			if($parent_srl){
 				$list[$parent_srl]->child[] = &$list[$comment_srl];
-			} else {
+			}
+			else{
 				$root->child[] = &$list[$comment_srl];
 			}
 		}
 		$this->_arrangeComment($comment_list, $root->child, 0, null);
 		// insert values to the database
-		if(count($comment_list)) {
-			foreach($comment_list as $comment_srl => $item) {
+		if(count($comment_list)){
+			foreach($comment_list as $comment_srl => $item){
 				$comment_args = new stdClass();
 				$comment_args->comment_srl = $comment_srl;
 				$comment_args->document_srl = $document_srl;
@@ -480,20 +483,21 @@ class commentModel extends comment {
 	 * @param object $parent
 	 * @return void
 	 */
-	function _arrangeComment(&$comment_list, $list, $depth, $parent = null) {
+	function _arrangeComment(&$comment_list, $list, $depth, $parent = null){
 		if(!count($list)) return;
-		foreach($list as $key => $val) {
+		foreach($list as $key => $val){
 
 			if($parent) $val->head = $parent->head;
 			else $val->head = $val->comment_srl;
 			$val->arrange = count($comment_list) + 1;
 
-			if($val->child) {
+			if($val->child){
 				$val->depth = $depth;
 				$comment_list[$val->comment_srl] = $val;
 				$this->_arrangeComment($comment_list, $val->child, $depth + 1, $val);
 				unset($val->child);
-			} else {
+			}
+			else{
 				$val->depth = $depth;
 				$comment_list[$val->comment_srl] = $val;
 			}
@@ -506,7 +510,7 @@ class commentModel extends comment {
 	 * @param array  $columnList
 	 * @return object
 	 */
-	function getTotalCommentList($obj, $columnList = array()) {
+	function getTotalCommentList($obj, $columnList = array()){
 		$query_id = 'comment.getTotalCommentList';
 		// Variables
 		$args = new stdClass();
@@ -520,15 +524,15 @@ class commentModel extends comment {
 		// check if module is using comment validation system
 		$oCommentController = &getController("comment");
 		$is_using_validation = $oCommentController->isModuleUsingPublishValidation($obj->module_srl);
-		if($is_using_validation) {
+		if($is_using_validation){
 			$args->s_is_published = 1;
 		}
 
 		// Search options
 		$search_target = $obj->search_target ? $obj->search_target : trim(Context::get('search_target'));
 		$search_keyword = $obj->search_keyword ? $obj->search_keyword : trim(Context::get('search_keyword'));
-		if($search_target && $search_keyword) {
-			switch($search_target) {
+		if($search_target && $search_keyword){
+			switch($search_target){
 				case 'content' :
 					if($search_keyword) $search_keyword = str_replace(' ', '%', $search_keyword);
 					$args->s_content = $search_keyword;
@@ -568,10 +572,10 @@ class commentModel extends comment {
 					$args->s_is_secret = $search_keyword;
 					break;
 				case 'is_published' :
-					if($search_keyword == 'Y') {
+					if($search_keyword == 'Y'){
 						$args->s_is_published = 1;
 					}
-					if($search_keyword == 'N') {
+					if($search_keyword == 'N'){
 						$args->s_is_published = 0;
 					}
 					break;
@@ -587,7 +591,7 @@ class commentModel extends comment {
 		$output = executeQueryArray($query_id, $args, $columnList);
 		// return when no result or error occurance
 		if(!$output->toBool() || !count($output->data)) return $output;
-		foreach($output->data as $key => $val) {
+		foreach($output->data as $key => $val){
 			unset($_oComment);
 			$_oComment = new CommentItem(0);
 			$_oComment->setAttribute($val);
@@ -602,7 +606,7 @@ class commentModel extends comment {
 	 * @param object $obj
 	 * @return int
 	 */
-	function getTotalCommentCount($obj) {
+	function getTotalCommentCount($obj){
 		$query_id = 'comment.getTotalCommentCountByGroupStatus';
 		// Variables
 		$args = new stdClass();
@@ -611,8 +615,8 @@ class commentModel extends comment {
 		// Search options
 		$search_target = $obj->search_target ? $obj->search_target : trim(Context::get('search_target'));
 		$search_keyword = $obj->search_keyword ? $obj->search_keyword : trim(Context::get('search_keyword'));
-		if($search_target && $search_keyword) {
-			switch($search_target) {
+		if($search_target && $search_keyword){
+			switch($search_target){
 				case 'content' :
 					if($search_keyword) $search_keyword = str_replace(' ', '%', $search_keyword);
 					$args->s_content = $search_keyword;
@@ -667,7 +671,7 @@ class commentModel extends comment {
 	 * @param int $module_srl
 	 * @return object
 	 */
-	function getCommentConfig($module_srl) {
+	function getCommentConfig($module_srl){
 		$oModuleModel = &getModel('module');
 		$comment_config = $oModuleModel->getModulePartConfig('comment', $module_srl);
 		if(!isset($comment_config->comment_count)) $comment_config->comment_count = 50;
@@ -678,7 +682,7 @@ class commentModel extends comment {
 	 * Return a list of voting member
 	 * @return void
 	 */
-	function getCommentVotedMemberList() {
+	function getCommentVotedMemberList(){
 		$comment_srl = Context::get('comment_srl');
 		if(!$comment_srl) return new BaseObject(-1, 'msg_invalid_request');
 
@@ -693,10 +697,11 @@ class commentModel extends comment {
 		$oModuleModel = &getModel('module');
 		$comment_config = $oModuleModel->getModulePartConfig('comment', $module_srl);
 		$args = new stdClass();
-		if($point == -1) {
+		if($point == -1){
 			if($comment_config->use_vote_down != 'S') return new BaseObject(-1, 'msg_invalid_request');
 			$args->below_point = 0;
-		} else {
+		}
+		else{
 			if($comment_config->use_vote_up != 'S') return new BaseObject(-1, 'msg_invalid_request');
 			$args->more_point = 0;
 		}
@@ -706,8 +711,8 @@ class commentModel extends comment {
 		if(!$output->toBool()) return $output;
 
 		$oMemberModel = &getModel('member');
-		if($output->data) {
-			foreach($output->data as $k => $d) {
+		if($output->data){
+			foreach($output->data as $k => $d){
 				$profile_image = $oMemberModel->getProfileImage($d->member_srl);
 				$output->data[$k]->src = $profile_image->src;
 			}
@@ -720,7 +725,7 @@ class commentModel extends comment {
 	 * Return a secret status by secret field
 	 * @return array
 	 */
-	function getSecretNameList() {
+	function getSecretNameList(){
 		global $lang;
 		if(!isset($lang->secret_name_list))
 			return array('Y' => 'Secret', 'N' => 'Public');

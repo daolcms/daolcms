@@ -20,7 +20,7 @@ if(!defined('__XE__')) exit();
 /**
  * Display the version info of DAOL CMS.
  */
-define('__DAOL_VERSION__', '1.1.0.0');
+define('__DAOL_VERSION__', '1.1.0.1');
 
 /**
  * Display the version info of Based XE.
@@ -34,7 +34,8 @@ define('__XE_VERSION__', '1.5.4.7');
 define('__DAOL_MIN_PHP_VERSION__', '5.3.0');
 
 /**
- * @deprecated __ZBXE_VERSION__ is deprecated and will be removed. Use __DAOL_VERSION__ instead.
+ * @deprecated __ZBXE_VERSION__ is alias of __XE_VERSION__ which is deprecated
+ * and will be removed. Use __DAOL_VERSION__ instead.
  */
 define('__ZBXE_VERSION__', __XE_VERSION__);
 

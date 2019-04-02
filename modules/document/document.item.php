@@ -270,7 +270,7 @@ class documentItem extends BaseObject {
 
 		if(!preg_match("/^http:\/\//i", $url)) $url = "http://" . $url;
 
-		return $url;
+		return escape($url, false);
 	}
 
 	function getMemberSrl() {

@@ -14,7 +14,7 @@ class comment extends ModuleObject {
 	 * Implemented if additional tasks are required when installing
 	 * @return BaseObject
 	 */
-	function moduleInstall() {
+	function moduleInstall(){
 		$oDB = &DB::getInstance();
 
 		// register the action forward (for using on the admin mode)
@@ -35,7 +35,7 @@ class comment extends ModuleObject {
 		// 2008. 02. 22 add comment setting when a new module added
 		$oModuleController->insertTrigger('module.dispAdditionSetup', 'comment', 'view', 'triggerDispCommentAdditionSetup', 'before');
 
-		if(!is_dir('./files/cache/tmp')) {
+		if(!is_dir('./files/cache/tmp')){
 			FileHandler::makeDir('./files/cache/tmp');
 		}
 
@@ -46,7 +46,7 @@ class comment extends ModuleObject {
 	 * Method to check if installation is succeeded
 	 * @return bool
 	 */
-	function checkUpdate() {
+	function checkUpdate(){
 		$oDB = &DB::getInstance();
 		$oModuleModel = &getModel('module');
 		// 2007. 10. 17 add a trigger to delete comments together with posting deleted
@@ -65,10 +65,10 @@ class comment extends ModuleObject {
 		if(!$oDB->isIndexExists("comments", "idx_module_list_order"))
 			return true;
 		//2012. 02. 24 add comment published status column and index
-		if(!$oDB->isColumnExists("comments", "status")) {
+		if(!$oDB->isColumnExists("comments", "status")){
 			return true;
 		}
-		if(!$oDB->isIndexExists("comments", "idx_status")) {
+		if(!$oDB->isIndexExists("comments", "idx_status")){
 			return true;
 		}
 
@@ -86,7 +86,7 @@ class comment extends ModuleObject {
 	 * Execute update
 	 * @return BaseObject
 	 */
-	function moduleUpdate() {
+	function moduleUpdate(){
 		$oDB = &DB::getInstance();
 		$oModuleModel = &getModel('module');
 		$oModuleController = &getController('module');
@@ -97,19 +97,19 @@ class comment extends ModuleObject {
 		if(!$oModuleModel->getTrigger('module.deleteModule', 'comment', 'controller', 'triggerDeleteModuleComments', 'after'))
 			$oModuleController->insertTrigger('module.deleteModule', 'comment', 'controller', 'triggerDeleteModuleComments', 'after');
 		// 2007. 10. 23 add a column for recommendation votes or notification of the comments
-		if(!$oDB->isColumnExists("comments", "voted_count")) {
+		if(!$oDB->isColumnExists("comments", "voted_count")){
 			$oDB->addColumn("comments", "voted_count", "number", "11");
 			$oDB->addIndex("comments", "idx_voted_count", array("voted_count"));
 		}
 
-		if(!$oDB->isColumnExists("comments", "notify_message")) {
+		if(!$oDB->isColumnExists("comments", "notify_message")){
 			$oDB->addColumn("comments", "notify_message", "char", "1");
 		}
 		// 2008. 02. 22 add comment setting when a new module added
 		if(!$oModuleModel->getTrigger('module.dispAdditionSetup', 'comment', 'view', 'triggerDispCommentAdditionSetup', 'before'))
 			$oModuleController->insertTrigger('module.dispAdditionSetup', 'comment', 'view', 'triggerDispCommentAdditionSetup', 'before');
 		// 2008. 05. 14 add a column for blamed count
-		if(!$oDB->isColumnExists("comments", "blamed_count")) {
+		if(!$oDB->isColumnExists("comments", "blamed_count")){
 			$oDB->addColumn('comments', 'blamed_count', 'number', 11, 0, true);
 			$oDB->addIndex('comments', 'idx_blamed_count', array('blamed_count'));
 		}
@@ -126,7 +126,7 @@ class comment extends ModuleObject {
 			);
 
 		//2012. 02. 24 add comment published status column and index
-		if(!$oDB->isColumnExists("comments", "status")) {
+		if(!$oDB->isColumnExists("comments", "status")){
 			$oDB->addColumn("comments", "status", "number", 1, 1, true);
 		}
 		if(!$oDB->isIndexExists("comments", "idx_status"))
@@ -139,7 +139,7 @@ class comment extends ModuleObject {
 			);
 
 		// 2012. 08. 29 Add a trigger to copy additional setting when the module is copied 
-		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'comment', 'controller', 'triggerCopyModule', 'after')) {
+		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'comment', 'controller', 'triggerCopyModule', 'after')){
 			$oModuleController->insertTrigger('module.procModuleAdminCopyModule', 'comment', 'controller', 'triggerCopyModule', 'after');
 		}
 
@@ -154,8 +154,8 @@ class comment extends ModuleObject {
 	 * Regenerate cache file
 	 * @return void
 	 */
-	function recompileCache() {
-		if(!is_dir('./files/cache/tmp')) {
+	function recompileCache(){
+		if(!is_dir('./files/cache/tmp')){
 			FileHandler::makeDir('./files/cache/tmp');
 		}
 	}

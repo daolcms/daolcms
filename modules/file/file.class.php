@@ -12,7 +12,7 @@ class file extends ModuleObject {
 	 *
 	 * @return BaseObject
 	 **/
-	function moduleInstall() {
+	function moduleInstall(){
 		// Register action forward (to use in administrator mode)
 		$oModuleController = &getController('module');
 		// Save the default settings for attachments
@@ -49,7 +49,7 @@ class file extends ModuleObject {
 	 *
 	 * @return bool
 	 **/
-	function checkUpdate() {
+	function checkUpdate(){
 		$oDB = &DB::getInstance();
 		$oModuleModel = &getModel('module');
 		// 2007. 10. 17 Create a trigger to insert, update, delete documents and comments
@@ -85,7 +85,7 @@ class file extends ModuleObject {
 	 *
 	 * @return BaseObject
 	 **/
-	function moduleUpdate() {
+	function moduleUpdate(){
 		$oDB = &DB::getInstance();
 		$oModuleModel = &getModel('module');
 		$oModuleController = &getController('module');
@@ -132,7 +132,7 @@ class file extends ModuleObject {
 		if(!$oDB->isColumnExists('files', 'upload_target_type')) $oDB->addColumn('files', 'upload_target_type', 'char', '3');
 
 		// 2012. 08. 29 Add a trigger to copy additional setting when the module is copied 
-		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'file', 'controller', 'triggerCopyModule', 'after')) {
+		if(!$oModuleModel->getTrigger('module.procModuleAdminCopyModule', 'file', 'controller', 'triggerCopyModule', 'after')){
 			$oModuleController->insertTrigger('module.procModuleAdminCopyModule', 'file', 'controller', 'triggerCopyModule', 'after');
 		}
 		if(!$oDB->isColumnExists('files', 'cover_image')) $oDB->addColumn('files', 'cover_image', 'char', '1', 'N');
@@ -145,6 +145,6 @@ class file extends ModuleObject {
 	 *
 	 * @return BaseObject
 	 **/
-	function recompileCache() {
+	function recompileCache(){
 	}
 }
