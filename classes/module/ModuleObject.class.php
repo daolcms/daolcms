@@ -38,7 +38,7 @@ class ModuleObject extends BaseObject {
 	 * @param string $module name of module
 	 * @return void
 	 **/
-	function setModule($module) {
+	function setModule($module){
 		$this->module = $module;
 	}
 
@@ -47,7 +47,7 @@ class ModuleObject extends BaseObject {
 	 * @param string $path the directory path to a module directory
 	 * @return void
 	 **/
-	function setModulePath($path) {
+	function setModulePath($path){
 		if(substr($path, -1) != '/') $path .= '/';
 		$this->module_path = $path;
 	}
@@ -58,13 +58,13 @@ class ModuleObject extends BaseObject {
 	 * @remark redirect_url is used only for ajax requests
 	 * @return void
 	 **/
-	function setRedirectUrl($url = './', $output = NULL) {
+	function setRedirectUrl($url = './', $output = NULL){
 		$ajaxRequestMethod = array_flip($this->ajaxRequestMethod);
-		if(!isset($ajaxRequestMethod[Context::getRequestMethod()])) {
+		if(!isset($ajaxRequestMethod[Context::getRequestMethod()])){
 			$this->add('redirect_url', $url);
 		}
 
-		if($output !== NULL && is_object($output)) {
+		if($output !== NULL && is_object($output)){
 			return $output;
 		}
 	}
@@ -73,7 +73,7 @@ class ModuleObject extends BaseObject {
 	 * get url for redirection
 	 * @return string redirect_url
 	 **/
-	function getRedirectUrl() {
+	function getRedirectUrl(){
 		return $this->get('redirect_url');
 	}
 
@@ -83,7 +83,7 @@ class ModuleObject extends BaseObject {
 	 * @param string $type    type of message (error, info, update)
 	 * @return void
 	 **/
-	function setMessage($message = 'success', $type = null) {
+	function setMessage($message = 'success', $type = null){
 		parent::setMessage($message);
 		$this->setMessageType($type);
 	}
@@ -93,7 +93,7 @@ class ModuleObject extends BaseObject {
 	 * @param string $type type of message (error, info, update)
 	 * @return void
 	 **/
-	function setMessageType($type) {
+	function setMessageType($type){
 		$this->add('message_type', $type);
 	}
 
@@ -101,10 +101,10 @@ class ModuleObject extends BaseObject {
 	 * get type of message
 	 * @return string $type
 	 **/
-	function getMessageType() {
+	function getMessageType(){
 		$type = $this->get('message_type');
 		$typeList = array('error' => 1, 'info' => 1, 'update' => 1);
-		if(!isset($typeList[$type])) {
+		if(!isset($typeList[$type])){
 			$type = $this->getError() ? 'error' : 'info';
 		}
 		return $type;
@@ -116,7 +116,7 @@ class ModuleObject extends BaseObject {
 	 * Tpl as the common run of the refresh.html ..
 	 * @return void
 	 **/
-	function setRefreshPage() {
+	function setRefreshPage(){
 		$this->setTemplatePath('./common/tpl');
 		$this->setTemplateFile('refresh');
 	}
@@ -127,7 +127,7 @@ class ModuleObject extends BaseObject {
 	 * @param string $act
 	 * @return void
 	 **/
-	function setAct($act) {
+	function setAct($act){
 		$this->act = $act;
 	}
 
@@ -137,7 +137,7 @@ class ModuleObject extends BaseObject {
 	 * @param object $xml_info    object containing module description
 	 * @return void
 	 **/
-	function setModuleInfo($module_info, $xml_info) {
+	function setModuleInfo($module_info, $xml_info){
 		// The default variable settings
 		$this->mid = $module_info->mid;
 		$this->module_srl = $module_info->module_srl;
@@ -149,15 +149,16 @@ class ModuleObject extends BaseObject {
 		$is_logged = Context::get('is_logged');
 		$logged_info = Context::get('logged_info');
 		// module model create an object
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		// permission settings. access, manager(== is_admin) are fixed and privilege name in XE
 		$module_srl = Context::get('module_srl');
-		if(!$module_info->mid && !is_array($module_srl) && preg_match('/^([0-9]+)$/', $module_srl)) {
+		if(!$module_info->mid && !is_array($module_srl) && preg_match('/^([0-9]+)$/', $module_srl)){
 			$request_module = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
-			if($request_module->module_srl == $module_srl) {
+			if($request_module->module_srl == $module_srl){
 				$grant = $oModuleModel->getGrant($request_module, $logged_info);
 			}
-		} else {
+		}
+		else{
 			$grant = $oModuleModel->getGrant($module_info, $logged_info, $xml_info);
 			// have at least access grant
 			if(substr_count($this->act, 'Member') || substr_count($this->act, 'Communication'))
@@ -166,19 +167,19 @@ class ModuleObject extends BaseObject {
 		// display no permission if the current module doesn't have an access privilege
 		//if(!$grant->access) return $this->stop("msg_not_permitted");
 		// checks permission and action if you don't have an admin privilege
-		if(!$grant->manager) {
+		if(!$grant->manager){
 			// get permission types(guest, member, manager, root) of the currently requested action
 			$permission_target = $xml_info->permission->{$this->act};
 			// check manager if a permission in module.xml otherwise action if no permission
 			if(!$permission_target && substr_count($this->act, 'Admin')) $permission_target = 'manager';
 			// Check permissions
-			switch($permission_target) {
+			switch($permission_target){
 				case 'root' :
 				case 'manager' :
 					$this->stop('msg_is_not_administrator');
 					return;
 				case 'member' :
-					if(!$is_logged) {
+					if(!$is_logged){
 						$this->stop('msg_not_permitted_act');
 						return;
 					}
@@ -200,7 +201,7 @@ class ModuleObject extends BaseObject {
 	 * @param string $msg_code an error code
 	 * @return ModuleObject $this
 	 **/
-	function stop($msg_code) {
+	function stop($msg_code){
 		// flag setting to stop the proc processing
 		$this->stop_proc = TRUE;
 		// Error handling
@@ -224,7 +225,7 @@ class ModuleObject extends BaseObject {
 	 * @param string name of file
 	 * @return void
 	 **/
-	function setTemplateFile($filename) {
+	function setTemplateFile($filename){
 		if(substr($filename, -5) != '.html') $filename .= '.html';
 		$this->template_file = $filename;
 	}
@@ -233,7 +234,7 @@ class ModuleObject extends BaseObject {
 	 * retrieve the directory path of the template directory
 	 * @return string
 	 **/
-	function getTemplateFile() {
+	function getTemplateFile(){
 		return $this->template_file;
 	}
 
@@ -242,7 +243,7 @@ class ModuleObject extends BaseObject {
 	 * @param string path of template directory.
 	 * @return void
 	 **/
-	function setTemplatePath($path) {
+	function setTemplatePath($path){
 		if(substr($path, 0, 1) != '/' && substr($path, 0, 2) != './') $path = './' . $path;
 		if(substr($path, -1) != '/') $path .= '/';
 		$this->template_path = $path;
@@ -252,7 +253,7 @@ class ModuleObject extends BaseObject {
 	 * retrieve the directory path of the template directory
 	 * @return string
 	 **/
-	function getTemplatePath() {
+	function getTemplatePath(){
 		return $this->template_path;
 	}
 
@@ -261,7 +262,7 @@ class ModuleObject extends BaseObject {
 	 * @param string name of file
 	 * @return void
 	 **/
-	function setEditedLayoutFile($filename) {
+	function setEditedLayoutFile($filename){
 		if(substr($filename, -5) != '.html') $filename .= '.html';
 		$this->edited_layout_file = $filename;
 	}
@@ -270,7 +271,7 @@ class ModuleObject extends BaseObject {
 	 * retreived the file name of edited_layout_file
 	 * @return string
 	 **/
-	function getEditedLayoutFile() {
+	function getEditedLayoutFile(){
 		return $this->edited_layout_file;
 	}
 
@@ -279,7 +280,7 @@ class ModuleObject extends BaseObject {
 	 * @param string name of file
 	 * @return void
 	 **/
-	function setLayoutFile($filename) {
+	function setLayoutFile($filename){
 		if(substr($filename, -5) != '.html') $filename .= '.html';
 		$this->layout_file = $filename;
 	}
@@ -288,7 +289,7 @@ class ModuleObject extends BaseObject {
 	 * get the file name of the layout file
 	 * @return string
 	 **/
-	function getLayoutFile() {
+	function getLayoutFile(){
 		return $this->layout_file;
 	}
 
@@ -296,7 +297,7 @@ class ModuleObject extends BaseObject {
 	 * set the directory path of the layout directory
 	 * @param string path of layout directory.
 	 **/
-	function setLayoutPath($path) {
+	function setLayoutPath($path){
 		if(substr($path, 0, 1) != '/' && substr($path, 0, 2) != './') $path = './' . $path;
 		if(substr($path, -1) != '/') $path .= '/';
 		$this->layout_path = $path;
@@ -306,7 +307,7 @@ class ModuleObject extends BaseObject {
 	 * set the directory path of the layout directory
 	 * @return string
 	 **/
-	function getLayoutPath($layout_name = "", $layout_type = "P") {
+	function getLayoutPath($layout_name = "", $layout_type = "P"){
 		return $this->layout_path;
 	}
 
@@ -314,13 +315,13 @@ class ModuleObject extends BaseObject {
 	 * excute the member method specified by $act variable
 	 * @return boolean true : success false : fail
 	 **/
-	function proc() {
+	function proc(){
 		// pass if stop_proc is true
 		if($this->stop_proc) return FALSE;
 
 		// trigger call
 		$triggerOutput = ModuleHandler::triggerCall('moduleObject.proc', 'before', $this);
-		if(!$triggerOutput->toBool()) {
+		if(!$triggerOutput->toBool()){
 			$this->setError($triggerOutput->getError());
 			$this->setMessage($triggerOutput->getMessage());
 			return FALSE;
@@ -328,29 +329,30 @@ class ModuleObject extends BaseObject {
 
 		// execute an addon(call called_position as before_module_proc)
 		$called_position = 'before_module_proc';
-		$oAddonController = &getController('addon');
+		$oAddonController = getController('addon');
 		$addon_file = $oAddonController->getCacheFilePath(Mobile::isFromMobilePhone() ? "mobile" : "pc");
 		if(is_readable($addon_file)) include($addon_file);
 
-		if(isset($this->xml_info->action->{$this->act}) && method_exists($this, $this->act)) {
+		if(isset($this->xml_info->action->{$this->act}) && method_exists($this, $this->act)){
 			// Check permissions
-			if($this->module_srl && !$this->grant->access) {
+			if($this->module_srl && !$this->grant->access){
 				$this->stop("msg_not_permitted_act");
 				return FALSE;
 			}
 			// integrate skin information of the module(change to sync skin info with the target module only by seperating its table)
-			$oModuleModel = &getModel('module');
+			$oModuleModel = getModel('module');
 			$oModuleModel->syncSkinInfoToModuleInfo($this->module_info);
 			Context::set('module_info', $this->module_info);
 			// Run
 			$output = $this->{$this->act}();
-		} else {
+		}
+		else{
 			return FALSE;
 		}
 
 		// trigger call
 		$triggerOutput = ModuleHandler::triggerCall('moduleObject.proc', 'after', $this);
-		if(!$triggerOutput->toBool()) {
+		if(!$triggerOutput->toBool()){
 			$this->setError($triggerOutput->getError());
 			$this->setMessage($triggerOutput->getMessage());
 			return FALSE;
@@ -358,11 +360,11 @@ class ModuleObject extends BaseObject {
 
 		// execute an addon(call called_position as after_module_proc)
 		$called_position = 'after_module_proc';
-		$oAddonController = &getController('addon');
+		$oAddonController = getController('addon');
 		$addon_file = $oAddonController->getCacheFilePath(Mobile::isFromMobilePhone() ? "mobile" : "pc");
 		if(is_readable($addon_file)) include($addon_file);
 
-		if(is_a($output, 'Object') || is_subclass_of($output, 'Object')) {
+		if(is_a($output, 'Object') || is_subclass_of($output, 'Object')){
 			$this->setError($output->getError());
 			$this->setMessage($output->getMessage());
 
