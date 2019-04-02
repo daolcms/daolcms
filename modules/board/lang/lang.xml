@@ -393,6 +393,6 @@
 	</item>
 	<item name="mobile_use_editor">
 		<value xml:lang="ko"><![CDATA[위지윅 에디터 사용]]></value>
-		<value xml:lang="ko"><![CDATA[Use WYSIWYG Editor]]></value>
+		<value xml:lang="en"><![CDATA[Use WYSIWYG Editor]]></value>
 	</item>
 </lang>
