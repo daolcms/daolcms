@@ -395,4 +395,8 @@
 		<value xml:lang="ko"><![CDATA[위지윅 에디터 사용]]></value>
 		<value xml:lang="en"><![CDATA[Use WYSIWYG Editor]]></value>
 	</item>
+	<item name="about_mobile_use_editor">
+		<value xml:lang="ko"><![CDATA[위지윅 에디터 사용을 선택하실 수 있습니다.]]></value>
+		<value xml:lang="en"><![CDATA[You can choose to use WYSIWYG Editor.]]></value>
+	</item>
 </lang>
