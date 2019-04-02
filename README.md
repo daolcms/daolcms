@@ -5,8 +5,7 @@
 [![Latest release](http://img.shields.io/github/release/daolcms/daolcms.svg)](https://github.com/daolcms/daolcms/releases)
 
 
-DAOL Core is the base frame of DAOL CMS. DAOL CMS is a web CMS program, branched out from XpressEngine
-
+DAOL Core is the base frame of DAOL CMS. DAOL CMS is a web CMS program, branched out from XpressEngine  
 다올 CMS는 다올 코어에 기반을 두고 있으며, XpressEngine에서 파생된 웹 CMS 프로그램입니다.
 
 ## Support
@@ -18,11 +17,11 @@ DAOL Core is the base frame of DAOL CMS. DAOL CMS is a web CMS program, branched
 @daolproject, @dorami, @qw5414, @Web-Engine, @YJSoft
 
 ## Installation Environment
-DAOL CMS requires PHP 5.3 or higher MySQL 5.0 or higher, PHP 5.6 or higher MySQL 5.6 or higher is recommended.
+DAOL CMS requires PHP 5.3 or higher MySQL 5.0 or higher, PHP 5.6 or higher MySQL 5.6 or higher is recommended.  
 다올 CMS 설치 환경은 PHP 5.3 이상 MySQL 5.0 이상 버전이 필요하며, PHP 5.6 이상 MySQL 5.6 이상 버전이 권장됩니다.
 
 ## Contribution Guide
-Please refer to the `CONTRIBUTING.md` file.
+Please refer to the `CONTRIBUTING.md` file.  
 `CONTRIBUTING.md` 파일을 참고하세요.
 
 ## License
