@@ -1193,7 +1193,7 @@ if(typeof window.XE == "undefined") {
 					var isChrome = navigator.userAgent.match(/Chrome\/([0-9]+)/);
 					var rel = $this.attr('rel');
 					
-					if (isChrome && parseInt(isChrome[1], 10) >= 72) {
+					if(isChrome && parseInt(isChrome[1], 10) >= 72) {
 						return;
 					} else {
 						if(typeof rel == 'string') {
