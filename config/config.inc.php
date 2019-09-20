@@ -23,10 +23,16 @@ if(!defined('__XE__')) exit();
 define('__DAOL_VERSION__', '1.1.0.1');
 
 /**
+ * Display the version info of Based XDT EX.
+ * @deprecated this value will never changed, use __DAOL_VERSION__ instead.
+ */
+define('__XDT_EX_VERSION__', '1.5.4.7');
+
+/**
  * Display the version info of Based XE.
  * @deprecated this value will never changed, use __DAOL_VERSION__ instead.
  */
-define('__XE_VERSION__', '1.5.4.7');
+define('__XE_VERSION__', '1.5.4.3');
 
 /**
  * Minimum version of PHP usable by DAOL CMS.
