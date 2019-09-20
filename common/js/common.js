@@ -213,11 +213,16 @@ if(typeof window.XE == "undefined") {
 
 				if($this.data('noopener') !== false && !window.XE.isSameHost(href)) {
 					var rel = $this.attr('rel');
-
-					if(typeof rel == 'string') {
-						$this.attr('rel', rel + ' noopener');
+					var isChrome = navigator.userAgent.match(/Chrome\/([0-9]+)/);
+					
+					if (isChrome && parseInt(isChrome[1], 10) >= 72) {
+						return;
 					} else {
-						$this.attr('rel', 'noopener');
+						if(typeof rel == 'string') {
+							$this.attr('rel', rel + ' noopener');
+						} else {
+							$this.attr('rel', 'noopener');
+						}
 					}
 
 					blankshield.open(href);
