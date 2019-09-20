@@ -212,8 +212,8 @@ if(typeof window.XE == "undefined") {
 				if(!href.match(/^(https?:\/\/)/)) return;
 
 				if($this.data('noopener') !== false && !window.XE.isSameHost(href)) {
-					var rel = $this.attr('rel');
 					var isChrome = navigator.userAgent.match(/Chrome\/([0-9]+)/);
+					var rel = $this.attr('rel');
 					
 					if (isChrome && parseInt(isChrome[1], 10) >= 72) {
 						return;
