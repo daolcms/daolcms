@@ -1455,7 +1455,7 @@ function reload($isOpener = false){
 }
 
 function isDefinedLangCode($str){
-	return preg_match('!\$user_lang->([a-z0-9\_]+)$!is', trim($str));
+	return preg_match('!^\$user_lang->([a-z0-9\_]+)$!is', trim($str));
 }
 
 /**
