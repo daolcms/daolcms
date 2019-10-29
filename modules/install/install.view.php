@@ -118,6 +118,22 @@ class installView extends install {
 
 		// Output the file, disp_db_info_form.html
 		$tpl_filename = sprintf('form.%s', Context::get('db_type'));
+
+		$title = sprintf(Context::getLang('input_dbinfo_by_dbtype'), Context::get('db_type'));
+		Context::set('title', $title);
+
+		$error_return_url = getNotEncodedUrl('', 'act', Context::get('act'), 'db_type', Context::get('db_type'));
+		if($_SERVER['HTTPS'] == 'on')
+		{
+			// Error occured when using https protocol at "ModuleHandler::init() '
+			$parsedUrl = parse_url($error_return_url);
+			$error_return_url = '';
+			if(isset($parsedUrl['path'])) $error_return_url .= $parsedUrl['path'];
+			if(isset($parsedUrl['query'])) $error_return_url .= '?' . $parsedUrl['query'];
+			if(isset($parsedUrl['fragment'])) $error_return_url .= '?' . $parsedUrl['fragment'];
+		}
+		Context::set('error_return_url', $error_return_url);
+
 		$this->setTemplateFile($tpl_filename);
 	}
 
