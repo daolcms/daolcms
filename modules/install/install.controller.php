@@ -14,9 +14,9 @@ class installController extends install {
 	/**
 	 * @brief Initialization
 	 **/
-	function init() {
+	function init(){
 		// Error occurs if already installed
-		if($this->act !== 'procInstallLicenseAggrement' && Context::isInstalled()) {
+		if($this->act !== 'procInstallLicenseAggrement' && Context::isInstalled()){
 			$this->stop('msg_already_installed');
 		}
 
@@ -28,7 +28,7 @@ class installController extends install {
 	 * @brief cubrid db setting wrapper, becase Server Side Validator...
 	 * Server Side Validatro can use only one proc, one ruleset
 	 **/
-	function procCubridDBSetting() {
+	function procCubridDBSetting(){
 		return $this->_procDBSetting();
 	}
 
@@ -36,7 +36,7 @@ class installController extends install {
 	 * @brief firebird db setting wrapper, becase Server Side Validator...
 	 * Server Side Validatro can use only one proc, one ruleset
 	 **/
-	function procFirebirdDBSetting() {
+	function procFirebirdDBSetting(){
 		return $this->_procDBSetting();
 	}
 
@@ -44,7 +44,7 @@ class installController extends install {
 	 * @brief mssql db setting wrapper, becase Server Side Validator...
 	 * Server Side Validatro can use only one proc, one ruleset
 	 **/
-	function procMssqlDBSetting() {
+	function procMssqlDBSetting(){
 		return $this->_procDBSetting();
 	}
 
@@ -52,7 +52,7 @@ class installController extends install {
 	 * @brief mysql db setting wrapper, becase Server Side Validator...
 	 * Server Side Validatro can use only one proc, one ruleset
 	 **/
-	function procMysqlDBSetting() {
+	function procMysqlDBSetting(){
 		return $this->_procDBSetting();
 	}
 
@@ -60,7 +60,7 @@ class installController extends install {
 	 * @brief postgresql db setting wrapper, becase Server Side Validator...
 	 * Server Side Validatro can use only one proc, one ruleset
 	 **/
-	function procPostgresqlDBSetting() {
+	function procPostgresqlDBSetting(){
 		return $this->_procDBSetting();
 	}
 
@@ -68,14 +68,14 @@ class installController extends install {
 	 * @brief sqlite db setting wrapper, becase Server Side Validator...
 	 * Server Side Validatro can use only one proc, one ruleset
 	 **/
-	function procSqliteDBSetting() {
+	function procSqliteDBSetting(){
 		return $this->_procDBSetting();
 	}
 
 	/**
 	 * @brief division install step... DB Config temp file create
 	 **/
-	function _procDBSetting() {
+	function _procDBSetting(){
 		// Get DB-related variables
 		$con_string = Context::gets('db_type', 'db_port', 'db_hostname', 'db_userid', 'db_password', 'db_database', 'db_table_prefix');
 
@@ -102,7 +102,7 @@ class installController extends install {
 		// Create a db temp config file
 		if(!$this->makeDBConfigFile()) return new BaseObject(-1, 'msg_install_failed');
 
-		if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))) {
+		if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))){
 			$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'act', 'dispInstallConfigForm');
 			header('location:' . $returnUrl);
 			return;
@@ -112,7 +112,7 @@ class installController extends install {
 	/**
 	 * @brief division install step... rewrite, time_zone Config temp file create
 	 **/
-	function procConfigSetting() {
+	function procConfigSetting(){
 		// Get variables
 		$config_info = Context::gets('use_rewrite', 'time_zone');
 		if($config_info->use_rewrite != 'Y') $config_info->use_rewrite = 'N';
@@ -120,7 +120,7 @@ class installController extends install {
 		// Create a db temp config file
 		if(!$this->makeEtcConfigFile($config_info)) return new BaseObject(-1, 'msg_install_failed');
 
-		if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))) {
+		if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))){
 			$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'act', 'dispInstallManagerForm');
 			header('location:' . $returnUrl);
 			return;
@@ -130,7 +130,7 @@ class installController extends install {
 	/**
 	 * @brief Install with received information
 	 **/
-	function procInstall() {
+	function procInstall(){
 		// Check if it is already installed
 		if(Context::isInstalled()) return new BaseObject(-1, 'msg_already_installed');
 
@@ -149,10 +149,10 @@ class installController extends install {
 		Context::set('logged_info', $logged_info);
 
 		// check install config
-		if(Context::get('install_config')) {
+		if(Context::get('install_config')){
 			$db_info = $this->_makeDbInfoByInstallConfig();
 		} // install by default XE UI
-		else {
+		else{
 			include $this->db_tmp_config_file;
 			include $this->etc_tmp_config_file;
 		}
@@ -170,7 +170,7 @@ class installController extends install {
 			$oDB->begin();
 			$this->installDownloadedModule();
 			$oDB->commit();
-		} catch(Exception $e) {
+		} catch(Exception $e){
 			$oDB->rollback();
 			return new BaseObject(-1, $e->getMessage());
 		}
@@ -181,9 +181,9 @@ class installController extends install {
 
 		// load script
 		$scripts = FileHandler::readDir('./modules/install/script', '/(\.php)$/');
-		if(count($scripts) > 0) {
+		if(count($scripts) > 0){
 			sort($scripts);
-			foreach($scripts as $script) {
+			foreach($scripts as $script){
 				$output = include(FileHandler::getRealPath('./modules/install/script/' . $script));
 			}
 		}
@@ -195,7 +195,7 @@ class installController extends install {
 		// Display a message that installation is completed
 		$this->setMessage('msg_install_completed');
 
-		if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))) {
+		if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))){
 			$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('');
 			header('location:' . $returnUrl);
 			return;
@@ -205,7 +205,7 @@ class installController extends install {
 	/**
 	 * @brief Make DB Information by Install Config
 	 **/
-	function _makeDbInfoByInstallConfig() {
+	function _makeDbInfoByInstallConfig(){
 		$db_info = new stdClass();
 		$db_info->master_db['db_type'] = Context::get('db_type');
 		$db_info->master_db['db_port'] = Context::get('db_port');
@@ -238,7 +238,7 @@ class installController extends install {
 	/**
 	 * @brief Set FTP Information
 	 **/
-	function procInstallFTP() {
+	function procInstallFTP(){
 		if(Context::isInstalled()) return new BaseObject(-1, 'msg_already_installed');
 		$ftp_info = Context::gets('ftp_host', 'ftp_user', 'ftp_password', 'ftp_port', 'ftp_root_path');
 		$ftp_info->ftp_port = (int)$ftp_info->ftp_port;
@@ -248,39 +248,39 @@ class installController extends install {
 
 		$buff = '<?php if(!defined("__XE__")) exit();' . "\n";
 		$buff[] = "\$ftp_info = new stdClass();";
-		foreach($ftp_info as $key => $val) {
+		foreach($ftp_info as $key => $val){
 			$buff .= sprintf("\$ftp_info->%s = '%s';\n", $key, str_replace("'", "\\'", $val));
 		}
 		$buff .= "?" . ">";
 		// If safe_mode
-		if(ini_get('safe_mode')) {
+		if(ini_get('safe_mode')){
 			if(!$ftp_info->ftp_user || !$ftp_info->ftp_password) return new BaseObject(-1, 'msg_safe_mode_ftp_needed');
 
 			require_once(_DAOL_PATH_ . 'libs/ftp.class.php');
 			$oFtp = new ftp();
 			if(!$oFtp->ftp_connect($ftp_info->ftp_host, $ftp_info->ftp_port)) return new BaseObject(-1, sprintf(Context::getLang('msg_ftp_not_connected'), $ftp_info->ftp_host));
 
-			if(!$oFtp->ftp_login($ftp_info->ftp_user, $ftp_info->ftp_password)) {
+			if(!$oFtp->ftp_login($ftp_info->ftp_user, $ftp_info->ftp_password)){
 				$oFtp->ftp_quit();
 				return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 			}
 
-			if(!is_dir(_DAOL_PATH_ . 'files') && !$oFtp->ftp_mkdir($ftp_info->ftp_root_path . 'files')) {
+			if(!is_dir(_DAOL_PATH_ . 'files') && !$oFtp->ftp_mkdir($ftp_info->ftp_root_path . 'files')){
 				$oFtp->ftp_quit();
 				return new BaseObject(-1, 'msg_ftp_mkdir_fail');
 			}
 
-			if(!$oFtp->ftp_site("CHMOD 777 " . $ftp_info->ftp_root_path . 'files')) {
+			if(!$oFtp->ftp_site("CHMOD 777 " . $ftp_info->ftp_root_path . 'files')){
 				$oFtp->ftp_quit();
 				return new BaseObject(-1, 'msg_ftp_chmod_fail');
 			}
 
-			if(!is_dir(_DAOL_PATH_ . 'files/config') && !$oFtp->ftp_mkdir($ftp_info->ftp_root_path . 'files/config')) {
+			if(!is_dir(_DAOL_PATH_ . 'files/config') && !$oFtp->ftp_mkdir($ftp_info->ftp_root_path . 'files/config')){
 				$oFtp->ftp_quit();
 				return new BaseObject(-1, 'msg_ftp_mkdir_fail');
 			}
 
-			if(!$oFtp->ftp_site("CHMOD 777 " . $ftp_info->ftp_root_path . 'files/config')) {
+			if(!$oFtp->ftp_site("CHMOD 777 " . $ftp_info->ftp_root_path . 'files/config')){
 				$oFtp->ftp_quit();
 				return new BaseObject(-1, 'msg_ftp_chmod_fail');
 			}
@@ -292,7 +292,7 @@ class installController extends install {
 		FileHandler::WriteFile($config_file, $buff);
 	}
 
-	function procInstallCheckFtp() {
+	function procInstallCheckFtp(){
 		$ftp_info = Context::gets('ftp_user', 'ftp_password', 'ftp_port', 'sftp');
 		$ftp_info->ftp_port = (int)$ftp_info->ftp_port;
 		if(!$ftp_info->ftp_port) $ftp_info->ftp_port = 21;
@@ -300,17 +300,18 @@ class installController extends install {
 
 		if(!$ftp_info->ftp_user || !$ftp_info->ftp_password) return new BaseObject(-1, 'msg_safe_mode_ftp_needed');
 
-		if($ftp_info->sftp == 'Y') {
+		if($ftp_info->sftp == 'Y'){
 			$connection = ssh2_connect('localhost', $ftp_info->ftp_port);
-			if(!ssh2_auth_password($connection, $ftp_info->ftp_user, $ftp_info->ftp_password)) {
+			if(!ssh2_auth_password($connection, $ftp_info->ftp_user, $ftp_info->ftp_password)){
 				return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 			}
-		} else {
+		}
+		else{
 			require_once(_DAOL_PATH_ . 'libs/ftp.class.php');
 			$oFtp = new ftp();
 			if(!$oFtp->ftp_connect('localhost', $ftp_info->ftp_port)) return new BaseObject(-1, sprintf(Context::getLang('msg_ftp_not_connected'), 'localhost'));
 
-			if(!$oFtp->ftp_login($ftp_info->ftp_user, $ftp_info->ftp_password)) {
+			if(!$oFtp->ftp_login($ftp_info->ftp_user, $ftp_info->ftp_password)){
 				$oFtp->ftp_quit();
 				return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 			}
@@ -324,12 +325,12 @@ class installController extends install {
 	/**
 	 * @brief Result returned after checking the installation environment
 	 **/
-	function checkInstallEnv() {
+	function checkInstallEnv(){
 		// Check each item
 		$checklist = array();
 		// 0. check your version of php (php version below 5.3 is not supported and php version above 5.3.10 is recommended)
 		if(version_compare(PHP_VERSION, '5.3.0') == -1) $checklist['php_version'] = false;
-		else if(version_compare(PHP_VERSION, '5.3.10') == -1) {
+		else if(version_compare(PHP_VERSION, '5.3.10') == -1){
 			$checklist['php_version'] = false;
 			Context::set('phpversion_warning', true);
 		} else $checklist['php_version'] = true;
@@ -368,20 +369,21 @@ class installController extends install {
 	/**
 	 * @brief License agreement
 	 **/
-	function procInstallLicenseAggrement() {
+	function procInstallLicenseAggrement(){
 		$vars = Context::getRequestVars();
 
 		$license_agreement = ($vars->license_agreement == 'Y') ? true : false;
 
-		if($license_agreement) {
+		if($license_agreement){
 			$currentTime = $_SERVER['REQUEST_TIME'];
 			FileHandler::writeFile($this->flagLicenseAgreement, $currentTime);
-		} else {
+		}
+		else{
 			FileHandler::removeFile($this->flagLicenseAgreement);
 			return new BaseObject(-1, 'msg_must_accept_license_agreement');
 		}
 
-		if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))) {
+		if(!in_array(Context::getRequestMethod(), array('XMLRPC', 'JSON'))){
 			$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'act', 'dispInstallCheckEnv');
 			$this->setRedirectUrl($returnUrl);
 		}
@@ -391,7 +393,7 @@ class installController extends install {
 	 * @brief Create files and subdirectories
 	 * Local evironment setting before installation by using DB information
 	 **/
-	function makeDefaultDirectory() {
+	function makeDefaultDirectory(){
 		$directory_list = array(
 			'./files/config',
 			'./files/cache/queries',
@@ -399,7 +401,7 @@ class installController extends install {
 			'./files/cache/template_compiled',
 		);
 
-		foreach($directory_list as $dir) {
+		foreach($directory_list as $dir){
 			FileHandler::makeDir($dir);
 		}
 	}
@@ -409,11 +411,11 @@ class installController extends install {
 	 *
 	 * Create a table by using schema xml file in the shcema directory of each module
 	 **/
-	function installDownloadedModule() {
+	function installDownloadedModule(){
 		$oModuleModel = &getModel('module');
 		// Create a table ny finding schemas/*.xml file in each module
 		$module_list = FileHandler::readDir('./modules/', NULL, false, true);
-		foreach($module_list as $module_path) {
+		foreach($module_list as $module_path){
 			// Get module name
 			$tmp_arr = explode('/', $module_path);
 			$module = $tmp_arr[count($tmp_arr) - 1];
@@ -429,14 +431,14 @@ class installController extends install {
 		// Determine the order of module installation depending on category
 		$install_step = array('system', 'content', 'member');
 		// Install all the remaining modules
-		foreach($install_step as $category) {
-			if(count($modules[$category])) {
-				foreach($modules[$category] as $module) {
+		foreach($install_step as $category){
+			if(count($modules[$category])){
+				foreach($modules[$category] as $module){
 					if($module == 'module') continue;
 					$this->installModule($module, sprintf('./modules/%s', $module));
 
 					$oModule = &getClass($module);
-					if(is_object($oModule) && method_exists($oModule, 'checkUpdate')) {
+					if(is_object($oModule) && method_exists($oModule, 'checkUpdate')){
 						if($oModule->checkUpdate()) $oModule->moduleUpdate();
 					}
 				}
@@ -444,15 +446,15 @@ class installController extends install {
 			}
 		}
 		// Install all the remaining modules
-		if(count($modules)) {
-			foreach($modules as $category => $module_list) {
-				if(count($module_list)) {
-					foreach($module_list as $module) {
+		if(count($modules)){
+			foreach($modules as $category => $module_list){
+				if(count($module_list)){
+					foreach($module_list as $module){
 						if($module == 'module') continue;
 						$this->installModule($module, sprintf('./modules/%s', $module));
 
 						$oModule = &getClass($module);
-						if($oModule && method_exists($oModule, 'checkUpdate') && method_exists($oModule, 'moduleUpdate')) {
+						if($oModule && method_exists($oModule, 'checkUpdate') && method_exists($oModule, 'moduleUpdate')){
 							if($oModule->checkUpdate()) $oModule->moduleUpdate();
 						}
 					}
@@ -466,7 +468,7 @@ class installController extends install {
 	/**
 	 * @brief Install an each module
 	 **/
-	function installModule($module, $module_path) {
+	function installModule($module, $module_path){
 		// create db instance
 		$oDB = &DB::getInstance();
 		// Create a table if the schema xml exists in the "schemas" directory of the module
@@ -474,7 +476,7 @@ class installController extends install {
 		$schema_files = FileHandler::readDir($schema_dir, NULL, false, true);
 
 		$file_cnt = count($schema_files);
-		for($i = 0; $i < $file_cnt; $i++) {
+		for($i = 0; $i < $file_cnt; $i++){
 			$file = trim($schema_files[$i]);
 			if(!$file || substr($file, -4) != '.xml') continue;
 			$output = $oDB->createTableByXmlFile($file);
@@ -488,18 +490,18 @@ class installController extends install {
 		return new BaseObject();
 	}
 
-	function _getDbConnText($key, $val, $with_array = false) {
+	function _getDbConnText($key, $val, $with_array = false){
 		$buff = '';
 		if($with_array)
 			$buff .= "\$db_info->$key = array(";
 		else
 			$buff .= "\$db_info->$key = ";
 		if(!$with_array) $val = array($val);
-		foreach($val as $con_string) {
+		foreach($val as $con_string){
 			$buff .= 'array(';
-			foreach($con_string as $k => $v) {
+			foreach($con_string as $k => $v){
 				if(in_array($k, array('resource', 'is_connected'))) continue;
-				if($k == 'db_table_prefix' && !empty($v)) {
+				if($k == 'db_table_prefix' && !empty($v)){
 					if(substr($v, -1) != '_') $v .= '_';
 				}
 				$buff .= "'$k' => '$v',";
@@ -515,17 +517,20 @@ class installController extends install {
 		return $buff;
 	}
 
-	function _getDBConfigFileContents($db_info) {
+	function _getDBConfigFileContents($db_info){
 		$buff = '<?php if(!defined("__XE__")) exit();' . "\n";
 		$db_info = get_object_vars($db_info);
-		foreach($db_info as $key => $val) {
-			if($key == 'master_db') {
+		foreach($db_info as $key => $val){
+			if($key == 'master_db'){
 				$buff .= $this->_getDbConnText($key, $val);
-			} else if($key == 'slave_db') {
+			}
+			else if($key == 'slave_db'){
 				$buff .= $this->_getDbConnText($key, $val, true);
-			} else if($key == 'admin_ip_list') {
+			}
+			else if($key == 'admin_ip_list'){
 				$buff .= sprintf('$db_info->%s = array(\'%s\');' . PHP_EOL, $key, implode('\', \'', $val));
-			} else {
+			}
+			else{
 				$buff .= sprintf("\$db_info->%s = '%s';" . PHP_EOL, $key, str_replace("'", "\\'", $val));
 			}
 		}
@@ -537,7 +542,7 @@ class installController extends install {
 	 * @brief Create DB temp config file
 	 * Create the config file when all settings are completed
 	 **/
-	function makeDBConfigFile() {
+	function makeDBConfigFile(){
 		$db_tmp_config_file = $this->db_tmp_config_file;
 
 		$db_info = Context::getDBInfo();
@@ -555,11 +560,11 @@ class installController extends install {
 	 * @brief Create etc config file
 	 * Create the config file when all settings are completed
 	 **/
-	function makeEtcConfigFile($config_info) {
+	function makeEtcConfigFile($config_info){
 		$etc_tmp_config_file = $this->etc_tmp_config_file;
 
 		$buff = '<?php if(!defined("__XE__")) exit();' . "\n";
-		foreach($config_info as $key => $val) {
+		foreach($config_info as $key => $val){
 			$buff .= sprintf("\$db_info->%s = '%s';\n", $key, str_replace("'", "\\'", $val));
 		}
 		$buff .= "?>";
@@ -574,7 +579,7 @@ class installController extends install {
 	 * @brief Create config file
 	 * Create the config file when all settings are completed
 	 **/
-	function makeConfigFile() {
+	function makeConfigFile(){
 		$config_file = Context::getConfigFile();
 		//if(file_exists($config_file)) return;
 
@@ -585,7 +590,7 @@ class installController extends install {
 
 		FileHandler::writeFile($config_file, $buff);
 
-		if(@file_exists($config_file)) {
+		if(@file_exists($config_file)){
 			FileHandler::removeFile($this->db_tmp_config_file);
 			FileHandler::removeFile($this->etc_tmp_config_file);
 			return true;
@@ -593,7 +598,7 @@ class installController extends install {
 		return false;
 	}
 
-	function installByConfig($install_config_file) {
+	function installByConfig($install_config_file){
 		include $install_config_file;
 		if(!is_array($auto_config)) return false;
 
@@ -603,18 +608,18 @@ class installController extends install {
 		$fstr = "<%s><![CDATA[%s]]></%s>\r\n";
 		$fheader = "POST %s HTTP/1.1\r\nHost: %s\r\nContent-Type: application/xml\r\nContent-Length: %s\r\n\r\n%s\r\n";
 		$body = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\r\n<methodCall>\r\n<params>\r\n";
-		foreach($auto_config as $k => $v) {
+		foreach($auto_config as $k => $v){
 			if(!in_array($k, array('host', 'port', 'path'))) $body .= sprintf($fstr, $k, $v, $k);
 		}
 		$body .= "</params>\r\n</methodCall>";
 
 		$header = sprintf($fheader, $auto_config['path'], $auto_config['host'], strlen($body), $body);
 		$fp = @fsockopen($auto_config['host'], $auto_config['port'], $errno, $errstr, 5);
-		if($fp) {
+		if($fp){
 			fputs($fp, $header);
-			while(!feof($fp)) {
+			while(!feof($fp)){
 				$line = trim(fgets($fp, 4096));
-				if(preg_match("/^<error>/i", $line)) {
+				if(preg_match("/^<error>/i", $line)){
 					fclose($fp);
 					return false;
 				}

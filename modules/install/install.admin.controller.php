@@ -7,18 +7,16 @@
  * @brief   admin controller class of the install module
  **/
 class installAdminController extends install {
-
-
 	/**
 	 * @brief Initialization
 	 **/
-	function init() {
+	function init(){
 	}
 
 	/**
 	 * @brief Install the module
 	 **/
-	function procInstallAdminInstall() {
+	function procInstallAdminInstall(){
 		$module_name = Context::get('module_name');
 		if(!$module_name) return new BaseObject(-1, 'invalid_request');
 
@@ -31,7 +29,7 @@ class installAdminController extends install {
 	/**
 	 * @brief Upate the module
 	 **/
-	function procInstallAdminUpdate() {
+	function procInstallAdminUpdate(){
 		set_time_limit(0);
 		$module_name = Context::get('module_name');
 		if(!$module_name) return new BaseObject(-1, 'invalid_request');
@@ -46,21 +44,21 @@ class installAdminController extends install {
 	/**
 	 * @brief Change settings
 	 **/
-	function procInstallAdminSaveTimeZone() {
+	function procInstallAdminSaveTimeZone(){
 		$db_info = Context::getDBInfo();
 
 		$admin_ip_list = Context::get('admin_ip_list');
 
-		if($admin_ip_list) {
+		if($admin_ip_list){
 			$admin_ip_list = preg_replace("/[\r|\n|\r\n]+/", ",", $admin_ip_list);
 			$admin_ip_list = preg_replace("/\s+/", "", $admin_ip_list);
-			if(preg_match('/(<\?|<\?php|\?>)/xsm', $admin_ip_list)) {
+			if(preg_match('/(<\?|<\?php|\?>)/xsm', $admin_ip_list)){
 				$admin_ip_list = '';
 			}
 			$admin_ip_list .= ',127.0.0.1,' . $_SERVER['REMOTE_ADDR'];
 			$admin_ip_list = explode(',', trim($admin_ip_list, ','));
 			$admin_ip_list = array_unique($admin_ip_list);
-			if(!IpFilter::validate($admin_ip_list)) {
+			if(!IpFilter::validate($admin_ip_list)){
 				return new BaseObject(-1, 'msg_invalid_ip');
 			}
 		}
@@ -131,11 +129,12 @@ class installAdminController extends install {
 		$oModuleController->updateSite($site_args);
 
 		$oInstallController = getController('install');
-		if(!$oInstallController->makeConfigFile()) {
+		if(!$oInstallController->makeConfigFile()){
 			return new BaseObject(-1, 'msg_invalid_request');
-		} else {
+		}
+		else{
 			Context::setDBInfo($db_info);
-			if($default_url) {
+			if($default_url){
 				$site_args = new stdClass;
 				$site_args->site_srl = 0;
 				$site_args->domain = $default_url;
@@ -146,22 +145,22 @@ class installAdminController extends install {
 		}
 	}
 
-	function procInstallAdminRemoveFTPInfo() {
+	function procInstallAdminRemoveFTPInfo(){
 		$ftp_config_file = Context::getFTPConfigFile();
 		if(file_exists($ftp_config_file)) unlink($ftp_config_file);
 		if($_SESSION['ftp_password']) unset($_SESSION['ftp_password']);
 		$this->setMessage('success_deleted');
 	}
 
-	function procInstallAdminSaveCDNInfo() {
+	function procInstallAdminSaveCDNInfo(){
 		$cdn_info = Context::getCDNInfo();
 		$cdn_info->cdn_use = Context::get('cdn_use');
 		$cdn_info->cdn_type = Context::get('cdn_type');
 
 		$buff = '<?php if(!defined("__XE__")) exit();' . "\n";
-		foreach($cdn_info as $key => $val) {
+		foreach($cdn_info as $key => $val){
 			if(!$val) continue;
-			if(preg_match('/(<\?|<\?php|\?>|fputs|fopen|fwrite|fgets|fread|\/\*|\*\/|chr\()/xsm', preg_replace('/\s/', '', $val))) {
+			if(preg_match('/(<\?|<\?php|\?>|fputs|fopen|fwrite|fgets|fread|\/\*|\*\/|chr\()/xsm', preg_replace('/\s/', '', $val))){
 				continue;
 			}
 			$buff .= sprintf("\$cdn_info->%s = '%s';\n", $key, str_replace("'", "\\'", $val));
@@ -173,7 +172,7 @@ class installAdminController extends install {
 		$this->setRedirectUrl(Context::get('error_return_url'));
 	}
 
-	function procInstallAdminSaveFTPInfo() {
+	function procInstallAdminSaveFTPInfo(){
 		$ftp_info = Context::getFTPInfo();
 		$ftp_info->ftp_user = Context::get('ftp_user');
 		$ftp_info->ftp_port = Context::get('ftp_port');
@@ -183,18 +182,19 @@ class installAdminController extends install {
 		$ftp_info->sftp = Context::get('sftp');
 
 		$ftp_root_path = Context::get('ftp_root_path');
-		if(substr($ftp_root_path, strlen($ftp_root_path) - 1) == "/") {
+		if(substr($ftp_root_path, strlen($ftp_root_path) - 1) == "/"){
 			$ftp_info->ftp_root_path = $ftp_root_path;
-		} else {
+		}
+		else{
 			$ftp_info->ftp_root_path = $ftp_root_path . '/';
 		}
 
-		if(ini_get('safe_mode')) {
+		if(ini_get('safe_mode')){
 			$ftp_info->ftp_password = Context::get('ftp_password');
 		}
 
 		$buff = '<?php if(!defined("__XE__")) exit();' . "\n";
-		foreach($ftp_info as $key => $val) {
+		foreach($ftp_info as $key => $val){
 			if(!$val) continue;
 			if(preg_match('/(<\?|<\?php|\?>|fputs|fopen|fwrite|fgets|fread|file_get_contents|file_put_contents|exec|proc_open|popen|passthru|show_source|phpinfo|system|\/\*|\*\/|chr\()/xsm', preg_replace('/\s/', '', $val))){
 				continue;
@@ -209,7 +209,7 @@ class installAdminController extends install {
 		$this->setRedirectUrl(Context::get('error_return_url'));
 	}
 
-	function procInstallAdminSaveSMTPInfo() {
+	function procInstallAdminSaveSMTPInfo(){
 		$smtp_info = Context::getSMTPInfo();
 		$smtp_info->smtp_use = Context::get('smtp_use');
 		$smtp_info->smtp_host = Context::get('smtp_host');
@@ -219,9 +219,9 @@ class installAdminController extends install {
 		$smtp_info->smtp_password = Context::get('smtp_password');
 
 		$buff = '<?php if(!defined("__XE__")) exit();' . "\n";
-		foreach($smtp_info as $key => $val) {
+		foreach($smtp_info as $key => $val){
 			if(!$val) continue;
-			if(preg_match('/(<\?|<\?php|\?>|fputs|fopen|fwrite|fgets|fread|\/\*|\*\/|chr\()/xsm', preg_replace('/\s/', '', $val))) {
+			if(preg_match('/(<\?|<\?php|\?>|fputs|fopen|fwrite|fgets|fread|\/\*|\*\/|chr\()/xsm', preg_replace('/\s/', '', $val))){
 				continue;
 			}
 			$buff .= sprintf("\$smtp_info->%s = '%s';\n", $key, str_replace("'", "\\'", $val));
@@ -233,7 +233,7 @@ class installAdminController extends install {
 		$this->setRedirectUrl(Context::get('error_return_url'));
 	}
 
-	function procInstallAdminConfig() {
+	function procInstallAdminConfig(){
 		$this->procInstallAdminSaveTimeZone();
 
 		//언어 선택
@@ -262,12 +262,12 @@ class installAdminController extends install {
 	/**
 	 * @brief Supported languages (was procInstallAdminSaveLangSelected)
 	 **/
-	function saveLangSelected($selected_lang) {
+	function saveLangSelected($selected_lang){
 		$langs = $selected_lang;
 
 		$lang_supported = Context::loadLangSupported();
 		$buff = null;
-		for($i = 0; $i < count($langs); $i++) {
+		for($i = 0; $i < count($langs); $i++){
 			$buff .= sprintf("%s,%s\n", $langs[$i], $lang_supported[$langs[$i]]);
 
 		}
@@ -299,18 +299,20 @@ class installAdminController extends install {
 		$oModuleController->updateModuleConfig('module',$args);
 	}
 
-	function saveIcon($icon, $iconname) {
+	function saveIcon($icon, $iconname){
 		$mobicon_size = array('57', '114');
 		$target_file = $icon['tmp_name'];
 		$type = $icon['type'];
 		$target_filename = _DAOL_PATH_ . 'files/attach/xeicon/' . $iconname;
 
 		list($width, $height, $type_no, $attrs) = @getimagesize($target_file);
-		if($iconname == 'favicon.ico' && preg_match('/^.*(x-icon|\.icon)$/i', $type)) {
+		if($iconname == 'favicon.ico' && preg_match('/^.*(x-icon|\.icon)$/i', $type)){
 			$fitHeight = $fitWidth = '16';
-		} else if($iconname == 'mobicon.png' && preg_match('/^.*(png).*$/', $type) && in_array($height, $mobicon_size) && in_array($width, $mobicon_size)) {
+		}
+		else if($iconname == 'mobicon.png' && preg_match('/^.*(png).*$/', $type) && in_array($height, $mobicon_size) && in_array($width, $mobicon_size)){
 			$fitHeight = $fitWidth = $height;
-		} else {
+		}
+		else{
 			return false;
 		}
 		//FileHandler::createImageFile($target_file, $target_filename, $fitHeight, $fitWidth, $ext);

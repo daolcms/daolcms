@@ -1,15 +1,21 @@
 <?php
 
+/**
+ * @class   installModel
+ * @author  NAVER (developers@xpressengine.com)
+ * @Adaptor DAOL Project (developer@daolcms.org)
+ * @brief   Model class of install module
+ **/
 class installModel extends install {
 	var $pwd;
 
-	function getSFTPList() {
+	function getSFTPList(){
 		$ftp_info = Context::getRequestVars();
-		if(!$ftp_info->ftp_host) {
+		if(!$ftp_info->ftp_host){
 			$ftp_info->ftp_host = "127.0.0.1";
 		}
 		$connection = ssh2_connect($ftp_info->ftp_host, $ftp_info->ftp_port);
-		if(!ssh2_auth_password($connection, $ftp_info->ftp_user, $ftp_info->ftp_password)) {
+		if(!ssh2_auth_password($connection, $ftp_info->ftp_user, $ftp_info->ftp_password)){
 			return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 		}
 
@@ -18,10 +24,11 @@ class installModel extends install {
 		$dh = @opendir($curpwd);
 		if(!$dh) return new BaseObject(-1, 'msg_ftp_invalid_path');
 		$list = array();
-		while(($file = readdir($dh)) !== false) {
-			if(is_dir($curpwd . $file)) {
+		while(($file = readdir($dh)) !== false){
+			if(is_dir($curpwd . $file)){
 				$file .= "/";
-			} else {
+			}
+			else{
 				continue;
 			}
 			$list[] = $file;
@@ -30,43 +37,45 @@ class installModel extends install {
 		$this->add('list', $list);
 	}
 
-	function getInstallFTPList() {
+	function getInstallFTPList(){
 		$ftp_info = Context::getRequestVars();
-		if(!$ftp_info->ftp_user || !$ftp_info->ftp_password) {
+		if(!$ftp_info->ftp_user || !$ftp_info->ftp_password){
 			return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 		}
 		$this->pwd = $ftp_info->ftp_root_path;
-		if(!$ftp_info->ftp_host) {
+		if(!$ftp_info->ftp_host){
 			$ftp_info->ftp_host = "127.0.0.1";
 		}
 
-		if($ftp_info->sftp == 'Y') {
+		if($ftp_info->sftp == 'Y'){
 			return $this->getSFTPList();
 		}
 
-		if(function_exists(ftp_connect)) {
+		if(function_exists(ftp_connect)){
 			$connection = ftp_connect($ftp_info->ftp_host, $ftp_info->ftp_port);
 			if(!$connection) return new BaseObject(-1, sprintf(Context::getLang('msg_ftp_not_connected'), $ftp_info->ftp_host));
 			$login_result = @ftp_login($connection, $ftp_info->ftp_user, $ftp_info->ftp_password);
-			if(!$login_result) {
+			if(!$login_result){
 				ftp_close($connection);
 				return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 			}
 
-			if($ftp_info->ftp_pasv != "N") {
+			if($ftp_info->ftp_pasv != "N"){
 				ftp_pasv($connection, true);
 			}
 
 			$_list = ftp_rawlist($connection, $this->pwd);
 			ftp_close($connection);
-		} else {
+		}
+		else{
 			require_once(_DAOL_PATH_ . 'libs/ftp.class.php');
 			$oFtp = new ftp();
-			if($oFtp->ftp_connect($ftp_info->ftp_host, $ftp_info->ftp_port)) {
-				if($oFtp->ftp_login($ftp_info->ftp_user, $ftp_info->ftp_password)) {
+			if($oFtp->ftp_connect($ftp_info->ftp_host, $ftp_info->ftp_port)){
+				if($oFtp->ftp_login($ftp_info->ftp_user, $ftp_info->ftp_password)){
 					$_list = $oFtp->ftp_rawlist($this->pwd);
 					$oFtp->ftp_quit();
-				} else {
+				}
+				else{
 					$oFtp->ftp_quit();
 					return new BaseObject(-1, 'msg_ftp_invalid_auth_info');
 				}
@@ -74,8 +83,8 @@ class installModel extends install {
 		}
 		$list = array();
 
-		if($_list) {
-			foreach($_list as $k => $v) {
+		if($_list){
+			foreach($_list as $k => $v){
 				$src = new stdClass();
 				$src->data = $v;
 				$res = Context::convertEncoding($src);
