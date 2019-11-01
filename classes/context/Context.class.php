@@ -147,15 +147,8 @@ class Context {
 	 */
 	function &getInstance() {
 		static $theInstance = null;
-		if(!$theInstance) $theInstance = new Context();
-
-		// include ssl action cache file
-		$theInstance->sslActionCacheFile = FileHandler::getRealPath($theInstance->sslActionCacheFile);
-		if(is_readable($theInstance->sslActionCacheFile)) {
-			require_once($theInstance->sslActionCacheFile);
-			if(isset($sslActions)) {
-				$theInstance->ssl_actions = $sslActions;
-			}
+		if(!$theInstance) {
+			$theInstance = new Context();
 		}
 
 		return $theInstance;
@@ -169,6 +162,15 @@ class Context {
 	function __construct() {
 		$this->oFrontEndFileHandler = new FrontEndFileHandler();
 		$this->get_vars = new stdClass();
+
+		// include ssl action cache file
+		$this->sslActionCacheFile = FileHandler::getRealPath($this->sslActionCacheFile);
+		if(is_readable($this->sslActionCacheFile)) {
+			require($this->sslActionCacheFile);
+			if(isset($sslActions)) {
+				$this->ssl_actions = $sslActions;
+			}
+		}
 	}
 
 	/**
