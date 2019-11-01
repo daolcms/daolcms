@@ -61,7 +61,7 @@ class installView extends install {
 				}
 				unset($GLOBALS['__DB__']);
 				Context::set('install_config', true, true);
-				$oInstallController = &getController('install');
+				$oInstallController = getController('install');
 				$output = $oInstallController->procInstall();
 				if(!$output->toBool()) return $output;
 				header("location: ./");

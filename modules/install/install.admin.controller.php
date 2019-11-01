@@ -20,7 +20,7 @@ class installAdminController extends install {
 		$module_name = Context::get('module_name');
 		if(!$module_name) return new BaseObject(-1, 'invalid_request');
 
-		$oInstallController = &getController('install');
+		$oInstallController = getController('install');
 		$oInstallController->installModule($module_name, './modules/' . $module_name);
 
 		$this->setMessage('success_installed');
@@ -34,7 +34,7 @@ class installAdminController extends install {
 		$module_name = Context::get('module_name');
 		if(!$module_name) return new BaseObject(-1, 'invalid_request');
 
-		$oModule = &getModule($module_name, 'class');
+		$oModule = getModule($module_name, 'class');
 		if($oModule) $output = $oModule->moduleUpdate();
 		else $output = new BaseObject(-1, 'invalid_request');
 

@@ -81,11 +81,9 @@ class installController extends install {
 
 		$db_info = new stdClass();
 		$db_info->master_db = get_object_vars($con_string);
-		$db_info->slave_db[] = get_object_vars($con_string);
-
-		if(!$db_info->default_url) $db_info->default_url = Context::getRequestUri();
+		$db_info->slave_db = array($db_info->master_db);
+		$db_info->default_url = Context::getRequestUri();
 		$db_info->lang_type = Context::get('lang_type') ? Context::get('lang_type') : Context::getLangType();
-		Context::setLangType($db_info->lang_type);
 
 		// Set DB type and information
 		Context::setDBInfo($db_info);
@@ -189,7 +187,7 @@ class installController extends install {
 		}
 
 		// save selected lang info
-		$oInstallAdminController = &getAdminController('install');
+		$oInstallAdminController = getAdminController('install');
 		$oInstallAdminController->saveLangSelected(array(Context::getLangType()));
 
 		// Display a message that installation is completed
@@ -246,12 +244,12 @@ class installController extends install {
 		if(!$ftp_info->ftp_host) $ftp_info->ftp_host = '127.0.0.1';
 		if(!$ftp_info->ftp_root_path) $ftp_info->ftp_root_path = '/';
 
-		$buff = '<?php if(!defined("__XE__")) exit();' . "\n";
+		$buff = array('<?php if(!defined("__XE__")) exit();');
 		$buff[] = "\$ftp_info = new stdClass();";
 		foreach($ftp_info as $key => $val){
-			$buff .= sprintf("\$ftp_info->%s = '%s';\n", $key, str_replace("'", "\\'", $val));
+			$buff[] = sprintf("\$ftp_info->%s='%s';", $key, str_replace("'","\\'",$val));
 		}
-		$buff .= "?" . ">";
+
 		// If safe_mode
 		if(ini_get('safe_mode')){
 			if(!$ftp_info->ftp_user || !$ftp_info->ftp_password) return new BaseObject(-1, 'msg_safe_mode_ftp_needed');
@@ -412,7 +410,7 @@ class installController extends install {
 	 * Create a table by using schema xml file in the shcema directory of each module
 	 **/
 	function installDownloadedModule(){
-		$oModuleModel = &getModel('module');
+		$oModuleModel = getModel('module');
 		// Create a table ny finding schemas/*.xml file in each module
 		$module_list = FileHandler::readDir('./modules/', NULL, false, true);
 		foreach($module_list as $module_path){
@@ -426,7 +424,7 @@ class installController extends install {
 		}
 		// Install "module" module in advance
 		$this->installModule('module', './modules/module');
-		$oModule = &getClass('module');
+		$oModule = getClass('module');
 		if($oModule->checkUpdate()) $oModule->moduleUpdate();
 		// Determine the order of module installation depending on category
 		$install_step = array('system', 'content', 'member');
@@ -437,7 +435,7 @@ class installController extends install {
 					if($module == 'module') continue;
 					$this->installModule($module, sprintf('./modules/%s', $module));
 
-					$oModule = &getClass($module);
+					$oModule = getClass($module);
 					if(is_object($oModule) && method_exists($oModule, 'checkUpdate')){
 						if($oModule->checkUpdate()) $oModule->moduleUpdate();
 					}
@@ -453,7 +451,7 @@ class installController extends install {
 						if($module == 'module') continue;
 						$this->installModule($module, sprintf('./modules/%s', $module));
 
-						$oModule = &getClass($module);
+						$oModule = getClass($module);
 						if($oModule && method_exists($oModule, 'checkUpdate') && method_exists($oModule, 'moduleUpdate')){
 							if($oModule->checkUpdate()) $oModule->moduleUpdate();
 						}
@@ -485,7 +483,7 @@ class installController extends install {
 		}
 		// Create a table and module instance and then execute install() method
 		unset($oModule);
-		$oModule = &getClass($module);
+		$oModule = getClass($module);
 		if(method_exists($oModule, 'moduleInstall')) $oModule->moduleInstall();
 		return new BaseObject();
 	}
