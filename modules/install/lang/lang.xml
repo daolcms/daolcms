@@ -139,14 +139,15 @@
 			<value xml:lang="tr"><![CDATA[GD Kitaplığı]]></value>
 		</item>
 		<item name="fileinfo">
-			<value xml:lang="ko"><![CDATA[Extension: fileinfo]]></value>
-			<value xml:lang="en"><![CDATA[Extension: fileinfo]]></value>
-			<value xml:lang="jp"><![CDATA[Extension: fileinfo]]></value>
-			<value xml:lang="zh-CN"><![CDATA[Extension: fileinfo]]></value>
-			<value xml:lang="fr"><![CDATA[Extension: fileinfo]]></value>
-			<value xml:lang="ru"><![CDATA[Extension: fileinfo]]></value>
-			<value xml:lang="es"><![CDATA[Extension: fileinfo]]></value>
-			<value xml:lang="tr"><![CDATA[Extension: fileinfo]]></value>
+			<value xml:lang="ko"><![CDATA[fileinfo 확장모듈]]></value>
+			<value xml:lang="en"><![CDATA[fileinfo Extension]]></value>
+			<value xml:lang="jp"><![CDATA[fileinfo扩展]]></value>
+			<value xml:lang="zh-CN"><![CDATA[fileinfo 扩展模块]]></value>
+			<value xml:lang="zh-TW"><![CDATA[fileinfo 擴展模塊]]></value>
+			<value xml:lang="fr"><![CDATA[fileinfo Extension]]></value>
+			<value xml:lang="ru"><![CDATA[fileinfo расширение]]></value>
+			<value xml:lang="es"><![CDATA[fileinfo Extensión]]></value>
+			<value xml:lang="tr"><![CDATA[fileinfo Uzantı]]></value>
 		</item>
 		<item name="session">
 			<value xml:lang="ko"><![CDATA[Session.auto_start 설정]]></value>
@@ -207,15 +208,15 @@
 		</item>
 		<item name="fileinfo">
 			<value xml:lang="ko"><![CDATA[[필수] 첨부파일의 변조 확인을 위해 fileinfo 모듈이 필요합니다.]]></value>
-			<value xml:lang="en"><![CDATA[[필수] 첨부파일의 변조 확인을 위해 fileinfo 모듈이 필요합니다.]]></value>
-			<value xml:lang="jp"><![CDATA[[필수] 첨부파일의 변조 확인을 위해 fileinfo 모듈이 필요합니다.]]></value>
-			<value xml:lang="zh-CN"><![CDATA[[필수] 첨부파일의 변조 확인을 위해 fileinfo 모듈이 필요합니다.]]></value>
-			<value xml:lang="zh-TW"><![CDATA[[필수] 첨부파일의 변조 확인을 위해 fileinfo 모듈이 필요합니다.]]></value>
-			<value xml:lang="fr"><![CDATA[[필수] 첨부파일의 변조 확인을 위해 fileinfo 모듈이 필요합니다.]]></value>
-			<value xml:lang="ru"><![CDATA[[필수] 첨부파일의 변조 확인을 위해 fileinfo 모듈이 필요합니다.]]></value>
-			<value xml:lang="es"><![CDATA[[필수] 첨부파일의 변조 확인을 위해 fileinfo 모듈이 필요합니다.]]></value>
-			<value xml:lang="tr"><![CDATA[[필수] 첨부파일의 변조 확인을 위해 fileinfo 모듈이 필요합니다.]]></value>
-			<value xml:lang="vi"><![CDATA[[필수] 첨부파일의 변조 확인을 위해 fileinfo 모듈이 필요합니다.]]></value>
+			<value xml:lang="en"><![CDATA[[Required] The fileinfo module is required for verifying file attachments.]]></value>
+			<value xml:lang="jp"><![CDATA[【必須】fileinfoモジュールは添付ファイルの変調確認のために必要です。]]></value>
+			<value xml:lang="zh-CN"><![CDATA[[必须] 验证文件附件需要fileinfo模块。]]></value>
+			<value xml:lang="zh-TW"><![CDATA[[必須] 驗證文件附件需要fileinfo模塊。]]></value>
+			<value xml:lang="fr"><![CDATA[[Obligatoire] Le module fileinfo est requis pour la vérification des pièces jointes.]]></value>
+			<value xml:lang="ru"><![CDATA[[Требуется] Модуль fileinfo необходим для проверки файловых вложений.]]></value>
+			<value xml:lang="es"><![CDATA[[Requerido] El módulo fileinfo es necesario para verificar los archivos adjuntos.]]></value>
+			<value xml:lang="tr"><![CDATA[[Gerekli] Dosya eklerini doğrulamak için fileinfo modülü gerekir.]]></value>
+			<value xml:lang="vi"><![CDATA[[Bắt buộc] Mô-đun fileinfo là cần thiết để xác minh tệp đính kèm.]]></value>
 		</item>
 		<item name="session">
 			<value xml:lang="ko"><![CDATA[[필수] DAOL CMS에서 세션 사용을 위해 php.ini 설정의 session.auto_start=0 이어야 합니다.]]></value>
