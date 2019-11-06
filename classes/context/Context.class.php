@@ -147,15 +147,8 @@ class Context {
 	 */
 	function &getInstance() {
 		static $theInstance = null;
-		if(!$theInstance) $theInstance = new Context();
-
-		// include ssl action cache file
-		$theInstance->sslActionCacheFile = FileHandler::getRealPath($theInstance->sslActionCacheFile);
-		if(is_readable($theInstance->sslActionCacheFile)) {
-			require_once($theInstance->sslActionCacheFile);
-			if(isset($sslActions)) {
-				$theInstance->ssl_actions = $sslActions;
-			}
+		if(!$theInstance) {
+			$theInstance = new Context();
 		}
 
 		return $theInstance;
@@ -169,6 +162,15 @@ class Context {
 	function __construct() {
 		$this->oFrontEndFileHandler = new FrontEndFileHandler();
 		$this->get_vars = new stdClass();
+
+		// include ssl action cache file
+		$this->sslActionCacheFile = FileHandler::getRealPath($this->sslActionCacheFile);
+		if(is_readable($this->sslActionCacheFile)) {
+			require($this->sslActionCacheFile);
+			if(isset($sslActions)) {
+				$this->ssl_actions = $sslActions;
+			}
+		}
 	}
 
 	/**
@@ -1154,28 +1156,47 @@ class Context {
 		$result = array();
 		foreach($val as $k => $v){
 			$k = escape($k);
+			$result[$k] = $v;
 
-			if($remove_hack && !is_array($v)){
-				if(stripos($v, '<script') || stripos($v, 'lt;script') || stripos($v, '%3Cscript')){
+			if($remove_hack && !is_array($result[$k])){
+				if(stripos($result[$k], '<script') || stripos($result[$k], 'lt;script') || stripos($result[$k], '%3Cscript')){
 					$result[$k] = escape($v);
 					continue;
 				}
 			}
 
 			if($key === 'page' || $key === 'cpage' || substr_compare($key, 'srl', -3) === 0){
-				$result[$k] = !preg_match('/^[0-9,]+$/', $v) ? (int) $v : $v;
+				$result[$k] = !preg_match('/^[0-9,]+$/', $result[$k]) ? (int) $result[$k] : $result[$k];
 			}
 			elseif(in_array($key, array('mid','search_keyword','search_target','xe_validator_id'))){
-				$result[$k] = escape($v, false);
+				$result[$k] = escape($result[$k], false);
 			}
 			elseif($key === 'vid'){
-				$result[$k] = urlencode($v);
+				$result[$k] = urlencode($result[$k]);
 			}
 			elseif(stripos($key, 'XE_VALIDATOR', 0) === 0){
 				unset($result[$k]);
 			}
 			else{
-				$result[$k] = $v;
+				if(in_array($k, array(
+					'act',
+					'addon',
+					'cur_mid',
+					'full_browse',
+					'http_status_message',
+					'l',
+					'layout',
+					'm',
+					'mid',
+					'module',
+					'selected_addon',
+					'selected_layout',
+					'selected_widget',
+					'widget',
+					'widgetstyle',
+				))){
+					$result[$k] = urlencode(preg_replace("/[^a-z0-9-_]+/i", '', $result[$k]));
+				}
 
 				if($do_stripslashes && version_compare(PHP_VERSION, '5.4.0', '<') && get_magic_quotes_gpc()){
 					if(is_array($result[$k])){

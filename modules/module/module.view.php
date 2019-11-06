@@ -21,7 +21,7 @@ class moduleView extends module {
 	 **/
 	function dispModuleSkinInfo(){
 		$selected_module = Context::get('selected_module');
-		$skin = Context::get('skin');
+		$skin = urlencode(preg_replace("/[^a-z0-9-_]+/i", '', Context::get('skin')));
 		// Get modules/skin information
 		$module_path = sprintf("./modules/%s/", $selected_module);
 		if(!is_dir($module_path)) $this->stop("msg_invalid_request");

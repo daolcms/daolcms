@@ -248,6 +248,9 @@ class FileHandler {
 	 * @return bool TRUE if success. It might return nothing when ftp is used and connection to the ftp address failed.
 	 */
 	function makeDir($path_string){
+		$path_string = preg_replace("/[^a-z0-9-_\\\\\/\.]+/i", '', $path_string);
+		$path_string = self::getRealPath($path_string);
+		
 		if(self::exists($path_string) !== FALSE){
 			return TRUE;
 		}

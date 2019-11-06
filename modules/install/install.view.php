@@ -12,7 +12,7 @@ class installView extends install {
 	/**
 	 * @brief Initialization
 	 **/
-	function init() {
+	function init(){
 		// Set browser title
 		Context::setBrowserTitle(Context::getLang('introduce_title'));
 		// Specify the template path
@@ -29,7 +29,7 @@ class installView extends install {
 	/**
 	 * @brief Display license messages
 	 **/
-	function dispInstallIntroduce() {
+	function dispInstallIntroduce(){
 		/**
 		 * If './config/install.config.php' file is created and has array shown in the example below, DAOLCMS will be installed using config file.
 		 * ex )
@@ -52,16 +52,16 @@ class installView extends install {
 		 * );
 		 */
 		$install_config_file = FileHandler::getRealPath('./config/install.config.php');
-		if(file_exists($install_config_file)) {
+		if(file_exists($install_config_file)){
 			include $install_config_file;
-			if(is_array($install_config)) {
-				foreach($install_config as $k => $v) {
+			if(is_array($install_config)){
+				foreach($install_config as $k => $v){
 					$v = ($k == 'db_table_prefix') ? $v . '_' : $v;
 					Context::set($k, $v, true);
 				}
 				unset($GLOBALS['__DB__']);
 				Context::set('install_config', true, true);
-				$oInstallController = &getController('install');
+				$oInstallController = getController('install');
 				$output = $oInstallController->procInstall();
 				if(!$output->toBool()) return $output;
 				header("location: ./");
@@ -77,7 +77,7 @@ class installView extends install {
 	/**
 	 * @brief Display messages about installation environment
 	 **/
-	function dispInstallLicenseAgreement() {
+	function dispInstallLicenseAgreement(){
 		$this->setTemplateFile('license_agreement');
 
 		$lang_type = Context::getLangType();
@@ -87,21 +87,22 @@ class installView extends install {
 	/**
 	 * @brief Display messages about installation environment
 	 **/
-	function dispInstallCheckEnv() {
+	function dispInstallCheckEnv(){
 		$this->setTemplateFile('check_env');
 	}
 
 	/**
 	 * @brief Choose a DB
 	 **/
-	function dispInstallSelectDB() {
+	function dispInstallSelectDB(){
 		// Display check_env if it is not installable
 		if(!$this->install_enable) return $this->dispInstallCheckEnv();
 		// Enter ftp information
-		if(ini_get('safe_mode') && !Context::isFTPRegisted()) {
+		if(ini_get('safe_mode') && !Context::isFTPRegisted()){
 			Context::set('progressMenu', '3');
 			$this->setTemplateFile('ftp');
-		} else {
+		}
+		else{
 			Context::set('progressMenu', '4');
 			$this->setTemplateFile('select_db');
 		}
@@ -110,7 +111,7 @@ class installView extends install {
 	/**
 	 * @brief Display a screen to enter DB and administrator's information
 	 **/
-	function dispInstallDBForm() {
+	function dispInstallDBForm(){
 		// Display check_env if not installable
 		if(!$this->install_enable) return $this->dispInstallCheckEnv();
 		// Return to the start-up screen if db_type is not specified
@@ -118,13 +119,28 @@ class installView extends install {
 
 		// Output the file, disp_db_info_form.html
 		$tpl_filename = sprintf('form.%s', Context::get('db_type'));
+
+		$title = sprintf(Context::getLang('input_dbinfo_by_dbtype'), Context::get('db_type'));
+		Context::set('title', $title);
+
+		$error_return_url = getNotEncodedUrl('', 'act', Context::get('act'), 'db_type', Context::get('db_type'));
+		if($_SERVER['HTTPS'] == 'on'){
+			// Error occured when using https protocol at "ModuleHandler::init() '
+			$parsedUrl = parse_url($error_return_url);
+			$error_return_url = '';
+			if(isset($parsedUrl['path'])) $error_return_url .= $parsedUrl['path'];
+			if(isset($parsedUrl['query'])) $error_return_url .= '?' . $parsedUrl['query'];
+			if(isset($parsedUrl['fragment'])) $error_return_url .= '?' . $parsedUrl['fragment'];
+		}
+		Context::set('error_return_url', $error_return_url);
+
 		$this->setTemplateFile($tpl_filename);
 	}
 
 	/**
 	 * @brief Display a screen to enter DB and administrator's information
 	 **/
-	function dispInstallConfigForm() {
+	function dispInstallConfigForm(){
 		// Display check_env if not installable
 		if(!$this->install_enable) return $this->dispInstallCheckEnv();
 
@@ -138,9 +154,9 @@ class installView extends install {
 	/**
 	 * @brief Display a screen to enter DB and administrator's information
 	 **/
-	function dispInstallManagerForm() {
+	function dispInstallManagerForm(){
 		// Display check_env if not installable
-		if(!$this->install_enable) {
+		if(!$this->install_enable){
 			return $this->dispInstallCheckEnv();
 		}
 

@@ -45,7 +45,8 @@ class CacheFile extends CacheBase {
 	 * @return string Returns cache file path
 	 */
 	function getCacheFileName($key) {
-		return $this->cache_dir . str_replace(':', DIRECTORY_SEPARATOR, $key) . '.php';
+		$path_string = preg_replace("/[^a-z0-9-_:\.]+/i", '_', $key);
+		return $this->cache_dir . str_replace(':', DIRECTORY_SEPARATOR, $path_string) . '.php';
 	}
 
 	/**

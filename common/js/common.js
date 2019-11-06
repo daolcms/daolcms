@@ -212,12 +212,17 @@ if(typeof window.XE == "undefined") {
 				if(!href.match(/^(https?:\/\/)/)) return;
 
 				if($this.data('noopener') !== false && !window.XE.isSameHost(href)) {
+					var isChrome = navigator.userAgent.match(/Chrome\/([0-9]+)/);
 					var rel = $this.attr('rel');
-
-					if(typeof rel == 'string') {
-						$this.attr('rel', rel + ' noopener');
+					
+					if(isChrome && parseInt(isChrome[1], 10) >= 72) {
+						return;
 					} else {
-						$this.attr('rel', 'noopener');
+						if(typeof rel == 'string') {
+							$this.attr('rel', rel + ' noopener');
+						} else {
+							$this.attr('rel', 'noopener');
+						}
 					}
 
 					blankshield.open(href);
