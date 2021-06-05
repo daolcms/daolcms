@@ -25,7 +25,6 @@ matrix:
 sudo: false
 before_script:
 - travis_retry composer self-update
-- npm install -g npm
 - npm install -g grunt-cli
 - npm install
 script:
