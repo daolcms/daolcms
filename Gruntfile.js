@@ -23,7 +23,6 @@ module.exports = function(grunt) {
 
 				src: [
 					"**/*.php",
-					"!**/*.-legacy.php",
 					"!files/**",
 					"!tests/**",
 					"!tools/**",
