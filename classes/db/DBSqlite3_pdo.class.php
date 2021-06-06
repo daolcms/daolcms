@@ -56,7 +56,7 @@ class DBSqlite3_pdo extends DB {
 		return new DBSqlite3_pdo;
 	}
 
-	function isConnected(){
+	function isConnected($type = 'master', $indx = 0){
 		return $this->is_connected;
 	}
 
@@ -73,7 +73,7 @@ class DBSqlite3_pdo extends DB {
 	/**
 	 * @brief DB Connection
 	 **/
-	function _connect(){
+	function __connect($connection){
 		// override if db information not exists
 		if(!$this->database){
 			return;
@@ -99,7 +99,7 @@ class DBSqlite3_pdo extends DB {
 	/**
 	 * @brief disconnect to DB
 	 **/
-	function close(){
+	function _close($connection){
 		if(!$this->is_connected){
 			return;
 		}
@@ -465,10 +465,6 @@ class DBSqlite3_pdo extends DB {
 		}
 	}
 
-	function _getConnection($type = null){
-		return null;
-	}
-
 	/**
 	 * @brief insertAct
 	 * */
@@ -686,7 +682,7 @@ class DBSqlite3_pdo extends DB {
 		return $select . ' ' . $from . ' ' . $where . ' ' . $groupBy . ' ' . $orderBy . ' ' . $limit;
 	}
 
-	function getParser(){
+	function getParser($force = FALSE){
 		return new DBParser('"', '"', $this->prefix);
 	}
 
