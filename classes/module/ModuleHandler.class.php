@@ -728,7 +728,7 @@ class ModuleHandler extends Handler {
 
 			}
 			else{
-				if(count($_SESSION['INPUT_ERROR'])){
+				if(is_array($_SESSION['INPUT_ERROR']) && count($_SESSION['INPUT_ERROR'])){
 					Context::set('INPUT_ERROR', $_SESSION['INPUT_ERROR']);
 					$_SESSION['INPUT_ERROR'] = '';
 				}
@@ -768,7 +768,7 @@ class ModuleHandler extends Handler {
 		if($_SESSION['XE_VALIDATOR_ID'] && !Context::get('XE_VALIDATOR_ID')){
 			Context::set('XE_VALIDATOR_ID', $_SESSION['XE_VALIDATOR_ID']);
 		}
-		if(count($_SESSION['INPUT_ERROR'])){
+		if(is_array($_SESSION['INPUT_ERROR']) && count($_SESSION['INPUT_ERROR'])){
 			Context::set('INPUT_ERROR', $_SESSION['INPUT_ERROR']);
 		}
 		$this->_clearErrorSession();
