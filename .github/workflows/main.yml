@@ -3,10 +3,20 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-18.04
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
-        php: [ '5.4', '5.5', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0' ]
+        php: [ '5.4', '5.5', '5.6', '7.0', '7.1', '7.2' ]
+        experimental: [false]
+        include:
+          - php: '7.3'
+            experimental: true
+          - php: '7.4'
+            experimental: true
+          - php: '8.0'
+            experimental: true
+        
     
     name: PHP ${{ matrix.php }}
     steps:
@@ -22,6 +32,7 @@ jobs:
         node-version: 12.x
 
     - name: PHP Lint
+      continue-on-error: true
       run: if find . -name "*.php" ! -path "./vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors detected"; then exit 1; fi
     
     - name: Install NPM Dependency
