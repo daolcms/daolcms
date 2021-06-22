@@ -1,6 +1,6 @@
 ## DAOL CORE
 
-[![Build Status](https://travis-ci.org/daolcms/daolcms.svg?branch=master)](https://travis-ci.org/daolcms/daolcms)
+[![Build Status](https://travis-ci.com/daolcms/daolcms.svg?branch=master)](https://travis-ci.com/daolcms/daolcms)
 [![License](http://img.shields.io/badge/license-GNU%20LGPL-brightgreen.svg)](http://www.gnu.org/licenses/gpl.html)
 [![Latest release](http://img.shields.io/github/release/daolcms/daolcms.svg)](https://github.com/daolcms/daolcms/releases)
 

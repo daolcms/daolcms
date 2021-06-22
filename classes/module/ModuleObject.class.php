@@ -209,7 +209,7 @@ class ModuleObject extends BaseObject {
 		$this->setMessage($msg_code);
 		// Error message display by message module
 		$type = Mobile::isFromMobilePhone() ? 'mobile' : 'view';
-		$oMessageObject = &ModuleHandler::getModuleInstance('message', $type);
+		$oMessageObject = ModuleHandler::getModuleInstance('message', $type);
 		$oMessageObject->setError(-1);
 		$oMessageObject->setMessage($msg_code);
 		$oMessageObject->dispMessage();
@@ -362,9 +362,9 @@ class ModuleObject extends BaseObject {
 		$called_position = 'after_module_proc';
 		$oAddonController = getController('addon');
 		$addon_file = $oAddonController->getCacheFilePath(Mobile::isFromMobilePhone() ? "mobile" : "pc");
-		if(is_readable($addon_file)) include($addon_file);
+		if(FileHandler::exists($addon_file)) include($addon_file);
 
-		if(is_a($output, 'Object') || is_subclass_of($output, 'Object')){
+		if(is_a($output, 'BaseObject') || is_subclass_of($output, 'BaseObject')){
 			$this->setError($output->getError());
 			$this->setMessage($output->getMessage());
 

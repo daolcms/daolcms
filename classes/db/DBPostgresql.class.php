@@ -510,7 +510,7 @@ class DBPostgresql extends DB {
 	 * override
 	 * @param $queryObject
 	 */
-	function getSelectSql($query){
+	function getSelectSql($query, $with_values = TRUE){
 		$select = $query->getSelectString();
 		if($select == ''){
 			return new BaseObject(-1, "Invalid query");
@@ -627,7 +627,7 @@ class DBPostgresql extends DB {
 		return $buff;
 	}
 
-	function getParser(){
+	function getParser($force = FALSE){
 		return new DBParser('"', '"', $this->prefix);
 	}
 }

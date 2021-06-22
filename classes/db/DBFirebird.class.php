@@ -916,7 +916,7 @@ class DBFireBird extends DB {
 		return $buff;
 	}
 
-	function getParser(){
+	function getParser($force = FALSE){
 		return new DBParser('"', '"', $this->prefix);
 	}
 
@@ -972,7 +972,8 @@ class DBFireBird extends DB {
 		return $select . ' ' . $from . ' ' . $where . ' ' . $groupBy . ' ' . $orderBy;
 	}
 
-	function getDeleteSql($query, $with_values = true){
+	//function getDeleteSql($query, $with_values = true){
+	function getDeleteSql($query, $with_values = TRUE, $with_priority = FALSE){
 		$sql = 'DELETE ';
 
 		$from = $query->getFromString($with_values);
