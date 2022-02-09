@@ -239,9 +239,11 @@ class ModuleHandler extends Handler {
 		if($this->document_srl){
 
 			$module_info = $oModuleModel->getModuleInfoByDocumentSrl($this->document_srl);
-			// If the document does not exist, remove document_srl
+			// redirect, if the document does not exist
 			if(!$module_info){
-				unset($this->document_srl);
+				$this->error = 'The document does not exist';
+				$this->httpStatusCode = '404';
+				return true;
 			}
 			else{
 				// If it exists, compare mid based on the module information
