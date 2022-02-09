@@ -261,7 +261,9 @@ class documentController extends document {
 			$obj->content = nl2br($obj->content);
 		}
 		// Remove iframe and script if not a top adminisrator in the session.
-		if($logged_info->is_admin != 'Y') $obj->content = removeHackTag($obj->content);
+		if($logged_info->is_admin != 'Y') {
+			$obj->content = removeHackTag($obj->content);
+		}
 		// An error appears if both log-in info and user name don't exist.
 		if(!$logged_info->member_srl && !$obj->nick_name) return new BaseObject(-1, 'msg_invalid_request');
 
@@ -428,6 +430,10 @@ class documentController extends document {
 		if($obj->title == '') $obj->title = 'Untitled';
 		// Remove XE's own tags from the contents.
 		$obj->content = preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $obj->content);
+		// Remove iframe and script if not a top adminisrator in the session.
+		if($logged_info->is_admin != 'Y') {
+			$obj->content = removeHackTag($obj->content);
+		}
 		// Change not extra vars but language code of the original document if document's lang_code is different from author's setting.
 		if($source_obj->get('lang_code') != Context::getLangType()) {
 			// Change not extra vars but language code of the original document if document's lang_code doesn't exist.
@@ -444,10 +450,6 @@ class documentController extends document {
 				$obj->title = $document_output->data->title;
 				$obj->content = $document_output->data->content;
 			}
-		}
-		// Remove iframe and script if not a top adminisrator in the session.
-		if($logged_info->is_admin != 'Y') {
-			$obj->content = removeHackTag($obj->content);
 		}
 		// if temporary document, regdate is now setting
 		if($source_obj->get('status') == $this->getConfigStatus('temp')) $obj->regdate = date('YmdHis');
