@@ -99,6 +99,16 @@
 					<p>{$lang->about_opage_mobile_path}<b>{realpath("./")}</b></p>
 				</td>
 			</tr>
+			<tr>
+				<th scope="row">{$lang->opage_postprocessing}</th>
+				<td class="text">
+					<input type="checkbox" name="opage_proc_php" id="opage_proc_php" value="Y" <!--@if(($module_info->opage_proc_php ?? 'Y') === 'Y')-->checked="checked"<!--@end--> />
+					<label for="opage_postprocessing">{$lang->opage_proc_php}</label>
+					<input type="checkbox" name="opage_proc_tpl" id="opage_proc_tpl" value="Y" <!--@if(($module_info->opage_proc_tpl ?? 'N') === 'Y')-->checked="checked"<!--@end--> />
+					<label for="opage_postprocessing">{$lang->opage_proc_tpl}</label>
+					<p>{$lang->about_opage_postprocessing}</p>
+				</td>
+			</tr>
 			<!--@end-->
 			<!--@if($module_info->page_type == 'ARTICLE')-->
 			<tr>

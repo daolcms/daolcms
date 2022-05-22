@@ -75,7 +75,11 @@ class TemplateHandler {
 	 **/
 	function init($tpl_path, $tpl_filename, $tpl_file = '') {
 		// verify arguments
-		if(substr($tpl_path, -1) != '/') $tpl_path .= '/';
+		$tpl_path = trim(preg_replace('@^' . preg_quote(_DAOL_PATH_, '@') . '|\./@', '', str_replace('\\', '/', $tpl_path)), '/') . '/';
+		if($tpl_path === '/')
+		{
+			$tpl_path = '';
+		}
 		if(!is_dir($tpl_path)) {
 			return;
 		}
