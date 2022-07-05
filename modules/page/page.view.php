@@ -59,13 +59,6 @@ class pageView extends page {
 			Context::set('module_srl', $this->module_srl);
 		}
 		
-		// Kick out anyone who tries to exploit RVE-2022-2.
-		foreach (Context::getRequestVars() as $key => $val){
-			if (preg_match('/[\{\}\(\)<>\$\'"]/', $key) || preg_match('/[\{\}\(\)<>\$\'"]/', $val)){
-				return new BaseObject(-1, 'msg_security_violation');
-			}
-		}
-
 		// Get page content according to page type.
 		$page_type_name = strtolower($this->module_info->page_type);
 		if (!in_array($page_type_name, ['widget', 'article', 'outside'])){
@@ -143,12 +136,26 @@ class pageView extends page {
 
 	function _getOutsideContent(){
 		// check if it is http or internal file
-		if($this->path){
-			if(preg_match("/^([a-z]+):\/\//i", $this->path)) $content = $this->getHtmlPage($this->path, $this->interval, $this->cache_file);
-			else $content = $this->executeFile($this->path, $this->interval, $this->cache_file);
+		if($this->path) {
+			// Kick out anyone who tries to exploit RVE-2022-2.
+			foreach (Context::getRequestVars() as $key => $val) {
+				if (preg_match('/[\{\}\(\)<>\$\'"]/', $key) || preg_match('/[\{\}\(\)<>\$\'"]/', $val)) {
+					return new BaseObject(-1, 'msg_security_violation');
+				}
+			}
+			
+			if(preg_match("/^([a-z]+):\/\//i", $this->path)) {
+				$content = $this->getHtmlPage($this->path, $this->interval, $this->cache_file);
+			}
+			else {
+				$content = $this->executeFile($this->path, $this->interval, $this->cache_file);
+			}
+			
+			return $content;
 		}
-
-		return $content;
+		else {
+			return;
+		}
 	}
 
 	/**
