@@ -2783,6 +2783,10 @@
 		<value xml:lang="vi"><![CDATA[Mật khẩu không đúng]]></value>
 		<value xml:lang="mn"><![CDATA[Нууц дугаар буруу байна]]></value>
 	</item>
+	<item name="msg_security_violation">
+		<value xml:lang="ko"><![CDATA[보안정책상 허용되지 않습니다.]]></value>
+		<value xml:lang="en"><![CDATA[Security Violation]]></value>
+	</item>
 	<item name="msg_error_occured">
 		<value xml:lang="ko"><![CDATA[오류가 발생했습니다.]]></value>
 		<value xml:lang="en"><![CDATA[An error has occured.]]></value>
