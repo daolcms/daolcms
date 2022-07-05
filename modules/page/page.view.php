@@ -7,14 +7,15 @@
  * @brief   page view class of the module
  **/
 class pageView extends page {
-
-	var $module_srl = 0;
-	var $list_count = 20;
-	var $page_count = 10;
-	var $cache_file;
-	var $interval;
-	var $path;
-
+	public $module_srl = 0;
+	public $list_count = 20;
+	public $page_count = 10;
+	public $cache_file = null;
+	public $interval = 0;
+	public $path = '';
+	public $proc_php = false;
+	public $proc_tpl = false;
+	
 	/**
 	 * @brief Initialization
 	 **/
@@ -22,18 +23,30 @@ class pageView extends page {
 		// Get a template path (page in the administrative template tpl putting together)
 		$this->setTemplatePath($this->module_path . 'tpl');
 
-		switch($this->module_info->page_type){
-			case 'WIDGET' : {
-				$this->cache_file = sprintf("%sfiles/cache/page/%d.%s.%s.cache.php", _DAOL_PATH_, $this->module_info->module_srl, Context::getLangType(), Context::getSslStatus());
-				$this->interval = (int)($this->module_info->page_caching_interval);
-				break;
-			}
-			case 'OUTSIDE' : {
-				$this->cache_file = sprintf("./files/cache/opage/%d.%s.cache.php", $this->module_info->module_srl, Context::getSslStatus());
-				$this->interval = (int)($this->module_info->page_caching_interval);
-				$this->path = $this->module_info->path;
-				break;
-			}
+		if ($this->module_info->page_type === 'WIDGET'){
+			$this->interval = (int)($this->module_info->page_caching_interval ?? 0);
+			$this->cache_file = vsprintf('%sfiles/cache/page/%d.%s.%s.%s.cache.php', [
+				_DAOL_PATH_,
+				$this->module_info->module_srl,
+				Context::getLangType(),
+				Context::getSslStatus(),
+				$this instanceof pageMobile ? 'm' : 'pc',
+			]);
+		}
+		
+		if ($this->module_info->page_type === 'OUTSIDE'){		
+			$this->interval = (int)($this->module_info->page_caching_interval ?? 0);
+			$this->path = $this->module_info->path ?? '';
+			$this->proc_php = (isset($this->module_info->opage_proc_php) && $this->module_info->opage_proc_php === 'N') ? false : true;
+			$this->proc_tpl = (isset($this->module_info->opage_proc_tpl) && $this->module_info->opage_proc_tpl === 'Y') ? true : false;
+			$this->cache_file = vsprintf('%sfiles/cache/opage/%d.%s.%s.%s.%s.cache.php', [
+				_DAOL_PATH_,
+				$this->module_info->module_srl,
+				Context::getSslStatus(),
+				$this->proc_php ? 'php' : 'nophp',
+				$this->proc_tpl ? 'tpl' : 'notpl',
+				$this instanceof pageMobile ? 'm' : 'pc',
+			]);
 		}
 	}
 
@@ -42,49 +55,57 @@ class pageView extends page {
 	 **/
 	function dispPageIndex(){
 		// Variables used in the template Context:: set()
-		if($this->module_srl) Context::set('module_srl', $this->module_srl);
-		
-		// First line of defense against RVE-2022-2.
-		foreach (Context::getRequestVars() as $key => $val)
-		{
-			if (preg_match('/[\{\}\(\)<>\$\'"]/', $key) || preg_match('/[\{\}\(\)<>\$\'"]/', $val))
-			{
-				$this->setError(-1);
-				$this->setMessage('msg_invalid_request');
-				return;
-			}
+		if ($this->module_srl){
+			Context::set('module_srl', $this->module_srl);
 		}
-
+		
+		// Get page content according to page type.
 		$page_type_name = strtolower($this->module_info->page_type);
+		if (!in_array($page_type_name, ['widget', 'article', 'outside'])){
+			$page_type_name = 'widget';
+		}
 		$method = '_get' . ucfirst($page_type_name) . 'Content';
-		if(method_exists($this, $method)) $page_content = $this->{$method}();
-		else return new BaseObject(-1, sprintf('%s method is not exists', $method));
+		$page_content = $this->{$method}();
 
 		Context::set('module_info', $this->module_info);
 		Context::set('page_content', $page_content);
-
-		$this->setTemplateFile('content');
+		
+		$this->setTemplatePath($this->module_path . 'tpl');
+		$this->setTemplateFile($this instanceof pageMobile ? 'mobile' : 'content');
 	}
 
 	function _getWidgetContent(){
-		if($this->interval > 0){
-			if(!file_exists($this->cache_file)) $mtime = 0;
-			else $mtime = filemtime($this->cache_file);
-
-			if($mtime + $this->interval * 60 > time()){
-				$page_content = FileHandler::readFile($this->cache_file);
-				$page_content = preg_replace('@<\!--#Meta:@', '<!--Meta:', $page_content);
+		if ($this instanceof pageMobile){
+			$page_content = $this->module_info->mcontent ?: $this->module_info->content;
+		}
+		else{
+			$page_content = $this->module_info->content;
+		}
+		
+		if ($this->interval > 0){
+			if (!file_exists($this->cache_file) || !filesize($this->cache_file)){
+				$mtime = 0;
 			}
 			else{
-				$oWidgetController = getController('widget');
-				$page_content = $oWidgetController->transWidgetCode($this->module_info->content);
+				$mtime = filemtime($this->cache_file);
+			}
+
+			if($mtime && $mtime + ($this->interval * 60) > $_SERVER['REQUEST_TIME']){
+				$page_content = FileHandler::readFile($this->cache_file); 
+				$page_content = str_replace('<!--#Meta:', '<!--Meta:', $page_content);
+			}
+			else{
+				$oWidgetController = WidgetController::getInstance();
+				$page_content = $oWidgetController->transWidgetCode($page_content);
 				FileHandler::writeFile($this->cache_file, $page_content);
 			}
 		}
 		else{
-			if(file_exists($this->cache_file)) FileHandler::removeFile($this->cache_file);
-			$page_content = $this->module_info->content;
+			if (file_exists($this->cache_file)){
+				FileHandler::removeFile($this->cache_file);
+			}
 		}
+		
 		return $page_content;
 	}
 
@@ -115,12 +136,26 @@ class pageView extends page {
 
 	function _getOutsideContent(){
 		// check if it is http or internal file
-		if($this->path){
-			if(preg_match("/^([a-z]+):\/\//i", $this->path)) $content = $this->getHtmlPage($this->path, $this->interval, $this->cache_file);
-			else $content = $this->executeFile($this->path, $this->interval, $this->cache_file);
+		if($this->path) {
+			// Kick out anyone who tries to exploit RVE-2022-2.
+			foreach (Context::getRequestVars() as $key => $val) {
+				if (preg_match('/[\{\}\(\)<>\$\'"]/', $key) || preg_match('/[\{\}\(\)<>\$\'"]/', $val)) {
+					return new BaseObject(-1, 'msg_security_violation');
+				}
+			}
+			
+			if(preg_match("/^([a-z]+):\/\//i", $this->path)) {
+				$content = $this->getHtmlPage($this->path, $this->interval, $this->cache_file);
+			}
+			else {
+				$content = $this->executeFile($this->path, $this->interval, $this->cache_file);
+			}
+			
+			return $content;
 		}
-
-		return $content;
+		else {
+			return;
+		}
 	}
 
 	/**
@@ -162,33 +197,66 @@ class pageView extends page {
 	 **/
 	function executeFile($target_file, $caching_interval, $cache_file){
 		// Cancel if the file doesn't exist
-		if(!file_exists(FileHandler::getRealPath($target_file))) return;
-
-		// Get a path and filename
-		$tmp_path = explode('/',$cache_file);
-		$filename = $tmp_path[count($tmp_path)-1];
-		$filepath = preg_replace('/'.$filename."$/i","",$cache_file);
-		$cache_file = FileHandler::getRealPath($cache_file);
-
-		$level = ob_get_level();
-		// Verify cache
-		if($caching_interval <1 || !file_exists($cache_file) || filemtime($cache_file) + $caching_interval*60 <= $_SERVER['REQUEST_TIME'] || filemtime($cache_file)<filemtime($target_file)){
-			if(file_exists($cache_file)) FileHandler::removeFile($cache_file);
-
-			// Read a target file and get content
-			ob_start();
-			include(FileHandler::getRealPath($target_file));
-			$content = ob_get_clean();
-			// Replace relative path to the absolute path 
-			$this->path = str_replace('\\', '/', realpath(dirname($target_file))) . '/';
-			$content = preg_replace_callback('/(target=|src=|href=|url\()("|\')?([^"\'\)]+)("|\'\))?/is',array($this,'_replacePath'),$content);
-			$content = preg_replace_callback('/(<!--%import\()(\")([^"]+)(\")/is',array($this,'_replacePath'),$content);
-
-			FileHandler::writeFile($cache_file, $content);
+		$real_target_file = FileHandler::getRealPath($target_file);
+		if (!file_exists($real_target_file)){
+			return;
 		}
 
-		// Don't compile, just return to prevent RVE-2022-2.
-		return file_get_contents($cache_file);
+		// Return content from cache if available.
+		if ($caching_interval > 0 && file_exists($cache_file) && filemtime($cache_file) + ($caching_interval * 60) > $_SERVER['REQUEST_TIME'] && filemtime($cache_file) > filemtime($real_target_file)){
+			return file_get_contents($cache_file);
+		}
+		
+		// Parse as template if enabled.
+		if ($this->proc_tpl){
+			// Store compiled template in a temporary file.
+			$oTemplate = TemplateHandler::getInstance();
+			$real_target_dir = dirname($real_target_file);
+			$tmp_cache_file = preg_replace('/\.cache\.php$/', '.compiled.php', $cache_file);
+			$content = $oTemplate->compileDirect($real_target_dir . '/', basename($real_target_file));
+			FileHandler::writeFile($tmp_cache_file, $content);
+			if(!file_exists($tmp_cache_file)) return;
+			
+			// Include template file in an isolated scope.
+			$content = '';
+			$include_path = get_include_path();
+			$ob_level = ob_get_level();
+			ob_start();
+			set_include_path($real_target_dir . PATH_SEPARATOR . $include_path);
+			call_user_func(function() use($real_target_dir, $tmp_cache_file) {
+				$__Context = Context::getAll();
+				$__Context->tpl_path = $real_target_dir;
+				global $lang;
+				include $tmp_cache_file;
+			});
+			set_include_path($include_path);
+			while (ob_get_level() > $ob_level){
+				$content .= ob_get_clean();
+			}
+		}
+		
+		// Parse as PHP if enabled.
+		elseif ($this->proc_php){
+			ob_start();
+			call_user_func(function() use($real_target_file) {
+				include $real_target_file;
+			});
+			$content = ob_get_clean();
+		}
+		
+		// Otherwise, get the raw content of the file.
+		else{
+			$content = file_get_contents($real_target_file);
+		}
+		
+		// Convert relative paths to absolute paths.
+		$this->path = str_replace('\\', '/', dirname($real_target_file)) . '/';
+		$content = preg_replace_callback('/\b(target=|src=|href=|url\()("|\')?([^"\'\)]+)("|\'\))?/is', array($this, '_replacePath'), $content);
+		$content = preg_replace_callback('/(<!--%import\()(\")([^"]+)(\")/is', array($this, '_replacePath'), $content);
+
+		FileHandler::writeFile($cache_file, $content);
+		
+		return $content;
 	}
 
 	function _replacePath($matches){

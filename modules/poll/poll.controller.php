@@ -218,9 +218,16 @@ class pollController extends poll {
 	 **/
 	function procPollViewResult(){
 		$poll_srl = Context::get('poll_srl');
-
-		$skin = Context::get('skin');
-		if(!$skin || !is_dir(_DAOL_PATH_ . 'modules/poll/skins/' . $skin)) $skin = 'default';
+		
+		$skin = Context::get('skin') ?: 'default';
+		if (!preg_match('/^[a-zA-Z0-9_-]+$/', $skin))
+		{
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+		if (!is_dir(_DAOL_PATH_ . 'modules/poll/skins/' . $skin))
+		{
+			$skin = 'default';
+		}
 
 		$oPollModel = getModel('poll');
 		$tpl = $oPollModel->getPollResultHtml($poll_srl, $skin);
