@@ -46,7 +46,7 @@ class pollModel extends poll {
 		if(!$output->data) return '';
 
 		$poll = new stdClass();
-		$poll->style = $style;
+		$poll->style = preg_replace('/[^a-zA-Z0-9_-]/', '', $style);
 		$poll->poll_count = (int)$output->data->poll_count;
 		$poll->stop_date = $output->data->stop_date;
 
@@ -98,7 +98,7 @@ class pollModel extends poll {
 		if(!$output->data) return '';
 
 		$poll = new stdClass();
-		$poll->style = $style;
+		$poll->style = preg_replace('/[^a-zA-Z0-9_-]/', '', $style);
 		$poll->poll_count = (int)$output->data->poll_count;
 		$poll->stop_date = $output->data->stop_date;
 
@@ -136,7 +136,15 @@ class pollModel extends poll {
 	 * @brief Selected poll - return the colorset of the skin
 	 **/
 	function getPollGetColorsetList(){
-		$skin = Context::get('skin');
+		$skin = Context::get('skin') ?: 'default';
+		if (!preg_match('/^[a-zA-Z0-9_-]+$/', $skin))
+		{
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+		if (!is_dir(_DAOL_PATH_ . 'modules/poll/skins/' . $skin))
+		{
+			$skin = 'default';
+		}
 
 		$oModuleModel = getModel('module');
 		$skin_info = $oModuleModel->loadSkinInfo($this->module_path, $skin);
