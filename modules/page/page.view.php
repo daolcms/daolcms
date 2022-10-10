@@ -24,7 +24,7 @@ class pageView extends page {
 		$this->setTemplatePath($this->module_path . 'tpl');
 
 		if ($this->module_info->page_type === 'WIDGET'){
-			$this->interval = (int)($this->module_info->page_caching_interval ?? 0);
+			$this->interval = isset($this->module_info->page_caching_interval) ? (int)($this->module_info->page_caching_interval) : 0;
 			$this->cache_file = vsprintf('%sfiles/cache/page/%d.%s.%s.%s.cache.php', [
 				_DAOL_PATH_,
 				$this->module_info->module_srl,
@@ -35,8 +35,8 @@ class pageView extends page {
 		}
 		
 		if ($this->module_info->page_type === 'OUTSIDE'){		
-			$this->interval = (int)($this->module_info->page_caching_interval ?? 0);
-			$this->path = $this->module_info->path ?? '';
+			$this->interval = isset($this->module_info->page_caching_interval) ? (int)($this->module_info->page_caching_interval) : 0;
+			$this->path = isset($this->module_info->path) ? $this->module_info->path : '';
 			$this->proc_php = (isset($this->module_info->opage_proc_php) && $this->module_info->opage_proc_php === 'N') ? false : true;
 			$this->proc_tpl = (isset($this->module_info->opage_proc_tpl) && $this->module_info->opage_proc_tpl === 'Y') ? true : false;
 			$this->cache_file = vsprintf('%sfiles/cache/opage/%d.%s.%s.%s.%s.cache.php', [
@@ -61,7 +61,7 @@ class pageView extends page {
 		
 		// Get page content according to page type.
 		$page_type_name = strtolower($this->module_info->page_type);
-		if (!in_array($page_type_name, ['widget', 'article', 'outside'])){
+		if (!in_array($page_type_name, array('widget', 'article', 'outside'))){
 			$page_type_name = 'widget';
 		}
 		$method = '_get' . ucfirst($page_type_name) . 'Content';
@@ -95,7 +95,7 @@ class pageView extends page {
 				$page_content = str_replace('<!--#Meta:', '<!--Meta:', $page_content);
 			}
 			else{
-				$oWidgetController = WidgetController::getInstance();
+				$oWidgetController = getController('widget');
 				$page_content = $oWidgetController->transWidgetCode($page_content);
 				FileHandler::writeFile($this->cache_file, $page_content);
 			}
