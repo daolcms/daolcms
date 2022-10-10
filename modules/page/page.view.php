@@ -25,13 +25,13 @@ class pageView extends page {
 
 		if ($this->module_info->page_type === 'WIDGET'){
 			$this->interval = isset($this->module_info->page_caching_interval) ? (int)($this->module_info->page_caching_interval) : 0;
-			$this->cache_file = vsprintf('%sfiles/cache/page/%d.%s.%s.%s.cache.php', [
+			$this->cache_file = vsprintf('%sfiles/cache/page/%d.%s.%s.%s.cache.php', array(
 				_DAOL_PATH_,
 				$this->module_info->module_srl,
 				Context::getLangType(),
 				Context::getSslStatus(),
 				$this instanceof pageMobile ? 'm' : 'pc',
-			]);
+			));
 		}
 		
 		if ($this->module_info->page_type === 'OUTSIDE'){		
@@ -39,14 +39,14 @@ class pageView extends page {
 			$this->path = isset($this->module_info->path) ? $this->module_info->path : '';
 			$this->proc_php = (isset($this->module_info->opage_proc_php) && $this->module_info->opage_proc_php === 'N') ? false : true;
 			$this->proc_tpl = (isset($this->module_info->opage_proc_tpl) && $this->module_info->opage_proc_tpl === 'Y') ? true : false;
-			$this->cache_file = vsprintf('%sfiles/cache/opage/%d.%s.%s.%s.%s.cache.php', [
+			$this->cache_file = vsprintf('%sfiles/cache/opage/%d.%s.%s.%s.%s.cache.php', array(
 				_DAOL_PATH_,
 				$this->module_info->module_srl,
 				Context::getSslStatus(),
 				$this->proc_php ? 'php' : 'nophp',
 				$this->proc_tpl ? 'tpl' : 'notpl',
 				$this instanceof pageMobile ? 'm' : 'pc',
-			]);
+			));
 		}
 	}
 
