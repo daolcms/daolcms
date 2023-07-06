@@ -294,10 +294,9 @@ class editorModel extends editor {
 		$site_module_info = Context::get('site_module_info');
 		$site_srl = (int)$site_module_info->site_srl;
 		if($enable_component) {
-			if(!Context::get('component_list')) {
-				$component_list = $this->getComponentList(true, $site_srl);
-				Context::set('component_list', $component_list);
-			}
+			Context::set('component_list', $this->getComponentList(true, $site_srl));
+		} else {
+			Context::set('component_list', []);
 		}
 		Context::set('enable_component', $enable_component);
 		Context::set('enable_default_component', $enable_default_component);
