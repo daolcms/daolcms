@@ -655,6 +655,10 @@ class fileController extends file {
 	 * @return BaseObject
 	 **/
 	function insertFile($file_info, $module_srl, $upload_target_srl, $download_count = 0, $manual_insert = false){
+		$logged_info = Context::get('logged_info');
+		$is_admin = $logged_info && isset($logged_info->is_admin) && $logged_info->is_admin === 'Y';
+		$extension = strtolower(pathinfo($file_info['name'], PATHINFO_EXTENSION));
+
 		// Call a trigger (before)
 		$trigger_obj->module_srl = $module_srl;
 		$trigger_obj->upload_target_srl = $upload_target_srl;
@@ -668,8 +672,7 @@ class fileController extends file {
 
 		if(!$manual_insert){
 			// Get the file configurations
-			$logged_info = Context::get('logged_info');
-			if($logged_info->is_admin != 'Y'){
+			if(!$is_admin){
 				$oFileModel = &getModel('file');
 				$config = $oFileModel->getFileConfig($module_srl);
 
@@ -706,11 +709,31 @@ class fileController extends file {
 		$file_info['name'] = str_replace(array('<', '>'), array('%3C', '%3E'), $file_info['name']);
 		$file_info['name'] = str_replace('&amp;', '&', $file_info['name']);
 
+		// Check uploaded file before parsing or copying its contents.
+		if(!$manual_insert && !checkUploadedFile($file_info['tmp_name'], $file_info['name'])){
+			return new BaseObject(-1, 'msg_file_upload_error');
+		}
+
+		$content_sample = '';
+		if(file_exists($file_info['tmp_name'])){
+			$content_sample = file_get_contents($file_info['tmp_name'], false, null, 0, 4096);
+		}
+		$is_svg = $extension === 'svg' || preg_match('/<(?:[a-z0-9_-]+:)?svg\b/i', $content_sample);
+		$is_xml = $is_svg || $extension === 'xml' || preg_match('/<\?xml\b/i', $content_sample);
+
+		// Sanitize untrusted SVG files before moving them to a public attachment directory.
+		if($is_svg && !$is_admin){
+			$sanitizer = new SvgSanitizer();
+			if(!$sanitizer->load($file_info['tmp_name']) || !$sanitizer->sanitize() || !$sanitizer->save($file_info['tmp_name'])){
+				return new BaseObject(-1, 'msg_file_upload_error');
+			}
+		}
+
 		// Get random number generator
 		$random = new Password();
 
 		// Set upload path by checking if the attachement is an image or other kinds of file
-		if(preg_match("/\.(jpe?g|gif|png|wm[va]|mpe?g|avi|flv|mp[1-4]|as[fx]|wav|midi?|moo?v|qt|r[am]{1,2}|m4v)$/i", $file_info['name'])){
+		if(!$is_xml && preg_match("/\.(jpe?g|gif|png|wm[va]|mpe?g|avi|flv|mp[1-4]|as[fx]|wav|midi?|moo?v|qt|r[am]{1,2}|m4v)$/i", $file_info['name'])){
 			$path = sprintf("./files/attach/images/%s/%s", $module_srl, getNumberingPath($upload_target_srl, 3));
 
 			// special character to '_'
@@ -733,8 +756,6 @@ class fileController extends file {
 		}
 		// Create a directory
 		if(!FileHandler::makeDir($path)) return new BaseObject(-1, 'msg_not_permitted_create');
-		// Check uploaded file
-		if(!$manual_insert && !checkUploadedFile($file_info['tmp_name'], $file_info['name'])) return new BaseObject(-1, 'msg_file_upload_error');
 		// Move the file
 		if($manual_insert){
 			@copy($file_info['tmp_name'], $filename);

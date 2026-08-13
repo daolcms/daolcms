@@ -81,7 +81,7 @@ class UploadFileFilter {
 	 * @return bool
 	 */
 	protected static function _checkSVG($fp, $from, $to){
-		if(self::_matchStream('/<script|<handler\b|xlink:href\s*=\s*"(?!data:)/i', $fp, $from, $to)){
+		if(self::_matchStream('/(?:<|&lt;|:)(?:script|iframe|foreignObject|object|embed|handler)|javascript:|(?:\s|:)href\s*=\s*["\x27](?!data:)/i', $fp, $from, $to)){
 			return false;
 		}
 		if(self::_matchStream('/\b(?:ev:(?:event|listener|observer)|on[a-z]+)\s*=/i', $fp, $from, $to)){
