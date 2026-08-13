@@ -386,9 +386,14 @@ class memberController extends member {
 		else{
 			if(Context::get('success_return_url')){
 				$returnUrl = Context::get('success_return_url');
-			} else if($_COOKIE['XE_REDIRECT_URL']){
-				$returnUrl = $_COOKIE['XE_REDIRECT_URL'];
+			}
+			else if(isset($_COOKIE['XE_REDIRECT_URL'])){
+				$returnUrl = URLSecurity::sanitizeReturnURL($_COOKIE['XE_REDIRECT_URL']);
 				setcookie("XE_REDIRECT_URL", '', 1);
+			}
+			else{
+				$db_info = Context::getDBInfo();
+				$returnUrl = isset($db_info->default_url) ? $db_info->default_url : '';
 			}
 		}
 

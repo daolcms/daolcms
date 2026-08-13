@@ -163,8 +163,14 @@ class memberView extends member {
 	 * @brief Display member join form
 	 **/
 	function dispMemberSignUpForm(){
-		//setcookie for redirect url in case of going to member sign up
-		setcookie("XE_REDIRECT_URL", $_SERVER['HTTP_REFERER']);
+		// Keep only an internal Referer for the post-signup redirect.
+		$referer_url = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+		if(URLSecurity::isInternalURLForCurrentSite($referer_url)){
+			setcookie("XE_REDIRECT_URL", $referer_url);
+		}
+		else{
+			setcookie("XE_REDIRECT_URL", '', 1);
+		}
 
 		$member_config = $this->member_config;
 
@@ -380,7 +386,10 @@ class memberView extends member {
 		Context::set('identifier', $config->identifier);
 
 		// Set a template file
-		Context::set('referer_url', htmlspecialchars($_SERVER['HTTP_REFERER']));
+		$referer_url = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+		$referer_url = URLSecurity::sanitizeReturnURL($referer_url);
+		$referer_url = htmlspecialchars($referer_url, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+		Context::set('referer_url', $referer_url);
 		$this->setTemplateFile('login_form');
 	}
 

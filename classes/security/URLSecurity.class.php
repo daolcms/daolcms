@@ -119,6 +119,43 @@ class URLSecurity {
 
 		return false;
 	}
+
+	/**
+	 * Check a URL against the default and current-site origins.
+	 *
+	 * @param string $url
+	 * @return bool
+	 */
+	static function isInternalURLForCurrentSite($url) {
+		$db_info = Context::getDBInfo();
+		$site_module_info = Context::get('site_module_info');
+
+		$http_port = isset($db_info->http_port) ? intval($db_info->http_port) : 0;
+		$https_port = isset($db_info->https_port) ? intval($db_info->https_port) : 0;
+		$origins = array(
+			self::createOrigin(isset($db_info->default_url) ? $db_info->default_url : '', $http_port, $https_port),
+		);
+		if($site_module_info && isset($site_module_info->domain)){
+			$origins[] = self::createOrigin($site_module_info->domain, $http_port, $https_port);
+		}
+
+		$default_scheme = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') ? 'https' : 'http';
+		return self::isInternalURL($url, $origins, $default_scheme);
+	}
+
+	/**
+	 * Return an internal URL or the configured default URL.
+	 *
+	 * @param string $url
+	 * @return string
+	 */
+	static function sanitizeReturnURL($url) {
+		if(self::isInternalURLForCurrentSite($url)){
+			return $url;
+		}
+		$db_info = Context::getDBInfo();
+		return isset($db_info->default_url) ? $db_info->default_url : '';
+	}
 }
 
 /* End of file URLSecurity.class.php */
