@@ -299,7 +299,7 @@ class documentItem extends BaseObject {
 		if($cut_size) $title = cut_str($this->get('title'), $cut_size, $tail);
 		else $title = $this->get('title');
 
-		return $title;
+		return escape($title, false);
 	}
 
 	function getTitle($cut_size = 0, $tail = '...') {

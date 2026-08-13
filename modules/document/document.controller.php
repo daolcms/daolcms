@@ -259,9 +259,9 @@ class documentController extends document {
 			$obj->password = getModel('member')->hashPassword($obj->password);
 		}
 		// If the title is empty, extract string from the contents.
-		$obj->title = htmlspecialchars($obj->title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+		$obj->title = escape($obj->title, false);
 		settype($obj->title, "string");
-		if($obj->title == '') $obj->title = cut_str(strip_tags($obj->content), 20, '...');
+		if($obj->title == '') $obj->title = escape(cut_str(trim(strip_tags(nl2br($obj->content))), 20, '...'), false);
 		// If no tile extracted from the contents, leave it untitled.
 		if($obj->title == '') $obj->title = 'Untitled';
 		// Remove XE's own tags from the contents.
@@ -437,9 +437,9 @@ class documentController extends document {
 			$obj->password = getModel('member')->hashPassword($obj->password);
 		}
 		// If the title is empty, extract string from the contents.
-		$obj->title = htmlspecialchars($obj->title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+		$obj->title = escape($obj->title, false);
 		settype($obj->title, "string");
-		if($obj->title == '') $obj->title = cut_str(strip_tags($obj->content), 20, '...');
+		if($obj->title == '') $obj->title = escape(cut_str(trim(strip_tags(nl2br($obj->content))), 20, '...'), false);
 		// If no tile extracted from the contents, leave it untitled.
 		if($obj->title == '') $obj->title = 'Untitled';
 		// Remove XE's own tags from the contents.
