@@ -25,8 +25,20 @@ class pageAdminController extends page {
 		$args = Context::getRequestVars();
 		$args->module = 'page';
 		$args->mid = $args->page_name;    //because if mid is empty in context, set start page mid
-		$args->path = (!$args->path) ? '' : $args->path;
-		$args->mpath = (!$args->mpath) ? '' : $args->mpath;
+		$args->path = isset($args->path) ? (string)$args->path : '';
+		$args->mpath = isset($args->mpath) ? (string)$args->mpath : '';
+		if(!self::isAllowedExternalPath($args->path)){
+			$this->setError(-1);
+			$this->setMessage('msg_invalid_opage_pc_path');
+			$this->setRedirectUrl(Context::get('success_return_url'));
+			return;
+		}
+		if(!self::isAllowedExternalPath($args->mpath)){
+			$this->setError(-1);
+			$this->setMessage('msg_invalid_opage_mobile_path');
+			$this->setRedirectUrl(Context::get('success_return_url'));
+			return;
+		}
 		$args->opage_proc_php = isset($args->opage_proc_php) ? $args->opage_proc_php : 'N';
 		$args->opage_proc_tpl = isset($args->opage_proc_tpl) ? $args->opage_proc_tpl : 'N';
 		if ($args->opage_proc_tpl === 'Y')

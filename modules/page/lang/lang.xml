@@ -202,4 +202,12 @@ Nếu chọn là mặc định, nó sẽ là trang chủ của Website.]]></valu
 		<value xml:lang="en"><![CDATA[If you delete a page, the files of the page will be removed also.]]></value>
 		<value xml:lang="zh-TW"><![CDATA[如果刪除頁面，頁面標題將會一起被刪除。]]></value>
 	</item>
+	<item name="msg_invalid_opage_pc_path">
+		<value xml:lang="ko"><![CDATA[사용할 수 없는 PC용 외부 문서 경로입니다.]]></value>
+		<value xml:lang="en"><![CDATA[Invalid path for the external document for PC.]]></value>
+	</item>
+	<item name="msg_invalid_opage_mobile_path">
+		<value xml:lang="ko"><![CDATA[사용할 수 없는 모바일용 외부 문서 경로입니다.]]></value>
+		<value xml:lang="en"><![CDATA[Invalid path for the external document for Mobile.]]></value>
+	</item>
 </lang>

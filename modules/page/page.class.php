@@ -18,6 +18,36 @@ class page extends ModuleObject {
 	}
 
 	/**
+	 * Check whether an external page path is safe to execute.
+	 *
+	 * @param string $path
+	 * @return bool
+	 **/
+	public static function isAllowedExternalPath($path){
+		// Remove null bytes and normalize directory separators.
+		$path = str_replace("\0", '', (string)$path);
+		$path = str_replace('\\', '/', $path);
+
+		// Block user-controlled, sensitive, and executable cache directories.
+		if(preg_match('!(?:^|/)files/(?:attach|cache|config|debug|env|member_extra_info|ruleset|site_design|thumbnails)/!i', $path)){
+			return false;
+		}
+
+		// Resolve symlinks and traversal before checking the effective path again.
+		if(!preg_match('!^https?://!i', $path) && file_exists($path)){
+			$realpath = realpath($path);
+			if($realpath !== false){
+				$normalized_realpath = str_replace('\\', '/', $realpath);
+				if($normalized_realpath !== $path && !self::isAllowedExternalPath($normalized_realpath)){
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * @brief a method to check if successfully installed
 	 **/
 	function checkUpdate(){

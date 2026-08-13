@@ -36,7 +36,8 @@ class pageView extends page {
 		
 		if ($this->module_info->page_type === 'OUTSIDE'){		
 			$this->interval = isset($this->module_info->page_caching_interval) ? (int)($this->module_info->page_caching_interval) : 0;
-			$this->path = isset($this->module_info->path) ? $this->module_info->path : '';
+			$external_path = isset($this->module_info->path) ? (string)$this->module_info->path : '';
+			$this->path = self::isAllowedExternalPath($external_path) ? $external_path : '';
 			$this->proc_php = (isset($this->module_info->opage_proc_php) && $this->module_info->opage_proc_php === 'N') ? false : true;
 			$this->proc_tpl = (isset($this->module_info->opage_proc_tpl) && $this->module_info->opage_proc_tpl === 'Y') ? true : false;
 			$this->cache_file = vsprintf('%sfiles/cache/opage/%d.%s.%s.%s.%s.cache.php', array(
