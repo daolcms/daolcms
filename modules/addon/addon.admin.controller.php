@@ -138,6 +138,10 @@ class addonAdminController extends addonController {
 		unset($args->body);
 		unset($args->error_return_url);
 
+		if(!isset($args->xe_run_method) || !in_array($args->xe_run_method, array('run_selected', 'no_run_selected'), true)){
+			$args->xe_run_method = 'run_selected';
+		}
+
 		$site_module_info = Context::get('site_module_info');
 
 		$output = $this->doSetup($addon_name, $args, $site_module_info->site_srl, 'site');

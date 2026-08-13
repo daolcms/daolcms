@@ -166,7 +166,10 @@ class addonController extends addon {
 			$mid_list = $extra_vars->mid_list;
 			if(!is_array($mid_list) || !count($mid_list)) $mid_list = null;
 
-			$buff .= '$rm = \'' . $extra_vars->xe_run_method . "';";
+			$run_method = isset($extra_vars->xe_run_method) ? strval($extra_vars->xe_run_method) : 'run_selected';
+			if(!in_array($run_method, array('run_selected', 'no_run_selected'), true)) $run_method = 'run_selected';
+
+			$buff .= '$rm = ' . var_export($run_method, true) . ';';
 			$buff .= '$ml = array(';
 			if($mid_list) {
 				foreach($mid_list as $mid) {
