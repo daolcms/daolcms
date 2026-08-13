@@ -203,6 +203,14 @@ class documentController extends document {
 		if($obj->notify_message != 'Y') $obj->notify_message = 'N';
 		if(!$isRestore) $obj->ipaddress = $_SERVER['REMOTE_ADDR'];    //board에서 form key값으로 ipaddress를 사용하면 엄한 ip가 등록됨. 필터와는 상관없슴
 
+		// Only managers can customize dates.
+		$grant = Context::get('grant');
+		if(!$grant->manager) {
+			unset($obj->regdate);
+			unset($obj->last_update);
+			unset($obj->last_updater);
+		}
+
 		// Serialize the $extra_vars, check the extra_vars type, because duplicate serialized avoid
 		if(!is_string($obj->extra_vars)) $obj->extra_vars = serialize($obj->extra_vars);
 		// Remove the columns for automatic saving
@@ -399,6 +407,15 @@ class documentController extends document {
 		}
 
 		if($obj->notify_message != 'Y') $obj->notify_message = 'N';
+
+		// Only managers can customize dates and list order.
+		$grant = Context::get('grant');
+		if(!$grant->manager) {
+			unset($obj->regdate);
+			unset($obj->last_update);
+			unset($obj->list_order);
+		}
+
 		// Serialize the $extra_vars
 		$obj->extra_vars = serialize($obj->extra_vars);
 		// Remove the columns for automatic saving
@@ -2101,6 +2118,8 @@ class documentController extends document {
 		// Change the target module to log-in information
 		$obj->module_srl = $module_info->module_srl;
 		$obj->status = $this->getConfigStatus('temp');
+		$obj->list_order = $obj->update_order = 0;
+		unset($obj->extra_vars);
 		unset($obj->is_notice);
 
 		// Extract from beginning part of contents in the guestbook

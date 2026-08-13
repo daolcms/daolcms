@@ -171,6 +171,19 @@ class commentController extends comment {
 
 		$obj->__isupdate = false;
 
+		// Sanitize variables.
+		$obj->comment_srl = intval($obj->comment_srl);
+		$obj->module_srl = intval($obj->module_srl);
+		$obj->document_srl = intval($obj->document_srl);
+		$obj->parent_srl = intval($obj->parent_srl);
+
+		// Only managers can customize dates.
+		$grant = Context::get('grant');
+		if(!$grant->manager){
+			unset($obj->regdate);
+			unset($obj->last_update);
+		}
+
 		// Add the current user's info, unless it is a guest post.
 		$logged_info = Context::get('logged_info');
 		if($logged_info->member_srl && !$manual_inserted){
@@ -232,12 +245,11 @@ class commentController extends comment {
 			$obj->content = nl2br($obj->content);
 		}
 
-		if(!$obj->regdate) $obj->regdate = date("YmdHis");
 		// remove iframe and script if not a top administrator on the session.
 		if($logged_info->is_admin != 'Y') $obj->content = removeHackTag($obj->content);
 
-		if(!$obj->notify_message) $obj->notify_message = 'N';
-		if(!$obj->is_secret) $obj->is_secret = 'N';
+		if(isset($obj->notify_message) && $obj->notify_message !== 'Y') $obj->notify_message = 'N';
+		if(isset($obj->is_secret) && $obj->is_secret !== 'Y') $obj->is_secret = 'N';
 
 		// begin transaction
 		$oDB = &DB::getInstance();
@@ -489,6 +501,11 @@ class commentController extends comment {
 		}
 		$obj->__isupdate = true;
 
+		// Sanitize variables.
+		$obj->comment_srl = intval($obj->comment_srl);
+		$obj->module_srl = intval($obj->module_srl);
+		$obj->document_srl = intval($obj->document_srl);
+		$obj->parent_srl = intval($obj->parent_srl);
 		// create a comment model object
 		$oCommentModel = &getModel('comment');
 
