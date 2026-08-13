@@ -26,9 +26,12 @@ class fileModel extends file {
 		$oModuleModel = getModel('module');
 
 		$mid = Context::get('mid');
-		$editor_sequence = Context::get('editor_sequence');
-		$upload_target_srl = Context::get('upload_target_srl');
-		if(!$upload_target_srl) $upload_target_srl = $_SESSION['upload_info'][$editor_sequence]->upload_target_srl;
+		$editor_sequence = (int)Context::get('editor_sequence');
+		$upload_info = isset($_SESSION['upload_info'][$editor_sequence]) ? $_SESSION['upload_info'][$editor_sequence] : null;
+		$upload_target_srl = is_object($upload_info) && !empty($upload_info->enabled) && isset($upload_info->upload_target_srl) ? (int)$upload_info->upload_target_srl : 0;
+		$module_srl = is_object($upload_info) && !empty($upload_info->enabled) && isset($upload_info->module_srl) ? (int)$upload_info->module_srl : 0;
+		$files = array();
+		$attached_size = 0;
 
 		if($upload_target_srl){
 			$oDocumentModel = getModel('document');
@@ -65,6 +68,7 @@ class fileModel extends file {
 
 			foreach($tmp_files as $file_info){
 				if(!$file_info->file_srl) continue;
+				if($module_srl && $file_info->module_srl != $module_srl) continue;
 
 				$obj = new stdClass;
 				$obj->file_srl = $file_info->file_srl;

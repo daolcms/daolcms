@@ -67,11 +67,11 @@
 				url: request_uri
 				.setQuery('module', 'file')
 				.setQuery('act', 'procFileUpload')
-				.setQuery('mid', window.current_mid),
+				.setQuery('mid', window.editor_mid ? window.editor_mid : window.current_mid),
 				formData: {
 					"editor_sequence": data.editorSequence,
-					"upload_target_srl" : data.uploadTargetSrl,
-					"mid" : window.current_mid,
+					"upload_target_srl" : data.uploadTargetSrl ? data.uploadTargetSrl : 0,
+					"mid" : window.editor_mid ? window.editor_mid : window.current_mid,
 					"act": 'procFileUpload'
 				},
 				dropZone: $container,

@@ -270,7 +270,18 @@ class editorModel extends editor {
 			Context::set('upload_status', $upload_status);
 			// Upload enabled (internally caching)
 			$oFileController = &getController('file');
-			$oFileController->setUploadInfo($editor_sequence, $upload_target_srl);
+			$oFileController->setUploadInfo($editor_sequence, $upload_target_srl, isset($option->module_srl) ? $option->module_srl : 0);
+
+			// Use the module owning the editor for upload requests
+			if(!empty($option->module_srl)){
+				$oModuleModel = getModel('module');
+				$editor_module_info = $oModuleModel->getModuleInfoByModuleSrl($option->module_srl);
+				if($editor_module_info) $option->mid = $editor_module_info->mid;
+			}
+			if(!empty($option->mid)){
+				Context::addHtmlFooter('<script>var editor_mid = ' . json_encode($option->mid) . ';</script>');
+			}
+
 			// Check if the file already exists
 			if($upload_target_srl) $files_count = $oFileModel->getFilesCount($upload_target_srl);
 		}
@@ -382,6 +393,7 @@ class editorModel extends editor {
 		}
 		// Pre-set option variables of editor
 		$option = new stdClass();
+		$option->module_srl = (int)$module_srl;
 		$option->module_type = $config->module_type;
 		$option->skin = $config->editor_skin;
 		$option->content_style = $config->content_style;
