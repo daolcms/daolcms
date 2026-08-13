@@ -497,16 +497,29 @@ class documentAdminController extends document {
 	function procDocumentAdminInsertExtraVar() {
 		$module_srl = Context::get('module_srl');
 		$var_idx = Context::get('var_idx');
+		$var_idx = is_scalar($var_idx) ? intval($var_idx) : 0;
 		$name = Context::get('name');
+		$name = is_string($name) ? escape($name, true, true) : '';
 		$type = Context::get('type');
+		$type = is_string($type) ? $type : '';
 		$is_required = Context::get('is_required');
 		$default = Context::get('default');
 		$desc = Context::get('desc') ? Context::get('desc') : '';
 		$search = Context::get('search');
 		$eid = Context::get('eid');
+		$eid = is_string($eid) ? $eid : '';
 		$obj = new stdClass();
 
-		if(!$module_srl || !$name || !$eid) return new BaseObject(-1, 'msg_invalid_request');
+		if(!$module_srl || $name === '' || $eid === '') return new BaseObject(-1, 'msg_invalid_request');
+		if(!preg_match('/^[a-zA-Z][a-zA-Z0-9_]*$/', $eid)) {
+			return new BaseObject(-1, sprintf(Context::getLang('invalid_alpha_number'), Context::getLang('eid')));
+		}
+
+		$valid_types = Context::getLang('column_type_list');
+		if(!is_array($valid_types) || !isset($valid_types[$type])) {
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+
 		// set the max value if idx is not specified
 		if(!$var_idx) {
 			$obj->module_srl = $module_srl;
