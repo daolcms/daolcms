@@ -216,14 +216,22 @@ class ModuleHandler extends Handler {
 				continue;
 			}
 
-			$urlInfo = parse_url(urldecode($url));
-			$host = $urlInfo['host'];
-
-			if($host && ($host !== $defaultHost && ($host !== $site_module_info->domain || $host !== $siteDomain))){
-				throw new Exception('msg_default_url_is_null');
+			// Browsers treat backslashes as URL separators, unlike parse_url().
+			// Decode first so encoded backslashes cannot bypass normalization.
+			$decodedUrl = str_replace('\\', '/', urldecode($url));
+			$urlInfo = parse_url($decodedUrl);
+			if($urlInfo === false){
+				throw new Exception('msg_invalid_request');
 			}
-			else if((!$host || !$urlInfo || !$urlInfo['scheme']) && preg_match("/^(https?|[a-z0-9])+\:(\/)*/i", urldecode($url))){
-				throw new exception('msg_invalid_request');
+
+			$host = isset($urlInfo['host']) ? $urlInfo['host'] : null;
+			if($host){
+				if($host !== $defaultHost && $host !== $siteDomain){
+					throw new Exception('msg_default_url_is_null');
+				}
+			}
+			else if(isset($urlInfo['scheme'])){
+				throw new Exception('msg_invalid_request');
 			}
 		}
 
