@@ -321,6 +321,7 @@ $GLOBALS['__daol_autoload_file_map'] = array_change_key_case(array(
 	'Security' => 'classes/security/Security.class.php',
 	'SvgSanitizer' => 'classes/security/SvgSanitizer/SvgSanitizer.class.php',
 	'UploadFileFilter' => 'classes/security/UploadFileFilter.class.php',
+	'URLSecurity' => 'classes/security/URLSecurity.class.php',
 	'TemplateHandler' => 'classes/template/TemplateHandler.class.php',
 	'Validator' => 'classes/validator/Validator.class.php',
 	'WidgetHandler' => 'classes/widget/WidgetHandler.class.php',

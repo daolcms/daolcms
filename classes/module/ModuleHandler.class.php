@@ -203,34 +203,20 @@ class ModuleHandler extends Handler {
 		$oModuleModel = getModel('module');
 		$site_module_info = Context::get('site_module_info');
 
-		// if success_return_url and error_return_url is incorrect
+		// Validate success and error return URLs against configured origins.
 		$urls = array(Context::get('success_return_url'), Context::get('error_return_url'));
 		$dbInfo = Context::getDBInfo();
-		$defaultUrlInfo = parse_url($dbInfo->default_url);
-		$defaultHost = $defaultUrlInfo['host'];
-		$siteDomain = parse_url($site_module_info->domain);
-		$siteDomain = $siteDomain['host'];
+		$http_port = isset($dbInfo->http_port) ? intval($dbInfo->http_port) : 0;
+		$https_port = isset($dbInfo->https_port) ? intval($dbInfo->https_port) : 0;
+		$origins = array();
+		$origins[] = URLSecurity::createOrigin($dbInfo->default_url, $http_port, $https_port);
+		$origins[] = URLSecurity::createOrigin($site_module_info->domain, $http_port, $https_port);
+
+		$default_scheme = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') ? 'https' : 'http';
 
 		foreach($urls as $url){
-			if(empty($url)){
-				continue;
-			}
-
-			// Browsers treat backslashes as URL separators, unlike parse_url().
-			// Decode first so encoded backslashes cannot bypass normalization.
-			$decodedUrl = str_replace('\\', '/', urldecode($url));
-			$urlInfo = parse_url($decodedUrl);
-			if($urlInfo === false){
-				throw new Exception('msg_invalid_request');
-			}
-
-			$host = isset($urlInfo['host']) ? $urlInfo['host'] : null;
-			if($host){
-				if($host !== $defaultHost && $host !== $siteDomain){
-					throw new Exception('msg_default_url_is_null');
-				}
-			}
-			else if(isset($urlInfo['scheme'])){
+			if(empty($url)) continue;
+			if(!URLSecurity::isInternalURL($url, $origins, $default_scheme)){
 				throw new Exception('msg_invalid_request');
 			}
 		}
