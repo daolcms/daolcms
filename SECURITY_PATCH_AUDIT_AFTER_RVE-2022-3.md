@@ -26,7 +26,7 @@ Rhymix의 현재 코드는 XE 1.x와 차이가 크므로 merge commit을 그대�
 
 | RVE | 판정 | Daol 확인 결과 | 수정 방향 | 참고 커밋 |
 | --- | --- | --- | --- | --- |
-| [RVE-2022-4](https://github.com/rhymix/rhymix-security/issues/9) 권한 없는 문서 열람·이동 | 영향 없음 | 이슈가 영향 범위를 Rhymix 2.0.0~2.0.21로 한정하고 XE 1.x는 제외한다. | 적용하지 않는다. 이후 문서 모듈 권한 로직을 Rhymix에서 역이식할 때 회귀 여부만 재확인한다. | Rhymix [merge `83e4b763`](https://github.com/rhymix/rhymix-security/commit/83e4b763ceba820051399491d2706276f2159d51), 핵심 [commit `fa64ad36`](https://github.com/rhymix/rhymix-security/commit/fa64ad360004db15f64452ec795c6c95b4e06e92) |
+| [RVE-2022-4](https://github.com/rhymix/rhymix-security/issues/9) 권한 없는 문서 열람·이동 | **선제 보강 완료** | XE 1.x 계열인 Daol은 `module` 요청값과 무관하게 `document_srl`의 실제 모듈을 이미 조회하므로 원 취약점의 영향 범위는 아니다. 다만 요청 모듈이 다르면 조회 결과를 버리고 `mid`로 재조회하던 흐름은 제거했다. | `document_srl`에서 얻은 실제 소속 모듈 정보를 끝까지 유지하여, 공격자가 지정한 `module`·`mid`가 권한 판단의 기준이 되지 않도록 보강했다. | XE 기준 [commit `0918ae8b`](https://github.com/YJSoft/xe-core/commit/0918ae8b7b2d86328c1761d6fc4c1b117762ffea), 후속 [commit `9f5d0977`](https://github.com/YJSoft/xe-core/commit/9f5d097728a56504970a4be6c9efefa1602f831c); Rhymix [merge `83e4b763`](https://github.com/rhymix/rhymix-security/commit/83e4b763ceba820051399491d2706276f2159d51), 핵심 [commit `fa64ad36`](https://github.com/rhymix/rhymix-security/commit/fa64ad360004db15f64452ec795c6c95b4e06e92) |
 
 ### 2023
 

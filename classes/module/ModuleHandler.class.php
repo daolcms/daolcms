@@ -235,7 +235,9 @@ class ModuleHandler extends Handler {
 			}
 		}
 
-		// Get module's information based on document_srl, if it's specified
+		// Get module's information based on document_srl, if it's specified.
+		// RVE-2022-4: The document's actual module must take precedence over
+		// module and mid values supplied in the request when checking grants.
 		if($this->document_srl){
 
 			$module_info = $oModuleModel->getModuleInfoByDocumentSrl($this->document_srl);
@@ -260,10 +262,6 @@ class ModuleHandler extends Handler {
 						Context::set('mid', $this->mid);
 					}
 
-				}
-				// if requested module is different from one of the document, remove the module information retrieved based on the document number
-				if($this->module && $module_info->module != $this->module){
-					unset($module_info);
 				}
 			}
 
