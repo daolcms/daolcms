@@ -17,6 +17,14 @@ class SortQueryArgument extends QueryArgument {
 			, $this->argument_name
 			, '$args->' . $this->variable_name);
 
+		$default_value = $this->argument_validator->getDefaultValueString();
+		if(isset($default_value)) {
+			$arg .= sprintf('${\'%s_argument\'}->ensureValidColumnName(%s);' . "\n", $this->argument_name, $default_value);
+		}
+		else {
+			$arg .= sprintf('${\'%s_argument\'}->ensureValidColumnName();' . "\n", $this->argument_name);
+		}
+
 
 		$arg .= $this->argument_validator->toString();
 

@@ -14,8 +14,8 @@ class IndexTag {
 	 */
 	var $argument_name;
 	/**
-	 * QueryArgument object
-	 * @var QueryArgument
+	 * SortQueryArgument object
+	 * @var SortQueryArgument
 	 */
 	var $argument;
 	/**
@@ -46,7 +46,7 @@ class IndexTag {
 		//$dbParser = new DB(); $dbParser = &$dbParser->getParser();
 		//$index->attrs->default = $dbParser->parseExpression($index->attrs->default);
 		$this->default = $index->attrs->default;
-		$this->argument = new QueryArgument($index);
+		$this->argument = new SortQueryArgument($index);
 
 		// Sort order - asc / desc
 		$this->sort_order = $index->attrs->order;

@@ -489,8 +489,16 @@ class DB {
 			$cache_time = filemtime($cache_file);
 		}
 
+		$query_parser_time = max(
+			filemtime(_DAOL_PATH_ . 'classes/xml/XmlQueryParser.class.php'),
+			filemtime(_DAOL_PATH_ . 'classes/xml/xmlquery/argument/SortArgument.class.php'),
+			filemtime(_DAOL_PATH_ . 'classes/xml/xmlquery/queryargument/SortQueryArgument.class.php'),
+			filemtime(_DAOL_PATH_ . 'classes/xml/xmlquery/queryargument/validator/QueryArgumentValidator.class.php'),
+			filemtime(_DAOL_PATH_ . 'classes/xml/xmlquery/tags/navigation/IndexTag.class.php')
+		);
+
 		// if there is no cache file or is not new, find original xml query file and parse it
-		if($cache_time < filemtime($xml_file) || $cache_time < filemtime(_DAOL_PATH_ . 'classes/db/DB.class.php') || $cache_time < filemtime(_DAOL_PATH_ . 'classes/xml/XmlQueryParser.class.php')){
+		if($cache_time < filemtime($xml_file) || $cache_time < filemtime(_DAOL_PATH_ . 'classes/db/DB.class.php') || $cache_time < $query_parser_time){
 			$oParser = new XmlQueryParser();
 			$oParser->parse($query_id, $xml_file, $cache_file);
 		}
