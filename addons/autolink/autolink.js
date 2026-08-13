@@ -15,6 +15,15 @@
 
 	var url_regex = new RegExp('('+protocol_re+'('+domain_re+'|'+ip_re+'|localhost'+')'+port_re+user_re+path_re+hash_re+')', 'ig');
 
+	function escapeHtml(content) {
+		return content
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#39;');
+	}
+
 	var AutoLink = xe.createPlugin("autolink", {
 		targets : [],
 		init : function() {
@@ -36,7 +45,7 @@
 			var content  = textNode.nodeValue;
 			var dummy    = $('<span>');
 
-			content = content.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+			content = escapeHtml(content);
 			content = content.replace(url_regex, '<a href="$1" target="_blank">$1</a>');
 
 			$(textNode).before(dummy);
