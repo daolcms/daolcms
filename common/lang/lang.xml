@@ -2699,6 +2699,10 @@
 		<value xml:lang="tr"><![CDATA[VT bağlantısında sorun meydana geldi. DB bilgilerini lutfen kontrol edin.]]></value>
 		<value xml:lang="vi"><![CDATA[Không thể kết nối. Xin vui lòng kiểm tra lại thông tin Database.]]></value>
 	</item>
+	<item name="msg_db_query_failed">
+		<value xml:lang="ko"><![CDATA[DB 쿼리 오류가 발생했습니다.]]></value>
+		<value xml:lang="en"><![CDATA[DB query failed.]]></value>
+	</item>
 	<item name="msg_invalid_queryid">
 		<value xml:lang="ko"><![CDATA[Query ID값이 잘못 지정되었습니다.]]></value>
 		<value xml:lang="en"><![CDATA[Specified query ID value is invalid.]]></value>

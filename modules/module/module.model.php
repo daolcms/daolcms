@@ -1477,6 +1477,11 @@ class moduleModel extends module {
 					$output = executeQueryArray('module.getModuleGrants', $args);
 				}
 
+				// A failed grant query must never fall through to permissive XML defaults.
+				if(!$output->toBool() && Context::isInstalled()){
+					throw new Exception(Context::getLang('msg_db_query_failed'));
+				}
+
 				$grant_exists = $granted = array();
 
 				if($output->data){
