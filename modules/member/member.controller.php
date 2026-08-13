@@ -1796,6 +1796,13 @@ class memberController extends member {
 			}
 		}
 
+		// Prevent session fixation before storing authenticated member information.
+		// Legacy SSO needs one session ID across domains, so it cannot use this defense.
+		$db_info = Context::getDBInfo();
+		if($db_info->use_sso != 'Y' && (!isset($db_info->use_session_regenerate) || $db_info->use_session_regenerate != 'N')){
+			session_regenerate_id(true);
+		}
+
 		$this->setSessionInfo();
 
 		return $output;

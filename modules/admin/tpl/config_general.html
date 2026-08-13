@@ -239,6 +239,16 @@ jQuery(function($){
 				</p>
 			</li>
 			<li>
+				<p class="q"><label>{$lang->use_session_regenerate}</label>[<a href="#helpSessionRegenerate" class="tgAnchor">?</a>]</p>
+				<div class="tgContent layer" id="helpSessionRegenerate">
+					<p>{$lang->about_use_session_regenerate}</p>
+				</div>
+				<p class="a">
+					<input type="radio" name="use_session_regenerate" id="session_regenerate_y" value="Y" <!--@if($use_session_regenerate=='Y' && $use_sso!='Y')-->checked="checked" <!--@end-->/> <label for="session_regenerate_y">{$lang->cmd_yes}</label>
+					<input type="radio" name="use_session_regenerate" id="session_regenerate_n" value="N" <!--@if($use_session_regenerate!='Y' || $use_sso=='Y')-->checked="checked" <!--@end-->/> <label for="session_regenerate_n">{$lang->cmd_no}</label>
+				</p>
+			</li>
+			<li>
 				<p class="q"><label>{$lang->use_db_session}</label>[<a href="#helpUsedbSession" class="tgAnchor">?</a>]</p>
 				<div class="tgContent layer" id="helpUsedbSession">
 					<p>{$lang->about_db_session}</p>

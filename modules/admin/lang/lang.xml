@@ -1080,6 +1080,14 @@
 		<value xml:lang="zh-CN"><![CDATA[是否启用通行证（SSO）?]]></value>
 		<value xml:lang="tr"><![CDATA[SSO(Single Sign On) kullanmak ister misiniz?]]></value>
 	</item>
+	<item name="use_session_regenerate">
+		<value xml:lang="ko"><![CDATA[로그인 시 세션 ID를 갱신하시겠습니까?]]></value>
+		<value xml:lang="en"><![CDATA[Regenerate the session ID upon login?]]></value>
+	</item>
+	<item name="about_use_session_regenerate">
+		<value xml:lang="ko"><![CDATA[세션 고정 공격을 막기 위해 로그인 성공 시 세션 ID를 갱신합니다. 특별한 호환성 문제가 없다면 사용을 권장합니다. SSO를 사용하면 이 기능은 강제로 비활성화됩니다.]]></value>
+		<value xml:lang="en"><![CDATA[Regenerates the session ID after a successful login to prevent session fixation. This is recommended unless it causes a compatibility issue. Enabling SSO forcibly disables this feature.]]></value>
+	</item>
 	<item name="about_cdn">
 		<value xml:lang="ko"><![CDATA[DAOL CMS core의 css, js 파일을 CDN으로부터 제공받으려면 체크하세요.]]></value>
 		<value xml:lang="en"><![CDATA[Check this to get css and js files of DAOL CMS core from CDN.]]></value>
