@@ -416,7 +416,6 @@ class commentItem extends BaseObject {
 
 		// Target file
 		$source_file = null;
-		$is_tmp_file = false;
 
 		// find an image file among attached files
 		if($this->hasUploadedFiles()){
@@ -440,46 +439,10 @@ class commentItem extends BaseObject {
 			}
 		}
 
-		// get an image file from the doc content if no file attached.
-		$is_tmp_file = false;
-		if(!$source_file){
-			$random = new Password();
-
-			preg_match_all("!<img[^>]*src=(?:\"|\')([^\"\']*?)(?:\"|\')!is", $content, $matches, PREG_SET_ORDER);
-
-			foreach($matches as $target_image){
-				$target_src = trim($target_image[1]);
-				if(preg_match('/\/(common|modules|widgets|addons|layouts|m\.layouts)\//i', $target_src)) continue;
-
-				if(!preg_match('/^(http|https):\/\//i', $target_src)){
-					$target_src = Context::getRequestUri() . $target_src;
-				}
-
-				$target_src = htmlspecialchars_decode($target_src);
-
-				$tmp_file = _DAOL_PATH_ . 'files/cache/tmp/' . $random->createSecureSalt(32, 'hex');
-				FileHandler::getRemoteFile($target_src, $tmp_file);
-				if(!file_exists($tmp_file)) continue;
-
-				$imageinfo = getimagesize($tmp_file);
-				list($_w, $_h) = $imageinfo;
-				if($imageinfo === false || ($_w < ($width * 0.3) && $_h < ($height * 0.3))){
-					FileHandler::removeFile($tmp_file);
-					continue;
-				}
-
-				$source_file = $tmp_file;
-				$is_tmp_file = true;
-				break;
-			}
+		if($source_file){
+			$output = FileHandler::createImageFile($source_file, $thumbnail_file, $width, $height, 'jpg', $thumbnail_type);
 		}
 
-		$output = FileHandler::createImageFile($source_file, $thumbnail_file, $width, $height, 'jpg', $thumbnail_type);
-
-		// Remove source file if it was temporary
-		if($is_tmp_file){
-			FileHandler::removeFile($source_file);
-		}
 		// Remove lockfile
 		FileHandler::removeFile($thumbnail_lockfile);
 
