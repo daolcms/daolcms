@@ -1,26 +1,21 @@
 # RVE-2022-3 이후 Daol CMS 보안 패치 감사
 
-- 조사 기준일: 2026-08-13
-- 조사 대상: Daol CMS `develop` (`db7b0b7f`), `rhymix/rhymix-security`, `YJSoft/xe-core`
+- 최종 확인일: 2026-08-13
+- 적용 대상: Daol CMS `develop` (구현 기준 `43cf4491`)
+- 조사 원본: `rhymix/rhymix-security`, `YJSoft/xe-core`
 - 조사 범위: RVE-2022-4부터 RVE-2026-20까지 32건
-- 원격 저장소는 모두 읽기 전용으로 조사했다.
 
 ## 결론
 
 | 판정 | 건수 | 의미 |
 | --- | ---: | --- |
-| 누락 | 24 | Daol에 취약 코드 경로가 존재하고, 핵심 패치가 적용되지 않았다. |
-| 부분 적용·추가 검토 | 3 | 일부 방어는 이미 있거나 Rhymix와 코드 경로가 다르지만 추가 보완이 필요하다. |
-| 영향 없음 | 5 | 이슈가 명시적으로 XE 1.x를 제외하거나, 취약 기능이 Daol에 없다. |
-
-우선순위는 다음과 같이 표시한다.
-
-- **P0**: RCE, SQL injection, XSS, 권한 우회, 민감정보 노출, 세션 고정, 임의 파일 삭제 등 우선 적용 대상
-- **P1**: 관리자 기능과 결합해야 하거나 무결성·경로 검증·방어 심층화 성격이 강한 항목
+| 적용 완료 | 28 | Daol에 해당하는 보안 요구사항을 적용했다. 함께 처리한 RVE도 각각 1건으로 집계한다. |
+| 영향 없음 | 4 | 취약 기능이 Daol에 없으며, 향후 해당 기능 도입 시 재평가가 필요하다. |
+| 미해결 | 0 | 현재 Daol 코드 기준으로 확인된 누락 또는 부분 적용 항목이 없다. |
 
 Rhymix의 현재 코드는 XE 1.x와 차이가 크므로 merge commit을 그대로 cherry-pick하면 안 된다. `YJSoft/xe-core` 커밋이 있는 경우 그 구현을 우선 참고하고, Rhymix merge commit은 보안 요구사항과 누락 파일을 확인하는 용도로 사용하는 것이 안전하다.
 
-## 누락 및 적용 방향
+## 적용 결과 및 참고 방향
 
 ### 2022
 
@@ -76,17 +71,15 @@ Rhymix의 현재 코드는 XE 1.x와 차이가 크므로 merge commit을 그대�
 | [RVE-2026-16](https://github.com/rhymix/rhymix-security/issues/36) 쉬운설치 tar path traversal | **적용 완료** | tar 엔트리를 디스크에 쓰기 전과 SFTP·PHP FTP·FTP·직접 설치에서 package 경로를 제거하기 전후에 공통 `_isSafeArchivePath()`를 호출한다. | null·control byte, Unix 절대경로, Windows drive·UNC 경로, 혼합 구분자의 `..` segment를 거부한다. 경로 변환 후 절대경로가 새로 생기는 경우도 두 번째 검사에서 제외한다. | Rhymix는 기존 tar 구현을 별도 merge 없이 제거한 [commit `a044b511`](https://github.com/rhymix/rhymix-security/commit/a044b51152da864b954d1fc1b524956ea1bd9727); XE 직접 패치 [commit `2cbafc41`](https://github.com/YJSoft/xe-core/commit/2cbafc41ac53f9f40913ab1bcf5168a553a76cef) |
 | [RVE-2026-17](https://github.com/rhymix/rhymix-security/issues/37) 내부 URL 판별 우회 | **적용 완료** | `success_return_url`·`error_return_url`을 공통 `URLSecurity` helper로 검사하며 진짜 상대경로만 host 생략을 허용한다. 제어문자와 raw·인코딩 백슬래시도 파싱 전에 정규화한다. | 절대·protocol-relative URL은 HTTP(S)만 허용하고 IDNA 정규화 host와 scheme별 설정 port가 등록 origin과 모두 일치해야 한다. `javascript:`·`data:`·`file:`·`mailto:` 및 동일 host의 다른 port를 거부한다. | Rhymix [merge `cd98ed70`](https://github.com/rhymix/rhymix-security/commit/cd98ed708e06a1d7eb08e938492552ebbe20d748); XE 1차 구현은 RVE-2026-13 [commit `4d2c4b64`](https://github.com/YJSoft/xe-core/commit/4d2c4b647775bf4a4bc21fa11186f05e0de2eae0)이므로 port·IDNA 보완은 Rhymix merge를 추가 참고 |
 | [RVE-2026-18](https://github.com/rhymix/rhymix-security/issues/38) DB 오류 시 모듈 권한 우회 | **적용 완료** | 비관리자의 `module.getModuleGrants` 또는 planet grant 조회 결과가 실패하면 설치 완료 상태에서 즉시 예외를 던져 XML 기본 권한으로 내려가지 않는다. | 실패 결과는 권한 설정 없음으로 취급하지 않는다. 쿼리가 성공하고 결과가 빈 경우에만 기존 XML 기본 권한을 계산하며, DB query 전용 오류 문구를 추가했다. | Rhymix [merge `de2cb3e5`](https://github.com/rhymix/rhymix-security/commit/de2cb3e5b669986150f95149a7655ee182f50032); 현재 `YJSoft/xe-core`에는 대응 커밋 없음 |
-| [RVE-2026-19](https://github.com/rhymix/rhymix-security/issues/39) Referer reflected XSS | **적용 완료** | 로그인 Referer는 RVE-2026-17의 등록 origin 검사를 통과시킨 뒤 HTML escape하여 hidden field에 출력한다. 가입 Referer도 검사에 성공한 값만 `XE_REDIRECT_URL` 쿠키에 저장한다. | 가입 완료 시 쿠키 값을 redirect 직전에 다시 검사하고 외부 URL·위험 scheme·백슬래시·제어문자가 있으면 설정된 기본 URL로 대체한다. 쿠키가 없을 때도 기본 URL을 사용한다. | 기준일 현재 master merge 없음. 브랜치 head [commit `f82e9ae0`](https://github.com/rhymix/rhymix-security/commit/f82e9ae0b4dd7bcb80a41126340ecc122494b040); 현재 `YJSoft/xe-core`에는 대응 커밋 없음 |
-| [RVE-2026-20](https://github.com/rhymix/rhymix-security/issues/40) 모듈 관리자 권한 검증 미비 | **적용 완료** | Daol에는 Rhymix의 `manager:config:*` 세분화 권한 모델이 없어 “문서 관리만 허용된 manager”라는 동일 권한 문제는 적용 대상이 아니다. XE 계열에 해당하는 확장 변수 입력 검증은 backend에 적용했다. | `var_idx`를 정수화하고 `name`을 저장 전에 escape한다. `eid`는 영문자로 시작하는 영문·숫자·밑줄만, `type`은 정의된 확장 변수 타입만 허용하며 배열형 우회 입력도 거부한다. | 기준일 현재 master merge 없음. 브랜치 head [commit `0f798c1e`](https://github.com/rhymix/rhymix-security/commit/0f798c1e02e590f7621518999f6366ccd56f24f5); XE의 입력 검증 부분 [commit `a59f1fb7`](https://github.com/YJSoft/xe-core/commit/a59f1fb7ce04eb4a72947d055114eea783a72ffc) |
+| [RVE-2026-19](https://github.com/rhymix/rhymix-security/issues/39) Referer reflected XSS | **적용 완료** | 로그인 Referer는 RVE-2026-17의 등록 origin 검사를 통과시킨 뒤 HTML escape하여 hidden field에 출력한다. 가입 Referer도 검사에 성공한 값만 `XE_REDIRECT_URL` 쿠키에 저장한다. | 가입 완료 시 쿠키 값을 redirect 직전에 다시 검사하고 외부 URL·위험 scheme·백슬래시·제어문자가 있으면 설정된 기본 URL로 대체한다. 쿠키가 없을 때도 기본 URL을 사용한다. | 최종 확인일 현재 master merge 없음. 브랜치 head [commit `f82e9ae0`](https://github.com/rhymix/rhymix-security/commit/f82e9ae0b4dd7bcb80a41126340ecc122494b040); 현재 `YJSoft/xe-core`에는 대응 커밋 없음 |
+| [RVE-2026-20](https://github.com/rhymix/rhymix-security/issues/40) 모듈 관리자 권한 검증 미비 | **적용 완료** | Daol에는 Rhymix의 `manager:config:*` 세분화 권한 모델이 없어 “문서 관리만 허용된 manager”라는 동일 권한 문제는 적용 대상이 아니다. XE 계열에 해당하는 확장 변수 입력 검증은 backend에 적용했다. | `var_idx`를 정수화하고 `name`을 저장 전에 escape한다. `eid`는 영문자로 시작하는 영문·숫자·밑줄만, `type`은 정의된 확장 변수 타입만 허용하며 배열형 우회 입력도 거부한다. | 최종 확인일 현재 master merge 없음. 브랜치 head [commit `0f798c1e`](https://github.com/rhymix/rhymix-security/commit/0f798c1e02e590f7621518999f6366ccd56f24f5); XE의 입력 검증 부분 [commit `a59f1fb7`](https://github.com/YJSoft/xe-core/commit/a59f1fb7ce04eb4a72947d055114eea783a72ffc) |
 
-## 권장 적용 순서
+## 구현 메모
 
-1. 외부페이지 RCE 계열을 RVE-2026-10의 최종 경로 정책으로 한 번에 적용한다. RVE-2024-2는 중간 단계이므로 별도 패치 후 다시 덮어쓰기보다 최종 구현과 회귀 테스트를 함께 넣는 편이 낫다.
-2. 파일 계열은 RVE-2023-6을 먼저 적용한 뒤 RVE-2026-12의 다중 삭제 검증을 얹는다. SVG 필터(RVE-2026-2)와 쉬운설치 경로 검증(RVE-2026-16)은 독립 적용할 수 있다.
-3. URL 계열은 RVE-2026-13·17·19를 하나의 내부 URL 검증 helper로 묶어 로그인, 가입, `success_return_url`, `error_return_url`에 공통 적용한다.
-4. 권한·데이터 노출 계열인 RVE-2023-5, RVE-2026-4, RVE-2026-18을 우선 처리한다. 특히 RVE-2026-18은 DB 오류를 의도적으로 발생시키는 회귀 테스트가 필요하다.
-5. XSS 계열 RVE-2023-1·2, RVE-2024-1, RVE-2026-2·9를 처리한 뒤 템플릿과 inline JavaScript에서 수작업 문자열 조립을 추가 검색한다.
-6. 나머지 P1 항목과 웹서버 설정(RVE-2024-3)을 적용한다.
+- RVE-2026-10은 RVE-2024-2 구현에 최종 경로 정책까지 함께 반영하고 디렉터리 끝 경계를 보강했다 (`9ed459e1`, `43cf4491`).
+- RVE-2026-12는 RVE-2023-6의 첨부 파일 대상 검증에 다중 삭제 방어를 함께 반영했다 (`b528a835`).
+- URL 계열은 RVE-2026-13의 1차 방어를 RVE-2026-17의 공통 `URLSecurity`로 강화하고, RVE-2026-19의 Referer 반환에도 재사용했다.
+- RVE-2026-1·5·6·11은 Daol에 취약 기능이 없어 코드 변경 없이 영향 없음으로 판정했다.
 
 ## 최소 회귀 테스트 목록
 
@@ -103,5 +96,5 @@ Rhymix의 현재 코드는 XE 1.x와 차이가 크므로 merge commit을 그대�
 
 - `rhymix-security`의 compare 링크는 보안 브랜치가 master에 merge된 뒤 빈 diff가 될 수 있으므로, 위 표는 first-parent 기준 merge commit을 우선 링크했다.
 - RVE-2023-2, RVE-2025-2, RVE-2026-16은 별도의 RVE merge commit이 없어 직접 수정 또는 기능 제거 커밋을 링크했다.
-- RVE-2026-19와 RVE-2026-20은 기준일 현재 `rhymix-security/master`에 merge되지 않아 보안 브랜치 head를 링크했다.
+- RVE-2026-19와 RVE-2026-20은 최종 확인일 현재 `rhymix-security/master`에 merge되지 않아 보안 브랜치 head를 링크했다.
 - “영향 없음”은 현재 Daol 코드 기준이다. 해당 Rhymix 기능이나 서드파티 애드온을 도입하면 다시 평가해야 한다.
