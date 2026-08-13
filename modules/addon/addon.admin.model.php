@@ -21,6 +21,7 @@ class addonAdminModel extends addon {
 	 * @return string Returns a path
 	 **/
 	function getAddonPath($addon_name) {
+		if(!self::isValidAddonName($addon_name)) return "";
 		$class_path = sprintf('./addons/%s/', $addon_name);
 		if(is_dir($class_path)) return $class_path;
 		return "";
@@ -113,6 +114,7 @@ class addonAdminModel extends addon {
 	 * @return object Returns a information
 	 **/
 	function getAddonInfoXml($addon, $site_srl = 0, $gtype = 'site') {
+		if(!self::isValidAddonName($addon)) return;
 		// Get a path of the requested module. Return if not exists.
 		$addon_path = $this->getAddonPath($addon);
 		if(!$addon_path) return;

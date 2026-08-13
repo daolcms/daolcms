@@ -7,6 +7,24 @@
 class addon extends ModuleObject {
 
 	/**
+	 * Check an addon identifier before using it in a filesystem path or query.
+	 * @param mixed $addon_name
+	 * @return bool
+	 */
+	static function isValidAddonName($addon_name) {
+		return is_string($addon_name) && preg_match('/^[A-Za-z0-9_]+$/D', $addon_name);
+	}
+
+	/**
+	 * Check the addon execution target.
+	 * @param mixed $type
+	 * @return bool
+	 */
+	static function isValidAddonType($type) {
+		return in_array($type, array('pc', 'mobile'), true);
+	}
+
+	/**
 	 * Implement if additional tasks are necessary when installing
 	 *
 	 * @return BaseObject

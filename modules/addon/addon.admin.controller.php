@@ -106,13 +106,19 @@ class addonAdminController extends addonController {
 	 * @return BaseObject
 	 **/
 	function procAddonAdminToggleActivate() {
-		$oAddonModel = &getAdminModel('addon');
-
-		$site_module_info = Context::get('site_module_info');
-		// batahom addon values
 		$addon = Context::get('addon');
+		if(!self::isValidAddonName($addon)){
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+
 		$type = Context::get('type');
-		if(!$type) $type = "pc";
+		if(!$type) $type = 'pc';
+		if(!self::isValidAddonType($type)){
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+
+		$oAddonModel = &getAdminModel('addon');
+		$site_module_info = Context::get('site_module_info');
 		if($addon) {
 			// If enabled Disables
 			if($oAddonModel->isActivatedAddon($addon, $site_module_info->site_srl, $type)) $this->doDeactivate($addon, $site_module_info->site_srl, $type);
@@ -137,6 +143,10 @@ class addonAdminController extends addonController {
 		unset($args->addon_name);
 		unset($args->body);
 		unset($args->error_return_url);
+
+		if(!self::isValidAddonName($addon_name)){
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
 
 		if(!isset($args->xe_run_method) || !in_array($args->xe_run_method, array('run_selected', 'no_run_selected'), true)){
 			$args->xe_run_method = 'run_selected';
@@ -164,6 +174,9 @@ class addonAdminController extends addonController {
 	 * @return BaseObject
 	 **/
 	function doInsert($addon, $site_srl = 0, $gtype = 'site', $isUsed = 'N') {
+		if(!self::isValidAddonName($addon)){
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
 		$args = new stdClass();
 		$args->addon = $addon;
 		$args->is_used = $isUsed;
@@ -182,6 +195,10 @@ class addonAdminController extends addonController {
 	 * @return BaseObject
 	 **/
 	function doActivate($addon, $site_srl = 0, $type = "pc", $gtype = 'site') {
+		if(!self::isValidAddonName($addon) || !self::isValidAddonType($type)){
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+
 		$args = new stdClass();
 		$args->addon = $addon;
 		if($type == "pc") $args->is_used = 'Y';
@@ -200,6 +217,10 @@ class addonAdminController extends addonController {
 	 * @param string $gtype    site or global
 	 **/
 	function doDeactivate($addon, $site_srl = 0, $type = "pc", $gtype = 'site') {
+		if(!self::isValidAddonName($addon) || !self::isValidAddonType($type)){
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+
 		$args = new stdClass();
 		$args->addon = $addon;
 		if($type == "pc") $args->is_used = 'N';

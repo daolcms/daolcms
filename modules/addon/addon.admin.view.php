@@ -49,6 +49,9 @@ class addonAdminView extends addon {
 		$site_module_info = Context::get('site_module_info');
 		// Wanted to add the requested
 		$selected_addon = Context::get('selected_addon');
+		if(!self::isValidAddonName($selected_addon)){
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
 		// Wanted to add the requested information
 		$oAddonModel = &getAdminModel('addon');
 		$addon_info = $oAddonModel->getAddonInfoXml($selected_addon, $site_module_info->site_srl, 'site');
@@ -97,6 +100,9 @@ class addonAdminView extends addon {
 		$site_module_info = Context::get('site_module_info');
 		// Wanted to add the requested
 		$selected_addon = Context::get('selected_addon');
+		if(!self::isValidAddonName($selected_addon)){
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
 		// Wanted to add the requested information
 		$oAddonModel = &getAdminModel('addon');
 		$addon_info = $oAddonModel->getAddonInfoXml($selected_addon, $site_module_info->site_srl);

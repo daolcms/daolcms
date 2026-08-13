@@ -22,6 +22,7 @@ class addonController extends addon {
 	 * @return string Returns a path
 	 **/
 	function getCacheFilePath($type = "pc") {
+		if(!self::isValidAddonType($type)) $type = 'pc';
 		static $addon_file;
 		if(isset($addon_file)) return $addon_file;
 
@@ -49,6 +50,7 @@ class addonController extends addon {
 	 * @return string[] Returns list that contain mid
 	 **/
 	function _getMidList($selected_addon, $site_srl = 0) {
+		if(!self::isValidAddonName($selected_addon)) return array();
 
 		$oAddonAdminModel = &getAdminModel('addon');
 		$addon_info = $oAddonAdminModel->getAddonInfoXml($selected_addon, $site_srl);
@@ -126,6 +128,9 @@ class addonController extends addon {
 		$args = Context::getRequestVars();
 		$addon_name = $args->addon_name;
 		$mid = $args->mid;
+		if(!self::isValidAddonName($addon_name)){
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
 		$this->_setAddMid($addon_name, $mid, $site_module_info->site_srl);
 	}
 
@@ -140,6 +145,9 @@ class addonController extends addon {
 		$args = Context::getRequestVars();
 		$addon_name = $args->addon_name;
 		$mid = $args->mid;
+		if(!self::isValidAddonName($addon_name)){
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
 
 		$this->_setDelMid($addon_name, $mid, $site_module_info->site_srl);
 	}
@@ -153,11 +161,16 @@ class addonController extends addon {
 	 * @return void
 	 **/
 	function makeCacheFile($site_srl = 0, $type = "pc", $gtype = 'site') {
+		if(!self::isValidAddonType($type)) $type = 'pc';
+
 		// Add-on module for use in creating the cache file
 		$buff = "";
 		$oAddonModel = &getAdminModel('addon');
 		$addon_list = $oAddonModel->getInsertedAddons($site_srl, $gtype);
 		foreach($addon_list as $addon => $val) {
+			if(!self::isValidAddonName($addon) || !self::isValidAddonName($val->addon)) continue;
+			$addon = $val->addon;
+
 			if($val->addon == "smartphone") continue;
 			if(!is_dir(_DAOL_PATH_ . 'addons/' . $addon)) continue;
 			if(($type == "pc" && $val->is_used != 'Y') || ($type == "mobile" && $val->is_used_m != 'Y') || ($gtype == 'global' && $val->is_fixed != 'Y')) continue;
@@ -173,11 +186,12 @@ class addonController extends addon {
 			$buff .= '$ml = array(';
 			if($mid_list) {
 				foreach($mid_list as $mid) {
-					$buff .= "'$mid' => 1,";
+					$buff .= var_export(strval($mid), true) . ' => 1,';
 				}
 			}
 			$buff .= ');';
-			$buff .= sprintf('$addon_file = \'./addons/%s/%s.addon.php\';', $addon, $addon);
+			$addon_file = './addons/' . $addon . '/' . $addon . '.addon.php';
+			$buff .= '$addon_file = ' . var_export($addon_file, true) . ';';
 
 			if($val->extra_vars) {
 				unset($extra_vars);
@@ -216,6 +230,9 @@ class addonController extends addon {
 	 * @return BaseObject
 	 **/
 	function doSetup($addon, $extra_vars, $site_srl = 0, $gtype = 'site') {
+		if(!self::isValidAddonName($addon)){
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
 		if(!is_array($extra_vars->mid_list)) unset($extra_vars->mid_list);
 
 		$args = new stdClass();
