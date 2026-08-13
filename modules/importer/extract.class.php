@@ -10,7 +10,7 @@
  */
 class extract {
 	/**
-	 * Temp file's key. made by md5 with filename
+	 * Cryptographically random key for temporary files.
 	 * @var string
 	 */
 	var $key = '';
@@ -96,12 +96,20 @@ class extract {
 	function set($filename, $startTag, $endTag, $itemTag, $itemEndTag) {
 		$this->filename = $filename;
 
+		if(preg_match('!^[a-z][a-z0-9+.-]*://!i', $filename)){
+			return new BaseObject(-1, 'cannot_url_file');
+		}
+
 		$this->startTag = $startTag;
 		if($endTag) $this->endTag = $endTag;
 		$this->itemStartTag = $itemTag;
 		$this->itemEndTag = $itemEndTag;
 
-		$this->key = md5($filename);
+		// Reuse one random key across the multiple passes required by module and TTXML imports.
+		if(!$this->key){
+			$random = new Password();
+			$this->key = $random->createSecureSalt(32, 'hex');
+		}
 
 		$this->cache_path = './files/cache/importer/' . $this->key;
 		$this->cache_index_file = $this->cache_path . '/index';
@@ -116,40 +124,20 @@ class extract {
 	 * @return BaseObject
 	 */
 	function openFile() {
+		if(preg_match('!^[a-z][a-z0-9+.-]*://!i', $this->filename)){
+			return new BaseObject(-1, 'cannot_url_file');
+		}
+		if(!file_exists($this->filename) || !is_file($this->filename)){
+			$this->cleanup();
+			return new BaseObject(-1, 'msg_no_xml_file');
+		}
+
 		FileHandler::removeFile($this->cache_index_file);
 		$this->index_fd = fopen($this->cache_index_file, "a");
-		// If local file
-		if(!preg_match('/^http:/i', $this->filename)) {
-			if(!file_exists($this->filename)) return new BaseObject(-1, 'msg_no_xml_file');
-			$this->fd = fopen($this->filename, "r");
-			// If remote file
-		} else {
-			$url_info = parse_url($this->filename);
-			if(!$url_info['port']) $url_info['port'] = 80;
-			if(!$url_info['path']) $url_info['path'] = '/';
-
-			$this->fd = @fsockopen($url_info['host'], $url_info['port']);
-			if(!$this->fd) return new BaseObject(-1, 'msg_no_xml_file');
-			// If the file name contains Korean, do urlencode(iconv required)
-			$path = $url_info['path'];
-			if(preg_match('/[\xEA-\xED][\x80-\xFF]{2}/', $path) && function_exists('iconv')) {
-				$path_list = explode('/', $path);
-				$cnt = count($path_list);
-				$filename = $path_list[$cnt - 1];
-				$filename = urlencode(iconv("UTF-8", "EUC-KR", $filename));
-				$path_list[$cnt - 1] = $filename;
-				$path = implode('/', $path_list);
-				$url_info['path'] = $path;
-			}
-
-			$header = sprintf("GET %s?%s HTTP/1.0\r\nHost: %s\r\nReferer: %s://%s\r\nConnection: Close\r\n\r\n", $url_info['path'], $url_info['query'], $url_info['host'], $url_info['scheme'], $url_info['host']);
-			@fwrite($this->fd, $header);
-			$buff = '';
-			while(!feof($this->fd)) {
-				$buff .= $str = fgets($this->fd, 1024);
-				if(!trim($str)) break;
-			}
-			if(preg_match('/404 Not Found/i', $buff)) return new BaseObject(-1, 'msg_no_xml_file');
+		$this->fd = fopen($this->filename, "r");
+		if(!$this->index_fd || !$this->fd){
+			$this->cleanup();
+			return new BaseObject(-1, 'msg_no_xml_file');
 		}
 
 		if($this->startTag) {
@@ -177,8 +165,21 @@ class extract {
 	 */
 	function closeFile() {
 		$this->isFinished = true;
-		fclose($this->fd);
-		fclose($this->index_fd);
+		if(is_resource($this->fd)) fclose($this->fd);
+		if(is_resource($this->index_fd)) fclose($this->index_fd);
+		$this->fd = null;
+		$this->index_fd = null;
+	}
+
+	/**
+	 * Close open handles and remove temporary data after a failed preprocessing pass.
+	 * @return void
+	 */
+	function cleanup() {
+		$this->closeFile();
+		if($this->key && is_dir($this->cache_path)){
+			FileHandler::removeDir($this->cache_path);
+		}
 	}
 
 	function isFinished() {

@@ -39,25 +39,11 @@ class importerAdminController extends importer {
 		$filename = Context::get('filename');
 		$isExists = 'false';
 
-		if(preg_match('/^http/i', $filename)) {
-			if(ini_get('allow_url_fopen')) {
-				$fp = @fopen($filename, "r");
-				if($fp) {
-					$str = fgets($fp, 100);
-					if(strlen($str) > 0) {
-						$isExists = 'true';
-						$type = 'XML';
-						if(stristr($str, 'tattertools')) $type = 'TTXML';
-
-						$this->add('type', $type);
-					}
-					fclose($fp);
-					$resultMessage = $lang->found_xml_file;
-				} else $resultMessage = $lang->cannot_url_file;
-			} else $resultMessage = $lang->cannot_allow_fopen_in_phpini;
-
+		if(preg_match('!^[a-z][a-z0-9+.-]*://!i', $filename)) {
+			$resultMessage = $lang->cannot_url_file;
 			$this->add('exists', $isExists);
-		} else {
+		}
+		else {
 			$realPath = FileHandler::getRealPath($filename);
 
 			if(file_exists($realPath) && is_file($realPath)) $isExists = 'true';
@@ -224,6 +210,7 @@ class importerAdminController extends importer {
 		}
 
 		if(!$output->toBool()) {
+			$oExtract->cleanup();
 			$this->add('error', 0);
 			$this->add('status', -1);
 			$this->setMessage($output->getMessage());
@@ -247,6 +234,10 @@ class importerAdminController extends importer {
 		$total = Context::get('total');
 		$cur = Context::get('cur');
 		$key = Context::get('key');
+		if(!preg_match('/^[a-f0-9]{32}$/', $key)){
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+
 		$user_id = Context::get('user_id');
 		$target_module = Context::get('target_module');
 		$guestbook_target_module = Context::get('guestbook_target_module');
