@@ -210,6 +210,22 @@ class documentController extends document {
 		unset($obj->_saved_doc_title);
 		unset($obj->_saved_doc_content);
 		unset($obj->_saved_doc_message);
+
+		// Add the current user's info, unless it is a guest post.
+		$logged_info = Context::get('logged_info');
+		if($logged_info->member_srl && !$manual_inserted && !$isRestore) {
+			$obj->member_srl = $logged_info->member_srl;
+			$obj->user_id = htmlspecialchars_decode($logged_info->user_id);
+			$obj->user_name = htmlspecialchars_decode($logged_info->user_name);
+			$obj->nick_name = htmlspecialchars_decode($logged_info->nick_name);
+			$obj->email_address = $logged_info->email_address;
+			$obj->homepage = $logged_info->homepage;
+		}
+		if(!$logged_info->member_srl && !$manual_inserted && !$isRestore) {
+			unset($obj->member_srl);
+			unset($obj->user_id);
+		}
+
 		// Call a trigger (before)
 		$output = ModuleHandler::triggerCall('document.insertDocument', 'before', $obj);
 		if(!$output->toBool()) return $output;
@@ -233,18 +249,6 @@ class documentController extends document {
 		// Check the status of password hash for manually inserting. Apply hashing for otherwise.
 		if($obj->password && !$obj->password_is_hashed) {
 			$obj->password = getModel('member')->hashPassword($obj->password);
-		}
-		// Insert member's information only if the member is logged-in and not manually registered.
-		$logged_info = Context::get('logged_info');
-		if(Context::get('is_logged') && !$manual_inserted && !$isRestore) {
-			$obj->member_srl = $logged_info->member_srl;
-
-			// user_id, user_name and nick_name already encoded
-			$obj->user_id = htmlspecialchars_decode($logged_info->user_id);
-			$obj->user_name = htmlspecialchars_decode($logged_info->user_name);
-			$obj->nick_name = htmlspecialchars_decode($logged_info->nick_name);
-			$obj->email_address = $logged_info->email_address;
-			$obj->homepage = $logged_info->homepage;
 		}
 		// If the title is empty, extract string from the contents.
 		$obj->title = htmlspecialchars($obj->title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
@@ -338,6 +342,20 @@ class documentController extends document {
 		if(!$obj->status && $obj->is_secret == 'Y') $obj->status = 'SECRET';
 		if(!$obj->status) $obj->status = 'PUBLIC';
 
+		// Preserve original author info.
+		if($source_obj->get('member_srl')) {
+			$obj->member_srl = $source_obj->get('member_srl');
+			$obj->user_id = $source_obj->get('user_id');
+			$obj->user_name = $source_obj->get('user_name');
+			$obj->nick_name = $source_obj->get('nick_name');
+			$obj->email_address = $source_obj->get('email_address');
+			$obj->homepage = $source_obj->get('homepage');
+			$obj->ipaddress = $source_obj->get('ipaddress');
+		} else {
+			unset($obj->member_srl);
+			unset($obj->user_id);
+		}
+
 		// Call a trigger (before)
 		$output = ModuleHandler::triggerCall('document.updateDocument', 'before', $obj);
 		if(!$output->toBool()) return $output;
@@ -366,9 +384,6 @@ class documentController extends document {
 			$args->regdate = $source_obj->get('last_update');
 			$args->ipaddress = $_SERVER['REMOTE_ADDR'];
 			$output = executeQuery("document.insertHistory", $args);
-		}
-		else {
-			$obj->ipaddress = $source_obj->get('ipaddress');
 		}
 		// List variables
 		if($obj->comment_status) $obj->commentStatus = $obj->comment_status;
@@ -403,24 +418,6 @@ class documentController extends document {
 		// Hash the password if it exists
 		if($obj->password) {
 			$obj->password = getModel('member')->hashPassword($obj->password);
-		}
-		// If an author is identical to the modifier or history is used, use the logged-in user's information.
-		if(Context::get('is_logged') && !$manual_updated) {
-			if($source_obj->get('member_srl') == $logged_info->member_srl) {
-				$obj->member_srl = $logged_info->member_srl;
-				$obj->user_name = htmlspecialchars_decode($logged_info->user_name);
-				$obj->nick_name = htmlspecialchars_decode($logged_info->nick_name);
-				$obj->email_address = $logged_info->email_address;
-				$obj->homepage = $logged_info->homepage;
-			}
-		}
-		// For the document written by logged-in user however no nick_name exists
-		if($source_obj->get('member_srl') && !$obj->nick_name) {
-			$obj->member_srl = $source_obj->get('member_srl');
-			$obj->user_name = $source_obj->get('user_name');
-			$obj->nick_name = $source_obj->get('nick_name');
-			$obj->email_address = $source_obj->get('email_address');
-			$obj->homepage = $source_obj->get('homepage');
 		}
 		// If the title is empty, extract string from the contents.
 		$obj->title = htmlspecialchars($obj->title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
