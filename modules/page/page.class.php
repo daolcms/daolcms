@@ -29,7 +29,7 @@ class page extends ModuleObject {
 		$path = str_replace('\\', '/', $path);
 
 		// Block user-controlled, sensitive, and executable cache directories.
-		if(preg_match('!(?:^|/)files/(?:attach|cache|config|debug|env|member_extra_info|ruleset|site_design|thumbnails)/!i', $path)){
+		if(preg_match('!(?:^|/)files/(?:attach|cache|config|debug|env|member_extra_info|ruleset|site_design|thumbnails)(?:/|$)!i', $path)){
 			return false;
 		}
 
