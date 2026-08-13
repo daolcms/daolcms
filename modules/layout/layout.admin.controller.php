@@ -343,9 +343,24 @@ class layoutAdminController extends layout {
 	 * @return void
 	 **/
 	function procLayoutAdminUserImageDelete(){
+		$layout_srl = (int)Context::get('layout_srl');
 		$filename = Context::get('filename');
-		$layout_srl = Context::get('layout_srl');
-		$this->removeUserLayoutImage($layout_srl, $filename);
+		if(!$layout_srl || !$this->isValidUserLayoutImageName($filename)){
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+
+		$oLayoutModel = getModel('layout');
+		if(!$oLayoutModel->getLayoutRawData($layout_srl, array('layout_srl'))){
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+		$image_list = $oLayoutModel->getUserLayoutImageList($layout_srl);
+		if(!is_array($image_list) || !in_array($filename, $image_list, true)){
+			return new BaseObject(-1, 'msg_not_founded');
+		}
+		if(!$this->removeUserLayoutImage($layout_srl, $filename)){
+			return new BaseObject(-1, 'msg_not_founded');
+		}
+
 		$this->setMessage('success_deleted');
 		$this->setRedirectUrl(Context::get('error_return_url'));
 	}
@@ -354,12 +369,37 @@ class layoutAdminController extends layout {
 	 * delete image into user layout
 	 * @param int    $layout_srl
 	 * @param string $filename
-	 * @return void
+	 * @return bool
 	 **/
 	function removeUserLayoutImage($layout_srl, $filename){
+		$layout_srl = (int)$layout_srl;
+		if(!$layout_srl || !$this->isValidUserLayoutImageName($filename)) return false;
+
 		$oLayoutModel = getModel('layout');
+		if(!$oLayoutModel->getLayoutRawData($layout_srl, array('layout_srl'))) return false;
+		$image_list = $oLayoutModel->getUserLayoutImageList($layout_srl);
+		if(!is_array($image_list) || !in_array($filename, $image_list, true)) return false;
+
 		$path = $oLayoutModel->getUserLayoutImagePath($layout_srl);
-		@unlink($path . $filename);
+		$base_path = realpath(FileHandler::getRealPath($path));
+		$target_path = FileHandler::getRealPath($path . $filename);
+		$real_target_path = realpath($target_path);
+		if($base_path === false || $real_target_path === false) return false;
+		if(dirname($real_target_path) !== $base_path || !is_file($target_path) || is_link($target_path)) return false;
+
+		return FileHandler::removeFile($target_path);
+	}
+
+	/**
+	 * Validate a user layout image filename without accepting path components.
+	 *
+	 * @param mixed $filename
+	 * @return bool
+	 **/
+	protected function isValidUserLayoutImageName($filename){
+		if(!is_string($filename) || $filename === '' || strpos($filename, "\0") !== false) return false;
+		if(preg_match('!(\.\.|[/\\\\])!', $filename)) return false;
+		return basename($filename) === $filename;
 	}
 
 	// deprecated
