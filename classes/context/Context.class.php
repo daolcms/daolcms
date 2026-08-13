@@ -977,7 +977,7 @@ class Context {
 	 *
 	 * @return string Response method. If it's not set, returns request method.
 	 */
-	function getResponseMethod() {
+	static function getResponseMethod() {
 		$self = self::getInstance();
 
 		if($self->response_method) return $self->response_method;

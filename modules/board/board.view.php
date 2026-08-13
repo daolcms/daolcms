@@ -237,6 +237,7 @@ class boardView extends board {
 					$logged_info = Context::get('logged_info');
 					if(abs($oDocument->get('member_srl')) != $logged_info->member_srl){
 						$oDocument = $oDocumentModel->getDocument(0);
+						$oDocument->add('module_srl', $this->module_srl);
 					}
 				}
 
@@ -244,6 +245,7 @@ class boardView extends board {
 				if($oDocument->getStatus() == 'TEMP') {
 					if(!$oDocument->isGranted()) {
 						$oDocument = $oDocumentModel->getDocument(0);
+						$oDocument->add('module_srl', $this->module_srl);
 					}
 				}
 
@@ -266,6 +268,7 @@ class boardView extends board {
 		if($oDocument->isExists()) {
 			if(!$this->grant->view && !$oDocument->isGranted()) {
 				$oDocument = $oDocumentModel->getDocument(0);
+				$oDocument->add('module_srl', $this->module_srl);
 				Context::set('document_srl', '', true);
 				$this->alertMessage('msg_not_permitted');
 			} else {
